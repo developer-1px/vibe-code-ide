@@ -42,11 +42,16 @@ export const findFileInProject = (files: Record<string, string>, resolvedPath: s
     // Try exact match
     if (files[resolvedPath]) return resolvedPath;
     // Try extensions
+    if (files[resolvedPath + '.tsx']) return resolvedPath + '.tsx';
     if (files[resolvedPath + '.ts']) return resolvedPath + '.ts';
-    if (files[resolvedPath + '.vue']) return resolvedPath + '.vue';
+    if (files[resolvedPath + '.jsx']) return resolvedPath + '.jsx';
     if (files[resolvedPath + '.js']) return resolvedPath + '.js';
+    if (files[resolvedPath + '.vue']) return resolvedPath + '.vue';
     // Try index
+    if (files[resolvedPath + '/index.tsx']) return resolvedPath + '/index.tsx';
     if (files[resolvedPath + '/index.ts']) return resolvedPath + '/index.ts';
+    if (files[resolvedPath + '/index.jsx']) return resolvedPath + '/index.jsx';
+    if (files[resolvedPath + '/index.js']) return resolvedPath + '/index.js';
 
     return null;
 };
@@ -63,7 +68,7 @@ export const findFileByName = (files: Record<string, string>, importPath: string
     let fileName = pathParts[pathParts.length - 1];
 
     // If no extension, try common extensions
-    const extensions = fileName.includes('.') ? [''] : ['.vue', '.ts', '.js'];
+    const extensions = fileName.includes('.') ? [''] : ['.tsx', '.ts', '.jsx', '.js', '.vue'];
 
     for (const ext of extensions) {
         const searchName = fileName + ext;
