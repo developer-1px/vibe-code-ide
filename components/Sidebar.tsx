@@ -1,34 +1,38 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Code2, Eraser, FileCode } from 'lucide-react';
-import { VUE_CODE_RAW } from '../constants';
+import { Box, Code2, Eraser, FileCode, FolderOpen, FileText } from 'lucide-react';
+import { DEFAULT_FILES, DEFAULT_ENTRY_FILE } from '../constants';
 
 interface SidebarProps {
-  code: string;
-  onCodeChange: (newCode: string) => void;
+  files: Record<string, string>;
+  activeFile: string;
+  onFileChange: (fileName: string, content: string) => void;
+  onSelectFile: (fileName: string) => void;
+  onReset: () => void;
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ code, onCodeChange }) => {
-  const [localCode, setLocalCode] = useState(code);
+const Sidebar: React.FC<SidebarProps> = ({ files, activeFile, onFileChange, onSelectFile, onReset }) => {
+  const [localCode, setLocalCode] = useState(files[activeFile] || '');
   const [isTyping, setIsTyping] = useState(false);
 
-  // Debounce logic to prevent parsing on every keystroke
+  // Sync local code when active file changes
+  useEffect(() => {
+    setLocalCode(files[activeFile] || '');
+  }, [activeFile, files]);
+
+  // Debounce logic
   useEffect(() => {
     setIsTyping(true);
     const handler = setTimeout(() => {
-      onCodeChange(localCode);
+      if (files[activeFile] !== localCode) {
+          onFileChange(activeFile, localCode);
+      }
       setIsTyping(false);
-    }, 800); // 800ms debounce
+    }, 800); 
 
-    return () => {
-      clearTimeout(handler);
-    };
-  }, [localCode, onCodeChange]);
+    return () => clearTimeout(handler);
+  }, [localCode, activeFile]); // files dependency removed to avoid loop, we check equality
 
-  const handleReset = () => {
-    if (window.confirm("Reset to default sample code?")) {
-      setLocalCode(VUE_CODE_RAW);
-    }
-  };
+  const sortedFiles = Object.keys(files).sort();
 
   return (
     <div className="w-[400px] bg-vibe-panel border-r border-vibe-border flex flex-col h-full select-none shadow-xl z-20">
@@ -37,19 +41,46 @@ const Sidebar: React.FC<SidebarProps> = ({ code, onCodeChange }) => {
             <Box className="w-5 h-5 text-vibe-accent" />
             Vibe Coder
         </h1>
-        <p className="text-xs text-slate-500">Paste your Vue SFC code below to visualize.</p>
+        <p className="text-xs text-slate-500">Project Logic Visualization</p>
       </div>
       
-      <div className="flex-1 relative group">
+      {/* File Explorer */}
+      <div className="bg-[#0f172a] border-b border-vibe-border max-h-48 overflow-y-auto">
+          <div className="px-4 py-2 text-xs font-semibold text-slate-400 flex items-center gap-1 bg-black/20">
+              <FolderOpen className="w-3 h-3" />
+              <span>Explorer</span>
+          </div>
+          <ul>
+              {sortedFiles.map(fileName => (
+                  <li 
+                    key={fileName}
+                    onClick={() => onSelectFile(fileName)}
+                    className={`
+                        px-4 py-1.5 text-xs font-mono cursor-pointer flex items-center gap-2 border-l-2 transition-colors
+                        ${activeFile === fileName 
+                            ? 'bg-vibe-accent/10 text-vibe-accent border-vibe-accent' 
+                            : 'text-slate-400 border-transparent hover:bg-white/5 hover:text-slate-200'}
+                    `}
+                  >
+                      <FileText className="w-3 h-3 opacity-70" />
+                      {fileName.replace('src/', '')}
+                  </li>
+              ))}
+          </ul>
+      </div>
+
+      <div className="flex-1 relative group flex flex-col min-h-0">
+        <div className="px-4 py-1 bg-[#162032] text-[10px] text-slate-500 font-mono border-b border-white/5 truncate">
+            {activeFile}
+        </div>
         <textarea 
-            className="w-full h-full bg-[#0b1221] text-xs font-mono text-slate-300 p-4 resize-none focus:outline-none focus:ring-1 focus:ring-vibe-accent/50 leading-relaxed scrollbar-hide selection:bg-vibe-accent/30"
+            className="flex-1 w-full bg-[#0b1221] text-xs font-mono text-slate-300 p-4 resize-none focus:outline-none focus:ring-1 focus:ring-vibe-accent/50 leading-relaxed scrollbar-hide selection:bg-vibe-accent/30"
             value={localCode}
             spellCheck={false}
             onChange={(e) => setLocalCode(e.target.value)}
-            placeholder="<script setup>..."
         />
         
-        {/* Status Indicator overlay */}
+        {/* Status Indicator */}
         <div className="absolute bottom-4 right-4 pointer-events-none transition-opacity duration-300">
             {isTyping ? (
                  <span className="text-[10px] bg-yellow-500/20 text-yellow-500 px-2 py-1 rounded-full border border-yellow-500/20 animate-pulse">
@@ -66,10 +97,10 @@ const Sidebar: React.FC<SidebarProps> = ({ code, onCodeChange }) => {
       <div className="p-3 border-t border-vibe-border bg-[#162032] flex justify-between items-center">
         <div className="flex items-center gap-2 text-xs text-slate-500">
             <FileCode className="w-3 h-3" />
-            <span>Vue 3 SFC Supported</span>
+            <span>Vue 3 / TS Project</span>
         </div>
         <button 
-            onClick={handleReset}
+            onClick={onReset}
             className="text-xs flex items-center gap-1.5 text-slate-400 hover:text-white px-2 py-1 rounded hover:bg-white/5 transition-colors"
             title="Reset to sample code"
         >

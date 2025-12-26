@@ -1,12 +1,13 @@
 import React, { useMemo, useState, useEffect } from 'react';
 import Sidebar from './components/Sidebar';
 import PipelineCanvas from './components/PipelineCanvas';
-import { VUE_CODE_RAW } from './constants';
+import { DEFAULT_FILES, DEFAULT_ENTRY_FILE } from './constants';
 import { parseVueCode } from './services/codeParser';
 import { Box, AlertCircle, PanelLeft } from 'lucide-react';
 
 const App: React.FC = () => {
-  const [code, setCode] = useState(VUE_CODE_RAW);
+  const [files, setFiles] = useState<Record<string, string>>(DEFAULT_FILES);
+  const [activeFile, setActiveFile] = useState<string>(DEFAULT_ENTRY_FILE);
   const [parseError, setParseError] = useState<string | null>(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   
@@ -23,26 +24,37 @@ const App: React.FC = () => {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
-  // Parse code on change
+  // Parse project on file change
   const graphData = useMemo(() => {
     try {
-      const data = parseVueCode(code);
+      const data = parseVueCode(files, DEFAULT_ENTRY_FILE);
       setParseError(null);
       return data;
     } catch (e: any) {
-      console.warn("AST Parse Error (typing in progress?):", e);
-      // Don't update graph data on parse error to prevent flickering, 
-      // but set error state to notify user if needed.
+      console.warn("Project Parse Error:", e);
       setParseError(e.message || "Syntax Error");
       return null;
     }
-  }, [code]);
+  }, [files]);
 
-  // Keep track of the last valid graph data to avoid blank screen on syntax error
   const [lastValidData, setLastValidData] = useState(graphData);
   if (graphData && graphData !== lastValidData) {
     setLastValidData(graphData);
   }
+
+  const handleFileChange = (fileName: string, content: string) => {
+      setFiles(prev => ({
+          ...prev,
+          [fileName]: content
+      }));
+  };
+
+  const handleReset = () => {
+      if(window.confirm("Reset all files to default?")) {
+          setFiles(DEFAULT_FILES);
+          setActiveFile(DEFAULT_ENTRY_FILE);
+      }
+  };
 
   return (
     <div className="flex h-screen w-screen overflow-hidden bg-vibe-dark text-slate-200 font-sans">
@@ -51,7 +63,13 @@ const App: React.FC = () => {
         className={`transition-all duration-300 ease-in-out overflow-hidden flex-shrink-0 ${isSidebarOpen ? 'w-[400px]' : 'w-0'}`}
       >
         <div className="w-[400px] h-full">
-           <Sidebar code={code} onCodeChange={setCode} />
+           <Sidebar 
+             files={files} 
+             activeFile={activeFile} 
+             onFileChange={handleFileChange} 
+             onSelectFile={setActiveFile}
+             onReset={handleReset}
+           />
         </div>
       </div>
 
@@ -83,7 +101,7 @@ const App: React.FC = () => {
                   </span>
                 ) : (
                   <span className="px-2 py-1 bg-vibe-accent/10 text-vibe-accent rounded border border-vibe-accent/20">
-                    Live AST Analysis
+                    Project Analysis Active
                   </span>
                 )}
             </div>
@@ -91,7 +109,7 @@ const App: React.FC = () => {
 
         {/* Canvas Area */}
         <div className="flex-1 relative">
-            {lastValidData && <PipelineCanvas initialData={lastValidData} />}
+            {lastValidData && <PipelineCanvas initialData={lastValidData} entryFile={DEFAULT_ENTRY_FILE} />}
         </div>
       </div>
     </div>
