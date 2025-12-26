@@ -1,10 +1,16 @@
-import { useEffect, useRef, useState, useCallback } from 'react';
+import { useEffect, useRef, useState, useCallback, RefObject } from 'react';
+import { useAtom, useAtomValue } from 'jotai';
 import * as d3 from 'd3';
-import { CanvasNode } from '../../entities/VariableNode';
+import { CanvasNode } from '../../entities/CanvasNode';
+import { lastExpandedIdAtom, layoutNodesAtom } from '../../store/atoms';
 
-export const useD3Zoom = (containerRef: React.RefObject<HTMLDivElement>) => {
+export const useD3Zoom = (containerRef: RefObject<HTMLDivElement>) => {
     const [transform, setTransform] = useState({ k: 0.9, x: 0, y: 0 });
     const zoomBehaviorRef = useRef<d3.ZoomBehavior<HTMLDivElement, unknown> | null>(null);
+
+    // Atoms for auto-centering
+    const [lastExpandedId, setLastExpandedId] = useAtom(lastExpandedIdAtom);
+    const layoutNodes = useAtomValue(layoutNodesAtom);
 
     useEffect(() => {
         if (containerRef.current) {
@@ -67,6 +73,22 @@ export const useD3Zoom = (containerRef: React.RefObject<HTMLDivElement>) => {
             .ease(d3.easeCubicOut)
             .call(zoomBehaviorRef.current.transform, newTransform);
       }, [transform.k]);
+
+      // --- Auto-center when node expanded ---
+      useEffect(() => {
+        if (lastExpandedId && layoutNodes.length > 0) {
+            const targetNode = layoutNodes.find(n => n.id === lastExpandedId);
+            if (targetNode) {
+                // Wait a bit for layout to settle, then center
+                const timer = setTimeout(() => {
+                    centerOnNode(targetNode);
+                    setLastExpandedId(null);
+                }, 100);
+
+                return () => clearTimeout(timer);
+            }
+        }
+      }, [lastExpandedId, layoutNodes, centerOnNode, setLastExpandedId]);
 
       return { transform, centerOnNode };
 };

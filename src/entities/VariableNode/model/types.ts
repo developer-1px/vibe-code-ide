@@ -1,9 +1,4 @@
-export interface TemplateTokenRange {
-  startOffset: number;  // Absolute position in template content
-  endOffset: number;    // Absolute position in template content
-  text: string;
-  tokenIds: string[]; // Dependency IDs found in this expression
-}
+import type { TemplateTokenRange } from '../../CanvasNode';
 
 export interface VariableNode {
   id: string; // Globally unique ID (usually filePath::localName)
@@ -18,14 +13,6 @@ export interface VariableNode {
 
 export interface GraphData {
   nodes: VariableNode[];
-}
-
-export interface CanvasNode extends VariableNode {
-  x: number;
-  y: number;
-  level: number; // 0 for Template, -1 for immediate deps, etc.
-  isVisible: boolean;
-  visualId: string; // Unique ID for the UI instance (since nodes can be duplicated)
 }
 
 export interface GraphNode extends VariableNode {

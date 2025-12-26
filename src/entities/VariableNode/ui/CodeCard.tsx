@@ -1,6 +1,7 @@
 
 import React, { useMemo } from 'react';
-import { CanvasNode } from '../model/types.ts';
+import { useAtom, useAtomValue, useSetAtom } from 'jotai';
+import { CanvasNode } from '../../CanvasNode';
 
 // Extracted Logic
 import { extractTokenRanges } from '../lib/tokenUtils.ts';
@@ -12,32 +13,88 @@ import CodeCardHeader from './components/CodeCardHeader.tsx';
 import CodeCardCopyButton from './components/CodeCardCopyButton.tsx';
 import CodeCardLine from './components/CodeCardLine.tsx';
 
+// Atoms
+import { visibleNodeIdsAtom, fullNodeMapAtom, lastExpandedIdAtom } from '../../../store/atoms';
+
 interface CodeCardProps {
   node: CanvasNode;
-  onTokenClick: (token: string, sourceNodeId: string, event: React.MouseEvent) => void;
-  onSlotClick?: (tokenId: string) => void;
-  onToggleAllDependencies?: (nodeId: string, shouldExpand: boolean) => void;
-  activeDependencies: string[];
-  allKnownIds: string[];
-  nodeMap?: Map<string, CanvasNode>;
-  visibleNodeIds?: Set<string>;
 }
 
-const CodeCard: React.FC<CodeCardProps> = ({ node, onTokenClick, onSlotClick, onToggleAllDependencies, activeDependencies, nodeMap, visibleNodeIds }) => {
+const CodeCard: React.FC<CodeCardProps> = ({ node }) => {
+  const [visibleNodeIds, setVisibleNodeIds] = useAtom(visibleNodeIdsAtom);
+  const fullNodeMap = useAtomValue(fullNodeMapAtom);
+  const setLastExpandedId = useSetAtom(lastExpandedIdAtom);
 
   const isTemplate = node.type === 'template';
 
   // Check if all dependencies are expanded
   const allDepsExpanded = useMemo(() => {
-    if (!visibleNodeIds || node.dependencies.length === 0) return false;
+    if (node.dependencies.length === 0) return false;
     return node.dependencies.every(depId => visibleNodeIds.has(depId));
   }, [node.dependencies, visibleNodeIds]);
 
   const handleToggleAll = (e: React.MouseEvent) => {
     e.stopPropagation();
-    if (onToggleAllDependencies && node.dependencies.length > 0) {
-      onToggleAllDependencies(node.id, !allDepsExpanded);
-    }
+    if (node.dependencies.length === 0) return;
+
+    setVisibleNodeIds(prev => {
+      const next = new Set(prev);
+
+      if (!allDepsExpanded) {
+        // Expand all dependencies recursively
+        const expandRecursive = (id: string) => {
+          if (next.has(id)) return;
+          next.add(id);
+
+          const depNode = fullNodeMap.get(id);
+          if (depNode) {
+            // Stop expanding if we hit a template node
+            if (depNode.type === 'template') return;
+
+            depNode.dependencies.forEach(depId => {
+              if (fullNodeMap.has(depId)) {
+                expandRecursive(depId);
+              }
+            });
+          }
+        };
+
+        node.dependencies.forEach(depId => {
+          if (fullNodeMap.has(depId)) {
+            expandRecursive(depId);
+          }
+        });
+
+        // Center on the first expanded dependency
+        if (node.dependencies.length > 0) {
+          setLastExpandedId(node.dependencies[0]);
+        }
+      } else {
+        // Collapse all dependencies
+        const collapseRecursive = (id: string, toRemove: Set<string>) => {
+          toRemove.add(id);
+          const depNode = fullNodeMap.get(id);
+          if (depNode) {
+            depNode.dependencies.forEach(depId => {
+              if (fullNodeMap.has(depId)) {
+                collapseRecursive(depId, toRemove);
+              }
+            });
+          }
+        };
+
+        const toRemove = new Set<string>();
+        node.dependencies.forEach(depId => {
+          if (fullNodeMap.has(depId)) {
+            collapseRecursive(depId, toRemove);
+          }
+        });
+
+        toRemove.forEach(id => next.delete(id));
+      }
+
+      return next;
+    });
   };
 
   // --- 1. Prepare Data (Pure Logic) ---
@@ -74,7 +131,7 @@ const CodeCard: React.FC<CodeCardProps> = ({ node, onTokenClick, onSlotClick, on
         node={node}
         allDepsExpanded={allDepsExpanded}
         onToggleAll={handleToggleAll}
-        showToggleButton={node.dependencies.length > 0 && !!onToggleAllDependencies}
+        showToggleButton={node.dependencies.length > 0}
       />
 
       {/* Body: Render Lines from Processed Data */}
@@ -87,10 +144,6 @@ const CodeCard: React.FC<CodeCardProps> = ({ node, onTokenClick, onSlotClick, on
               line={line}
               node={node}
               isDefinitionLine={isDefinitionLine}
-              onTokenClick={onTokenClick}
-              onSlotClick={onSlotClick}
-              nodeMap={nodeMap}
-              activeDependencies={activeDependencies}
             />
           );
         })}

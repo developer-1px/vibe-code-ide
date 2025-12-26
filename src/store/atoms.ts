@@ -1,12 +1,13 @@
 import { atom } from 'jotai';
-import { CanvasNode, VariableNode } from '../entities/VariableNode';
+import type { VariableNode } from '../entities/VariableNode';
+import type { CanvasNode } from '../entities/CanvasNode';
 
 // Canvas layout atoms (write-only from PipelineCanvas)
-export const layoutNodesAtom = atom<CanvasNode[]>([]);
-export const fullNodeMapAtom = atom<Map<string, VariableNode>>(new Map());
+export const layoutNodesAtom = atom([] as CanvasNode[]);
+export const fullNodeMapAtom = atom(new Map<string, VariableNode>());
 export const entryFileAtom = atom('');
-export const templateRootIdAtom = atom<string | null>(null);
+export const templateRootIdAtom = atom(null as string | null);
 
 // Visibility and navigation atoms (read-write)
-export const visibleNodeIdsAtom = atom<Set<string>>(new Set());
-export const lastExpandedIdAtom = atom<string | null>(null);
+export const visibleNodeIdsAtom = atom(new Set<string>());
+export const lastExpandedIdAtom = atom(null as string | null);

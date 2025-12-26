@@ -1,6 +1,6 @@
 import React from 'react';
 import { Layers } from 'lucide-react';
-import { ComponentGroup } from './useCanvasLayout.ts';
+import { ComponentGroup } from '../../entities/CanvasNode';
 
 interface CanvasBackgroundProps {
     groups: ComponentGroup[];

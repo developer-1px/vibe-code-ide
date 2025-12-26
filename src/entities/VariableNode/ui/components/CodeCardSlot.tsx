@@ -1,19 +1,28 @@
 import React from 'react';
-import { CanvasNode } from '../../model/types.ts';
+import { useSetAtom } from 'jotai';
+import { CanvasNode } from '../../../CanvasNode';
 import { getSlotColor } from '../../lib/styleUtils.ts';
+import { lastExpandedIdAtom } from '../../../../store/atoms';
 
 interface CodeCardSlotProps {
   tokenId: string;
   lineNum: number;
   slotIdx: number;
   depNode?: CanvasNode;
-  onSlotClick?: (tokenId: string) => void;
 }
 
-const CodeCardSlot: React.FC<CodeCardSlotProps> = ({ tokenId, lineNum, slotIdx, depNode, onSlotClick }) => {
+const CodeCardSlot: React.FC<CodeCardSlotProps> = ({ tokenId, lineNum, slotIdx, depNode }) => {
+  const setLastExpandedId = useSetAtom(lastExpandedIdAtom);
+
   const slotColorClass = depNode
     ? getSlotColor(depNode.type)
     : 'bg-slate-500/60 border-slate-400/80 shadow-slate-500/30 group-hover/line:border-slate-300';
+
+  const handleSlotClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    // Center camera on the target node
+    setLastExpandedId(tokenId);
+  };
 
   return (
     <div
@@ -22,12 +31,7 @@ const CodeCardSlot: React.FC<CodeCardSlotProps> = ({ tokenId, lineNum, slotIdx, 
       data-input-slot-for={tokenId}
       data-input-slot-line={lineNum}
       data-input-slot-unique={`${tokenId}::line${lineNum}`}
-      onClick={(e) => {
-        e.stopPropagation();
-        if (onSlotClick) {
-          onSlotClick(tokenId);
-        }
-      }}
+      onClick={handleSlotClick}
     />
   );
 };

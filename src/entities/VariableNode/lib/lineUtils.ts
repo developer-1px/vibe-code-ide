@@ -1,5 +1,6 @@
 
-import { ProcessedLine, TokenRange, LineSegment, TemplateTokenRange } from './types.ts';
+import { ProcessedLine, TokenRange, LineSegment } from './types.ts';
+import type { TemplateTokenRange } from '../../CanvasNode';
 
 export const processCodeLines = (
     codeSnippet: string,

@@ -1,15 +1,15 @@
 import { useEffect, useState, useMemo } from 'react';
-import { GraphData, CanvasNode, VariableNode } from '../../entities/VariableNode';
+import { useSetAtom } from 'jotai';
+import { GraphData, VariableNode } from '../../entities/VariableNode';
+import { CanvasNode, ComponentGroup } from '../../entities/CanvasNode';
 import { LEVEL_SPACING, VERTICAL_GAP, estimateNodeHeight, getUsageIndex, hasCycle } from './utils.ts';
-
-export interface ComponentGroup {
-    filePath: string;
-    minX: number;
-    maxX: number;
-    minY: number;
-    maxY: number;
-    label: string;
-}
+import {
+  layoutNodesAtom,
+  fullNodeMapAtom,
+  entryFileAtom,
+  templateRootIdAtom,
+  visibleNodeIdsAtom
+} from '../../store/atoms';
 
 // Visual Tree Structure for Layout Calculation
 interface VisualTreeNode extends CanvasNode {
@@ -18,13 +18,20 @@ interface VisualTreeNode extends CanvasNode {
 }
 
 export const useCanvasLayout = (
-    initialData: GraphData, 
-    entryFile: string, 
+    initialData: GraphData,
+    entryFile: string,
     visibleNodeIds: Set<string>
 ) => {
     const [layoutNodes, setLayoutNodes] = useState<CanvasNode[]>([]);
     const [layoutLinks, setLayoutLinks] = useState<{source: string, target: string}[]>([]);
     const [componentGroups, setComponentGroups] = useState<ComponentGroup[]>([]);
+
+    // Atom setters
+    const setLayoutNodesAtom = useSetAtom(layoutNodesAtom);
+    const setFullNodeMapAtom = useSetAtom(fullNodeMapAtom);
+    const setEntryFileAtom = useSetAtom(entryFileAtom);
+    const setTemplateRootIdAtom = useSetAtom(templateRootIdAtom);
+    const setVisibleNodeIdsAtom = useSetAtom(visibleNodeIdsAtom);
 
     const fullNodeMap = useMemo(() => {
         return new Map<string, VariableNode>(initialData.nodes.map(n => [n.id, n]));
@@ -58,8 +65,11 @@ export const useCanvasLayout = (
         if (templateRootId) rootDeps.push(templateRootId);
         
         // Add visible call nodes from entry file
-        const callNodes = Array.from(fullNodeMap.values()).filter(n => n.type === 'call' && n.filePath === entryFile);
-        callNodes.forEach(n => rootDeps.push(n.id));
+        Array.from(fullNodeMap.values()).forEach((n: VariableNode) => {
+            if (n.type === 'call' && n.filePath === entryFile) {
+                rootDeps.push(n.id);
+            }
+        });
 
         const layoutNodeMap = new Map<string, VariableNode>(fullNodeMap);
         layoutNodeMap.set(rootId, {
@@ -256,10 +266,32 @@ export const useCanvasLayout = (
         setComponentGroups(calculatedGroups);
     }, [layoutNodes]);
 
-    return { 
-        layoutNodes, 
-        layoutLinks, 
-        componentGroups, 
+    // --- Sync atoms with layout data ---
+    useEffect(() => {
+        setLayoutNodesAtom(layoutNodes);
+        setFullNodeMapAtom(fullNodeMap);
+        setEntryFileAtom(entryFile);
+        setTemplateRootIdAtom(templateRootId);
+    }, [layoutNodes, fullNodeMap, entryFile, templateRootId, setLayoutNodesAtom, setFullNodeMapAtom, setEntryFileAtom, setTemplateRootIdAtom]);
+
+    // --- Initialize visible IDs ---
+    useEffect(() => {
+        const initialSet = new Set<string>();
+        if (templateRootId) {
+            initialSet.add(templateRootId);
+        }
+        initialData.nodes.forEach(n => {
+            if (n.type === 'call' && n.filePath === entryFile) {
+                initialSet.add(n.id);
+            }
+        });
+        setVisibleNodeIdsAtom(initialSet);
+    }, [initialData, templateRootId, entryFile, setVisibleNodeIdsAtom]);
+
+    return {
+        layoutNodes,
+        layoutLinks,
+        componentGroups,
         fullNodeMap,
         templateRootId
     };

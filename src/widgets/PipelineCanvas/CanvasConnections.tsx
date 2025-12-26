@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { CanvasNode } from '../../entities/VariableNode';
+import { CanvasNode } from '../../entities/CanvasNode';
 import { getEdgeColor } from '../../entities/VariableNode/lib/styleUtils.ts';
 
 interface CanvasConnectionsProps {

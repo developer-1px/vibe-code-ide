@@ -1,6 +1,6 @@
 import React from 'react';
 import { Terminal, Box, FunctionSquare, LayoutTemplate, Database, Link2, PlayCircle, BoxSelect, ChevronsDown, ChevronsUp } from 'lucide-react';
-import { CanvasNode } from '../../model/types.ts';
+import { CanvasNode } from '../../../CanvasNode';
 
 interface CodeCardHeaderProps {
   node: CanvasNode;

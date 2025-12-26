@@ -1,28 +1,23 @@
 import React from 'react';
-import { CanvasNode } from '../../model/types.ts';
+import { useAtomValue } from 'jotai';
+import { CanvasNode } from '../../../CanvasNode';
 import { ProcessedLine } from '../../lib/types.ts';
 import CodeCardSlot from './CodeCardSlot.tsx';
 import CodeCardToken from './CodeCardToken.tsx';
+import { fullNodeMapAtom } from '../../../../store/atoms';
 
 interface CodeCardLineProps {
   line: ProcessedLine;
   node: CanvasNode;
   isDefinitionLine: boolean;
-  onTokenClick: (token: string, sourceNodeId: string, event: React.MouseEvent) => void;
-  onSlotClick?: (tokenId: string) => void;
-  nodeMap?: Map<string, CanvasNode>;
-  activeDependencies: string[];
 }
 
 const CodeCardLine: React.FC<CodeCardLineProps> = ({
   line,
   node,
-  isDefinitionLine,
-  onTokenClick,
-  onSlotClick,
-  nodeMap,
-  activeDependencies
+  isDefinitionLine
 }) => {
+  const fullNodeMap = useAtomValue(fullNodeMapAtom);
   const isTemplate = node.type === 'template';
 
   return (
@@ -38,7 +33,7 @@ const CodeCardLine: React.FC<CodeCardLineProps> = ({
         <div className="relative">
           {/* Render input slots for each token in this line */}
           {line.segments.filter(seg => seg.type === 'token' && seg.tokenId).map((seg, slotIdx) => {
-            const depNode = nodeMap?.get(seg.tokenId!);
+            const depNode = fullNodeMap.get(seg.tokenId!);
 
             return (
               <CodeCardSlot
@@ -47,7 +42,6 @@ const CodeCardLine: React.FC<CodeCardLineProps> = ({
                 lineNum={line.num}
                 slotIdx={slotIdx}
                 depNode={depNode}
-                onSlotClick={onSlotClick}
               />
             );
           })}
@@ -77,16 +71,12 @@ const CodeCardLine: React.FC<CodeCardLineProps> = ({
           }
 
           if (segment.type === 'token' && segment.tokenId) {
-            const isActive = activeDependencies.includes(segment.tokenId);
-
             return (
               <CodeCardToken
                 key={segIdx}
                 text={segment.text}
                 tokenId={segment.tokenId}
                 nodeId={node.id}
-                isActive={isActive}
-                onTokenClick={onTokenClick}
               />
             );
           }

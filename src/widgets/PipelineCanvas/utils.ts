@@ -1,4 +1,4 @@
-import { CanvasNode } from '../../entities/VariableNode';
+import { CanvasNode } from '../../entities/CanvasNode';
 
 // --- Constants ---
 export const LEVEL_SPACING = 700; // Horizontal space between columns
