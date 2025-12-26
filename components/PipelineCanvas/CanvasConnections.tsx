@@ -29,10 +29,7 @@ const CanvasConnections: React.FC<CanvasConnectionsProps> = ({ layoutLinks, layo
           };
         };
     
-        // Reset slots highlight
-        document.querySelectorAll('[data-output-port], [data-token]').forEach(el => {
-            el.classList.remove('ring-2', 'ring-vibe-accent', 'scale-125');
-        });
+        // No highlight effects needed
     
         layoutLinks.forEach((link) => {
           // link.source = Dependency (Left Node)
@@ -56,7 +53,6 @@ const CanvasConnections: React.FC<CanvasConnectionsProps> = ({ layoutLinks, layo
               const portRel = getRelativePoint(portRect);
               startX = portRel.x + portRel.w;
               startY = portRel.y + (portRel.h / 2);
-              outputPort.classList.add('ring-2', 'ring-vibe-accent', 'scale-125');
           } else {
               const defLine = depEl.querySelector(`[data-line-num="${dependencyNode.startLine}"]`);
               if (defLine) {
@@ -72,43 +68,66 @@ const CanvasConnections: React.FC<CanvasConnectionsProps> = ({ layoutLinks, layo
               }
           }
     
-          // 2. End Point (Target/Right Node - Input)
-          const usageToken = consEl.querySelector(`[data-token="${dependencyNode.id}"]`);
-          let endX, endY;
-    
-          if (usageToken) {
-              const tokenRect = usageToken.getBoundingClientRect();
-              const tokenRel = getRelativePoint(tokenRect);
-              endX = tokenRel.x;
-              endY = tokenRel.y + (tokenRel.h / 2);
-              usageToken.classList.add('ring-2', 'ring-vibe-accent', 'scale-125');
+          // 2. End Point (Target/Right Node - Input Slots)
+          // Find ALL slots for this dependency (may be used in multiple lines)
+          const inputSlots = consEl.querySelectorAll(`[data-input-slot-for="${dependencyNode.id}"]`);
+
+          const endPoints: Array<{x: number, y: number}> = [];
+
+          if (inputSlots.length > 0) {
+              inputSlots.forEach(inputSlot => {
+                  const slotRect = inputSlot.getBoundingClientRect();
+                  const slotRel = getRelativePoint(slotRect);
+                  endPoints.push({
+                      x: slotRel.x + (slotRel.w / 2),
+                      y: slotRel.y + (slotRel.h / 2)
+                  });
+              });
           } else {
-              const rect = consEl.getBoundingClientRect();
-              const rel = getRelativePoint(rect);
-              endX = rel.x;
-              endY = rel.y + 60;
+              // Fallback to token if slot not found
+              const usageToken = consEl.querySelector(`[data-token="${dependencyNode.id}"]`);
+              if (usageToken) {
+                  const tokenRect = usageToken.getBoundingClientRect();
+                  const tokenRel = getRelativePoint(tokenRect);
+                  endPoints.push({
+                      x: tokenRel.x,
+                      y: tokenRel.y + (tokenRel.h / 2)
+                  });
+              } else {
+                  const rect = consEl.getBoundingClientRect();
+                  const rel = getRelativePoint(rect);
+                  endPoints.push({
+                      x: rel.x,
+                      y: rel.y + 60
+                  });
+              }
           }
     
-          // 3. Draw Bezier
-          const isHorizontal = Math.abs(startY - endY) < 40;
-          const curveStrength = isHorizontal ? 0.15 : 0.4;
-          const dist = Math.abs(endX - startX);
-          const d = `M ${startX} ${startY} C ${startX + dist * curveStrength} ${startY}, ${endX - dist * curveStrength} ${endY}, ${endX} ${endY}`;
+          // 3. Draw Bezier for each end point
           const isCrossFile = consumerNode.filePath !== dependencyNode.filePath;
-    
-          newPaths.push(
-            <path 
-                key={`${link.source}-${link.target}`}
-                d={d}
-                fill="none"
-                stroke={isCrossFile ? "#94a3b8" : "#38bdf8"}
-                strokeWidth={isHorizontal ? "3" : "2"}
-                strokeOpacity={isHorizontal ? "0.8" : "0.5"}
-                strokeDasharray={isCrossFile ? "8,8" : "none"}
-                className="transition-all duration-300 pointer-events-none"
-                markerEnd="url(#arrowhead)"
-            />
-          );
+
+          endPoints.forEach((endPoint, idx) => {
+              const endX = endPoint.x;
+              const endY = endPoint.y;
+
+              const isHorizontal = Math.abs(startY - endY) < 40;
+              const curveStrength = isHorizontal ? 0.15 : 0.4;
+              const dist = Math.abs(endX - startX);
+              const d = `M ${startX} ${startY} C ${startX + dist * curveStrength} ${startY}, ${endX - dist * curveStrength} ${endY}, ${endX} ${endY}`;
+
+              newPaths.push(
+                <path
+                    key={`${link.source}-${link.target}-${idx}`}
+                    d={d}
+                    fill="none"
+                    stroke={isCrossFile ? "#94a3b8" : "#38bdf8"}
+                    strokeWidth={isHorizontal ? "3" : "2"}
+                    strokeOpacity={isHorizontal ? "0.8" : "0.5"}
+                    strokeDasharray={isCrossFile ? "8,8" : "none"}
+                    className="transition-all duration-300 pointer-events-none"
+                />
+              );
+          });
         });
     
         setPaths(newPaths);
@@ -128,11 +147,6 @@ const CanvasConnections: React.FC<CanvasConnectionsProps> = ({ layoutLinks, layo
 
     return (
         <svg className="absolute top-0 left-0 w-full h-full overflow-visible pointer-events-none z-50">
-             <defs>
-                <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
-                <polygon points="0 0, 10 3.5, 0 7" fill="#38bdf8" fillOpacity="0.5" />
-                </marker>
-            </defs>
             {paths}
         </svg>
     );

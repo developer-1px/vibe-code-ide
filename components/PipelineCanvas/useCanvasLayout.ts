@@ -76,6 +76,41 @@ export const useCanvasLayout = (
             visited.add(nodeId);
 
             const raw = layoutNodeMap.get(nodeId)!;
+
+            // Skip nodes with empty code snippets (virtual intermediate nodes)
+            if (!raw.codeSnippet || raw.codeSnippet.trim() === '') {
+                // Process dependencies but don't create a visual node
+                const node: VisualTreeNode = {
+                    ...raw,
+                    level,
+                    x: 0,
+                    y: 0,
+                    isVisible: false,
+                    visualId: nodeId,
+                    children: [],
+                    subtreeHeight: 0
+                };
+
+                raw.dependencies.forEach(depId => {
+                    const isVisible = visibleNodeIds.has(depId) || nodeId === 'VIRTUAL_ROOT';
+                    if (isVisible && !hasCycle(path, depId) && layoutNodeMap.has(depId)) {
+                        const child = buildVisualTree(depId, level, [...path, nodeId], nodeId);
+                        if (child) {
+                            node.children.push(child);
+                        }
+                    }
+                });
+
+                // Return children directly to parent (flatten this node out)
+                if (node.children.length === 1) {
+                    return node.children[0];
+                } else if (node.children.length > 1) {
+                    // If multiple children, we need to keep structure but not display this node
+                    return node;
+                }
+                return null;
+            }
+
             const visualId = nodeId; 
             
             const node: VisualTreeNode = {
@@ -116,7 +151,7 @@ export const useCanvasLayout = (
 
         // 2. Compute Heights
         const computeHeights = (node: VisualTreeNode) => {
-            const myHeight = node.id === 'VIRTUAL_ROOT' ? 0 : estimateNodeHeight(node);
+            const myHeight = (node.id === 'VIRTUAL_ROOT' || node.isVisible === false) ? 0 : estimateNodeHeight(node);
             if (node.children.length === 0) {
                 node.subtreeHeight = myHeight;
                 return;
@@ -137,7 +172,7 @@ export const useCanvasLayout = (
         const flatLinks: {source: string, target: string}[] = [];
 
         const assignCoordinates = (node: VisualTreeNode, startY: number, level: number) => {
-            if (node.id !== 'VIRTUAL_ROOT') {
+            if (node.id !== 'VIRTUAL_ROOT' && node.isVisible !== false) {
                 const myHeight = estimateNodeHeight(node);
                 node.x = -(level * LEVEL_SPACING);
                 node.y = startY + (node.subtreeHeight / 2) - (myHeight / 2);
@@ -153,7 +188,7 @@ export const useCanvasLayout = (
             let currentChildY = startY + (node.subtreeHeight - childrenStackHeight) / 2;
 
             node.children.forEach(child => {
-                if (node.id !== 'VIRTUAL_ROOT') {
+                if (node.id !== 'VIRTUAL_ROOT' && node.isVisible !== false) {
                     flatLinks.push({ source: child.visualId, target: node.visualId });
                 }
                 assignCoordinates(child, currentChildY, level + 1);

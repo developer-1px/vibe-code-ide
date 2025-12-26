@@ -50,7 +50,7 @@ const CodeCard: React.FC<CodeCardProps> = ({ node, onTokenClick, activeDependenc
     }
   };
 
-  const maxWidthClass = isTemplate ? 'max-w-[2000px]' : 'max-w-[1400px]';
+  const maxWidthClass = 'max-w-[600px]';
 
   return (
     <div 
@@ -80,8 +80,8 @@ const CodeCard: React.FC<CodeCardProps> = ({ node, onTokenClick, activeDependenc
         {processedLines.map((line, i) => {
              const isDefinitionLine = line.num === node.startLine;
              return (
-                 <div 
-                    key={i} 
+                 <div
+                    key={i}
                     className={`
                         flex w-full group/line relative
                         ${isDefinitionLine && !isTemplate ? 'bg-vibe-accent/5' : ''}
@@ -91,12 +91,17 @@ const CodeCard: React.FC<CodeCardProps> = ({ node, onTokenClick, activeDependenc
                      {/* Line Number Column */}
                      <div className="flex-none w-12 pr-3 flex justify-end select-none text-xs font-mono text-slate-600 border-r border-white/5 bg-[#0f172a]/50">
                          <div className="relative">
-                            {line.hasInput && (
-                                <div 
-                                    className="w-1.5 h-1.5 rounded-full absolute -left-3 top-[6px] transition-all duration-300 bg-slate-700 border border-slate-600 group-hover/line:border-slate-500"
-                                    data-slot-line={line.num}
+                            {/* Render input slots for each token in this line */}
+                            {line.segments.filter(seg => seg.type === 'token' && seg.tokenId).map((seg, slotIdx) => (
+                                <div
+                                    key={`slot-${slotIdx}`}
+                                    className="w-2 h-2 rounded-full absolute -left-3.5 transition-all duration-300 bg-emerald-500/60 border-2 border-emerald-400/80 group-hover/line:border-emerald-300 group-hover/line:scale-110 shadow-lg shadow-emerald-500/30"
+                                    style={{ top: `${6 + slotIdx * 0}px` }}
+                                    data-input-slot-for={seg.tokenId}
+                                    data-input-slot-line={line.num}
+                                    data-input-slot-unique={`${seg.tokenId}::line${line.num}`}
                                 />
-                            )}
+                            ))}
                             <span className="leading-5">{line.num}</span>
                          </div>
                      </div>
