@@ -1,15 +1,16 @@
 import React, { useMemo, useState, useEffect } from 'react';
-import { useAtom } from 'jotai';
+import { useAtom, useSetAtom } from 'jotai';
 import Sidebar from './components/Sidebar.tsx';
 import PipelineCanvas from './widgets/PipelineCanvas.tsx';
 import { parseVueCode } from './services/codeParser.ts';
 import { Box, AlertCircle, PanelLeft } from 'lucide-react';
-import { filesAtom, entryFileAtom, isSidebarOpenAtom } from './store/atoms';
+import { filesAtom, entryFileAtom, isSidebarOpenAtom, graphDataAtom } from './store/atoms';
 
 const App: React.FC = () => {
   const [files] = useAtom(filesAtom);
   const [entryFile] = useAtom(entryFileAtom);
   const [isSidebarOpen, setIsSidebarOpen] = useAtom(isSidebarOpenAtom);
+  const setGraphData = useSetAtom(graphDataAtom);
   const [parseError, setParseError] = useState<string | null>(null);
 
   // Toggle Sidebar Shortcut
@@ -25,18 +26,20 @@ const App: React.FC = () => {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
-  // Parse project on file change
+  // Parse project on file change and store in atom
   const graphData = useMemo(() => {
     try {
       const data = parseVueCode(files, entryFile);
       setParseError(null);
+      setGraphData(data);
       return data;
     } catch (e: any) {
       console.warn("Project Parse Error:", e);
       setParseError(e.message || "Syntax Error");
+      setGraphData(null);
       return null;
     }
-  }, [files, entryFile]);
+  }, [files, entryFile, setGraphData]);
 
   const [lastValidData, setLastValidData] = useState(graphData);
   if (graphData && graphData !== lastValidData) {
@@ -90,7 +93,7 @@ const App: React.FC = () => {
 
         {/* Canvas Area */}
         <div className="flex-1 relative">
-          {lastValidData && <PipelineCanvas initialData={lastValidData} entryFile={entryFile} />}
+          {lastValidData && <PipelineCanvas />}
         </div>
       </div>
     </div>

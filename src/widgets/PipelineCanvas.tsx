@@ -1,6 +1,5 @@
 import React, { useRef } from 'react';
 import { useAtomValue } from 'jotai';
-import { GraphData } from '../entities/VariableNode';
 import CodeCard from '../entities/VariableNode/ui/CodeCard.tsx';
 
 // Hooks & Sub-components
@@ -12,26 +11,23 @@ import CopyAllCodeButton from '../features/CopyAllCodeButton.tsx';
 import ResetViewButton from '../features/ResetViewButton.tsx';
 
 // Atoms
-import { visibleNodeIdsAtom } from '../store/atoms';
+import { visibleNodeIdsAtom, graphDataAtom, entryFileAtom } from '../store/atoms';
 
-interface PipelineCanvasProps {
-  initialData: GraphData;
-  entryFile: string;
-}
-
-const PipelineCanvas: React.FC<PipelineCanvasProps> = ({ initialData, entryFile }) => {
+const PipelineCanvas: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
 
-  // Read-only atoms
+  // Read atoms
   const visibleNodeIds = useAtomValue(visibleNodeIdsAtom);
+  const graphData = useAtomValue(graphDataAtom);
+  const entryFile = useAtomValue(entryFileAtom);
 
   // 1. Layout Logic (handles atom sync & initialization internally)
   const {
     layoutNodes,
     layoutLinks,
     componentGroups
-  } = useCanvasLayout(initialData, entryFile, visibleNodeIds);
+  } = useCanvasLayout(graphData!, entryFile, visibleNodeIds);
 
   // 2. Zoom Logic (handles auto-centering internally)
   const { transform } = useD3Zoom(containerRef);

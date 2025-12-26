@@ -115,7 +115,7 @@ const CodeCard: React.FC<CodeCardProps> = ({ node }) => {
   }, [node.codeSnippet, node.startLine, node.id, node.dependencies, tokenRanges, isTemplate, node.templateTokenRanges]);
 
 
-  const maxWidthClass = 'max-w-[600px]';
+  const maxWidthClass = 'max-w-[700px]';
 
   return (
     <div
