@@ -1,8 +1,9 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAtom } from 'jotai';
-import { Box, Eraser, FileCode, FileText, FolderOpen, Star, Upload } from 'lucide-react';
+import { Box, FileCode, FileText, FolderOpen, Star } from 'lucide-react';
 import { filesAtom, activeFileAtom, entryFileAtom } from '../store/atoms';
-import { DEFAULT_FILES, DEFAULT_ENTRY_FILE } from '../constants';
+import UploadFolderButton from '../features/UploadFolderButton';
+import ResetFilesButton from '../features/ResetFilesButton';
 
 const Sidebar: React.FC = () => {
   const [files, setFiles] = useAtom(filesAtom);
@@ -11,7 +12,6 @@ const Sidebar: React.FC = () => {
 
   const [localCode, setLocalCode] = useState(files[activeFile] || '');
   const [isTyping, setIsTyping] = useState(false);
-  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Handler: File content change
   const handleFileChange = (fileName: string, content: string) => {
@@ -19,54 +19,6 @@ const Sidebar: React.FC = () => {
       ...prev,
       [fileName]: content
     }));
-  };
-
-  // Handler: Reset to defaults
-  const handleReset = () => {
-    if (window.confirm("Reset all files to default?")) {
-      setFiles(DEFAULT_FILES);
-      setActiveFile(DEFAULT_ENTRY_FILE);
-      setEntryFile(DEFAULT_ENTRY_FILE);
-    }
-  };
-
-  // Handler: Folder upload
-  const handleFolderSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const fileList = e.target.files;
-    if (!fileList || fileList.length === 0) return;
-
-    const uploadedFiles: Record<string, string> = {};
-
-    for (let i = 0; i < fileList.length; i++) {
-      const file = fileList[i];
-      // Only process .vue, .ts, .js files
-      if (file.name.endsWith('.vue') || file.name.endsWith('.tsx') || file.name.endsWith('.jsx') || file.name.endsWith('.ts') || file.name.endsWith('.js')) {
-        try {
-          const content = await file.text();
-          // Use webkitRelativePath for folder structure
-          const path = file.webkitRelativePath || file.name;
-          uploadedFiles[path] = content;
-        } catch (err) {
-          console.error(`Error reading file ${file.name}:`, err);
-        }
-      }
-    }
-
-    if (Object.keys(uploadedFiles).length > 0) {
-      setFiles(uploadedFiles);
-
-      // Try to find a default entry file
-      const allFiles = Object.keys(uploadedFiles);
-      if (allFiles.length > 0) {
-        const entry = allFiles.find(f => f.includes('Index') || f.includes('index') || f.includes('App') || f.includes('main')) ||
-                      allFiles.find(f => f.endsWith('.vue') || f.endsWith('.tsx') || f.endsWith('.jsx')) ||
-                      allFiles[0];
-        setEntryFile(entry);
-        setActiveFile(entry);
-      }
-    } else {
-      alert('No .vue, .ts, .js, .jsx, or .tsx files found in the selected folder.');
-    }
   };
 
   // Sync local code when active file changes
@@ -106,23 +58,7 @@ const Sidebar: React.FC = () => {
             <FolderOpen className="w-3 h-3" />
             <span>Explorer</span>
           </div>
-          <button
-            onClick={() => fileInputRef.current?.click()}
-            className="flex items-center gap-1 text-[10px] px-2 py-1 rounded bg-vibe-accent/10 text-vibe-accent hover:bg-vibe-accent/20 transition-colors"
-            title="Upload Vue project folder"
-          >
-            <Upload className="w-3 h-3" />
-            Upload
-          </button>
-          <input
-            ref={fileInputRef}
-            type="file"
-            // @ts-ignore - webkitdirectory is not in standard HTML types
-            webkitdirectory=""
-            multiple
-            className="hidden"
-            onChange={handleFolderSelect}
-          />
+          <UploadFolderButton />
         </div>
         <ul>
           {sortedFiles.map(fileName => {
@@ -193,14 +129,7 @@ const Sidebar: React.FC = () => {
           <FileCode className="w-3 h-3" />
           <span>Vue 3 / TS Project</span>
         </div>
-        <button
-          onClick={handleReset}
-          className="text-xs flex items-center gap-1.5 text-slate-400 hover:text-white px-2 py-1 rounded hover:bg-white/5 transition-colors"
-          title="Reset to sample code"
-        >
-          <Eraser className="w-3 h-3" />
-          Reset
-        </button>
+        <ResetFilesButton />
       </div>
     </div>
   );
