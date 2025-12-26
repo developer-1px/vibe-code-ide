@@ -1,3 +1,10 @@
+export interface TemplateTokenRange {
+  startOffset: number;  // Absolute position in template content
+  endOffset: number;    // Absolute position in template content
+  text: string;
+  tokenIds: string[]; // Dependency IDs found in this expression
+}
+
 export interface VariableNode {
   id: string; // Globally unique ID (usually filePath::localName)
   label: string;
@@ -6,6 +13,7 @@ export interface VariableNode {
   codeSnippet: string;
   startLine: number;
   dependencies: string[]; // List of IDs
+  templateTokenRanges?: TemplateTokenRange[]; // For template nodes: AST-based token positions
 }
 
 export interface GraphData {

@@ -1,5 +1,7 @@
 // --- AST Utilities ---
 
+import { parse as parseBabel } from '@babel/parser';
+
 export const extractIdentifiersFromPattern = (pattern: any): string[] => {
     const ids: string[] = [];
     if (pattern.type === 'Identifier') ids.push(pattern.name);
@@ -96,82 +98,4 @@ export const findDependenciesInAST = (rootNode: any, knownIds: Set<string>, self
 
     visit(rootNode);
     return Array.from(deps);
-};
-
-export const traverseTemplateAST = (node: any, knownVars: Set<string>, foundDeps: Set<string>) => {
-      if (!node) return;
-
-      const checkContent = (text: string) => {
-          if (!text || typeof text !== 'string') return;
-
-          // Remove string literals to avoid false positives
-          // e.g., "for-marketplace" should not extract "for", "marketplace"
-          let cleaned = text
-              .replace(/'[^']*'/g, '""')  // Remove single-quoted strings
-              .replace(/"[^"]*"/g, '""')  // Remove double-quoted strings
-              .replace(/`[^`]*`/g, '""'); // Remove template literals
-
-          // Extract identifiers
-          const ids = cleaned.match(/[a-zA-Z_$][a-zA-Z0-9_$]*/g);
-          if (ids) {
-              ids.forEach(id => {
-                  // Skip common keywords that are not dependencies
-                  if (['true', 'false', 'null', 'undefined', 'this', 'return', 'if', 'else', 'for', 'while', 'do', 'switch', 'case', 'break', 'continue', 'function', 'const', 'let', 'var', 'new', 'typeof', 'instanceof'].includes(id)) {
-                      return;
-                  }
-                  if (knownVars.has(id)) {
-                      foundDeps.add(id);
-                  }
-              });
-          }
-      };
-
-      // Type 5 = Interpolation {{ }}
-      if (node.type === 5 && node.content?.content) checkContent(node.content.content);
-
-      // Type 1 = Element (Tag)
-      if (node.type === 1) {
-          const tagName = node.tag;
-          // Check for pascal case match (e.g. MarketplaceSelectorType)
-          if (knownVars.has(tagName)) {
-              foundDeps.add(tagName);
-          }
-          // Check for kebab case match (e.g. marketplace-selector-type -> MarketplaceSelectorType)
-          const pascal = tagName.replace(/-(\w)/g, (_: any, c: string) => c ? c.toUpperCase() : '').replace(/^[a-z]/, (c: string) => c.toUpperCase());
-          if (knownVars.has(pascal)) {
-               foundDeps.add(pascal);
-          }
-      }
-
-      if (node.props) {
-          node.props.forEach((prop: any) => {
-              // Type 6 = Attribute (static, like class="foo")
-              // Type 7 = Directive (v-if, v-bind, v-on, etc.)
-
-              if (prop.type === 7) {
-                  // IMPORTANT: Only check prop.exp (the value expression)
-                  // DO NOT check prop.arg (the attribute name like "total" in :total)
-
-                  // prop.exp.content contains the actual variable reference
-                  // e.g., in :total="total", prop.exp.content = "total" (the variable)
-                  // prop.arg would be "total" (the prop name) - which we should NOT treat as dependency
-
-                  if (prop.exp?.content) {
-                      // Debug: Log what we're checking
-                      console.log('🔍 Template check:', {
-                          propName: prop.arg?.content || prop.name,
-                          expContent: prop.exp.content,
-                          expType: prop.exp.type
-                      });
-                      checkContent(prop.exp.content);
-                  }
-              }
-
-              // Type 6 attributes are static strings, no need to check
-          });
-      }
-
-      if (node.children) {
-          node.children.forEach((c: any) => traverseTemplateAST(c, knownVars, foundDeps));
-      }
 };

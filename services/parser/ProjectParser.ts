@@ -2,7 +2,8 @@ import { GraphData, VariableNode } from '../../entities/VariableNode';
 import { parse as parseSFC } from '@vue/compiler-sfc';
 import { parse as parseBabel } from '@babel/parser';
 import { resolvePath, findFileInProject, findFileByName } from './pathUtils';
-import { extractIdentifiersFromPattern, findDependenciesInAST, traverseTemplateAST } from './astUtils';
+import { extractIdentifiersFromPattern, findDependenciesInAST } from './astUtils';
+import { parseVueTemplate } from './vueTemplateParser';
 
 export class ProjectParser {
   private files: Record<string, string>;
@@ -24,6 +25,93 @@ export class ProjectParser {
     };
   }
 
+  private parseVueFile(content: string) {
+    const { descriptor } = parseSFC(content);
+
+    const scriptContent = descriptor.scriptSetup?.content || descriptor.script?.content || '';
+    const startLineOffset = (descriptor.scriptSetup?.loc.start.line || descriptor.script?.loc.start.line || 1) - 1;
+
+    if (!descriptor.template) {
+        return { scriptContent, templateContent: null, templateAst: null, templateStartLine: 0, startLineOffset, templateContentOffset: 0 };
+    }
+
+    const templateContent = descriptor.template.content;
+    const templateAst = descriptor.template.ast;
+
+    // CRITICAL: AST offset is based on the full file, but templateContent is extracted
+    // We need to pass the base offset so lineUtils can adjust
+    const templateContentOffset = descriptor.template.loc.start.offset;
+
+    // Find the first real line of template content (skip <template> tag itself)
+    const firstRealNode = templateAst?.children?.find((c: any) => c.type !== 2 || c.content.trim().length > 0);
+    const templateStartLine = firstRealNode?.loc.start.line ?? descriptor.template.loc.start.line + 1;
+
+    console.log('📋 Template offset info:');
+    console.log('   templateContentOffset:', templateContentOffset);
+    console.log('   templateContent.length:', templateContent.length);
+    console.log('   templateContent first 100 chars:', templateContent.substring(0, 100));
+
+    return { scriptContent, templateContent, templateAst, templateStartLine, startLineOffset, templateContentOffset };
+  }
+
+  private processVueTemplate(filePath: string, templateContent: string | null, templateAst: any, templateStartLine: number, templateContentOffset: number): string | null {
+    if (!templateContent || !templateAst) return null;
+
+    const templateId = `${filePath}::TEMPLATE_ROOT`;
+
+    // Get all variables defined in this file
+    const fileVars = Array.from(this.nodes.values()).filter(n => n.filePath === filePath);
+    const fileVarNames = new Set(fileVars.map(n => n.id.split('::').pop()!));
+
+    // Parse template using dedicated parser (adjust offsets to be relative to templateContent)
+    const parseResult = parseVueTemplate(templateAst, fileVarNames, templateContentOffset);
+
+    console.log('🔍 Template Parse Result:', filePath);
+    console.log('   dependencies:', parseResult.dependencies);
+    console.log('   tokenRanges:', parseResult.tokenRanges.length, 'ranges');
+
+    const templateNode: VariableNode = {
+         id: templateId,
+         label: '<template>',
+         filePath,
+         type: 'template',
+         codeSnippet: templateContent, // Don't trim! AST offsets are based on original content
+         startLine: templateStartLine,
+         dependencies: parseResult.dependencies.map(name => `${filePath}::${name}`),
+         templateTokenRanges: parseResult.tokenRanges.map(range => ({
+             ...range,
+             tokenIds: range.tokenIds.map((name: string) => `${filePath}::${name}`)
+         }))
+    };
+
+    this.nodes.set(templateId, templateNode);
+    return templateId;
+  }
+
+  private ensureDefaultExport(filePath: string, templateId: string | null) {
+    const defaultId = `${filePath}::default`;
+
+    // If explicit export default wasn't found (e.g. script setup), create a synthetic node
+    if (!this.nodes.has(defaultId)) {
+         this.nodes.set(defaultId, {
+            id: defaultId,
+            label: filePath.split('/').pop() || 'Component',
+            filePath,
+            type: 'module',
+            codeSnippet: '', // Virtual node
+            startLine: 0,
+            dependencies: []
+         });
+    }
+
+    const defaultNode = this.nodes.get(defaultId)!;
+    // The Component (Default Export) depends on the Template (Visual Structure)
+    // This ensures when you expand "Import X", you see the Template of X.
+    if (templateId && !defaultNode.dependencies.includes(templateId)) {
+        defaultNode.dependencies.push(templateId);
+    }
+  }
+
   private processFile(filePath: string) {
     if (this.processedFiles.has(filePath)) return;
     this.processedFiles.add(filePath);
@@ -32,28 +120,16 @@ export class ProjectParser {
     if (!content) return;
 
     const isVue = filePath.endsWith('.vue');
-    let scriptContent = content;
-    let templateContent = null;
-    let templateAst = null;
-    let templateStartLine = 0;
-    let startLineOffset = 0;
+    const parseResult = isVue ? this.parseVueFile(content) : {
+        scriptContent: content,
+        templateContent: null,
+        templateAst: null,
+        templateStartLine: 0,
+        startLineOffset: 0,
+        templateContentOffset: 0
+    };
 
-    if (isVue) {
-        const { descriptor } = parseSFC(content);
-        if (descriptor.scriptSetup || descriptor.script) {
-            scriptContent = (descriptor.scriptSetup?.content || descriptor.script?.content || '');
-            startLineOffset = (descriptor.scriptSetup?.loc.start.line || descriptor.script?.loc.start.line || 1) - 1;
-        } else {
-            // Vue file with no script, treat as empty script?
-            scriptContent = '';
-        }
-        
-        if (descriptor.template) {
-            templateContent = descriptor.template.content;
-            templateAst = descriptor.template.ast;
-            templateStartLine = descriptor.template.loc.start.line;
-        }
-    }
+    const { scriptContent, templateContent, templateAst, templateStartLine, startLineOffset, templateContentOffset } = parseResult;
 
     try {
         const ast = parseBabel(scriptContent, {
@@ -62,22 +138,15 @@ export class ProjectParser {
         });
 
         const localDefs = new Set<string>(); // Variables defined in this file
-        const importedBindings = new Map<string, string>(); 
 
         // 1. Scan Imports First (and recurse)
         ast.program.body.forEach((node: any) => {
             if (node.type === 'ImportDeclaration') {
                 const source = node.source.value;
                 const resolvedPath = resolvePath(filePath, source);
-                let targetFile = resolvedPath ? findFileInProject(this.files, resolvedPath) : null;
-
-                // Fallback: If path resolution failed, try to find by filename
-                if (!targetFile && source) {
-                    targetFile = findFileByName(this.files, source);
-                    if (targetFile) {
-                        console.log(`📁 Fallback: Found "${source}" as "${targetFile}"`);
-                    }
-                }
+                const targetFile = (resolvedPath && findFileInProject(this.files, resolvedPath)) ||
+                                   (source && findFileByName(this.files, source)) ||
+                                   null;
 
                 if (targetFile) {
                     // Recurse
@@ -88,11 +157,7 @@ export class ProjectParser {
                         if (spec.type === 'ImportSpecifier') {
                             const importedName = spec.imported.type === 'Identifier' ? spec.imported.name : spec.imported.value;
                             const localName = spec.local.name;
-                            
-                            // Find the export ID in the target file
-                            const targetExportMap = this.exportsRegistry.get(targetFile);
-                            const exportId = targetExportMap?.get(importedName); 
-                            
+
                             // Construct ID of the remote node
                             const remoteId = `${targetFile}::${importedName}`;
                             
@@ -157,7 +222,7 @@ export class ProjectParser {
                 this.processDeclaration(node, scriptContent, startLineOffset, filePath, localDefs, fileExports);
             } else if (node.type === 'ExpressionStatement') {
                 // Top level calls
-                this.processExpression(node, scriptContent, startLineOffset, filePath, localDefs);
+                this.processExpression(node, scriptContent, startLineOffset, filePath);
             }
         });
 
@@ -181,57 +246,10 @@ export class ProjectParser {
             }
         });
 
-        // 4. Handle Vue Templates (For ALL Vue files)
-        let templateId: string | null = null;
-        if (isVue && templateContent) {
-            templateId = `${filePath}::TEMPLATE_ROOT`;
-            
-            // Find dependencies of template
-            const templateDeps = new Set<string>();
-            const fileVars = Array.from(this.nodes.values()).filter(n => n.filePath === filePath);
-            const fileVarNames = new Set(fileVars.map(n => n.id.split('::').pop()!));
-            
-            if (templateAst) {
-                 traverseTemplateAST(templateAst, fileVarNames, templateDeps);
-            }
-            
-            const templateNode: VariableNode = {
-                 id: templateId,
-                 label: '<template>',
-                 filePath,
-                 type: 'template',
-                 codeSnippet: templateContent.trim(),
-                 startLine: templateStartLine,
-                 dependencies: Array.from(templateDeps).map(name => `${filePath}::${name}`)
-            };
-            this.nodes.set(templateId, templateNode);
-        }
-
-        // 5. Ensure "Default Export" linkage for Vue files
-        // If external files import this Vue file, they look for `::default`.
-        // We ensure `::default` exists and links to the template.
+        // 4. Handle Vue Templates and Default Export linkage
         if (isVue) {
-            const defaultId = `${filePath}::default`;
-            
-            // If explicit export default wasn't found (e.g. script setup), create a synthetic node
-            if (!this.nodes.has(defaultId)) {
-                 this.nodes.set(defaultId, {
-                    id: defaultId,
-                    label: filePath.split('/').pop() || 'Component',
-                    filePath,
-                    type: 'module',
-                    codeSnippet: '', // Virtual node
-                    startLine: 0,
-                    dependencies: []
-                 });
-            }
-            
-            const defaultNode = this.nodes.get(defaultId)!;
-            // The Component (Default Export) depends on the Template (Visual Structure)
-            // This ensures when you expand "Import X", you see the Template of X.
-            if (templateId && !defaultNode.dependencies.includes(templateId)) {
-                defaultNode.dependencies.push(templateId);
-            }
+            const templateId = this.processVueTemplate(filePath, templateContent, templateAst, templateStartLine, templateContentOffset);
+            this.ensureDefaultExport(filePath, templateId);
         }
 
     } catch (e) {
@@ -263,29 +281,24 @@ export class ProjectParser {
      };
 
      // Handle Exports wrapper
-     let targetNode = node;
-     let isExport = false;
-     let isDefaultExport = false;
-
-     if (node.type === 'ExportNamedDeclaration') {
-         isExport = true;
-         targetNode = node.declaration;
-     } else if (node.type === 'ExportDefaultDeclaration') {
-         isExport = true;
-         isDefaultExport = true;
-         targetNode = node.declaration;
-     }
+     const isExport = node.type === 'ExportNamedDeclaration' || node.type === 'ExportDefaultDeclaration';
+     const isDefaultExport = node.type === 'ExportDefaultDeclaration';
+     const targetNode = isExport ? node.declaration : node;
 
      if (!targetNode) return;
+
+     const inferType = (initCode: string): VariableNode['type'] => {
+         if (initCode.includes('computed')) return 'computed';
+         if (initCode.includes('use') && !initCode.includes('useRoute')) return 'hook';
+         if (initCode.includes('storeToRefs')) return 'store';
+         return 'ref';
+     };
 
      if (targetNode.type === 'VariableDeclaration') {
          targetNode.declarations.forEach((decl: any) => {
              const ids = extractIdentifiersFromPattern(decl.id);
              const initCode = decl.init ? getSnippet(decl.init) : '';
-             let type: VariableNode['type'] = 'ref';
-             if (initCode.includes('computed')) type = 'computed';
-             else if (initCode.includes('use') && !initCode.includes('useRoute')) type = 'hook';
-             else if (initCode.includes('storeToRefs')) type = 'store';
+             const type = inferType(initCode);
 
              ids.forEach(name => createNode(name, type, decl.init, isExport));
          });
@@ -300,23 +313,20 @@ export class ProjectParser {
      }
   }
 
-  private processExpression(node: any, code: string, lineOffset: number, filePath: string, localDefs: Set<string>) {
+  private processExpression(node: any, code: string, lineOffset: number, filePath: string) {
         const expr = node.expression;
         const isCall = expr.type === 'CallExpression';
         const isAwaitCall = expr.type === 'AwaitExpression' && expr.argument.type === 'CallExpression';
-        
+
         if (isCall || isAwaitCall) {
            const callExpr = isCall ? expr : expr.argument;
-           let label = 'Expression';
-           if (callExpr.callee.type === 'Identifier') {
-               label = `${callExpr.callee.name}()`;
-           } else if (callExpr.callee.type === 'MemberExpression') {
-               label = `${callExpr.callee.property.name}()`;
-           }
-           if (isAwaitCall) label = `await ${label}`;
+           const baseLabel = callExpr.callee.type === 'Identifier' ? `${callExpr.callee.name}()` :
+                             callExpr.callee.type === 'MemberExpression' ? `${callExpr.callee.property.name}()` :
+                             'Expression';
+           const label = isAwaitCall ? `await ${baseLabel}` : baseLabel;
 
            const id = `${filePath}::setup_call_${node.loc.start.line}`;
-           
+
            this.nodes.set(id, {
                id,
                label,

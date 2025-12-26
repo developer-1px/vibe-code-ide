@@ -39,14 +39,15 @@ const CodeCard: React.FC<CodeCardProps> = ({ node, onTokenClick, onSlotClick, ac
 
   const processedLines = useMemo(() => {
     return processCodeLines(
-        node.codeSnippet, 
-        node.startLine || 1, 
-        node.id, 
-        node.dependencies, 
-        tokenRanges, 
-        isTemplate
+        node.codeSnippet,
+        node.startLine || 1,
+        node.id,
+        node.dependencies,
+        tokenRanges,
+        isTemplate,
+        node.templateTokenRanges // AST-based token positions for templates
     );
-  }, [node.codeSnippet, node.startLine, node.id, node.dependencies, tokenRanges, isTemplate]);
+  }, [node.codeSnippet, node.startLine, node.id, node.dependencies, tokenRanges, isTemplate, node.templateTokenRanges]);
 
 
   // --- 2. UI Helpers ---

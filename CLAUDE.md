@@ -2,6 +2,27 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## ⚠️ CRITICAL RULES - CODE ANALYSIS
+
+**DO NOT use regular expressions for code parsing or analysis.**
+
+When analyzing JavaScript/TypeScript/Vue code:
+- ✅ **ALWAYS use `@babel/parser`** for JavaScript/TypeScript expressions
+- ✅ **ALWAYS use `@vue/compiler-sfc`** AST for Vue templates
+- ✅ **ALWAYS use AST-based position information** for token highlighting
+- ❌ **NEVER use regex patterns** like `/\w+/g`, `match()`, `split()` for code analysis
+- ❌ **NEVER use string manipulation** to extract identifiers from code
+
+**Regex is only acceptable for:**
+- Path normalization (e.g., `replace(/\\/g, '/')`)
+- Simple string cleanup (not code analysis)
+
+**If you find yourself writing regex for code analysis, STOP and use the proper parser instead.**
+
+See `/docs/정규식_분석_보고서.md` for detailed rationale.
+
+---
+
 ## Project Overview
 
 **Vue Logic Visualizer** - A developer tool that visualizes variable dependencies and logic pipelines in Vue.js components using D3.js force-directed graphs. The tool parses Vue SFC (Single File Components) and TypeScript files to create an interactive dependency graph.

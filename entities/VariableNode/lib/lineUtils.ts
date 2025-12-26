@@ -1,5 +1,5 @@
 
-import { ProcessedLine, TokenRange, LineSegment } from './types';
+import { ProcessedLine, TokenRange, LineSegment, TemplateTokenRange } from './types';
 
 export const processCodeLines = (
     codeSnippet: string,
@@ -7,41 +7,116 @@ export const processCodeLines = (
     nodeId: string,
     dependencies: string[],
     tokenRanges: TokenRange[],
-    isTemplate: boolean
+    isTemplate: boolean,
+    templateTokenRanges?: TemplateTokenRange[]
 ): ProcessedLine[] => {
     const rawLines = codeSnippet.split('\n');
-    
-    // --- Strategy A: Template Processing (Regex-based) ---
-    if (isTemplate) {
-        const depNames = dependencies.map(d => d.split('::').pop() || '').filter(Boolean);
-        
-        if (depNames.length === 0) {
-            return rawLines.map((line, idx) => ({
-                num: startLineNum + idx,
-                segments: [{ text: line, type: 'text' }],
-                hasInput: false
-            }));
-        }
 
-        const pattern = new RegExp(`(?<![a-zA-Z0-9_$])(${depNames.map(d => d.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|')})(?![a-zA-Z0-9_$])`, 'g');
+    // --- Strategy A: Template Processing (AST-based, offset-based) ---
+    if (isTemplate && templateTokenRanges && templateTokenRanges.length > 0) {
+        console.log('✅ Using AST-based highlighting (offset-based)');
+        console.log('   startLineNum:', startLineNum);
+        console.log('   totalLines:', rawLines.length);
+        console.log('   templateTokenRanges:', JSON.stringify(templateTokenRanges, null, 2));
 
-        return rawLines.map((line, idx) => {
-            const parts = line.split(pattern);
+        // Calculate absolute offset for each line
+        const lineOffsets: { lineIdx: number; start: number; end: number; text: string }[] = [];
+        let currentOffset = 0;
+
+        rawLines.forEach((line, lineIdx) => {
+            lineOffsets.push({
+                lineIdx,
+                start: currentOffset,
+                end: currentOffset + line.length,
+                text: line
+            });
+            currentOffset += line.length + 1; // +1 for \n
+        });
+
+        console.log('📏 Line offsets:', lineOffsets.map(l => `[${l.lineIdx}] ${l.start}-${l.end}: "${l.text.substring(0, 50)}"`));
+
+        // Group tokens by line
+        const tokensByLine = new Map<number, typeof templateTokenRanges>();
+
+        templateTokenRanges.forEach(range => {
+            const lineInfo = lineOffsets.find(l =>
+                range.startOffset >= l.start && range.startOffset < l.end
+            );
+
+            console.log(`🔍 Token "${range.text}" at offset ${range.startOffset}-${range.endOffset} → line ${lineInfo?.lineIdx ?? 'NOT_FOUND'}`);
+
+            if (lineInfo) {
+                if (!tokensByLine.has(lineInfo.lineIdx)) {
+                    tokensByLine.set(lineInfo.lineIdx, []);
+                }
+                const relativeStart = range.startOffset - lineInfo.start;
+                const relativeEnd = range.endOffset - lineInfo.start;
+
+                console.log(`   → relative position: ${relativeStart}-${relativeEnd} in "${lineInfo.text}"`);
+                console.log(`   → extracted text: "${lineInfo.text.substring(relativeStart, relativeEnd)}"`);
+
+                tokensByLine.get(lineInfo.lineIdx)!.push({
+                    ...range,
+                    // Convert absolute offset to line-relative column
+                    relativeStart,
+                    relativeEnd
+                });
+            }
+        });
+
+        return rawLines.map((line, lineIdx) => {
+            const currentLineNum = startLineNum + lineIdx;
             const segments: LineSegment[] = [];
             let hasInput = false;
 
-            parts.forEach((part) => {
-                const matchedDepFullId = dependencies.find(d => d.endsWith(`::${part}`));
-                if (matchedDepFullId) {
-                    hasInput = true;
-                    segments.push({ text: part, type: 'token', tokenId: matchedDepFullId });
-                } else {
-                    if (part) segments.push({ text: part, type: 'text' });
+            const tokensOnLine = tokensByLine.get(lineIdx);
+
+            if (!tokensOnLine || tokensOnLine.length === 0) {
+                return {
+                    num: currentLineNum,
+                    segments: [{ text: line, type: 'text' }],
+                    hasInput: false
+                };
+            }
+
+            // Sort by relative position
+            tokensOnLine.sort((a: any, b: any) => a.relativeStart - b.relativeStart);
+
+            let cursor = 0;
+
+            tokensOnLine.forEach((range: any) => {
+                // Text before token
+                if (range.relativeStart > cursor) {
+                    segments.push({
+                        text: line.substring(cursor, range.relativeStart),
+                        type: 'text'
+                    });
                 }
+
+                // Token segment
+                hasInput = true;
+                const primaryTokenId = range.tokenIds[0];
+                const tokenText = line.substring(range.relativeStart, Math.min(range.relativeEnd, line.length));
+
+                segments.push({
+                    text: tokenText,
+                    type: 'token',
+                    tokenId: primaryTokenId
+                });
+
+                cursor = Math.min(range.relativeEnd, line.length);
             });
 
+            // Remaining text after last token
+            if (cursor < line.length) {
+                segments.push({
+                    text: line.substring(cursor),
+                    type: 'text'
+                });
+            }
+
             return {
-                num: startLineNum + idx,
+                num: currentLineNum,
                 segments,
                 hasInput
             };
