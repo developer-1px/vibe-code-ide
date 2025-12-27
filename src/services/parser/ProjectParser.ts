@@ -100,13 +100,10 @@ export class ProjectParser {
     // Parse entire TSX file (not just JSX part)
     const parseResult = parseTsxComponent(ast, fileVarNames);
 
-    if (parseResult.dependencies.length === 0 && parseResult.tokenRanges.length === 0) {
-      return null; // No component found
-    }
-
     console.log('🔍 TSX Parse Result:', filePath);
     console.log('   dependencies:', parseResult.dependencies);
     console.log('   tokenRanges:', parseResult.tokenRanges.length, 'ranges');
+    console.log('   fileVarNames:', Array.from(fileVarNames));
 
     const jsxId = `${filePath}::JSX_ROOT`;
 
@@ -404,8 +401,8 @@ export class ProjectParser {
             }
         }
 
-        // 6. Create FILE_ROOT for non-Vue files (allows any file to be used as entry)
-        if (!isVue) {
+        // 6. Create FILE_ROOT for non-Vue/non-TSX files (pure TS files)
+        if (!isVue && !isTsx) {
             const fileRootId = this.processFileRoot(filePath, scriptContent, localDefs, ast);
             this.ensureDefaultExport(filePath, fileRootId);
         }
