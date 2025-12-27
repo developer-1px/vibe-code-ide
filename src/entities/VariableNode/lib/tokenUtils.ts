@@ -2,6 +2,24 @@
 import { parse } from '@babel/parser';
 import { TokenRange } from './types.ts';
 
+const REACT_PRIMITIVES = new Set([
+  'useState', 'useEffect', 'useMemo', 'useCallback', 'useRef', 'useContext', 
+  'useReducer', 'useLayoutEffect', 'useImperativeHandle', 'useDebugValue', 
+  'useDeferredValue', 'useTransition', 'useId', 'useSyncExternalStore', 'useInsertionEffect'
+]);
+
+const VUE_PRIMITIVES = new Set([
+  'ref', 'computed', 'reactive', 'watch', 'watchEffect', 
+  'onMounted', 'onUnmounted', 'onUpdated', 'onBeforeMount', 
+  'onBeforeUnmount', 'onBeforeUpdate', 'provide', 'inject', 
+  'toRefs', 'storeToRefs', 'defineProps', 'defineEmits', 
+  'defineExpose', 'withDefaults', 'shallowRef', 'triggerRef', 
+  'customRef', 'shallowReactive', 'toRef', 'unref', 'isRef', 
+  'isProxy', 'isReactive', 'isReadonly', 'readonly'
+]);
+
+export const isPrimitive = (name: string) => REACT_PRIMITIVES.has(name) || VUE_PRIMITIVES.has(name);
+
 export const extractTokenRanges = (
     codeSnippet: string,
     nodeId: string,
@@ -16,7 +34,7 @@ export const extractTokenRanges = (
     try {
         const ast = parse(codeSnippet, {
             sourceType: 'module',
-            plugins: ['typescript']
+            plugins: ['typescript', 'jsx']
         });
 
         const visit = (n: any, parent: any) => {
@@ -27,15 +45,23 @@ export const extractTokenRanges = (
                 
                 const matchedDep = dependencies.find(dep => dep.endsWith(`::${name}`));
                 const isSelf = name === nodeShortId;
+                const isPrim = isPrimitive(name);
                 
-                if (isSelf || matchedDep) {
-                    const type: TokenRange['type'] = isSelf ? 'self' : 'dependency';
+                if (isSelf || matchedDep || isPrim) {
+                    let type: TokenRange['type'] = 'dependency';
+                    if (isSelf) type = 'self';
+                    else if (isPrim) type = 'primitive';
                     
                     // Context checks (skip property keys etc)
                     let isValidRef = true;
                     if (parent?.type === 'ObjectProperty' && parent.key === n && !parent.computed && !parent.shorthand) isValidRef = false;
                     if ((parent?.type === 'MemberExpression' || parent?.type === 'OptionalMemberExpression') && parent.property === n && !parent.computed) isValidRef = false;
                     if (parent?.type === 'ObjectMethod' && parent.key === n && !parent.computed) isValidRef = false;
+                    
+                    // Skip declaration identifiers for primitives (e.g. import { useState } ...)
+                    // We only want to highlight usage
+                    if (parent?.type === 'ImportSpecifier' && parent.imported === n) isValidRef = false; // "useState" in import { useState }
+                    if (parent?.type === 'ImportSpecifier' && parent.local === n) isValidRef = false; // "useState" in import { useState }
 
                     if (isValidRef) {
                         ranges.push({

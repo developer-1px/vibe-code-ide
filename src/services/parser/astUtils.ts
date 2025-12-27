@@ -1,3 +1,4 @@
+
 // --- AST Utilities ---
 
 import { parse as parseBabel } from '@babel/parser';
@@ -23,8 +24,12 @@ export const findDependenciesInAST = (rootNode: any, knownIds: Set<string>, self
     const deps = new Set<string>();
     if (!rootNode) return [];
 
+    const visitedNodes = new Set<any>(); // Cycle protection
+
     const visit = (node: any, localScope: Set<string> = new Set()) => {
         if (!node || typeof node !== 'object') return;
+        if (visitedNodes.has(node)) return;
+        visitedNodes.add(node);
 
         // Handle function declarations/expressions - collect params as local variables
         if (node.type === 'FunctionDeclaration' ||

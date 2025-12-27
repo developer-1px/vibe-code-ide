@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { useAtomValue } from 'jotai';
 import { CanvasNode } from '../../../CanvasNode';
@@ -68,6 +69,14 @@ const CodeCardLine: React.FC<CodeCardLineProps> = ({
                 {segment.text}
               </span>
             );
+          }
+
+          if (segment.type === 'primitive') {
+             return (
+               <span key={segIdx} className="text-[#38bdf8] font-medium">
+                 {segment.text}
+               </span>
+             );
           }
 
           if (segment.type === 'token' && segment.tokenId) {

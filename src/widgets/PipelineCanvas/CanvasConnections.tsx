@@ -1,3 +1,4 @@
+
 import React, { useCallback, useEffect, useState } from 'react';
 import { CanvasNode } from '../../entities/CanvasNode';
 import { getEdgeColor } from '../../entities/VariableNode/lib/styleUtils.ts';
@@ -96,14 +97,8 @@ const CanvasConnections: React.FC<CanvasConnectionsProps> = ({ layoutLinks, layo
                       x: tokenRel.x,
                       y: tokenRel.y + (tokenRel.h / 2)
                   });
-              } else {
-                  const rect = consEl.getBoundingClientRect();
-                  const rel = getRelativePoint(rect);
-                  endPoints.push({
-                      x: rel.x,
-                      y: rel.y + 60
-                  });
-              }
+              } 
+              // Removed generic fallback to top of node to prevent incorrect visual connections
           }
     
           // 3. Draw Bezier for each end point
