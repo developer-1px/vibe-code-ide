@@ -1,3 +1,4 @@
+
 import { GraphData, VariableNode } from '../../entities/VariableNode';
 import { parse as parseSFC } from '@vue/compiler-sfc';
 import { parse as parseBabel } from '@babel/parser';
@@ -115,10 +116,13 @@ export class ProjectParser {
     // Use entire file content (includes imports, hooks, JSX, etc.)
     const fileName = filePath.split('/').pop() || 'Component';
 
-    // If we have statement nodes, depend on them instead of individual variables
-    const dependencies = statementNodes.length > 0
-      ? statementNodes.map(n => n.id)
-      : parseResult.dependencies.map(name => `${filePath}::${name}`);
+    // FIX: Dependencies must include BOTH internal logic (statements) AND external references (JSX deps)
+    // This ensures that import nodes (like UserList) are connected to the root and appear when expanded.
+    const statementIds = statementNodes.map(n => n.id);
+    const jsxRefIds = parseResult.dependencies.map(name => `${filePath}::${name}`);
+
+    // Merge and deduplicate
+    const dependencies = Array.from(new Set([...statementIds, ...jsxRefIds]));
 
     const jsxNode: VariableNode = {
       id: jsxId,
@@ -136,6 +140,28 @@ export class ProjectParser {
 
     this.nodes.set(jsxId, jsxNode);
     console.log('📦 JSX_ROOT depends on', dependencies.length, 'nodes');
+
+    // FIX: Link Component nodes (PascalCase functions) to JSX_ROOT
+    // This ensures that "UserList" component node depends on its View (JSX_ROOT).
+    const potentialComponents = Array.from(this.nodes.values()).filter(n => 
+        n.filePath === filePath && 
+        n.id !== jsxId &&
+        n.type !== 'module' &&
+        n.type !== 'template' &&
+        !n.id.includes('_stmt_')
+    );
+
+    potentialComponents.forEach(node => {
+        const name = node.label;
+        // Check if PascalCase (heuristic for components)
+        if (name && name.length > 0 && name[0] === name[0].toUpperCase()) {
+            if (!node.dependencies.includes(jsxId)) {
+                node.dependencies.push(jsxId);
+                console.log(`🔗 Linked Component ${name} to JSX_ROOT`);
+            }
+        }
+    });
+
     return jsxId;
   }
 
@@ -461,12 +487,13 @@ export class ProjectParser {
              const isArrowFunction = decl.init && (decl.init.type === 'ArrowFunctionExpression' || decl.init.type === 'FunctionExpression');
              const usesHooks = decl.init && isArrowFunction && this.hasHooksInFunction(decl.init);
 
+             // FIX: Always create the node for the variable/component itself!
+             ids.forEach(name => createNode(name, type, decl.init, isExport));
+
              if (isReactComponent && isArrowFunction && usesHooks) {
                  console.log('🔧 Found React component (arrow function) with hooks:', varName);
                  // Process component statements as separate nodes
                  this.processReactComponentStatements(filePath, varName, decl.init, code, lineOffset, localDefs);
-             } else {
-                 ids.forEach(name => createNode(name, type, decl.init, isExport));
              }
          });
      } else if (targetNode.type === 'FunctionDeclaration') {
@@ -476,13 +503,13 @@ export class ProjectParser {
          const isReactComponent = name[0] === name[0].toUpperCase(); // PascalCase
          const usesHooks = this.hasHooksInFunction(targetNode);
 
+         // FIX: Always create the node for the function/component itself!
+         createNode(name, 'function', targetNode, isExport, isDefaultExport ? 'default' : name);
+
          if (isReactComponent && usesHooks) {
              console.log('🔧 Found React component with hooks:', name);
              // Process component statements as separate nodes
              this.processReactComponentStatements(filePath, name, targetNode, code, lineOffset, localDefs);
-         } else {
-             // Regular function - pass entire function node (not just body) to preserve parameter info
-             createNode(name, 'function', targetNode, isExport, isDefaultExport ? 'default' : name);
          }
      } else if (targetNode.type === 'ClassDeclaration') {
          const name = targetNode.id ? targetNode.id.name : 'default';
