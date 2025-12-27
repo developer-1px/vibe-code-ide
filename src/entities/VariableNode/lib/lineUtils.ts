@@ -91,14 +91,16 @@ export const processCodeLines = (
                     });
                 }
 
-                // Token segment
-                hasInput = true;
-                const primaryTokenId = range.tokenIds[0];
+                // Token or String segment
+                const isString = range.type === 'string';
+                if (!isString) hasInput = true;
+                
+                const primaryTokenId = range.tokenIds && range.tokenIds.length > 0 ? range.tokenIds[0] : undefined;
                 const tokenText = line.substring(range.relativeStart, Math.min(range.relativeEnd, line.length));
 
                 segments.push({
                     text: tokenText,
-                    type: 'token',
+                    type: (range.type as any) || 'token',
                     tokenId: primaryTokenId
                 });
 
@@ -146,21 +148,26 @@ export const processCodeLines = (
 
             const isSelf = token.type === 'self';
             const isPrimitive = token.type === 'primitive';
+            const isImportSource = token.type === 'import-source';
+            const isString = token.type === 'string';
             
             let fullDepId: string | undefined;
             if (isSelf) {
                 fullDepId = nodeId;
-            } else if (isPrimitive) {
+            } else if (isPrimitive || isString) {
                 fullDepId = undefined;
+            } else if (isImportSource) {
+                // For imports, link to the first dependency (usually the default export or file root of the imported file)
+                fullDepId = dependencies.length > 0 ? dependencies[0] : undefined;
             } else {
                 fullDepId = dependencies.find(d => d.endsWith(`::${token.text}`));
             }
 
-            if (token.type === 'dependency') hasInputDeps = true;
+            if (token.type === 'dependency' || isImportSource) hasInputDeps = true;
 
             segments.push({
                 text: token.text,
-                type: isSelf ? 'self' : isPrimitive ? 'primitive' : 'token',
+                type: isSelf ? 'self' : isPrimitive ? 'primitive' : isImportSource ? 'import-source' : isString ? 'string' : 'token',
                 tokenId: fullDepId
             });
 

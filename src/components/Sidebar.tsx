@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import { useAtom } from 'jotai';
 import { Box, FileCode, FileText, FolderOpen, Star } from 'lucide-react';
@@ -75,7 +76,9 @@ const Sidebar: React.FC = () => {
               >
                 {/* Star icon on the left */}
                 {isEntry ? (
-                  <Star className="w-3 h-3 text-yellow-500 fill-yellow-500 flex-shrink-0" title="Entry file" />
+                  <span title="Entry file" className="flex-shrink-0 flex items-center">
+                    <Star className="w-3 h-3 text-yellow-500 fill-yellow-500" />
+                  </span>
                 ) : (
                   <button
                     onClick={(e) => {

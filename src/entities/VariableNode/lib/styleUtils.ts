@@ -13,10 +13,17 @@ export const getNodeBorderColor = (type: VariableNode['type']): string => {
     }
 };
 
-export const getTokenStyle = (isActive: boolean) => {
-    return isActive
-        ? 'bg-vibe-accent/20 border-vibe-accent text-vibe-accent shadow-[0_0_8px_rgba(56,189,248,0.4)]'
-        : 'bg-slate-800/50 border-slate-700 text-blue-300 hover:bg-white/10 hover:border-vibe-accent/50';
+export const getTokenStyle = (isActive: boolean, isComponent: boolean = false) => {
+    if (isActive) {
+        return isComponent
+            ? 'bg-emerald-500/20 border-emerald-500 text-emerald-400 shadow-[0_0_8px_rgba(16,185,129,0.4)]' // Component Active (Green)
+            : 'bg-vibe-accent/20 border-vibe-accent text-vibe-accent shadow-[0_0_8px_rgba(56,189,248,0.4)]'; // Variable Active (Blue)
+    }
+    
+    // Inactive State
+    return isComponent
+        ? 'bg-slate-800/50 border-slate-700 text-emerald-300 hover:bg-white/10 hover:border-emerald-500/50' // Component Inactive
+        : 'bg-slate-800/50 border-slate-700 text-blue-300 hover:bg-white/10 hover:border-vibe-accent/50'; // Variable Inactive
 };
 
 export const getSlotColor = (type: VariableNode['type']): string => {

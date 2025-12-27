@@ -1,3 +1,4 @@
+
 import { atom } from 'jotai';
 import type { VariableNode, GraphData } from '../entities/VariableNode';
 import type { CanvasNode } from '../entities/CanvasNode';
@@ -10,7 +11,8 @@ export const entryFileAtom = atom<string>(DEFAULT_ENTRY_FILE);
 export const isSidebarOpenAtom = atom<boolean>(true);
 
 // Graph data atom (parsed project data)
-export const graphDataAtom = atom<GraphData | null>(null);
+export const graphDataAtom = atom(null as GraphData | null);
+export const parseErrorAtom = atom(null as string | null);
 
 // Canvas layout atoms (write-only from PipelineCanvas)
 export const layoutNodesAtom = atom([] as CanvasNode[]);

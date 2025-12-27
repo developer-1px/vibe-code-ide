@@ -1,4 +1,6 @@
+
 import { CanvasNode } from '../../entities/CanvasNode';
+import { VariableNode } from '../../entities/VariableNode';
 
 // --- Constants ---
 export const LEVEL_SPACING = 700; // Horizontal space between columns
@@ -45,4 +47,59 @@ export const estimateNodeHeight = (node: CanvasNode) => {
     const baseHeight = 60; // Header + padding
     const lineHeight = 20; // Approximation of line-height in pixels
     return baseHeight + (visualLineCount * lineHeight);
+};
+
+/**
+ * Calculates which nodes are still reachable from the Entry File or Template Root.
+ * Any node currently in `visibleSet` that cannot be reached is considered an "orphan" and removed.
+ */
+export const pruneDetachedNodes = (
+    visibleSet: Set<string>,
+    nodeMap: Map<string, VariableNode>,
+    entryFile: string,
+    templateRootId: string | null
+): Set<string> => {
+    const visited = new Set<string>();
+    const queue: string[] = [];
+
+    // 1. Identify Roots within the Visible Set
+    // A node is a valid "root" source if it is in the Entry File OR it is the Template Root
+    visibleSet.forEach(id => {
+        const node = nodeMap.get(id);
+        if (!node) return;
+
+        // Is it an anchor point?
+        // - It's the designated Template/JSX Root
+        // - OR It belongs to the entry file (e.g. setup calls, top level variables)
+        const isEntryPoint = node.filePath === entryFile; 
+        const isTemplateRoot = id === templateRootId;
+
+        if (isEntryPoint || isTemplateRoot) {
+            if (!visited.has(id)) {
+                visited.add(id);
+                queue.push(id);
+            }
+        }
+    });
+
+    // 2. BFS Traversal to find all reachable nodes
+    while (queue.length > 0) {
+        const currentId = queue.shift()!;
+        const node = nodeMap.get(currentId);
+
+        if (node) {
+            node.dependencies.forEach(depId => {
+                // We can only traverse to a node if it is currently 'visible' (enabled by user)
+                // If the user turned off a node, the path stops there.
+                if (visibleSet.has(depId) && !visited.has(depId)) {
+                    visited.add(depId);
+                    queue.push(depId);
+                }
+            });
+        }
+    }
+
+    // 3. The new visible set is exactly what we could reach.
+    // Anything in 'visibleSet' but NOT in 'visited' was cut off.
+    return visited;
 };
