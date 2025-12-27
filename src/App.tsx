@@ -1,18 +1,17 @@
 
 import React, { useEffect } from 'react';
 import { useAtom } from 'jotai';
-import Sidebar from './components/Sidebar.tsx';
-import Header from './components/Header.tsx';
+import { Sidebar } from './widgets/Sidebar';
+import Header from './widgets/MainContent/Header.tsx';
 import PipelineCanvas from './widgets/PipelineCanvas.tsx';
-import { parseProject } from './services/codeParser.ts';
-import { filesAtom, entryFileAtom, isSidebarOpenAtom, graphDataAtom, parseErrorAtom } from './store/atoms';
+import { isSidebarOpenAtom } from './store/atoms';
+import { useGraphDataInit } from './hooks/useGraphData';
 
 const App: React.FC = () => {
-  const [files] = useAtom(filesAtom);
-  const [entryFile] = useAtom(entryFileAtom);
   const [isSidebarOpen, setIsSidebarOpen] = useAtom(isSidebarOpenAtom);
-  const [, setGraphData] = useAtom(graphDataAtom);
-  const [, setParseError] = useAtom(parseErrorAtom);
+
+  // Initialize and parse graph data (stores in atoms)
+  useGraphDataInit();
 
   // Toggle Sidebar Shortcut
   useEffect(() => {
@@ -26,19 +25,6 @@ const App: React.FC = () => {
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
-
-  // Parse project on file change and store in atom
-  useEffect(() => {
-    try {
-      const data = parseProject(files, entryFile);
-      setParseError(null);
-      setGraphData(data);
-    } catch (e: any) {
-      console.warn("Project Parse Error:", e);
-      setParseError(e.message || "Syntax Error");
-      // Keep previous valid data in atom on error
-    }
-  }, [files, entryFile, setGraphData, setParseError]);
 
   return (
     <div className="flex h-screen w-screen overflow-hidden bg-vibe-dark text-slate-200 font-sans">

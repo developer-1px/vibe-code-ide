@@ -16,8 +16,12 @@ export const parseErrorAtom = atom(null as string | null);
 
 // Canvas layout atoms (write-only from PipelineCanvas)
 export const layoutNodesAtom = atom([] as CanvasNode[]);
+export const layoutLinksAtom = atom([] as {source: string, target: string}[]);
 export const fullNodeMapAtom = atom(new Map<string, VariableNode>());
 export const templateRootIdAtom = atom(null as string | null);
+
+// Canvas transform atom (from useD3Zoom)
+export const transformAtom = atom({ k: 1, x: 0, y: 0 });
 
 // Visibility and navigation atoms (read-write)
 export const visibleNodeIdsAtom = atom(new Set<string>());

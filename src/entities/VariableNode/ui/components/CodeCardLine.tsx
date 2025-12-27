@@ -107,6 +107,14 @@ const CodeCardLine: React.FC<CodeCardLineProps> = ({
              );
           }
 
+          if (segment.type === 'comment') {
+             return (
+               <span key={segIdx} className="text-slate-500 italic opacity-80">
+                 {segment.text}
+               </span>
+             );
+          }
+
           if (segment.type === 'import-source' && segment.tokenId) {
              return (
                <span 

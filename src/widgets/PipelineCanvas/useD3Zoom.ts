@@ -1,11 +1,12 @@
 import { useEffect, useRef, useState, useCallback, RefObject } from 'react';
-import { useAtom, useAtomValue } from 'jotai';
+import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import * as d3 from 'd3';
 import { CanvasNode } from '../../entities/CanvasNode';
-import { lastExpandedIdAtom, layoutNodesAtom } from '../../store/atoms';
+import { lastExpandedIdAtom, layoutNodesAtom, transformAtom } from '../../store/atoms';
 
 export const useD3Zoom = (containerRef: RefObject<HTMLDivElement>) => {
     const [transform, setTransform] = useState({ k: 0.9, x: 0, y: 0 });
+    const setTransformAtom = useSetAtom(transformAtom);
     const zoomBehaviorRef = useRef<d3.ZoomBehavior<HTMLDivElement, unknown> | null>(null);
 
     // Atoms for auto-centering
@@ -89,6 +90,11 @@ export const useD3Zoom = (containerRef: RefObject<HTMLDivElement>) => {
             }
         }
       }, [lastExpandedId, layoutNodes, centerOnNode, setLastExpandedId]);
+
+      // --- Sync transform to atom ---
+      useEffect(() => {
+        setTransformAtom(transform);
+      }, [transform, setTransformAtom]);
 
       return { transform, centerOnNode };
 };

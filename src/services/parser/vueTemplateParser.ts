@@ -6,7 +6,7 @@ export interface TemplateTokenRange {
     endOffset: number;
     text: string;
     tokenIds: string[]; // Local variable names (without file path prefix)
-    type?: 'token' | 'string';
+    type?: 'token' | 'string' | 'comment';
 }
 
 export interface TemplateParseResult {
@@ -222,6 +222,25 @@ const traverseTemplateAST = (
 
         return newScope;
     };
+
+    // Type 3 = Comment (HTML comments <!-- ... -->)
+    if (node.type === 3 && node.loc) {
+        const absoluteStart = node.loc.start.offset;
+        const absoluteEnd = node.loc.end.offset;
+
+        const relativeStart = absoluteStart - baseOffset;
+        const relativeEnd = absoluteEnd - baseOffset;
+
+        console.log(`💬 Comment at offset ${absoluteStart}-${absoluteEnd} (relative: ${relativeStart}-${relativeEnd})`);
+
+        tokenRanges.push({
+            startOffset: relativeStart,
+            endOffset: relativeEnd,
+            text: node.content || '',
+            tokenIds: [],
+            type: 'comment'
+        });
+    }
 
     const childScope = node.props ? (extractVForVariables(node.props) || localScope) : localScope;
 

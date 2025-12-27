@@ -1,12 +1,13 @@
 
 import React from 'react';
-import { useAtom, useAtomValue } from 'jotai';
+import { useAtom } from 'jotai';
 import { Box, AlertCircle, PanelLeft } from 'lucide-react';
-import { isSidebarOpenAtom, parseErrorAtom } from '../store/atoms';
+import { isSidebarOpenAtom } from '../../store/atoms.ts';
+import { useGraphData } from '../../hooks/useGraphData';
 
 const Header: React.FC = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useAtom(isSidebarOpenAtom);
-  const parseError = useAtomValue(parseErrorAtom);
+  const { error: parseError } = useGraphData();
 
   return (
     <header className="h-14 bg-vibe-panel/50 backdrop-blur border-b border-vibe-border flex items-center px-6 justify-between relative z-0 transition-all duration-300">

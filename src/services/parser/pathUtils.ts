@@ -63,7 +63,7 @@ export const findFileInProject = (files: Record<string, string>, resolvedPath: s
 export const findFileByName = (files: Record<string, string>, importPath: string): string | null => {
     // Extract filename from import path
     // e.g., "@/components/Button.vue" -> "Button.vue"
-    // e.g., "~/utils/helper" -> "helper"
+    // e.g., "~/libs/helper" -> "helper"
     const pathParts = importPath.split('/');
     let fileName = pathParts[pathParts.length - 1];
 

@@ -6,6 +6,7 @@ import { CanvasNode } from '../../entities/CanvasNode';
 import { LEVEL_SPACING, VERTICAL_GAP, estimateNodeHeight, getUsageIndex, hasCycle } from './utils.ts';
 import {
   layoutNodesAtom,
+  layoutLinksAtom,
   fullNodeMapAtom,
   entryFileAtom,
   templateRootIdAtom,
@@ -28,6 +29,7 @@ export const useCanvasLayout = (
 
     // Atom setters
     const setLayoutNodesAtom = useSetAtom(layoutNodesAtom);
+    const setLayoutLinksAtom = useSetAtom(layoutLinksAtom);
     const setFullNodeMapAtom = useSetAtom(fullNodeMapAtom);
     const setEntryFileAtom = useSetAtom(entryFileAtom);
     const setTemplateRootIdAtom = useSetAtom(templateRootIdAtom);
@@ -267,10 +269,11 @@ export const useCanvasLayout = (
     // --- Sync atoms with layout data ---
     useEffect(() => {
         setLayoutNodesAtom(layoutNodes);
+        setLayoutLinksAtom(layoutLinks);
         setFullNodeMapAtom(fullNodeMap);
         setEntryFileAtom(entryFile);
         setTemplateRootIdAtom(templateRootId);
-    }, [layoutNodes, fullNodeMap, entryFile, templateRootId, setLayoutNodesAtom, setFullNodeMapAtom, setEntryFileAtom, setTemplateRootIdAtom]);
+    }, [layoutNodes, layoutLinks, fullNodeMap, entryFile, templateRootId, setLayoutNodesAtom, setLayoutLinksAtom, setFullNodeMapAtom, setEntryFileAtom, setTemplateRootIdAtom]);
 
     // --- Initialize visible IDs ---
     useEffect(() => {

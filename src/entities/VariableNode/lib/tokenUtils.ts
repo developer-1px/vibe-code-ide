@@ -34,11 +34,60 @@ export const extractTokenRanges = (
     try {
         const ast = parse(codeSnippet, {
             sourceType: 'module',
-            plugins: ['typescript', 'jsx']
+            plugins: ['typescript', 'jsx'],
+            attachComments: true
         });
+
+        // Extract all comments (JavaScript, TypeScript, JSX)
+        const processedComments = new Set<number>();
+
+        if (ast.comments) {
+            ast.comments.forEach((comment: any) => {
+                if (!processedComments.has(comment.start)) {
+                    ranges.push({
+                        start: comment.start,
+                        end: comment.end,
+                        text: codeSnippet.slice(comment.start, comment.end),
+                        type: 'comment'
+                    });
+                    processedComments.add(comment.start);
+                }
+            });
+        }
 
         const visit = (n: any, parent: any) => {
             if (!n || typeof n !== 'object') return;
+
+            // Extract comments attached to nodes (leadingComments, trailingComments, innerComments)
+            const commentArrays = [n.leadingComments, n.trailingComments, n.innerComments].filter(Boolean);
+            commentArrays.forEach((comments: any[]) => {
+                comments.forEach((comment: any) => {
+                    if (!processedComments.has(comment.start)) {
+                        ranges.push({
+                            start: comment.start,
+                            end: comment.end,
+                            text: codeSnippet.slice(comment.start, comment.end),
+                            type: 'comment'
+                        });
+                        processedComments.add(comment.start);
+                    }
+                });
+            });
+
+            // Handle JSX Comments: {/* ... */}
+            // These are JSXExpressionContainer with a comment inside
+            if (n.type === 'JSXExpressionContainer' && n.expression?.type === 'JSXEmptyExpression') {
+                // The entire JSXExpressionContainer is the comment
+                if (!processedComments.has(n.start)) {
+                    ranges.push({
+                        start: n.start,
+                        end: n.end,
+                        text: codeSnippet.slice(n.start, n.end),
+                        type: 'comment'
+                    });
+                    processedComments.add(n.start);
+                }
+            }
 
             // Handle Import Sources (e.g. from './UserList.vue')
             if (n.type === 'ImportDeclaration' && n.source) {

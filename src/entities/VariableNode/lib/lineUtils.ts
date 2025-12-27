@@ -91,10 +91,11 @@ export const processCodeLines = (
                     });
                 }
 
-                // Token or String segment
+                // Token, String, or Comment segment
                 const isString = range.type === 'string';
-                if (!isString) hasInput = true;
-                
+                const isComment = range.type === 'comment';
+                if (!isString && !isComment) hasInput = true;
+
                 const primaryTokenId = range.tokenIds && range.tokenIds.length > 0 ? range.tokenIds[0] : undefined;
                 const tokenText = line.substring(range.relativeStart, Math.min(range.relativeEnd, line.length));
 
@@ -150,11 +151,12 @@ export const processCodeLines = (
             const isPrimitive = token.type === 'primitive';
             const isImportSource = token.type === 'import-source';
             const isString = token.type === 'string';
-            
+            const isComment = token.type === 'comment';
+
             let fullDepId: string | undefined;
             if (isSelf) {
                 fullDepId = nodeId;
-            } else if (isPrimitive || isString) {
+            } else if (isPrimitive || isString || isComment) {
                 fullDepId = undefined;
             } else if (isImportSource) {
                 // For imports, link to the first dependency (usually the default export or file root of the imported file)
@@ -167,7 +169,7 @@ export const processCodeLines = (
 
             segments.push({
                 text: token.text,
-                type: isSelf ? 'self' : isPrimitive ? 'primitive' : isImportSource ? 'import-source' : isString ? 'string' : 'token',
+                type: isSelf ? 'self' : isPrimitive ? 'primitive' : isImportSource ? 'import-source' : isString ? 'string' : isComment ? 'comment' : 'token',
                 tokenId: fullDepId
             });
 

@@ -1,27 +1,29 @@
 
-import React, { useCallback, useEffect, useState } from 'react';
-import { CanvasNode } from '../../entities/CanvasNode';
+import React, { useCallback, useEffect, useState, useRef } from 'react';
+import { useAtomValue } from 'jotai';
 import { getEdgeColor } from '../../entities/VariableNode/lib/styleUtils.ts';
+import { layoutLinksAtom, layoutNodesAtom, transformAtom } from '../../store/atoms';
 
-interface CanvasConnectionsProps {
-    layoutLinks: {source: string, target: string}[];
-    layoutNodes: CanvasNode[];
-    transform: { k: number, x: number, y: number };
-    contentRef: React.RefObject<HTMLDivElement>;
-}
-
-const CanvasConnections: React.FC<CanvasConnectionsProps> = ({ layoutLinks, layoutNodes, transform, contentRef }) => {
+const CanvasConnections: React.FC = () => {
     const [paths, setPaths] = useState<React.ReactElement[]>([]);
+    const svgRef = useRef<SVGSVGElement>(null);
+
+    // Read atoms
+    const layoutLinks = useAtomValue(layoutLinksAtom);
+    const layoutNodes = useAtomValue(layoutNodesAtom);
+    const transform = useAtomValue(transformAtom);
 
     const drawConnections = useCallback(() => {
-        if (!contentRef.current || layoutNodes.length === 0) {
+        // Find the content container (parent of this SVG)
+        const contentElement = svgRef.current?.parentElement;
+        if (!contentElement || layoutNodes.length === 0) {
             setPaths([]);
             return;
         }
 
         console.log('🎨 Drawing connections for', layoutNodes.length, 'nodes');
-        
-        const contentRect = contentRef.current.getBoundingClientRect();
+
+        const contentRect = contentElement.getBoundingClientRect();
         const newPaths: React.ReactElement[] = [];
     
         const getRelativePoint = (rect: DOMRect) => {
@@ -140,7 +142,7 @@ const CanvasConnections: React.FC<CanvasConnectionsProps> = ({ layoutLinks, layo
     }, [drawConnections, transform, layoutNodes]);
 
     return (
-        <svg className="absolute top-0 left-0 w-full h-full overflow-visible pointer-events-none z-5">
+        <svg ref={svgRef} className="absolute top-0 left-0 w-full h-full overflow-visible pointer-events-none z-5">
             {paths}
         </svg>
     );

@@ -10,8 +10,9 @@ import CanvasBackground from './PipelineCanvas/CanvasBackground.tsx';
 import CopyAllCodeButton from '../features/CopyAllCodeButton.tsx';
 import ResetViewButton from '../features/ResetViewButton.tsx';
 
-// Atoms
-import { visibleNodeIdsAtom, graphDataAtom, entryFileAtom } from '../store/atoms';
+// Atoms & Hooks
+import { visibleNodeIdsAtom, entryFileAtom } from '../store/atoms';
+import { useGraphData } from '../hooks/useGraphData';
 
 const PipelineCanvas: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -19,13 +20,12 @@ const PipelineCanvas: React.FC = () => {
 
   // Read atoms
   const visibleNodeIds = useAtomValue(visibleNodeIdsAtom);
-  const graphData = useAtomValue(graphDataAtom);
   const entryFile = useAtomValue(entryFileAtom);
+  const { data: graphData } = useGraphData();
 
   // 1. Layout Logic (handles atom sync & initialization internally)
   const {
-    layoutNodes,
-    layoutLinks
+    layoutNodes
   } = useCanvasLayout(graphData, entryFile, visibleNodeIds);
 
   // 2. Zoom Logic (handles auto-centering internally)
@@ -52,12 +52,7 @@ const PipelineCanvas: React.FC = () => {
         <CanvasBackground />
 
         {/* Connections */}
-        <CanvasConnections
-            layoutLinks={layoutLinks}
-            layoutNodes={layoutNodes}
-            transform={transform}
-            contentRef={contentRef}
-        />
+        <CanvasConnections />
 
         {/* Nodes */}
         {layoutNodes.map(node => (
