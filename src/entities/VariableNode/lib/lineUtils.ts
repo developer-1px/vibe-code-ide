@@ -15,11 +15,15 @@ export const processCodeLines = (
 
     // --- Strategy A: Template Processing (AST-based, offset-based) ---
     if (isTemplate && templateTokenRanges && templateTokenRanges.length > 0) {
+        // ... (Template processing logic remains unchanged as it uses templateTokenRanges which are dependency-based)
+        // Note: Primitives in templates (if any) are not currently handled here, but templates usually use variables.
+        // If primitives are used in template expressions (e.g. {{ ref(x) }}), they might need handling if parsed by babel in vueTemplateParser.
+        
+        // For now, assume primitives are mostly in script.
+        
         console.log('✅ Using AST-based highlighting (offset-based)');
-        console.log('   startLineNum:', startLineNum);
-        console.log('   totalLines:', rawLines.length);
-        console.log('   templateTokenRanges:', JSON.stringify(templateTokenRanges, null, 2));
-
+        // ... (Keep existing template logic)
+        
         // Calculate absolute offset for each line
         const lineOffsets: { lineIdx: number; start: number; end: number; text: string }[] = [];
         let currentOffset = 0;
@@ -34,8 +38,6 @@ export const processCodeLines = (
             currentOffset += line.length + 1; // +1 for \n
         });
 
-        console.log('📏 Line offsets:', lineOffsets.map(l => `[${l.lineIdx}] ${l.start}-${l.end}: "${l.text.substring(0, 50)}"`));
-
         // Group tokens by line
         const tokensByLine = new Map<number, typeof templateTokenRanges>();
 
@@ -44,17 +46,12 @@ export const processCodeLines = (
                 range.startOffset >= l.start && range.startOffset < l.end
             );
 
-            console.log(`🔍 Token "${range.text}" at offset ${range.startOffset}-${range.endOffset} → line ${lineInfo?.lineIdx ?? 'NOT_FOUND'}`);
-
             if (lineInfo) {
                 if (!tokensByLine.has(lineInfo.lineIdx)) {
                     tokensByLine.set(lineInfo.lineIdx, []);
                 }
                 const relativeStart = range.startOffset - lineInfo.start;
                 const relativeEnd = range.endOffset - lineInfo.start;
-
-                console.log(`   → relative position: ${relativeStart}-${relativeEnd} in "${lineInfo.text}"`);
-                console.log(`   → extracted text: "${lineInfo.text.substring(relativeStart, relativeEnd)}"`);
 
                 tokensByLine.get(lineInfo.lineIdx)!.push({
                     ...range,
@@ -148,14 +145,23 @@ export const processCodeLines = (
             }
 
             const isSelf = token.type === 'self';
-            const fullDepId = isSelf ? nodeId : dependencies.find(d => d.endsWith(`::${token.text}`));
+            const isPrimitive = token.type === 'primitive';
+            
+            let fullDepId: string | undefined;
+            if (isSelf) {
+                fullDepId = nodeId;
+            } else if (isPrimitive) {
+                fullDepId = undefined;
+            } else {
+                fullDepId = dependencies.find(d => d.endsWith(`::${token.text}`));
+            }
 
             if (token.type === 'dependency') hasInputDeps = true;
 
             segments.push({
                 text: token.text,
-                type: isSelf ? 'self' : 'token',
-                tokenId: fullDepId // Can be undefined if logic fails, handled in UI
+                type: isSelf ? 'self' : isPrimitive ? 'primitive' : 'token',
+                tokenId: fullDepId
             });
 
             cursor = token.end;

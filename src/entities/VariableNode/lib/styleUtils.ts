@@ -3,11 +3,12 @@ import { VariableNode } from '../model/types.ts';
 
 export const getNodeBorderColor = (type: VariableNode['type']): string => {
     switch (type) {
-        case 'template': return 'border-pink-500/50 shadow-pink-900/20';
+        case 'template': return 'border-fuchsia-500/50 shadow-fuchsia-900/20'; // View/Component (Stronger Purple/Pink)
         case 'computed': return 'border-vibe-accent/50 shadow-blue-900/20';
         case 'ref': return 'border-emerald-500/50 shadow-emerald-900/20';
         case 'call': return 'border-yellow-500/50 shadow-yellow-900/20';
-        case 'module': return 'border-orange-500/50 shadow-orange-900/20';
+        case 'module': return 'border-indigo-500/50 shadow-indigo-900/20'; // Imported Component/Module (Distinct Indigo)
+        case 'function': return 'border-amber-500/50 shadow-amber-900/20';
         default: return 'border-vibe-border shadow-black/20';
     }
 };
@@ -21,7 +22,7 @@ export const getTokenStyle = (isActive: boolean) => {
 export const getSlotColor = (type: VariableNode['type']): string => {
     switch (type) {
         case 'template':
-            return 'bg-pink-500/60 border-pink-400/80 shadow-pink-500/30 group-hover/line:border-pink-300';
+            return 'bg-fuchsia-500/60 border-fuchsia-400/80 shadow-fuchsia-500/30 group-hover/line:border-fuchsia-300';
         case 'computed':
             return 'bg-sky-500/60 border-sky-400/80 shadow-sky-500/30 group-hover/line:border-sky-300';
         case 'ref':
@@ -29,7 +30,7 @@ export const getSlotColor = (type: VariableNode['type']): string => {
         case 'call':
             return 'bg-yellow-500/60 border-yellow-400/80 shadow-yellow-500/30 group-hover/line:border-yellow-300';
         case 'module':
-            return 'bg-orange-500/60 border-orange-400/80 shadow-orange-500/30 group-hover/line:border-orange-300';
+            return 'bg-indigo-500/60 border-indigo-400/80 shadow-indigo-500/30 group-hover/line:border-indigo-300';
         case 'function':
             return 'bg-amber-500/60 border-amber-400/80 shadow-amber-500/30 group-hover/line:border-amber-300';
         case 'hook':
@@ -41,11 +42,11 @@ export const getSlotColor = (type: VariableNode['type']): string => {
 
 export const getEdgeColor = (type: VariableNode['type']): string => {
     switch (type) {
-        case 'template': return '#ec4899'; // pink-500
+        case 'template': return '#d946ef'; // fuchsia-500
         case 'computed': return '#0ea5e9'; // sky-500
         case 'ref': return '#10b981'; // emerald-500
         case 'call': return '#eab308'; // yellow-500
-        case 'module': return '#f97316'; // orange-500
+        case 'module': return '#6366f1'; // indigo-500
         case 'function': return '#f59e0b'; // amber-500
         case 'hook': return '#8b5cf6'; // violet-500
         case 'store': return '#14b8a6'; // teal-500

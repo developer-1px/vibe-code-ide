@@ -7,6 +7,25 @@ import { extractIdentifiersFromPattern, findDependenciesInAST } from './astUtils
 import { parseVueTemplate } from './vueTemplateParser.ts';
 import { parseTsxComponent } from './tsxParser.ts';
 
+// Framework primitives to exclude from dependency graph
+const REACT_PRIMITIVES = new Set([
+  'useState', 'useEffect', 'useMemo', 'useCallback', 'useRef', 'useContext', 
+  'useReducer', 'useLayoutEffect', 'useImperativeHandle', 'useDebugValue', 
+  'useDeferredValue', 'useTransition', 'useId', 'useSyncExternalStore', 'useInsertionEffect'
+]);
+
+const VUE_PRIMITIVES = new Set([
+  'ref', 'computed', 'reactive', 'watch', 'watchEffect', 
+  'onMounted', 'onUnmounted', 'onUpdated', 'onBeforeMount', 
+  'onBeforeUnmount', 'onBeforeUpdate', 'provide', 'inject', 
+  'toRefs', 'storeToRefs', 'defineProps', 'defineEmits', 
+  'defineExpose', 'withDefaults', 'shallowRef', 'triggerRef', 
+  'customRef', 'shallowReactive', 'toRef', 'unref', 'isRef', 
+  'isProxy', 'isReactive', 'isReadonly', 'readonly'
+]);
+
+const IS_PRIMITIVE = (name: string) => REACT_PRIMITIVES.has(name) || VUE_PRIMITIVES.has(name);
+
 export class ProjectParser {
   private files: Record<string, string>;
   private nodes: Map<string, VariableNode> = new Map(); // Key: filePath::localName
@@ -37,23 +56,43 @@ export class ProjectParser {
         return { scriptContent, templateContent: null, templateAst: null, templateStartLine: 0, startLineOffset, templateContentOffset: 0 };
     }
 
-    const templateContent = descriptor.template.content;
     const templateAst = descriptor.template.ast;
 
-    // CRITICAL: AST offset is based on the full file, but templateContent is extracted
-    // We need to pass the base offset so lineUtils can adjust
-    const templateContentOffset = descriptor.template.loc.start.offset;
+    // We want to include the <template> tags in the snippet.
+    // descriptor.template.content gives only inner content.
+    // descriptor.template.loc.start.offset gives the start of inner content.
+    
+    const contentStart = descriptor.template.loc.start.offset;
+    const contentEnd = descriptor.template.loc.end.offset;
 
-    // Find the first real line of template content (skip <template> tag itself)
-    const firstRealNode = templateAst?.children?.find((c: any) => c.type !== 2 || c.content.trim().length > 0);
-    const templateStartLine = firstRealNode?.loc.start.line ?? descriptor.template.loc.start.line + 1;
+    // Find start of <template> tag by searching backwards
+    let tagStart = content.lastIndexOf('<template', contentStart);
+    if (tagStart === -1) tagStart = contentStart;
+
+    // Find end of </template> tag by searching forwards
+    const closeTag = '</template>';
+    let tagEnd = content.indexOf(closeTag, contentEnd);
+    if (tagEnd !== -1) {
+        tagEnd += closeTag.length;
+    } else {
+        tagEnd = contentEnd;
+    }
+
+    // Extract the full block including tags
+    const templateSnippet = content.substring(tagStart, tagEnd);
+    
+    // Calculate start line of the tag (1-based)
+    const templateStartLine = content.substring(0, tagStart).split('\n').length;
+    
+    // The offset to use for relative token calculations (start of the snippet)
+    const templateContentOffset = tagStart;
 
     console.log('📋 Template offset info:');
-    console.log('   templateContentOffset:', templateContentOffset);
-    console.log('   templateContent.length:', templateContent.length);
-    console.log('   templateContent first 100 chars:', templateContent.substring(0, 100));
+    console.log('   tagStart:', tagStart);
+    console.log('   tagEnd:', tagEnd);
+    console.log('   snippet length:', templateSnippet.length);
 
-    return { scriptContent, templateContent, templateAst, templateStartLine, startLineOffset, templateContentOffset };
+    return { scriptContent, templateContent: templateSnippet, templateAst, templateStartLine, startLineOffset, templateContentOffset };
   }
 
   private processVueTemplate(filePath: string, templateContent: string | null, templateAst: any, templateStartLine: number, templateContentOffset: number): string | null {
@@ -98,44 +137,126 @@ export class ProjectParser {
 
     console.log('📋 fileVarNames for', filePath, ':', Array.from(fileVarNames));
 
-    // Parse entire TSX file (not just JSX part)
+    // Parse entire TSX file to find dependencies (we still need this for linking)
     const parseResult = parseTsxComponent(ast, fileVarNames);
 
     console.log('🔍 TSX Parse Result:', filePath);
     console.log('   dependencies:', parseResult.dependencies);
-    console.log('   tokenRanges:', parseResult.tokenRanges.length, 'ranges');
-    console.log('   fileVarNames:', Array.from(fileVarNames));
+    
+    // --- EXTRACT JSX SNIPPET ---
+    // Instead of showing the whole file, we try to find the main return statement with JSX
+    let jsxSnippet = scriptContent;
+    let jsxStartLine = 1;
+    let snippetStartOffset = 0; // The absolute offset where the snippet starts in the original file
+
+    // Helper to traverse and find JSX return with cycle detection
+    const findJSXReturn = (node: any, seen = new Set<any>()) => {
+        if (!node || typeof node !== 'object') return null;
+        if (seen.has(node)) return null;
+        seen.add(node);
+
+        if (node.type === 'ReturnStatement') {
+            const arg = node.argument;
+            if (arg) {
+                // Case 1: return <div...
+                if (arg.type === 'JSXElement' || arg.type === 'JSXFragment') {
+                    return arg;
+                }
+                // Case 2: return ( <div... )
+                if (arg.type === 'ParenthesizedExpression' && 
+                   (arg.expression.type === 'JSXElement' || arg.expression.type === 'JSXFragment')) {
+                    return arg.expression; // Return inner expression to get tighter line bounds
+                }
+            }
+        }
+
+        for (const key in node) {
+             if (['loc', 'start', 'end', 'comments', 'extra', 'type'].includes(key)) continue;
+             const value = node[key];
+             if (Array.isArray(value)) {
+                 for (const item of value) {
+                     const result: any = findJSXReturn(item, seen);
+                     if (result) return result;
+                 }
+             } else if (typeof value === 'object') {
+                 const result: any = findJSXReturn(value, seen);
+                 if (result) return result;
+             }
+        }
+        return null;
+    };
+
+    const jsxNodeFound = findJSXReturn(ast);
+
+    if (jsxNodeFound && jsxNodeFound.loc) {
+        const startLine = jsxNodeFound.loc.start.line;
+        const endLine = jsxNodeFound.loc.end.line;
+
+        // Calculate offset of the start of the line (preserve indentation)
+        let currentOffset = 0;
+        for (let i = 1; i < startLine; i++) {
+             const nextNewline = scriptContent.indexOf('\n', currentOffset);
+             if (nextNewline === -1) break;
+             currentOffset = nextNewline + 1;
+        }
+        snippetStartOffset = currentOffset;
+
+        // Calculate offset of the end of the end line
+        let endOffset = currentOffset;
+        for (let i = startLine; i <= endLine; i++) {
+             const nextNewline = scriptContent.indexOf('\n', endOffset);
+             if (nextNewline === -1) {
+                 endOffset = scriptContent.length;
+                 break;
+             }
+             if (i === endLine) {
+                 endOffset = nextNewline; // Stop before newline of last line
+             } else {
+                 endOffset = nextNewline + 1;
+             }
+        }
+        
+        jsxSnippet = scriptContent.substring(snippetStartOffset, endOffset);
+        jsxStartLine = startLine;
+
+        console.log('✨ Extracted JSX Snippet:', jsxSnippet.length, 'chars, starting line', jsxStartLine);
+    } else {
+        console.log('⚠️ No specific JSX return found, using full file content');
+    }
 
     const jsxId = `${filePath}::JSX_ROOT`;
+    const snippetEndOffset = snippetStartOffset + jsxSnippet.length;
 
     // Check if we have statement nodes for this file (from React component processing)
     const statementNodes = Array.from(this.nodes.values()).filter(
       n => n.filePath === filePath && n.id.includes('_stmt_')
     );
 
-    // Use entire file content (includes imports, hooks, JSX, etc.)
-    const fileName = filePath.split('/').pop() || 'Component';
-
     // FIX: Dependencies must include BOTH internal logic (statements) AND external references (JSX deps)
-    // This ensures that import nodes (like UserList) are connected to the root and appear when expanded.
     const statementIds = statementNodes.map(n => n.id);
     const jsxRefIds = parseResult.dependencies.map(name => `${filePath}::${name}`);
 
     // Merge and deduplicate
     const dependencies = Array.from(new Set([...statementIds, ...jsxRefIds]));
 
+    const fileName = filePath.split('/').pop() || 'Component';
     const jsxNode: VariableNode = {
       id: jsxId,
-      label: `${fileName}`,
+      label: `${fileName} (View)`,
       filePath,
       type: 'template',
-      codeSnippet: scriptContent,  // Entire file
-      startLine: 1,
+      codeSnippet: jsxSnippet,
+      startLine: jsxStartLine,
       dependencies,
-      templateTokenRanges: parseResult.tokenRanges.map(range => ({
-        ...range,
-        tokenIds: range.tokenIds.map((name: string) => `${filePath}::${name}`)
-      }))
+      // Adjust token ranges to be relative to the extracted snippet
+      templateTokenRanges: parseResult.tokenRanges
+        .filter(range => range.startOffset >= snippetStartOffset && range.endOffset <= snippetEndOffset)
+        .map(range => ({
+            ...range,
+            startOffset: range.startOffset - snippetStartOffset,
+            endOffset: range.endOffset - snippetStartOffset,
+            tokenIds: range.tokenIds.map((name: string) => `${filePath}::${name}`)
+        }))
     };
 
     this.nodes.set(jsxId, jsxNode);
@@ -202,10 +323,13 @@ export class ProjectParser {
   private extractTokenRangesFromCode(code: string, localDefs: Set<string>, ast: any): any[] {
     const tokenRanges: any[] = [];
     const addedPositions = new Set<string>(); // Track added positions to avoid duplicates
+    const seen = new Set<any>(); // Cycle protection
 
     // Traverse the entire AST and find all identifier references
     const traverse = (node: any, parent: any = null) => {
       if (!node || typeof node !== 'object') return;
+      if (seen.has(node)) return;
+      seen.add(node);
 
       if (node.type === 'Identifier') {
         const name = node.name;
@@ -324,6 +448,9 @@ export class ProjectParser {
                         if (spec.type === 'ImportSpecifier') {
                             const importedName = spec.imported.type === 'Identifier' ? spec.imported.name : spec.imported.value;
                             const localName = spec.local.name;
+                            
+                            // Check if imported item is a primitive (re-export edge case or named import)
+                            if (IS_PRIMITIVE(importedName)) return;
 
                             // Construct ID of the remote node
                             const remoteId = `${targetFile}::${importedName}`;
@@ -365,6 +492,16 @@ export class ProjectParser {
                     // External import
                     node.specifiers.forEach((spec: any) => {
                          const localName = spec.local.name;
+                         
+                         // Check imported name for named imports
+                         let importedName = localName;
+                         if (spec.type === 'ImportSpecifier') {
+                             importedName = spec.imported.type === 'Identifier' ? spec.imported.name : spec.imported.value;
+                         }
+                         
+                         // Skip node creation for primitives
+                         if (IS_PRIMITIVE(importedName)) return;
+
                          const importNodeId = `${filePath}::${localName}`;
                          this.nodes.set(importNodeId, {
                              id: importNodeId,
@@ -519,9 +656,13 @@ export class ProjectParser {
   }
 
   private hasHooksInFunction(functionNode: any): boolean {
+    const seen = new Set<any>();
+    
     // Check if function body contains any calls to functions starting with 'use'
     const checkNode = (node: any): boolean => {
       if (!node || typeof node !== 'object') return false;
+      if (seen.has(node)) return false;
+      seen.add(node);
 
       if (node.type === 'CallExpression') {
         if (node.callee.type === 'Identifier' && node.callee.name.startsWith('use')) {
@@ -531,7 +672,7 @@ export class ProjectParser {
 
       // Recursively check all child nodes
       for (const key in node) {
-        if (['loc', 'start', 'end', 'comments', 'extra'].includes(key)) continue;
+        if (['loc', 'start', 'end', 'comments', 'extra', 'type'].includes(key)) continue;
         const value = node[key];
 
         if (Array.isArray(value)) {
@@ -634,7 +775,9 @@ export class ProjectParser {
             type,
             codeSnippet: snippet,
             startLine: lineNum,
-            dependencies: []
+            dependencies: [],
+            // @ts-ignore
+            astNode: stmt // Link AST node so dependencies (e.g. useUsers) are found later
           });
           localDefs.add(varName);
         }

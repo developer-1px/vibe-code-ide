@@ -1,3 +1,4 @@
+
 import { useEffect, useState, useMemo } from 'react';
 import { useSetAtom } from 'jotai';
 import { GraphData, VariableNode } from '../../entities/VariableNode';
@@ -86,6 +87,21 @@ export const useCanvasLayout = (
         const visited = new Set<string>();
         const extraLinks: {source: string, target: string}[] = [];
 
+        // Helper to determine sort weight (Lower = Top, Higher = Bottom)
+        const getTypeWeight = (type: VariableNode['type']) => {
+            switch (type) {
+                case 'ref': return 1;
+                case 'computed': return 2;
+                case 'store': return 3;
+                case 'hook': return 4;
+                case 'call': return 5;
+                case 'function': return 10;
+                case 'module': return 20; // Imports/Components usually here
+                case 'template': return 30;
+                default: return 15;
+            }
+        };
+
         // 1. Build Visual Tree
         const buildVisualTree = (nodeId: string, level: number, path: string[], parentId: string | null): VisualTreeNode | null => {
             if (visited.has(nodeId)) {
@@ -147,11 +163,23 @@ export const useCanvasLayout = (
             };
 
             const sortedDeps = [...raw.dependencies].sort((a, b) => {
+                const nodeA = layoutNodeMap.get(a);
+                const nodeB = layoutNodeMap.get(b);
+                
+                // 1. Sort by Type Weight (Logic Top, Components Bottom)
+                const weightA = nodeA ? getTypeWeight(nodeA.type) : 99;
+                const weightB = nodeB ? getTypeWeight(nodeB.type) : 99;
+                
+                if (weightA !== weightB) {
+                    return weightA - weightB;
+                }
+
+                // 2. Sort by Usage Position in Parent Code (Keep relevant logic flow)
                 const indexA = getUsageIndex(raw.codeSnippet, a);
                 const indexB = getUsageIndex(raw.codeSnippet, b);
                 if (indexA !== indexB) return indexA - indexB;
-                const nodeA = layoutNodeMap.get(a);
-                const nodeB = layoutNodeMap.get(b);
+
+                // 3. Fallback to definition line
                 return (nodeA?.startLine || 0) - (nodeB?.startLine || 0);
             });
 

@@ -1,11 +1,12 @@
+
 export interface TokenRange {
   start: number;
   end: number;
-  type: 'self' | 'dependency' | 'other-known' | 'text';
+  type: 'self' | 'dependency' | 'other-known' | 'text' | 'primitive';
   text: string;
 }
 
-export type SegmentType = 'text' | 'self' | 'token';
+export type SegmentType = 'text' | 'self' | 'token' | 'primitive';
 
 export interface LineSegment {
     text: string;
