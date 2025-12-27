@@ -40,6 +40,42 @@ export const extractTokenRanges = (
         const visit = (n: any, parent: any) => {
             if (!n || typeof n !== 'object') return;
 
+            // Handle Import Sources (e.g. from './UserList.vue')
+            if (n.type === 'ImportDeclaration' && n.source) {
+                ranges.push({
+                    start: n.source.start,
+                    end: n.source.end,
+                    text: codeSnippet.slice(n.source.start, n.source.end),
+                    type: 'import-source'
+                });
+            }
+
+            // Handle String Literals (Generic)
+            if (n.type === 'StringLiteral') {
+                // Skip if it's an import source (handled above) to avoid overlap
+                if (parent?.type !== 'ImportDeclaration') {
+                    ranges.push({
+                        start: n.start,
+                        end: n.end,
+                        text: codeSnippet.slice(n.start, n.end),
+                        type: 'string'
+                    });
+                }
+            }
+
+            // Handle Template Literals (Template Strings)
+            if (n.type === 'TemplateLiteral') {
+                // Highlight the string parts (quasis)
+                n.quasis.forEach((q: any) => {
+                    ranges.push({
+                        start: q.start,
+                        end: q.end,
+                        text: codeSnippet.slice(q.start, q.end),
+                        type: 'string'
+                    });
+                });
+            }
+
             if (n.type === 'Identifier') {
                 const name = n.name;
                 

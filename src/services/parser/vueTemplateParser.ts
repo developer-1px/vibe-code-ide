@@ -1,3 +1,4 @@
+
 import { parse as parseBabel } from '@babel/parser';
 
 export interface TemplateTokenRange {
@@ -5,6 +6,7 @@ export interface TemplateTokenRange {
     endOffset: number;
     text: string;
     tokenIds: string[]; // Local variable names (without file path prefix)
+    type?: 'token' | 'string';
 }
 
 export interface TemplateParseResult {
@@ -147,7 +149,8 @@ const traverseTemplateAST = (
                 startOffset: relativeStart,
                 endOffset: relativeEnd,
                 text: dep.name,
-                tokenIds: [dep.name]
+                tokenIds: [dep.name],
+                type: 'token'
             });
         });
     }
@@ -187,7 +190,8 @@ const traverseTemplateAST = (
                 startOffset: relativeStart,
                 endOffset: relativeEnd,
                 text: tagName,
-                tokenIds: [matchedVarName]
+                tokenIds: [matchedVarName],
+                type: 'token'
             });
         }
     }
@@ -222,12 +226,28 @@ const traverseTemplateAST = (
     const childScope = node.props ? (extractVForVariables(node.props) || localScope) : localScope;
 
     if (node.props) {
-
-        // Second pass: Check all directive expressions and collect token ranges
         node.props.forEach((prop: any) => {
             // Type 6 = Attribute (static, like class="foo")
+            if (prop.type === 6 && prop.value) {
+                // Highlight the value of the attribute as a string
+                if (prop.value.content && prop.value.loc) {
+                    const absoluteStart = prop.value.loc.start.offset;
+                    const absoluteEnd = prop.value.loc.end.offset;
+                    
+                    const relativeStart = absoluteStart - baseOffset;
+                    const relativeEnd = absoluteEnd - baseOffset;
+                    
+                    tokenRanges.push({
+                        startOffset: relativeStart,
+                        endOffset: relativeEnd,
+                        text: prop.value.content,
+                        tokenIds: [],
+                        type: 'string'
+                    });
+                }
+            }
+            
             // Type 7 = Directive (v-if, v-bind, v-on, etc.)
-
             if (prop.type === 7 && prop.exp?.content) {
                 const depsInExpr = checkExpressionWithScope(prop.exp.content, childScope);
 
@@ -250,7 +270,8 @@ const traverseTemplateAST = (
                         startOffset: relativeStart,
                         endOffset: relativeEnd,
                         text: dep.name,
-                        tokenIds: [dep.name]
+                        tokenIds: [dep.name],
+                        type: 'token'
                     });
                 });
             }

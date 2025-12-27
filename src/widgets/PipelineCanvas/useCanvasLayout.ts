@@ -87,17 +87,25 @@ export const useCanvasLayout = (
         const visited = new Set<string>();
         const extraLinks: {source: string, target: string}[] = [];
 
-        // Helper to determine sort weight (Lower = Top, Higher = Bottom)
-        const getTypeWeight = (type: VariableNode['type']) => {
-            switch (type) {
+        // Helper to determine sort weight
+        // Order: Imports (non-component) -> Local Logic -> Functions -> Components/Templates
+        const getNodeWeight = (node: VariableNode) => {
+            const isPascalCase = /^[A-Z]/.test(node.label);
+
+            if (node.type === 'module') {
+                // If it's an import, check if it looks like a Component (PascalCase)
+                // Components go to bottom (25), Utilities/Hooks go to top (0)
+                return isPascalCase ? 25 : 0;
+            }
+
+            switch (node.type) {
                 case 'ref': return 1;
                 case 'computed': return 2;
                 case 'store': return 3;
                 case 'hook': return 4;
                 case 'call': return 5;
                 case 'function': return 10;
-                case 'module': return 20; // Imports/Components usually here
-                case 'template': return 30;
+                case 'template': return 30; // Templates always at the bottom
                 default: return 15;
             }
         };
@@ -166,9 +174,10 @@ export const useCanvasLayout = (
                 const nodeA = layoutNodeMap.get(a);
                 const nodeB = layoutNodeMap.get(b);
                 
-                // 1. Sort by Type Weight (Logic Top, Components Bottom)
-                const weightA = nodeA ? getTypeWeight(nodeA.type) : 99;
-                const weightB = nodeB ? getTypeWeight(nodeB.type) : 99;
+                // 1. Sort by Weighted Category
+                // (Imports -> Variables -> Functions -> Components)
+                const weightA = nodeA ? getNodeWeight(nodeA) : 99;
+                const weightB = nodeB ? getNodeWeight(nodeB) : 99;
                 
                 if (weightA !== weightB) {
                     return weightA - weightB;
@@ -305,10 +314,13 @@ export const useCanvasLayout = (
 
     // --- Initialize visible IDs ---
     useEffect(() => {
+        if (!initialData) return; // FIX: Ensure initialData exists
+
         const initialSet = new Set<string>();
         if (templateRootId) {
             initialSet.add(templateRootId);
         }
+        
         initialData.nodes.forEach(n => {
             if (n.type === 'call' && n.filePath === entryFile) {
                 initialSet.add(n.id);

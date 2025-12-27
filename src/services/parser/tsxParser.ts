@@ -1,3 +1,4 @@
+
 import { parse as parseBabel } from '@babel/parser';
 
 export interface TsxTokenRange {
@@ -5,6 +6,7 @@ export interface TsxTokenRange {
     endOffset: number;
     text: string;
     tokenIds: string[]; // Local variable names (without file path prefix)
+    type?: 'token' | 'string';
 }
 
 export interface TsxParseResult {
@@ -34,6 +36,42 @@ export const parseTsxComponent = (
     const traverseAll = (node: any, localScope: Set<string> = new Set()) => {
         if (!node || typeof node !== 'object') return;
 
+        // Capture String Literals
+        if (node.type === 'StringLiteral') {
+             if (node.start !== undefined && node.end !== undefined) {
+                const posKey = `${node.start}-${node.end}`;
+                if (!addedPositions.has(posKey)) {
+                    addedPositions.add(posKey);
+                    tokenRanges.push({
+                        startOffset: node.start,
+                        endOffset: node.end,
+                        text: node.value, // value contains the text content
+                        tokenIds: [],
+                        type: 'string'
+                    });
+                }
+             }
+        }
+        
+        // Capture Template Literals (Quasis)
+        if (node.type === 'TemplateLiteral') {
+            node.quasis.forEach((q: any) => {
+                if (q.start !== undefined && q.end !== undefined) {
+                    const posKey = `${q.start}-${q.end}`;
+                    if (!addedPositions.has(posKey)) {
+                        addedPositions.add(posKey);
+                        tokenRanges.push({
+                            startOffset: q.start,
+                            endOffset: q.end,
+                            text: q.value.raw,
+                            tokenIds: [],
+                            type: 'string'
+                        });
+                    }
+                }
+            });
+        }
+
         // JSXIdentifier: Component names in JSX (e.g., <UserList />)
         if (node.type === 'JSXIdentifier') {
             const name = node.name;
@@ -48,7 +86,8 @@ export const parseTsxComponent = (
                             startOffset: node.start,
                             endOffset: node.end,
                             text: name,
-                            tokenIds: [name]
+                            tokenIds: [name],
+                            type: 'token'
                         });
                     }
                 }
@@ -145,12 +184,11 @@ export const parseTsxComponent = (
                                 startOffset: n.start,
                                 endOffset: n.end,
                                 text: name,
-                                tokenIds: [name]
+                                tokenIds: [name],
+                                type: 'token'
                             });
                         }
                     }
-                } else {
-                    // console.log('   ❌ Skipping (not in fileVarNames):', name);
                 }
             }
 

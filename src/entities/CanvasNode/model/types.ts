@@ -1,3 +1,4 @@
+
 import type { VariableNode } from '../../VariableNode';
 
 export interface TemplateTokenRange {
@@ -7,6 +8,7 @@ export interface TemplateTokenRange {
   tokenIds: string[];   // Dependency IDs found in this expression
   relativeStart?: number; // Line-relative column position
   relativeEnd?: number;   // Line-relative column position
+  type?: 'token' | 'string'; // Added to distinguish variable tokens from string literals
 }
 
 export interface CanvasNode extends VariableNode {

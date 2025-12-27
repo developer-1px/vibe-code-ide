@@ -1,6 +1,7 @@
+
 import React from 'react';
 import { useSetAtom } from 'jotai';
-import { CanvasNode } from '../../../CanvasNode';
+import { VariableNode } from '../../model/types';
 import { getSlotColor } from '../../lib/styleUtils.ts';
 import { lastExpandedIdAtom } from '../../../../store/atoms';
 
@@ -8,7 +9,7 @@ interface CodeCardSlotProps {
   tokenId: string;
   lineNum: number;
   slotIdx: number;
-  depNode?: CanvasNode;
+  depNode?: VariableNode;
 }
 
 const CodeCardSlot: React.FC<CodeCardSlotProps> = ({ tokenId, lineNum, slotIdx, depNode }) => {
@@ -24,10 +25,20 @@ const CodeCardSlot: React.FC<CodeCardSlotProps> = ({ tokenId, lineNum, slotIdx, 
     setLastExpandedId(tokenId);
   };
 
+  // Vertical Center Calculation:
+  // Line Height (leading-5) = 20px. Center = 10px.
+  // Slot Height = 8px (h-2). Center = 4px.
+  // Top Offset = 10px - 4px = 6px.
+  
+  // Horizontal Position:
+  // Move inside column (starting at 2px).
+  // Stagger multiple slots by 5px to avoid complete overlap while minimizing collision with line numbers.
+  const leftPos = 2 + (slotIdx * 5);
+
   return (
     <div
-      className={`w-2 h-2 rounded-full absolute -left-3.5 transition-all duration-300 border-2 group-hover/line:scale-110 shadow-lg cursor-pointer hover:scale-125 ${slotColorClass}`}
-      style={{ top: `${6 + slotIdx * 0}px` }}
+      className={`w-2 h-2 rounded-full absolute z-10 transition-all duration-300 border-2 group-hover/line:scale-110 shadow-lg cursor-pointer hover:scale-125 ${slotColorClass}`}
+      style={{ top: '6px', left: `${leftPos}px` }}
       data-input-slot-for={tokenId}
       data-input-slot-line={lineNum}
       data-input-slot-unique={`${tokenId}::line${lineNum}`}
