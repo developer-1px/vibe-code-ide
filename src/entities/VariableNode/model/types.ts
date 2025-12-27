@@ -1,3 +1,4 @@
+
 import type { TemplateTokenRange } from '../../CanvasNode';
 
 export interface VariableNode {
