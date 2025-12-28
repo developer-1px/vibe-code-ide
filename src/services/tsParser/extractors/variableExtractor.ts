@@ -50,6 +50,42 @@ export function extractFileVariables(
         }
       });
     }
+
+    // Interface 선언
+    if (ts.isInterfaceDeclaration(node)) {
+      const isExported = hasExportModifier(node);
+      const name = node.name.text;
+      const fullStatement = node.getText(sourceFile);
+      const statementLine = sourceFile.getLineAndCharacterOfPosition(node.getStart()).line + 1;
+
+      variables.push({
+        name,
+        id: `${filePath}::${name}`,
+        line: statementLine,
+        isConst: true, // interface는 불변
+        isExported,
+        codeSnippet: fullStatement,
+        isFunction: false,
+      });
+    }
+
+    // Type 별칭 선언
+    if (ts.isTypeAliasDeclaration(node)) {
+      const isExported = hasExportModifier(node);
+      const name = node.name.text;
+      const fullStatement = node.getText(sourceFile);
+      const statementLine = sourceFile.getLineAndCharacterOfPosition(node.getStart()).line + 1;
+
+      variables.push({
+        name,
+        id: `${filePath}::${name}`,
+        line: statementLine,
+        isConst: true, // type alias는 불변
+        isExported,
+        codeSnippet: fullStatement,
+        isFunction: false,
+      });
+    }
   });
 
   return variables;

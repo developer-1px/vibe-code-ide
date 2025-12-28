@@ -77,7 +77,34 @@ export function analyzeExternalReferences(
     ...getLocalVariables(funcAnalysis),
   ]);
 
-  // 2. 함수 body의 모든 식별자 방문
+  // 2. 파라미터와 리턴 타입의 타입 참조 추출
+  visitTypeReferences(funcAnalysis.astNode, (identifier) => {
+    const name = identifier.text;
+
+    // 이미 처리됨
+    if (refs.has(name)) {
+      const ref = refs.get(name)!;
+      ref.usages.push(createTokenUsage(identifier, 'type', sourceFile));
+      return;
+    }
+
+    // 외부 참조 타입 결정
+    const refType = determineRefType(name, fileContext);
+
+    if (refType) {
+      const ref: ExternalReference = {
+        name,
+        refType,
+        source: getSource(name, refType, fileContext),
+        definedIn: getDefinedIn(name, refType, fileContext),
+        usages: [createTokenUsage(identifier, 'type', sourceFile)],
+        isFunction: getIsFunction(name, refType, fileContext),
+      };
+      refs.set(name, ref);
+    }
+  });
+
+  // 3. 함수 body의 모든 식별자 방문
   if (funcAnalysis.astNode.body) {
     visitIdentifiers(funcAnalysis.astNode.body, (identifier, context) => {
       const name = identifier.text;
@@ -252,6 +279,37 @@ function visitIdentifiers(
     }
 
     ts.forEachChild(node, (child) => visit(child, node));
+  };
+
+  visit(node);
+}
+
+/**
+ * 타입 참조만 방문 (파라미터, 리턴 타입, 타입 어노테이션 등)
+ */
+function visitTypeReferences(
+  node: ts.Node,
+  callback: (identifier: ts.Identifier) => void
+): void {
+  const visit = (node: ts.Node) => {
+    // 타입 참조 노드
+    if (ts.isTypeReferenceNode(node)) {
+      if (ts.isIdentifier(node.typeName)) {
+        callback(node.typeName);
+      } else if (ts.isQualifiedName(node.typeName)) {
+        // 예: React.FC -> React만 추출
+        let current = node.typeName;
+        while (ts.isQualifiedName(current)) {
+          if (ts.isIdentifier(current.left)) {
+            callback(current.left);
+            break;
+          }
+          current = current.left as ts.QualifiedName;
+        }
+      }
+    }
+
+    ts.forEachChild(node, visit);
   };
 
   visit(node);
