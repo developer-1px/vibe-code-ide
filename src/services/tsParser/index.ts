@@ -53,10 +53,30 @@ export function parseProject(
     if (isVueFile(filePath)) {
       processedFiles.add(filePath);
 
-      // <script> 부분만 추출
+      // <script> 부분 추출
       const scriptContent = extractVueScript(content, filePath);
+
       if (!scriptContent) {
-        console.warn(`⚠️ Skipping Vue file without script: ${filePath}`);
+        // Script 없이 template만 있는 경우 - 빈 파일 분석 생성
+        console.warn(`⚠️ Vue file has no script, creating empty analysis: ${filePath}`);
+
+        const emptySourceFile = ts.createSourceFile(
+          filePath,
+          '', // 빈 스크립트
+          ts.ScriptTarget.Latest,
+          true
+        );
+
+        const emptyAnalysis = {
+          filePath,
+          imports: [],
+          exports: [],
+          fileVariables: [],
+          functions: [],
+          sourceFile: emptySourceFile,
+        };
+
+        projectAnalysis.files.set(filePath, emptyAnalysis);
         return;
       }
 

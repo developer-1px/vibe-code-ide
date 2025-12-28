@@ -43,16 +43,20 @@ const CodeCard: React.FC<CodeCardProps> = ({ node }) => {
       {/* Variables Section: Show external references from functionAnalysis OR localReferences for other types */}
       <CodeCardReferences node={node} />
 
-      {/* Code Lines */}
-      <div className="flex flex-col bg-[#0b1221] py-2">
-        {processedLines.map((line, i) => (
-          <CodeCardLine key={i} line={line} node={node} />
-        ))}
-      </div>
+      {/* Code Lines (script가 있을 때만) */}
+      {processedLines.length > 0 && (
+        <div className="flex flex-col bg-[#0b1221] py-2">
+          {processedLines.map((line, i) => (
+            <CodeCardLine key={i} line={line} node={node} />
+          ))}
+        </div>
+      )}
 
       {/* Vue Template Section (Module 노드이면서 vueTemplate이 있을 때만) */}
       {node.type === 'module' && node.vueTemplate && (
-        <VueTemplateSection template={node.vueTemplate} node={node} scriptEndLine={scriptEndLine} />
+        <div className="flex flex-col bg-[#0b1221] py-2">
+          <VueTemplateSection template={node.vueTemplate} node={node} scriptEndLine={scriptEndLine} />
+        </div>
       )}
 
       {/* Copy Button - Bottom Right */}

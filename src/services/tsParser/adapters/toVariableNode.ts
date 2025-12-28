@@ -38,9 +38,19 @@ export function tsProjectToGraphData(
     const allVariables = fileAnalysis.fileVariables.map(v => v.id);
     const allTopLevelItems = [...allFunctions, ...allVariables];
 
-    // Export가 있거나 top-level 항목이 있으면 FILE_ROOT 생성
-    // (index.ts 같은 re-export 전용 파일도 포함)
-    if (allTopLevelItems.length > 0 || fileAnalysis.exports.length > 0) {
+    // Vue 파일이면 template 체크
+    let hasVueTemplate = false;
+    if (isVueFile(fileAnalysis.filePath)) {
+      const fullContent = files[fileAnalysis.filePath];
+      if (fullContent) {
+        const template = extractVueTemplate(fullContent, fileAnalysis.filePath);
+        hasVueTemplate = !!template;
+      }
+    }
+
+    // Export가 있거나 top-level 항목이 있거나 Vue template이 있으면 FILE_ROOT 생성
+    // (index.ts 같은 re-export 전용 파일, template만 있는 Vue 파일도 포함)
+    if (allTopLevelItems.length > 0 || fileAnalysis.exports.length > 0 || hasVueTemplate) {
       // FILE_ROOT 노드 생성 - 원본 코드 사용 (렌더링에서 함수 본문 접기)
       const fileRootNode: VariableNode = {
         id: `${fileAnalysis.filePath}::FILE_ROOT`,
