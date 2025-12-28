@@ -426,6 +426,19 @@ function getIdentifierContext(
     return 'type';
   }
 
+  // JSX 요소: <Sidebar />
+  if (
+    (ts.isJsxOpeningElement(parent) || ts.isJsxSelfClosingElement(parent)) &&
+    parent.tagName === identifier
+  ) {
+    return 'reference';
+  }
+
+  // JSX 닫는 태그: </Sidebar>
+  if (ts.isJsxClosingElement(parent) && parent.tagName === identifier) {
+    return null; // 닫는 태그는 중복이므로 스킵
+  }
+
   // 프로퍼티 선언/할당의 키는 스킵
   if (
     (ts.isPropertyAssignment(parent) && parent.name === identifier) ||
