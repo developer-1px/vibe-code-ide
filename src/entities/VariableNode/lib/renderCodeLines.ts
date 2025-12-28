@@ -147,17 +147,39 @@ export function renderCodeLines(node: CanvasNode): CodeLine[] {
       hasInput: false
     }));
 
-    // 이미 표시된 범위 추적 (중복 방지) - 범위 겹침 체크
-    const markedRanges: Array<{ start: number; end: number }> = [];
+    // 우선순위 정의 (높을수록 우선)
+    const PRIORITY: Record<CodeSegment['kind'], number> = {
+      'keyword': 100,           // 최우선
+      'punctuation': 90,
+      'string': 80,
+      'comment': 70,
+      'self': 60,
+      'external-import': 50,
+      'external-function': 45,
+      'external-closure': 40,
+      'identifier': 30,
+      'parameter': 20,
+      'local-variable': 10,
+      'text': 0,                // 최하위
+    };
 
-    // 범위 겹침 체크 함수
-    const isOverlapping = (start: number, end: number): boolean => {
-      return markedRanges.some(range => {
-        // 새 범위가 기존 범위와 겹치는지 확인
+    // 이미 표시된 범위 추적 (우선순위 기반 덮어쓰기)
+    const markedRanges: Array<{ start: number; end: number; kind: CodeSegment['kind'] }> = [];
+
+    // 범위 겹침 시 우선순위 체크
+    const canMark = (start: number, end: number, kind: CodeSegment['kind']): boolean => {
+      const overlapping = markedRanges.filter(range => {
         return (start >= range.start && start < range.end) ||
                (end > range.start && end <= range.end) ||
                (start <= range.start && end >= range.end);
       });
+
+      // 겹치는 범위가 없으면 OK
+      if (overlapping.length === 0) return true;
+
+      // 겹치는 범위가 있으면 우선순위 비교
+      // 모든 겹치는 범위보다 우선순위가 높아야 함
+      return overlapping.every(range => PRIORITY[kind] > PRIORITY[range.kind]);
     };
 
     // AST 순회하며 특별한 노드만 표시
@@ -263,8 +285,8 @@ export function renderCodeLines(node: CanvasNode): CodeLine[] {
       nodeId?: string,
       definedIn?: string
     ) {
-      // 중복 범위 체크 (겹침 확인)
-      if (isOverlapping(start, end)) return;
+      // 우선순위 체크
+      if (!canMark(start, end, kind)) return;
 
       const startPos = sourceFile.getLineAndCharacterOfPosition(start);
       const endPos = sourceFile.getLineAndCharacterOfPosition(end);
@@ -279,7 +301,7 @@ export function renderCodeLines(node: CanvasNode): CodeLine[] {
           if (kind !== 'local-variable' && kind !== 'parameter') {
             line.hasInput = true;
           }
-          markedRanges.push({ start, end });
+          markedRanges.push({ start, end, kind });
         }
         return;
       }
@@ -308,7 +330,7 @@ export function renderCodeLines(node: CanvasNode): CodeLine[] {
         }
       }
 
-      markedRanges.push({ start, end });
+      markedRanges.push({ start, end, kind });
     }
 
     // AST 순회
