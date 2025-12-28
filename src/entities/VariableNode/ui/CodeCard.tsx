@@ -17,45 +17,26 @@ interface CodeCardProps {
 }
 
 const CodeCard: React.FC<CodeCardProps> = ({ node }) => {
-  const isTemplate = node.type === 'template';
-
-  // --- 1. Prepare Data (Pure Logic) ---
-  const isModule = node.type === 'module';
-
-  // Extract external references (imports + closures) from functionAnalysis
+  // Extract external references from functionAnalysis
   const externalReferences = useMemo(() => {
-    if (!node.functionAnalysis) {
-      return [];
-    }
+    if (!node.functionAnalysis) return [];
 
-    // Map all external dependencies (both imports and closures)
-    const references = node.functionAnalysis.externalDeps
-      .filter(dep => dep.definedIn) // Only show if we have a resolved path
+    return node.functionAnalysis.externalDeps
+      .filter(dep => dep.definedIn)
       .map(dep => {
-        // Use definedIn for accurate node ID (already resolved to absolute path)
-        const nodeId = dep.definedIn!;
-
-        if (dep.type === 'import' && dep.source) {
-          return {
-            nodeId,
-            name: dep.name,
-            summary: `from ${dep.source}`,
-            type: 'pure-function' as const,
-          };
-        }
-
-        // For closures/file-level
+        const refType: 'pure-function' | 'function' = dep.type === 'import' ? 'pure-function' : 'function';
         return {
-          nodeId,
+          nodeId: dep.definedIn!,
           name: dep.name,
-          summary: dep.closureScope === 'file' ? 'file-level' : 'closure',
-          type: 'function' as const,
+          summary: dep.type === 'import' && dep.source
+            ? `from ${dep.source}`
+            : dep.closureScope === 'file' ? 'file-level' : 'closure',
+          type: refType,
         };
       });
-
-    return references;
   }, [node.functionAnalysis]);
 
+  // Render code lines with syntax highlighting
   const processedLines = useMemo(() => {
     return renderCodeLines(
       node.codeSnippet,
@@ -68,16 +49,13 @@ const CodeCard: React.FC<CodeCardProps> = ({ node }) => {
     );
   }, [node.codeSnippet, node.startLine, node.id, node.dependencies, node.localVariableNames, node.functionAnalysis, node.filePath]);
 
-
-  const maxWidthClass = 'max-w-[700px]';
-
   return (
     <div
       id={`node-${node.visualId || node.id}`}
       className={`
         bg-vibe-panel/95 backdrop-blur-md border shadow-2xl rounded-lg flex flex-col relative group/card overflow-visible transition-colors
         ${getNodeBorderColor(node.type)}
-        min-w-[420px] ${maxWidthClass} w-fit cursor-default
+        min-w-[420px] max-w-[700px] w-fit cursor-default
       `}
     >
       {/* Header */}
@@ -103,19 +81,11 @@ const CodeCard: React.FC<CodeCardProps> = ({ node }) => {
         </div>
       )}
 
-      {/* Body: Render Lines from Processed Data */}
-      <div className={`flex flex-col bg-[#0b1221] py-2 ${node.localReferences && node.localReferences.length > 0 ? 'rounded-b-lg' : 'rounded-b-lg'}`}>
-        {processedLines.map((line, i) => {
-          const isDefinitionLine = line.num === node.startLine;
-          return (
-            <CodeCardLine
-              key={i}
-              line={line}
-              node={node}
-              isDefinitionLine={isDefinitionLine}
-            />
-          );
-        })}
+      {/* Code Lines */}
+      <div className="flex flex-col bg-[#0b1221] py-2 rounded-b-lg">
+        {processedLines.map((line, i) => (
+          <CodeCardLine key={i} line={line} node={node} />
+        ))}
       </div>
 
       {/* Copy Button - Bottom Right */}

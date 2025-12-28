@@ -11,6 +11,7 @@ export interface CodeSegment {
   kind: 'text' | 'keyword' | 'punctuation' | 'string' | 'comment' | 'identifier' | 'external-import' | 'external-closure' | 'external-function' | 'self' | 'local-variable' | 'parameter';
   nodeId?: string;
   definedIn?: string;
+  offset?: number; // Position in line for accurate sorting
 }
 
 // AST에서 segment kind를 결정하는 Hook
@@ -269,7 +270,8 @@ export function renderCodeLines(
         if (lineIdx >= 0 && lineIdx < result.length) {
           const line = result[lineIdx];
           const text = processedCode.slice(start, end);
-          line.segments.push({ text, kind, nodeId, definedIn });
+          const offset = startPos.character; // Character position in line
+          line.segments.push({ text, kind, nodeId, definedIn, offset });
           if (kind !== 'local-variable' && kind !== 'parameter') {
             line.hasInput = true;
           }
@@ -293,7 +295,9 @@ export function renderCodeLines(
         if (segStart < segEnd) {
           const line = result[currentLine];
           const text = processedCode.slice(segStart, segEnd);
-          line.segments.push({ text, kind, nodeId, definedIn });
+          const segPos = sourceFile.getLineAndCharacterOfPosition(segStart);
+          const offset = segPos.character; // Character position in line
+          line.segments.push({ text, kind, nodeId, definedIn, offset });
           if (kind !== 'local-variable' && kind !== 'parameter') {
             line.hasInput = true;
           }
@@ -344,7 +348,7 @@ export function renderCodeLines(
       }
     }
 
-    // 각 라인을 실제 텍스트로 채우기 (간단 버전)
+    // 각 라인을 실제 텍스트로 채우기
     result.forEach((line, idx) => {
       const lineText = lines[idx];
 
@@ -352,30 +356,28 @@ export function renderCodeLines(
         // 특별한 토큰이 없으면 그냥 텍스트로
         line.segments = [{ text: lineText, kind: 'text' }];
       } else {
-        // 특별한 토큰들을 위치순 정렬
-        line.segments.sort((a, b) => {
-          const aIdx = lineText.indexOf(a.text);
-          const bIdx = lineText.indexOf(b.text);
-          return aIdx - bIdx;
-        });
+        // offset 기준으로 정렬 (정확한 위치 순서)
+        line.segments.sort((a, b) => (a.offset ?? 0) - (b.offset ?? 0));
 
         // 토큰 사이의 텍스트 채우기
         const newSegments: CodeSegment[] = [];
         let cursor = 0;
 
         line.segments.forEach(seg => {
-          const segIdx = lineText.indexOf(seg.text, cursor);
+          const segOffset = seg.offset ?? cursor;
 
-          if (segIdx > cursor) {
+          if (segOffset > cursor) {
             // 토큰 앞의 텍스트
             newSegments.push({
-              text: lineText.slice(cursor, segIdx),
+              text: lineText.slice(cursor, segOffset),
               kind: 'text'
             });
           }
 
-          newSegments.push(seg);
-          cursor = segIdx + seg.text.length;
+          // offset 제거하고 추가 (렌더링에는 필요 없음)
+          const { offset, ...segmentWithoutOffset } = seg;
+          newSegments.push(segmentWithoutOffset);
+          cursor = segOffset + seg.text.length;
         });
 
         // 남은 텍스트

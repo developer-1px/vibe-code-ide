@@ -11,18 +11,16 @@ import { pruneDetachedNodes } from '../../../../widgets/PipelineCanvas/utils.ts'
 interface CodeCardLineProps {
   line: CodeLine;
   node: CanvasNode;
-  isDefinitionLine: boolean;
 }
 
-const CodeCardLine: React.FC<CodeCardLineProps> = ({
-  line,
-  node,
-  isDefinitionLine
-}) => {
+const CodeCardLine: React.FC<CodeCardLineProps> = ({ line, node }) => {
   const fullNodeMap = useAtomValue(fullNodeMapAtom);
   const setVisibleNodeIds = useSetAtom(visibleNodeIdsAtom);
   const entryFile = useAtomValue(entryFileAtom);
   const templateRootId = useAtomValue(templateRootIdAtom);
+
+  // Calculate definition line status
+  const isDefinitionLine = line.num === node.startLine;
   const isTemplate = node.type === 'template';
 
   // 최상위 return 문의 범위 찾기 (return 키워드 인덱스부터 세미콜론까지)

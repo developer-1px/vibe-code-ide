@@ -3,7 +3,7 @@ import { CanvasNode } from '../../entities/CanvasNode';
 import { VariableNode } from '../../entities/VariableNode';
 
 // --- Constants ---
-export const LEVEL_SPACING = 700; // Horizontal space between columns
+export const LEVEL_SPACING = 850; // Horizontal space between columns
 export const VERTICAL_GAP = 150; // Gap between vertically stacked nodes (increased for external refs)
 export const CHAR_WRAP_LIMIT = 120; // Estimated characters per line before wrapping
 export const EXTERNAL_REF_HEIGHT = 28; // Height per external reference item

@@ -60,12 +60,13 @@ export const useD3Zoom = (containerRef: RefObject<HTMLDivElement>) => {
         const currentK = transform.k;
 
         const w = rect.width / currentK;
-        const h = rect.height / currentK;
-        const centerX = node.x + w / 2;
-        const centerY = node.y + h / 2;
 
-        const targetX = width / 2 - centerX * currentK;
-        const targetY = height / 2 - centerY * currentK;
+        // 선언된 위치(노드 상단)로 이동
+        const definitionX = node.x + w / 2;  // 가로는 중앙
+        const definitionY = node.y + 50;      // 세로는 상단 (정의 라인 위치)
+
+        const targetX = width / 2 - definitionX * currentK;
+        const targetY = height / 2 - definitionY * currentK;
 
         const newTransform = d3.zoomIdentity.translate(targetX, targetY).scale(currentK);
         d3.select(containerRef.current)
