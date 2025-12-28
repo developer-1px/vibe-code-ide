@@ -101,7 +101,10 @@ function tsFunctionToVariableNode(
 ): VariableNode {
   // 노드 타입 결정
   let nodeType: VariableNode['type'];
-  if (funcAnalysis.isPure) {
+  if (funcAnalysis.returnsJSX) {
+    // JSX를 return하면 Component
+    nodeType = 'template';
+  } else if (funcAnalysis.isPure) {
     nodeType = 'pure-function';
   } else if (funcAnalysis.hasSideEffects) {
     nodeType = 'effect-action';
@@ -110,18 +113,18 @@ function tsFunctionToVariableNode(
   }
 
   // Dependencies: 함수가 호출하는 다른 함수들 ⭐
-  // + 외부 참조 중 file-level 함수/변수
+  // + 외부 참조 (import, file-level)
   const dependencies = new Set<string>();
 
   // 1. 함수 호출 관계
   funcAnalysis.callsTo.forEach((id) => dependencies.add(id));
 
-  // 2. 외부 참조 중 file-level 항목들
+  // 2. 외부 참조 (import + file-level)
   funcAnalysis.externalRefs.forEach((ref) => {
-    if (ref.refType === 'file-level' && ref.definedIn) {
+    // import와 file-level 모두 dependencies에 추가
+    if (ref.definedIn) {
       dependencies.add(ref.definedIn);
     }
-    // import는 dependencies에 포함하지 않음 (별도 표시)
   });
 
   // Getter 함수로 AST에서 직접 정보 추출
@@ -166,6 +169,8 @@ function convertToLegacyFormat(
       source: ref.source,
       closureScope: ref.refType === 'file-level' ? 'file' : undefined,
       usages: ref.usages,
+      definedIn: ref.definedIn, // 정의 위치 추가
+      isFunction: ref.isFunction, // 함수 변수 여부
     })),
 
     localVariables: new Set(getLocalVariables(funcAnalysis, languageService)),

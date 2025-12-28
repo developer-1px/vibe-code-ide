@@ -30,6 +30,14 @@ export function extractFileVariables(
           const name = decl.name.text;
           const isConst = node.declarationList.flags & ts.NodeFlags.Const ? true : false;
 
+          // 함수 여부 체크 (initializer가 함수인지)
+          const isFunction = decl.initializer && (
+            ts.isFunctionExpression(decl.initializer) ||
+            ts.isArrowFunction(decl.initializer)
+          ) ? true : false;
+
+          console.log(`🔍 [variableExtractor] ${name}: isFunction=${isFunction}, initializer=${decl.initializer?.kind}`);
+
           variables.push({
             name,
             id: `${filePath}::${name}`,
@@ -37,6 +45,7 @@ export function extractFileVariables(
             isConst,
             isExported,
             codeSnippet: fullStatement, // parent node의 전체 텍스트 사용
+            isFunction,
           });
         }
       });

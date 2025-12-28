@@ -121,6 +121,7 @@ function createFunctionAnalysis(
     // 메타데이터 (나중에 분석)
     isPure: false,
     hasSideEffects: false,
+    returnsJSX: false,
   };
 }
 

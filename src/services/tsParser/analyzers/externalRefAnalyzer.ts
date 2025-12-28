@@ -24,6 +24,7 @@ import {
   TSFunctionAnalysis,
 } from '../types';
 import { getParameters, getLocalVariables } from '../utils/astGetters';
+import { resolvePath } from '../utils/pathResolver';
 
 // 글로벌 객체 목록 (외부 참조로 간주하지만 별도 표시)
 const GLOBAL_OBJECTS = new Set([
@@ -102,6 +103,7 @@ export function analyzeExternalReferences(
           source: getSource(name, refType, fileContext),
           definedIn: getDefinedIn(name, refType, fileContext),
           usages: [createTokenUsage(identifier, context, sourceFile)],
+          isFunction: getIsFunction(name, refType, fileContext),
         };
         refs.set(name, ref);
       }
@@ -161,6 +163,24 @@ function getSource(
 }
 
 /**
+ * 함수 변수 여부 가져오기
+ */
+function getIsFunction(
+  name: string,
+  refType: ExternalRefType,
+  fileContext: FileContext
+): boolean | undefined {
+  if (refType === 'file-level') {
+    const variable = fileContext.fileVariables.get(name);
+    if (variable) {
+      console.log(`🔍 [externalRefAnalyzer] ${name}: refType=${refType}, isFunction=${variable.isFunction}`);
+      return variable.isFunction;
+    }
+  }
+  return undefined;
+}
+
+/**
  * 정의 위치 가져오기
  */
 function getDefinedIn(
@@ -179,6 +199,12 @@ function getDefinedIn(
   if (refType === 'import') {
     const importInfo = fileContext.imports.get(name);
     if (importInfo) {
+      // 상대 경로를 절대 경로로 해결
+      const resolvedPath = resolvePath(fileContext.filePath, importInfo.source, fileContext.files);
+      if (resolvedPath) {
+        return `${resolvedPath}::${name}`;
+      }
+      // 해결 실패 시 원래 source 사용
       return `${importInfo.source}::${name}`;
     }
   }

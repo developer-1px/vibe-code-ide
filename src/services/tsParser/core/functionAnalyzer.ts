@@ -15,7 +15,7 @@ import {
   extractLocalVariables,
 } from '../analyzers/externalRefAnalyzer';
 import { extractFunctionCalls } from './callGraphBuilder';
-import { analyzePurity } from '../analyzers/purityAnalyzer';
+import { analyzePurity, returnsJSX } from '../analyzers/purityAnalyzer';
 
 /**
  * 함수 전체 분석
@@ -48,4 +48,7 @@ export function analyzeFunctionFull(
   const purityResult = analyzePurity(funcAnalysis.astNode);
   funcAnalysis.isPure = purityResult.isPure;
   funcAnalysis.hasSideEffects = purityResult.hasSideEffects;
+
+  // 5. JSX return 체크 (Component 판별)
+  funcAnalysis.returnsJSX = returnsJSX(funcAnalysis.astNode);
 }

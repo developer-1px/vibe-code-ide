@@ -5,25 +5,21 @@ import UploadFolderButton from '../../features/UploadFolderButton';
 
 interface FileExplorerProps {
   files: Record<string, string>;
-  activeFile: string;
   entryFile: string;
-  onFileClick: (fileName: string) => void;
   onSetEntryFile: (fileName: string) => void;
 }
 
 const FileExplorer: React.FC<FileExplorerProps> = ({
   files,
-  activeFile,
   entryFile,
-  onFileClick,
   onSetEntryFile
 }) => {
   const sortedFiles = Object.keys(files).sort();
 
   return (
-    <div className="bg-[#0f172a] border-b border-vibe-border max-h-64 overflow-y-auto">
+    <div className="flex-1 bg-[#0f172a] border-b border-vibe-border overflow-y-auto flex flex-col">
       {/* Header */}
-      <div className="px-4 py-2 text-xs font-semibold text-slate-400 flex items-center justify-between bg-black/20">
+      <div className="px-4 py-2 text-xs font-semibold text-slate-400 flex items-center justify-between bg-black/20 flex-shrink-0">
         <div className="flex items-center gap-1">
           <FolderOpen className="w-3 h-3" />
           <span>Explorer</span>
@@ -32,14 +28,12 @@ const FileExplorer: React.FC<FileExplorerProps> = ({
       </div>
 
       {/* File List */}
-      <ul>
+      <ul className="flex-1 overflow-y-auto">
         {sortedFiles.map(fileName => (
           <FileItem
             key={fileName}
             fileName={fileName}
-            isActive={activeFile === fileName}
             isEntry={fileName === entryFile}
-            onFileClick={onFileClick}
             onSetEntryFile={onSetEntryFile}
           />
         ))}

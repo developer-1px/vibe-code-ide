@@ -258,10 +258,33 @@ export const useCanvasLayout = (
 
         const totalRootHeight = treeRoot.subtreeHeight;
         const startY = -(totalRootHeight / 2);
-        
-        assignCoordinates(treeRoot, startY, 0); 
-        
-        setLayoutNodes(flatNodes);
+
+        assignCoordinates(treeRoot, startY, 0);
+
+        // Add orphan nodes (visible but not in tree)
+        const orphanNodes: CanvasNode[] = [];
+        let orphanY = startY;
+
+        visibleNodeIds.forEach(nodeId => {
+            if (!visited.has(nodeId)) {
+                const node = fullNodeMap.get(nodeId);
+                if (node && node.codeSnippet && node.codeSnippet.trim() !== '') {
+                    const height = estimateNodeHeight(node);
+                    orphanNodes.push({
+                        ...node,
+                        level: 0,
+                        x: LEVEL_SPACING, // Place to the right
+                        y: orphanY,
+                        isVisible: true,
+                        visualId: nodeId,
+                    });
+                    orphanY += height + VERTICAL_GAP;
+                    visited.add(nodeId);
+                }
+            }
+        });
+
+        setLayoutNodes([...flatNodes, ...orphanNodes]);
         setLayoutLinks([...flatLinks, ...extraLinks]);
 
     }, [visibleNodeIds, fullNodeMap, templateRootId, entryFile]);

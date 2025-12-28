@@ -98,7 +98,9 @@ const CodeCardHeader: React.FC<CodeCardHeaderProps> = ({ node }) => {
         </div>
       </div>
       <span className="text-[9px] uppercase tracking-wider bg-white/5 border border-white/10 px-1.5 py-0.5 rounded text-slate-400 font-mono ml-2">
-        {node.type}
+        {node.type === 'template' && node.id.includes('::') && !node.id.endsWith('::TEMPLATE_ROOT') && !node.id.endsWith('::JSX_ROOT') && !node.id.endsWith('::FILE_ROOT')
+          ? 'component'
+          : node.type}
       </span>
     </div>
   );

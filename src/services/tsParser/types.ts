@@ -36,6 +36,7 @@ export interface ExternalReference {
   source?: string;             // import source (import 타입인 경우)
   definedIn?: string;          // 정의 위치 (filePath::name)
   usages: TokenUsage[];        // 사용 위치 목록
+  isFunction?: boolean;        // 함수 변수인지 (file-level 변수의 경우)
 }
 
 /**
@@ -79,6 +80,7 @@ export interface FileVariable {
   isConst: boolean;
   isExported: boolean;
   codeSnippet: string;
+  isFunction: boolean;         // 함수를 값으로 가지는 변수인지
 }
 
 /**
@@ -109,6 +111,7 @@ export interface TSFunctionAnalysis {
   // 분석된 메타데이터
   isPure: boolean;
   hasSideEffects: boolean;
+  returnsJSX: boolean;              // JSX를 return하는지 (Component 판별용)
 }
 
 /**
@@ -162,4 +165,5 @@ export interface FileContext {
   imports: Map<string, ImportInfo>;        // name → import info
   fileVariables: Map<string, FileVariable>; // name → variable info
   allFunctions: Map<string, TSFunctionAnalysis>; // name → function (same file)
+  files: Record<string, string>;            // 전체 파일 맵 (경로 해석용)
 }

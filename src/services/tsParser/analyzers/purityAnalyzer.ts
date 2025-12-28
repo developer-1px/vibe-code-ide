@@ -92,6 +92,48 @@ const SIDE_EFFECT_METHODS = new Set([
 ]);
 
 /**
+ * JSX를 return하는지 체크 (React Component 판별)
+ */
+export function returnsJSX(functionNode: ts.FunctionLikeDeclaration): boolean {
+  if (!functionNode.body) return false;
+
+  let hasJSXReturn = false;
+
+  const visit = (node: ts.Node) => {
+    // Return statement 체크
+    if (ts.isReturnStatement(node) && node.expression) {
+      // JSX Element 체크
+      if (
+        ts.isJsxElement(node.expression) ||
+        ts.isJsxSelfClosingElement(node.expression) ||
+        ts.isJsxFragment(node.expression)
+      ) {
+        hasJSXReturn = true;
+        return;
+      }
+
+      // Parenthesized expression 안의 JSX 체크 (return (<div>...</div>))
+      if (ts.isParenthesizedExpression(node.expression)) {
+        const inner = node.expression.expression;
+        if (
+          ts.isJsxElement(inner) ||
+          ts.isJsxSelfClosingElement(inner) ||
+          ts.isJsxFragment(inner)
+        ) {
+          hasJSXReturn = true;
+          return;
+        }
+      }
+    }
+
+    ts.forEachChild(node, visit);
+  };
+
+  visit(functionNode.body);
+  return hasJSXReturn;
+}
+
+/**
  * 함수 순수성 분석
  */
 export function analyzePurity(functionNode: ts.FunctionLikeDeclaration): {

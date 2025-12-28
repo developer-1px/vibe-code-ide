@@ -1,6 +1,6 @@
 /**
- * TypeScript AST 기반 코드 렌더링
- * 중간 데이터 구조 없이 AST를 직접 순회하며 렌더링 정보 생성
+ * TypeScript AST 기반 코드 렌더링 (간소화 버전)
+ * AST를 top-down으로 순회하면서 바로 렌더링
  */
 
 import * as ts from 'typescript';
@@ -8,22 +8,42 @@ import type { FunctionAnalysis } from '../../../services/functionalParser/types'
 
 export interface CodeSegment {
   text: string;
-  kind: 'text' | 'keyword' | 'punctuation' | 'string' | 'comment' | 'identifier' | 'external-import' | 'external-closure' | 'self' | 'local-variable' | 'function-call';
-  nodeId?: string; // dependency 연결용
-  definedIn?: string; // external reference 또는 function call의 정의 위치 (filePath::name)
+  kind: 'text' | 'keyword' | 'punctuation' | 'string' | 'comment' | 'identifier' | 'external-import' | 'external-closure' | 'external-function' | 'self' | 'local-variable' | 'parameter';
+  nodeId?: string;
+  definedIn?: string;
+}
+
+// AST에서 segment kind를 결정하는 Hook
+function getSegmentKind(node: ts.Node): CodeSegment['kind'] | null {
+  // Keywords
+  if (node.kind >= ts.SyntaxKind.FirstKeyword && node.kind <= ts.SyntaxKind.LastKeyword) {
+    return 'keyword';
+  }
+
+  // Punctuation
+  if (node.kind >= ts.SyntaxKind.FirstPunctuation && node.kind <= ts.SyntaxKind.LastPunctuation) {
+    return 'punctuation';
+  }
+
+  // Strings
+  if (ts.isStringLiteral(node) || ts.isNoSubstitutionTemplateLiteral(node)) {
+    return 'string';
+  }
+
+  return null;
 }
 
 export interface CodeLine {
   num: number;
   segments: CodeSegment[];
   hasInput: boolean;
-  hasTopLevelReturn?: boolean; // 최상위 레벨 return 문 여부
+  hasTopLevelReturn?: boolean;
 }
 
 /**
- * 함수 본문을 접어서 한 줄로 변환 (코드 폴딩)
+ * Module 노드의 함수 본문 접기
  */
-function foldFunctionBodies(code: string, isTsx = false): string {
+function foldFunctionBodies(code: string, isTsx: boolean): string {
   try {
     const sourceFile = ts.createSourceFile(
       isTsx ? 'temp.tsx' : 'temp.ts',
@@ -33,25 +53,18 @@ function foldFunctionBodies(code: string, isTsx = false): string {
       isTsx ? ts.ScriptKind.TSX : ts.ScriptKind.TS
     );
 
-    // 함수들의 본문 위치를 수집
-    const foldRanges: Array<{ start: number; end: number; declarationEnd: number }> = [];
+    // 함수들의 본문 위치 수집
+    const folds: Array<{ start: number; end: number }> = [];
 
     function visit(node: ts.Node) {
       // Function declarations and arrow functions
       if (ts.isFunctionDeclaration(node) || ts.isArrowFunction(node) || ts.isFunctionExpression(node)) {
         if (node.body && ts.isBlock(node.body)) {
-          const bodyStart = node.body.getStart(sourceFile);
-          const bodyEnd = node.body.getEnd();
-          const openBrace = code.indexOf('{', bodyStart);
-          const closeBrace = code.lastIndexOf('}', bodyEnd);
+          const openBrace = code.indexOf('{', node.body.getStart(sourceFile));
+          const closeBrace = code.lastIndexOf('}', node.body.getEnd());
 
-          if (openBrace !== -1 && closeBrace !== -1) {
-            // 함수 선언부 끝 = { 직전
-            foldRanges.push({
-              start: openBrace,
-              end: closeBrace + 1,
-              declarationEnd: openBrace
-            });
+          if (openBrace !== -1 && closeBrace !== -1 && closeBrace > openBrace) {
+            folds.push({ start: openBrace + 1, end: closeBrace });
           }
         }
       }
@@ -61,18 +74,16 @@ function foldFunctionBodies(code: string, isTsx = false): string {
 
     visit(sourceFile);
 
-    // 뒤에서부터 치환 (인덱스 변경 방지)
-    foldRanges.sort((a, b) => b.start - a.start);
-
+    // 뒤에서부터 교체 (인덱스 변경 방지)
+    folds.sort((a, b) => b.start - a.start);
     let result = code;
-    foldRanges.forEach(range => {
-      const before = result.slice(0, range.start);
-      const after = result.slice(range.end);
-      result = before + '{ ... }' + after;
+
+    folds.forEach(({ start, end }) => {
+      result = result.slice(0, start) + ' ... ' + result.slice(end);
     });
 
     return result;
-  } catch (error) {
+  } catch {
     return code;
   }
 }
@@ -89,19 +100,33 @@ export function renderCodeLines(
   functionAnalysis?: FunctionAnalysis,
   filePath?: string
 ): CodeLine[] {
-  // TSX 파일 여부 판단
   const isTsx = filePath?.endsWith('.tsx') || filePath?.endsWith('.jsx') || false;
-
-  // Module 노드의 경우 함수 본문 접기
   const isModule = nodeId.endsWith('::FILE_ROOT');
+
+  // Module이면 함수 본문 접기
   const processedCode = isModule ? foldFunctionBodies(codeSnippet, isTsx) : codeSnippet;
   const lines = processedCode.split('\n');
   const nodeShortId = nodeId.split('::').pop() || '';
-  const localVarSet = new Set(localVariableNames || []);
 
-  // 디버깅: 함수 노드의 코드 스니펫 확인
-  if (!isModule && nodeShortId !== 'FILE_ROOT') {
-    console.log(`📝 Node: ${nodeShortId}, Dependencies:`, dependencies);
+  // 참조 맵 생성
+  const localVars = new Set(localVariableNames || []);
+  const parameters = functionAnalysis?.parameters ? new Set(functionAnalysis.parameters) : new Set<string>();
+  const dependencyMap = new Map<string, string>();
+  dependencies.forEach(dep => {
+    const name = dep.split('::').pop();
+    if (name) dependencyMap.set(name, dep);
+  });
+
+  // External references 맵
+  const externalRefs = new Map<string, { type: 'import' | 'closure'; definedIn?: string; isFunction?: boolean }>();
+  if (functionAnalysis) {
+    functionAnalysis.externalDeps.forEach((dep: any) => {
+      externalRefs.set(dep.name, {
+        type: dep.type,
+        definedIn: dep.definedIn,
+        isFunction: dep.isFunction
+      });
+    });
   }
 
   try {
@@ -113,383 +138,267 @@ export function renderCodeLines(
       isTsx ? ts.ScriptKind.TSX : ts.ScriptKind.TS
     );
 
-    // 전체 소스 텍스트 (JSX 주석 추출에 필요)
-    const fullText = sourceFile.getFullText();
+    // 결과 라인 배열
+    const result: CodeLine[] = lines.map((_, idx) => ({
+      num: startLineNum + idx,
+      segments: [],
+      hasInput: false
+    }));
 
-    // 1. AST에서 모든 토큰 추출 (위치 기반)
-    const tokens: Array<{
-      start: number;
-      end: number;
-      text: string;
-      kind: ts.SyntaxKind;
-      isIdentifier?: boolean;
-      isDependency?: boolean;
-      isSelf?: boolean;
-      isExternalImport?: boolean;
-      isExternalClosure?: boolean;
-      isLocalVariable?: boolean;
-      isFunctionCall?: boolean;
-      nodeId?: string;
-      definedIn?: string;
-    }> = [];
+    // 이미 표시된 범위 추적 (중복 방지) - 범위 겹침 체크
+    const markedRanges: Array<{ start: number; end: number }> = [];
 
-    // External references 맵 생성 (functionAnalysis가 있을 경우)
-    const externalRefMap = new Map<string, { type: 'import' | 'closure'; positions: number[]; definedIn?: string }>();
-    if (functionAnalysis) {
-      functionAnalysis.externalDeps.forEach(dep => {
-        dep.usages.forEach(usage => {
-          const adjustedStart = usage.start - functionAnalysis.codeStartOffset;
-          if (!externalRefMap.has(dep.name)) {
-            externalRefMap.set(dep.name, {
-              type: dep.type,
-              positions: [],
-              definedIn: (dep as any).definedIn // TypeScript parser의 definedIn 정보
-            });
-          }
-          externalRefMap.get(dep.name)!.positions.push(adjustedStart);
-        });
+    // 범위 겹침 체크 함수
+    const isOverlapping = (start: number, end: number): boolean => {
+      return markedRanges.some(range => {
+        // 새 범위가 기존 범위와 겹치는지 확인
+        return (start >= range.start && start < range.end) ||
+               (end > range.start && end <= range.end) ||
+               (start <= range.start && end >= range.end);
       });
-    }
+    };
 
-    // 최상위 레벨 return 문 위치 찾기 (중첩 함수 제외)
-    const topLevelReturnPositions = new Set<number>();
-    function findTopLevelReturns(node: ts.Node, depth: number = 0) {
-      if (ts.isReturnStatement(node) && depth === 0) {
-        // 최상위 레벨 return 문
-        const returnKeywordPos = node.getStart(sourceFile);
-        topLevelReturnPositions.add(returnKeywordPos);
-      }
-
-      // 중첩 함수를 만나면 depth 증가
-      const isNestedFunction =
-        ts.isFunctionDeclaration(node) ||
-        ts.isFunctionExpression(node) ||
-        ts.isArrowFunction(node) ||
-        ts.isMethodDeclaration(node);
-
-      node.forEachChild(child => {
-        findTopLevelReturns(child, isNestedFunction ? depth + 1 : depth);
-      });
-    }
-
-    // Module 노드가 아닐 때만 최상위 return 찾기
-    if (!isModule && functionAnalysis) {
-      findTopLevelReturns(sourceFile);
-    }
-
-    // JSX 주석 범위 저장 (중괄호 포함)
-    const jsxCommentRanges: Array<{ start: number; end: number }> = [];
-    if (isTsx) {
-      const jsxCommentMatches = fullText.matchAll(/\{\s*\/\*[\s\S]*?\*\/\s*\}/g);
-      for (const match of jsxCommentMatches) {
-        if (match.index !== undefined) {
-          jsxCommentRanges.push({
-            start: match.index,
-            end: match.index + match[0].length
-          });
-        }
-      }
-    }
-
-    // 특정 위치가 JSX 주석 범위 안에 있는지 확인
-    function isInsideJsxComment(pos: number): boolean {
-      return jsxCommentRanges.some(range => pos >= range.start && pos < range.end);
-    }
-
-    // AST 순회하며 토큰 수집 (getChildren 사용하여 모든 리프 토큰 추출)
+    // AST 순회하며 특별한 노드만 표시
     function visit(node: ts.Node) {
       const start = node.getStart(sourceFile);
       const end = node.getEnd();
-      const text = node.getText(sourceFile);
+      const pos = sourceFile.getLineAndCharacterOfPosition(start);
+      const lineIdx = pos.line;
 
-      // JSX 주석 안의 토큰은 스킵
-      if (isInsideJsxComment(start)) {
-        return;
+      // Hook 1: Keyword, Punctuation, String 체크
+      const basicKind = getSegmentKind(node);
+      if (basicKind) {
+        markPosition(lineIdx, start, end, basicKind);
+        if (basicKind === 'string') return; // String은 자식 순회 안 함
       }
 
-      // Keywords
-      if (node.kind >= ts.SyntaxKind.FirstKeyword && node.kind <= ts.SyntaxKind.LastKeyword) {
-        tokens.push({ start, end, text, kind: node.kind });
-        return;
-      }
-
-      // Punctuation
-      if (node.kind >= ts.SyntaxKind.FirstPunctuation && node.kind <= ts.SyntaxKind.LastPunctuation) {
-        tokens.push({ start, end, text, kind: node.kind });
-        return;
-      }
-
-      // Strings
-      if (ts.isStringLiteral(node) || ts.isTemplateExpression(node) || ts.isNoSubstitutionTemplateLiteral(node)) {
-        tokens.push({ start, end, text, kind: ts.SyntaxKind.StringLiteral });
-        // Template expressions have children, so continue
-        if (ts.isTemplateExpression(node)) {
-          node.getChildren(sourceFile).forEach(child => visit(child));
-        }
-        return;
-      }
-
-      // Identifiers
+      // Hook 2: Identifier 체크
       if (ts.isIdentifier(node)) {
         const name = node.text;
+        const parent = (node as any).parent;
 
-        // Check if it's local variable
-        const isLocalVar = localVarSet.has(name);
+        // JSX 태그 이름 체크 (Property access는 제외)
+        const isJsxTag = parent && (
+          ts.isJsxOpeningElement(parent) ||
+          ts.isJsxSelfClosingElement(parent) ||
+          ts.isJsxClosingElement(parent)
+        ) && parent.tagName === node;
 
-        // Check if it's self reference
-        const isSelf = name === nodeShortId;
+        // Property access 제외 (obj.prop에서 prop는 스킵)
+        const isPropertyAccess = parent && (
+          ts.isPropertyAccessExpression(parent) ||
+          ts.isPropertyAccessChain(parent)
+        ) && parent.name === node;
 
-        // Check if it's external reference (from functionAnalysis)
-        let isExternal = false;
-        let externalType: 'import' | 'closure' | undefined;
-        let externalDefinedIn: string | undefined;
-        if (externalRefMap.has(name)) {
-          const ref = externalRefMap.get(name)!;
-          if (ref.positions.includes(start)) {
-            isExternal = true;
-            externalType = ref.type;
-            externalDefinedIn = ref.definedIn;
-          }
+        // Property key 제외
+        const isPropertyKey = parent && ts.isPropertyAssignment(parent) && parent.name === node;
+
+        // 스킵 조건
+        if (!isJsxTag && (isPropertyAccess || isPropertyKey)) {
+          // 자식 순회 계속
+          ts.forEachChild(node, visit);
+          return;
         }
 
-        // Check if it's in dependencies
-        const matchedDep = dependencies.find(dep => dep.endsWith(`::${name}`));
-
-        // 디버깅: dependency 매칭 확인
-        if (matchedDep && !isModule) {
-          console.log(`🔗 Matched dependency: ${name} → ${matchedDep}`);
+        // Self reference
+        if (name === nodeShortId) {
+          markPosition(lineIdx, start, end, 'self', nodeId);
+          return;
         }
 
-        if (isSelf || matchedDep || isExternal || isLocalVar) {
-          // Skip property access (obj.prop)
-          const parent = (node as any).parent;
-          if (parent && (ts.isPropertyAccessExpression(parent) || ts.isPropertyAccessChain(parent))) {
-            if (parent.name === node) {
-              return;
-            }
+        // Parameter
+        if (parameters.has(name)) {
+          markPosition(lineIdx, start, end, 'parameter');
+          return;
+        }
+
+        // Local variable
+        if (localVars.has(name)) {
+          markPosition(lineIdx, start, end, 'local-variable');
+          return;
+        }
+
+        // Dependency (먼저 체크 - slot 생성 우선)
+        if (dependencyMap.has(name)) {
+          markPosition(lineIdx, start, end, 'identifier', dependencyMap.get(name));
+          return;
+        }
+
+        // External reference (dependency에 없는 것만)
+        if (externalRefs.has(name)) {
+          const ref = externalRefs.get(name)!;
+
+          // file-level 변수가 함수면 다른 kind 사용
+          let kind: CodeSegment['kind'];
+          if (ref.type === 'import') {
+            kind = 'external-import';
+          } else if (ref.isFunction) {
+            kind = 'external-function'; // 새로운 kind
+          } else {
+            kind = 'external-closure';
           }
 
-          // Skip property keys
-          if (parent && ts.isPropertyAssignment(parent) && parent.name === node) {
-            return;
-          }
+          console.log(`🔍 [renderCodeLines] ${name}: ref.type=${ref.type}, ref.isFunction=${ref.isFunction}, kind=${kind}`);
 
-          tokens.push({
-            start,
-            end,
-            text: name,
-            kind: ts.SyntaxKind.Identifier,
-            isIdentifier: true,
-            isSelf,
-            isDependency: !!matchedDep,
-            isExternalImport: isExternal && externalType === 'import',
-            isExternalClosure: isExternal && externalType === 'closure',
-            isLocalVariable: isLocalVar,
-            nodeId: isSelf ? nodeId : matchedDep,
-            definedIn: externalDefinedIn
-          });
+          markPosition(lineIdx, start, end, kind, undefined, ref.definedIn);
+          return;
+        }
+      }
+
+      // 자식 노드 순회
+      ts.forEachChild(node, visit);
+    }
+
+    // 위치 표시 헬퍼 (멀티라인 자동 처리)
+    function markPosition(
+      lineIdx: number,
+      start: number,
+      end: number,
+      kind: CodeSegment['kind'],
+      nodeId?: string,
+      definedIn?: string
+    ) {
+      // 중복 범위 체크 (겹침 확인)
+      if (isOverlapping(start, end)) return;
+
+      const startPos = sourceFile.getLineAndCharacterOfPosition(start);
+      const endPos = sourceFile.getLineAndCharacterOfPosition(end);
+
+      // 같은 줄이면 기존 로직
+      if (startPos.line === endPos.line) {
+        if (lineIdx >= 0 && lineIdx < result.length) {
+          const line = result[lineIdx];
+          const text = processedCode.slice(start, end);
+          line.segments.push({ text, kind, nodeId, definedIn });
+          if (kind !== 'local-variable' && kind !== 'parameter') {
+            line.hasInput = true;
+          }
+          markedRanges.push({ start, end });
         }
         return;
       }
 
-      // 복합 노드는 children 순회
-      node.getChildren(sourceFile).forEach(child => visit(child));
-    }
+      // 멀티라인이면 각 줄별로 분할
+      for (let currentLine = startPos.line; currentLine <= endPos.line; currentLine++) {
+        if (currentLine < 0 || currentLine >= result.length) continue;
 
-    visit(sourceFile);
+        const lineStart = sourceFile.getPositionOfLineAndCharacter(currentLine, 0);
+        const lineEnd = currentLine < lines.length - 1
+          ? sourceFile.getPositionOfLineAndCharacter(currentLine + 1, 0) - 1
+          : processedCode.length;
 
-    // Comments 추출 (중복 방지를 위해 Set 사용)
-    const processedComments = new Set<number>();
+        const segStart = Math.max(start, lineStart);
+        const segEnd = Math.min(end, lineEnd);
 
-    // 1. Leading/Trailing comments 추출
-    ts.forEachChild(sourceFile, function visitForComments(node) {
-      const nodeFullStart = node.getFullStart();
-      const nodeStart = node.getStart(sourceFile);
-
-      if (nodeFullStart < nodeStart) {
-        const leadingText = fullText.substring(nodeFullStart, nodeStart);
-        const commentMatches = leadingText.matchAll(/\/\/.*|\/\*[\s\S]*?\*\//g);
-        for (const match of commentMatches) {
-          if (match.index !== undefined) {
-            const start = nodeFullStart + match.index;
-            const end = start + match[0].length;
-
-            // JSX 주석 범위 안에 있으면 스킵 (중복 방지)
-            if (isInsideJsxComment(start)) {
-              continue;
-            }
-
-            // 중복 체크
-            if (!processedComments.has(start)) {
-              tokens.push({
-                start,
-                end,
-                text: match[0],
-                kind: ts.SyntaxKind.SingleLineCommentTrivia
-              });
-              processedComments.add(start);
-            }
+        if (segStart < segEnd) {
+          const line = result[currentLine];
+          const text = processedCode.slice(segStart, segEnd);
+          line.segments.push({ text, kind, nodeId, definedIn });
+          if (kind !== 'local-variable' && kind !== 'parameter') {
+            line.hasInput = true;
           }
         }
       }
 
-      ts.forEachChild(node, visitForComments);
-    });
+      markedRanges.push({ start, end });
+    }
 
-    // 2. JSX 주석 추출: {/* ... */}
+    // AST 순회
+    visit(sourceFile);
+
+    // Hook 3: Comments 추가 (AST에 없는 trivia)
+    const fullText = sourceFile.getFullText();
+
+    // JSX comments 먼저 처리 (일반 주석과 겹침 방지)
     if (isTsx) {
-      const jsxCommentMatches = fullText.matchAll(/\{\s*\/\*[\s\S]*?\*\/\s*\}/g);
-      for (const match of jsxCommentMatches) {
+      const jsxComments = fullText.matchAll(/\{\s*\/\*[\s\S]*?\*\/\s*}/g);
+      for (const match of jsxComments) {
         if (match.index !== undefined) {
           const start = match.index;
           const end = start + match[0].length;
-
-          // 중복 체크
-          if (!processedComments.has(start)) {
-            tokens.push({
-              start,
-              end,
-              text: match[0],
-              kind: ts.SyntaxKind.MultiLineCommentTrivia
-            });
-            processedComments.add(start);
-          }
+          const pos = sourceFile.getLineAndCharacterOfPosition(start);
+          markPosition(pos.line, start, end, 'comment');
         }
       }
     }
 
-    // 2. 토큰을 라인별로 그룹화
-    tokens.sort((a, b) => a.start - b.start);
-
-    // 디버깅: 중복 토큰 체크
-    const tokenStarts = new Map<number, number>();
-    tokens.forEach(token => {
-      const count = tokenStarts.get(token.start) || 0;
-      tokenStarts.set(token.start, count + 1);
-    });
-
-    // 중복된 토큰 필터링
-    const uniqueTokens: typeof tokens = [];
-    const seenPositions = new Set<string>();
-    tokens.forEach(token => {
-      const key = `${token.start}-${token.end}`;
-      if (!seenPositions.has(key)) {
-        uniqueTokens.push(token);
-        seenPositions.add(key);
+    // Multi-line comments (일반 /* */)
+    const multiLineComments = fullText.matchAll(/\/\*[\s\S]*?\*\//g);
+    for (const match of multiLineComments) {
+      if (match.index !== undefined) {
+        const start = match.index;
+        const end = start + match[0].length;
+        const pos = sourceFile.getLineAndCharacterOfPosition(start);
+        markPosition(pos.line, start, end, 'comment');
       }
-    });
+    }
 
-    const result: CodeLine[] = [];
-    let currentOffset = 0;
+    // Single-line comments
+    const singleLineComments = fullText.matchAll(/\/\/.*/g);
+    for (const match of singleLineComments) {
+      if (match.index !== undefined) {
+        const start = match.index;
+        const end = start + match[0].length;
+        const pos = sourceFile.getLineAndCharacterOfPosition(start);
+        markPosition(pos.line, start, end, 'comment');
+      }
+    }
 
-    lines.forEach((lineText, lineIdx) => {
-      const lineStart = currentOffset;
-      const lineEnd = currentOffset + lineText.length;
-      const lineNum = startLineNum + lineIdx;
-      currentOffset = lineEnd + 1; // +1 for \n
+    // 각 라인을 실제 텍스트로 채우기 (간단 버전)
+    result.forEach((line, idx) => {
+      const lineText = lines[idx];
 
-      // 현재 라인과 겹치는 토큰 필터링 (멀티라인 토큰 포함)
-      const lineTokens = uniqueTokens.filter(t => {
-        // 토큰이 현재 라인과 겹치는지 확인
-        return t.start < lineEnd && t.end > lineStart;
-      });
-      const segments: CodeSegment[] = [];
-      let cursor = lineStart;
-      let hasInput = false;
+      if (line.segments.length === 0) {
+        // 특별한 토큰이 없으면 그냥 텍스트로
+        line.segments = [{ text: lineText, kind: 'text' }];
+      } else {
+        // 특별한 토큰들을 위치순 정렬
+        line.segments.sort((a, b) => {
+          const aIdx = lineText.indexOf(a.text);
+          const bIdx = lineText.indexOf(b.text);
+          return aIdx - bIdx;
+        });
 
-      // 최상위 return 문이 이 라인에 있는지 확인
-      let hasTopLevelReturn = false;
-      lineTokens.forEach(token => {
-        if (token.kind === ts.SyntaxKind.ReturnKeyword && topLevelReturnPositions.has(token.start)) {
-          hasTopLevelReturn = true;
-        }
-      });
+        // 토큰 사이의 텍스트 채우기
+        const newSegments: CodeSegment[] = [];
+        let cursor = 0;
 
-      lineTokens.forEach(token => {
-        // 토큰의 현재 라인 내 시작/끝 위치
-        const tokenStartInLine = Math.max(token.start, lineStart);
-        const tokenEndInLine = Math.min(token.end, lineEnd);
+        line.segments.forEach(seg => {
+          const segIdx = lineText.indexOf(seg.text, cursor);
 
-        // Text before token (within current line)
-        if (tokenStartInLine > cursor) {
-          const text = processedCode.slice(cursor, tokenStartInLine);
-          if (text) {
-            segments.push({ text, kind: 'text' });
+          if (segIdx > cursor) {
+            // 토큰 앞의 텍스트
+            newSegments.push({
+              text: lineText.slice(cursor, segIdx),
+              kind: 'text'
+            });
           }
-        }
 
-        // Determine segment kind
-        let kind: CodeSegment['kind'] = 'text';
-        if (token.isSelf) {
-          kind = 'self';
-          hasInput = true;
-        } else if (token.isLocalVariable) {
-          kind = 'local-variable';
-        } else if (token.isExternalImport) {
-          kind = 'external-import';
-          hasInput = true;
-        } else if (token.isExternalClosure) {
-          kind = 'external-closure';
-          hasInput = true;
-        } else if (token.isDependency) {
-          kind = 'identifier';
-          hasInput = true;
-        } else if (token.kind >= ts.SyntaxKind.FirstKeyword && token.kind <= ts.SyntaxKind.LastKeyword) {
-          kind = 'keyword';
-        } else if (token.kind >= ts.SyntaxKind.FirstPunctuation && token.kind <= ts.SyntaxKind.LastPunctuation) {
-          kind = 'punctuation';
-        } else if (token.kind === ts.SyntaxKind.StringLiteral) {
-          kind = 'string';
-        } else if (token.kind === ts.SyntaxKind.SingleLineCommentTrivia || token.kind === ts.SyntaxKind.MultiLineCommentTrivia) {
-          kind = 'comment';
-        } else if (token.isIdentifier) {
-          kind = 'identifier';
-        }
+          newSegments.push(seg);
+          cursor = segIdx + seg.text.length;
+        });
 
-        // 현재 라인 내에서만 토큰 텍스트 추출 (멀티라인 토큰 처리)
-        const tokenTextInLine = processedCode.slice(tokenStartInLine, tokenEndInLine);
-
-        if (tokenTextInLine) {
-          segments.push({
-            text: tokenTextInLine,
-            kind,
-            nodeId: token.nodeId,
-            definedIn: token.definedIn
+        // 남은 텍스트
+        if (cursor < lineText.length) {
+          newSegments.push({
+            text: lineText.slice(cursor),
+            kind: 'text'
           });
         }
 
-        cursor = tokenEndInLine;
-      });
-
-      // Trailing text
-      if (cursor < lineEnd) {
-        const text = processedCode.slice(cursor, lineEnd);
-        if (text) {
-          segments.push({ text, kind: 'text' });
-        }
+        line.segments = newSegments;
       }
-
-      // Empty line
-      if (segments.length === 0) {
-        segments.push({ text: lineText, kind: 'text' });
-      }
-
-      result.push({
-        num: lineNum,
-        segments,
-        hasInput,
-        hasTopLevelReturn
-      });
     });
 
     return result;
 
   } catch (error) {
     console.error('Error parsing code:', error);
-    // Fallback: plain text
+
+    // Fallback: 단순 텍스트 렌더링
     return lines.map((lineText, idx) => ({
       num: startLineNum + idx,
-      segments: [{ text: lineText, kind: 'text' as const }],
+      segments: [{ text: lineText, kind: 'text' }],
       hasInput: false
     }));
   }

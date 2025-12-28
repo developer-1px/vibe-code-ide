@@ -23,7 +23,33 @@ const LocalReferenceItem: React.FC<LocalReferenceItemProps> = ({ reference }) =>
   const handleClick = (e: React.MouseEvent) => {
     e.stopPropagation();
 
-    if (!isLinkable) return;
+    console.log('🔍 LocalReferenceItem clicked:', {
+      name: reference.name,
+      nodeId: reference.nodeId,
+      isLinkable,
+      hasInFullNodeMap: fullNodeMap.has(reference.nodeId),
+      fullNodeMapKeys: Array.from(fullNodeMap.keys()).filter(k => k.includes(reference.name)),
+    });
+
+    if (!isLinkable) {
+      console.log('❌ Not linkable, checking FILE_ROOT fallback');
+      // Try FILE_ROOT fallback
+      const filePath = reference.nodeId.split('::')[0];
+      const fileRootId = `${filePath}::FILE_ROOT`;
+
+      if (fullNodeMap.has(fileRootId)) {
+        console.log('✅ Found FILE_ROOT:', fileRootId);
+        setVisibleNodeIds((prev: Set<string>) => {
+          const next = new Set(prev);
+          next.add(fileRootId);
+          return next;
+        });
+        setLastExpandedId(fileRootId);
+      } else {
+        console.log('❌ FILE_ROOT not found:', fileRootId);
+      }
+      return;
+    }
 
     const forceExpand = e.metaKey || e.ctrlKey;
     let isExpanding = false;
@@ -33,10 +59,13 @@ const LocalReferenceItem: React.FC<LocalReferenceItemProps> = ({ reference }) =>
 
       if (next.has(reference.nodeId) && !forceExpand) {
         // TOGGLE OFF (Fold)
+        console.log('🔽 Folding node:', reference.nodeId);
         next.delete(reference.nodeId);
-        return pruneDetachedNodes(next, fullNodeMap, entryFile, templateRootId);
+        // Don't prune - let users manually manage external references
+        return next;
       } else {
         // TOGGLE ON (Unfold Recursively)
+        console.log('🔼 Expanding node:', reference.nodeId);
         isExpanding = true;
 
         const expandRecursive = (id: string) => {
@@ -57,6 +86,7 @@ const LocalReferenceItem: React.FC<LocalReferenceItemProps> = ({ reference }) =>
         };
 
         expandRecursive(reference.nodeId);
+        console.log('✅ Nodes after expansion:', Array.from(next));
       }
       return next;
     });

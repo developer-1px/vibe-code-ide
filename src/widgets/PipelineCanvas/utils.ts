@@ -4,8 +4,10 @@ import { VariableNode } from '../../entities/VariableNode';
 
 // --- Constants ---
 export const LEVEL_SPACING = 700; // Horizontal space between columns
-export const VERTICAL_GAP = 60; // Gap between vertically stacked nodes
+export const VERTICAL_GAP = 150; // Gap between vertically stacked nodes (increased for external refs)
 export const CHAR_WRAP_LIMIT = 120; // Estimated characters per line before wrapping
+export const EXTERNAL_REF_HEIGHT = 28; // Height per external reference item
+export const EXTERNAL_REF_SECTION_PADDING = 40; // Header + padding for external refs section
 
 // --- Helpers ---
 
@@ -32,8 +34,9 @@ export const getUsageIndex = (code: string, id: string) => {
 // Helper to estimate the rendered height of a node with wrapping
 export const estimateNodeHeight = (node: CanvasNode) => {
     if (!node.codeSnippet) return 60;
+
     const lines = node.codeSnippet.split('\n');
-    
+
     let visualLineCount = 0;
     lines.forEach(line => {
         const length = line.length;
@@ -46,7 +49,25 @@ export const estimateNodeHeight = (node: CanvasNode) => {
 
     const baseHeight = 60; // Header + padding
     const lineHeight = 20; // Approximation of line-height in pixels
-    return baseHeight + (visualLineCount * lineHeight);
+    let totalHeight = baseHeight + (visualLineCount * lineHeight);
+
+    // Add height for External References section
+    if (node.functionAnalysis?.externalDeps) {
+        const externalRefsCount = node.functionAnalysis.externalDeps.filter(
+            dep => dep.definedIn // Only count refs with definedIn
+        ).length;
+
+        if (externalRefsCount > 0) {
+            totalHeight += EXTERNAL_REF_SECTION_PADDING + (externalRefsCount * EXTERNAL_REF_HEIGHT);
+        }
+    }
+
+    // Add height for Local References section (for templates/modules)
+    if (node.localReferences && node.localReferences.length > 0) {
+        totalHeight += EXTERNAL_REF_SECTION_PADDING + (node.localReferences.length * EXTERNAL_REF_HEIGHT);
+    }
+
+    return totalHeight;
 };
 
 /**

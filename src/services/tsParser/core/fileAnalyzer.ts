@@ -17,7 +17,8 @@ import { analyzeFunctionFull } from './functionAnalyzer';
  */
 export function analyzeFile(
   filePath: string,
-  content: string
+  content: string,
+  files: Record<string, string>
 ): TSFileAnalysis {
   // 1. TypeScript AST 생성
   // ScriptKind를 파일 확장자에 따라 결정
@@ -53,6 +54,7 @@ export function analyzeFile(
     imports: createImportMap(imports),
     fileVariables: createFileVariableMap(fileVariables),
     allFunctions: createFunctionMap(functions),
+    files, // 전체 파일 맵 추가 (경로 해석용)
   };
 
   // 7. 각 함수 상세 분석 (로컬 변수, 외부 참조, 함수 호출)

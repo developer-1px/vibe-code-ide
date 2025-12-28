@@ -25,42 +25,36 @@ const CodeCard: React.FC<CodeCardProps> = ({ node }) => {
   // Extract external references (imports + closures) from functionAnalysis
   const externalReferences = useMemo(() => {
     if (!node.functionAnalysis) {
-      console.log('🔍 No functionAnalysis for node:', node.id);
       return [];
     }
 
-    console.log('🔍 FunctionAnalysis for', node.id, ':', {
-      totalExternalDeps: node.functionAnalysis.externalDeps.length,
-      externalDeps: node.functionAnalysis.externalDeps,
-    });
-
     // Map all external dependencies (both imports and closures)
-    const references = node.functionAnalysis.externalDeps.map(dep => {
-      // For imports, use the source path as the node ID
-      if (dep.type === 'import' && dep.source) {
-        // Try to resolve the import to a function node in that file
-        const nodeId = `${dep.source}::${dep.name}`;
+    const references = node.functionAnalysis.externalDeps
+      .filter(dep => dep.definedIn) // Only show if we have a resolved path
+      .map(dep => {
+        // Use definedIn for accurate node ID (already resolved to absolute path)
+        const nodeId = dep.definedIn!;
+
+        if (dep.type === 'import' && dep.source) {
+          return {
+            nodeId,
+            name: dep.name,
+            summary: `from ${dep.source}`,
+            type: 'pure-function' as const,
+          };
+        }
+
+        // For closures/file-level
         return {
           nodeId,
           name: dep.name,
-          summary: `from ${dep.source}`,
-          type: 'pure-function' as const, // Visual type for styling
+          summary: dep.closureScope === 'file' ? 'file-level' : 'closure',
+          type: 'function' as const,
         };
-      }
-
-      // For closures, use the current file path
-      return {
-        nodeId: `${node.filePath}::${dep.name}`,
-        name: dep.name,
-        summary: 'closure',
-        type: 'function' as const, // Visual type for styling
-      };
-    });
-
-    console.log('🔍 External references extracted:', references);
+      });
 
     return references;
-  }, [node.functionAnalysis, node.filePath]);
+  }, [node.functionAnalysis]);
 
   const processedLines = useMemo(() => {
     return renderCodeLines(

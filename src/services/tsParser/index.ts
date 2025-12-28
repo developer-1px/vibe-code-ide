@@ -12,6 +12,7 @@ import { buildCallGraph, updateFunctionDependencies } from './core/callGraphBuil
 import { tsProjectToGraphData } from './adapters/toVariableNode';
 import { resolvePath } from './utils/pathResolver';
 import { createLanguageService } from './utils/languageService';
+import { extractVueScript, isVueFile } from './utils/vueExtractor';
 
 /**
  * 프로젝트 파싱 메인 함수
@@ -43,6 +44,47 @@ export function parseProject(
       return;
     }
 
+    const content = files[filePath];
+    if (!content) {
+      return;
+    }
+
+    // Vue 파일 처리
+    if (isVueFile(filePath)) {
+      processedFiles.add(filePath);
+
+      // <script> 부분만 추출
+      const scriptContent = extractVueScript(content, filePath);
+      if (!scriptContent) {
+        console.warn(`⚠️ Skipping Vue file without script: ${filePath}`);
+        return;
+      }
+
+      try {
+        // Script 부분을 TypeScript로 분석
+        const fileAnalysis = analyzeFile(filePath, scriptContent, files);
+        projectAnalysis.files.set(filePath, fileAnalysis);
+
+        // 함수들을 글로벌 맵에 추가
+        fileAnalysis.functions.forEach((func) => {
+          projectAnalysis.allFunctions.set(func.id, func);
+        });
+
+        // Import된 파일들 재귀 처리
+        fileAnalysis.imports.forEach((imp) => {
+          if (imp.importType !== 'side-effect' && !imp.isTypeOnly) {
+            const resolvedPath = resolvePath(filePath, imp.source, files);
+            if (resolvedPath) {
+              processFile(resolvedPath);
+            }
+          }
+        });
+      } catch (error) {
+        console.error(`❌ Error analyzing Vue file ${filePath}:`, error);
+      }
+      return;
+    }
+
     // TypeScript/TSX 파일만 처리 (.ts, .tsx, .d.ts 제외)
     const isTsFile = filePath.endsWith('.ts') || filePath.endsWith('.tsx');
     const isDtsFile = filePath.endsWith('.d.ts');
@@ -51,16 +93,11 @@ export function parseProject(
       return;
     }
 
-    const content = files[filePath];
-    if (!content) {
-      return;
-    }
-
     processedFiles.add(filePath);
 
     try {
       // 파일 분석
-      const fileAnalysis = analyzeFile(filePath, content);
+      const fileAnalysis = analyzeFile(filePath, content, files);
       projectAnalysis.files.set(filePath, fileAnalysis);
 
       // 함수들을 글로벌 맵에 추가

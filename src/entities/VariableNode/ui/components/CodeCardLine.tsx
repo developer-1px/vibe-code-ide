@@ -55,11 +55,25 @@ const CodeCardLine: React.FC<CodeCardLineProps> = ({
 
   const handleExternalRefClick = (e: React.MouseEvent, definedIn: string) => {
     e.stopPropagation();
-    // definedIn이 있으면 해당 노드를 visibleNodeIds에 추가
+
+    // 1. 해당 함수/변수 노드가 있으면 추가
     if (fullNodeMap.has(definedIn)) {
       setVisibleNodeIds((prev: Set<string>) => {
         const next = new Set(prev);
         next.add(definedIn);
+        return next;
+      });
+      return;
+    }
+
+    // 2. 함수/변수 노드가 없으면 FILE_ROOT 노드 열기
+    const filePath = definedIn.split('::')[0];
+    const fileRootId = `${filePath}::FILE_ROOT`;
+
+    if (fullNodeMap.has(fileRootId)) {
+      setVisibleNodeIds((prev: Set<string>) => {
+        const next = new Set(prev);
+        next.add(fileRootId);
         return next;
       });
     }
@@ -146,28 +160,92 @@ const CodeCardLine: React.FC<CodeCardLineProps> = ({
 
           // External Import Dependency
           if (segment.kind === 'external-import') {
-            const hasDefinedIn = segment.definedIn && fullNodeMap.has(segment.definedIn);
+            const hasDefinedIn = !!segment.definedIn;
+            const hasNode = segment.definedIn && fullNodeMap.has(segment.definedIn);
+            const filePath = segment.definedIn?.split('::')[0];
+            const hasFileRoot = filePath && fullNodeMap.has(`${filePath}::FILE_ROOT`);
+
             return (
               <span
                 key={segIdx}
                 onClick={hasDefinedIn ? (e) => handleExternalRefClick(e, segment.definedIn!) : undefined}
                 className={`text-emerald-400 font-semibold underline decoration-dotted decoration-emerald-400/40 hover:bg-emerald-400/10 px-0.5 rounded transition-all ${hasDefinedIn ? 'cursor-pointer' : ''}`}
-                title={hasDefinedIn ? `Click to show: ${segment.definedIn}` : `External Import: ${segment.text}`}
+                title={
+                  hasNode
+                    ? `Click to show: ${segment.definedIn}`
+                    : hasFileRoot
+                    ? `Click to show module: ${filePath}::FILE_ROOT`
+                    : hasDefinedIn
+                    ? `Click to add: ${segment.definedIn}`
+                    : `External Import: ${segment.text}`
+                }
               >
                 {segment.text}
               </span>
             );
           }
 
-          // External Closure Dependency
+          // External Closure Dependency (non-function variables)
           if (segment.kind === 'external-closure') {
-            const hasDefinedIn = segment.definedIn && fullNodeMap.has(segment.definedIn);
+            const hasDefinedIn = !!segment.definedIn;
+            const hasNode = segment.definedIn && fullNodeMap.has(segment.definedIn);
+            const filePath = segment.definedIn?.split('::')[0];
+            const hasFileRoot = filePath && fullNodeMap.has(`${filePath}::FILE_ROOT`);
+
             return (
               <span
                 key={segIdx}
                 onClick={hasDefinedIn ? (e) => handleExternalRefClick(e, segment.definedIn!) : undefined}
                 className={`text-amber-400 font-semibold underline decoration-dotted decoration-amber-400/40 hover:bg-amber-400/10 px-0.5 rounded transition-all ${hasDefinedIn ? 'cursor-pointer' : ''}`}
-                title={hasDefinedIn ? `Click to show: ${segment.definedIn}` : `Closure Variable: ${segment.text}`}
+                title={
+                  hasNode
+                    ? `Click to show: ${segment.definedIn}`
+                    : hasFileRoot
+                    ? `Click to show module: ${filePath}::FILE_ROOT`
+                    : hasDefinedIn
+                    ? `Click to add: ${segment.definedIn}`
+                    : `Closure Variable: ${segment.text}`
+                }
+              >
+                {segment.text}
+              </span>
+            );
+          }
+
+          // External Function Variable (file-level function variables)
+          if (segment.kind === 'external-function') {
+            const hasDefinedIn = !!segment.definedIn;
+            const hasNode = segment.definedIn && fullNodeMap.has(segment.definedIn);
+            const filePath = segment.definedIn?.split('::')[0];
+            const hasFileRoot = filePath && fullNodeMap.has(`${filePath}::FILE_ROOT`);
+
+            return (
+              <span
+                key={segIdx}
+                onClick={hasDefinedIn ? (e) => handleExternalRefClick(e, segment.definedIn!) : undefined}
+                className={`text-purple-400 font-semibold underline decoration-dotted decoration-purple-400/40 hover:bg-purple-400/10 px-0.5 rounded transition-all ${hasDefinedIn ? 'cursor-pointer' : ''}`}
+                title={
+                  hasNode
+                    ? `Click to show: ${segment.definedIn}`
+                    : hasFileRoot
+                    ? `Click to show module: ${filePath}::FILE_ROOT`
+                    : hasDefinedIn
+                    ? `Click to add: ${segment.definedIn}`
+                    : `Function Variable: ${segment.text}`
+                }
+              >
+                {segment.text}
+              </span>
+            );
+          }
+
+          // Parameter
+          if (segment.kind === 'parameter') {
+            return (
+              <span
+                key={segIdx}
+                className="text-violet-300 font-normal"
+                title={`Parameter: ${segment.text}`}
               >
                 {segment.text}
               </span>
