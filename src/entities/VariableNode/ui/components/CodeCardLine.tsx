@@ -115,6 +115,22 @@ const CodeCardLine: React.FC<CodeCardLineProps> = ({
              );
           }
 
+          if (segment.type === 'directive-if' || segment.type === 'directive-else' || segment.type === 'directive-else-if') {
+             return (
+               <span key={segIdx} className="text-purple-400 font-bold">
+                 {segment.text}
+               </span>
+             );
+          }
+
+          if (segment.type === 'directive-for') {
+             return (
+               <span key={segIdx} className="text-pink-400 font-bold">
+                 {segment.text}
+               </span>
+             );
+          }
+
           if (segment.type === 'import-source' && segment.tokenId) {
              return (
                <span 

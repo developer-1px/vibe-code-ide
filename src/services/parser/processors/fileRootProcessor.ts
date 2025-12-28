@@ -1,11 +1,10 @@
 import { VariableNode } from '../../../entities/VariableNode';
-import { findMainFunctionReturn } from '../ast/returnExtractor';
-import { extractLocalReferences } from '../ast/localReferenceExtractor';
-import { extractTokenRangesFromCode } from '../ast/tokenExtractor';
+import { LocalReferenceData } from '../types';
 
 /**
  * Process regular TS file and create FILE_ROOT node
- * For files that export a main function, extracts and displays only the return statement
+ * FILE_ROOT represents the entire file and shows all exported functions/variables
+ * Individual function returns are already extracted in Step 4 by extractReturnStatements
  */
 export function processFileRoot(
   filePath: string,
@@ -16,75 +15,34 @@ export function processFileRoot(
 ): string {
   const fileRootId = `${filePath}::FILE_ROOT`;
 
-  // Get all variables defined in this file
-  const fileVarNames = new Set(localDefs);
-
-  // Try to find the main function's return statement
-  const returnNode = findMainFunctionReturn(ast, filePath);
-
-  let returnSnippet = scriptContent;
-  let returnStartLine = 1;
-  let snippetStartOffset = 0;
-  let localReferences: any[] = [];
-
-  if (returnNode && returnNode.loc) {
-    const startLine = returnNode.loc.start.line;
-    const endLine = returnNode.loc.end.line;
-
-    // Calculate offset of the start of the line (preserve indentation)
-    let currentOffset = 0;
-    for (let i = 1; i < startLine; i++) {
-      const nextNewline = scriptContent.indexOf('\n', currentOffset);
-      if (nextNewline === -1) break;
-      currentOffset = nextNewline + 1;
-    }
-    snippetStartOffset = currentOffset;
-
-    // Calculate offset of the end of the end line
-    let endOffset = currentOffset;
-    for (let i = startLine; i <= endLine; i++) {
-      const nextNewline = scriptContent.indexOf('\n', endOffset);
-      if (nextNewline === -1) {
-        endOffset = scriptContent.length;
-        break;
-      }
-      if (i === endLine) {
-        endOffset = nextNewline;
-      } else {
-        endOffset = nextNewline + 1;
-      }
-    }
-
-    returnSnippet = scriptContent.substring(snippetStartOffset, endOffset);
-    returnStartLine = startLine;
-
-    // Extract local references from return statement
-    localReferences = extractLocalReferences(returnNode, fileVarNames, filePath, nodes);
-  } else {
-    console.log('⚠️ No main function return found, using full file content');
-  }
-
-  // Get all nodes defined in this file (except FILE_ROOT itself)
+  // Get all exported nodes defined at FILE LEVEL (not nested inside functions)
+  // localDefs contains only file-level variables, not function-local variables
   const fileNodes = Array.from(nodes.values()).filter(
-    (n) => n.filePath === filePath && n.id !== fileRootId
+    (n) =>
+      n.filePath === filePath &&
+      n.id !== fileRootId &&
+      n.type !== 'module' &&
+      localDefs.has(n.label) // Only file-level variables, exclude function-local ones
   );
+
+  // FILE_ROOT depends on all exported items in the file
   const dependencies = fileNodes.map((n) => n.id);
 
-  // Extract token ranges for the snippet
-  const snippetEndOffset = snippetStartOffset + returnSnippet.length;
-  const tokenRanges = extractTokenRangesFromCode(scriptContent, localDefs, ast);
+  // Convert exported nodes to LocalReference format for UI display
+  const localReferences: LocalReferenceData[] = fileNodes.map((n) => {
+    // Create export signature (codeSnippet has been replaced with return statement in Step 4)
+    const exportSummary =
+      n.type === 'function'
+        ? `export function ${n.label}(...) { ... }`
+        : `export const ${n.label} = ...`;
 
-  // Filter and adjust token ranges to be relative to the snippet
-  const processedTokenRanges = tokenRanges
-    .filter(
-      (range) => range.startOffset >= snippetStartOffset && range.endOffset <= snippetEndOffset
-    )
-    .map((range) => ({
-      ...range,
-      startOffset: range.startOffset - snippetStartOffset,
-      endOffset: range.endOffset - snippetStartOffset,
-      tokenIds: range.tokenIds.map((name: string) => `${filePath}::${name}`),
-    }));
+    return {
+      name: n.label,
+      nodeId: n.id,
+      summary: exportSummary,
+      type: n.type,
+    };
+  });
 
   const fileName = filePath.split('/').pop() || 'File';
   const fileRootNode: VariableNode = {
@@ -92,10 +50,9 @@ export function processFileRoot(
     label: `${fileName}`,
     filePath,
     type: 'module',
-    codeSnippet: returnSnippet,
-    startLine: returnStartLine,
+    codeSnippet: `// ${fileName}\n// This file exports ${fileNodes.length} item${fileNodes.length !== 1 ? 's' : ''}`,
+    startLine: 1,
     dependencies,
-    templateTokenRanges: processedTokenRanges,
     localReferences: localReferences.length > 0 ? localReferences : undefined,
   };
 

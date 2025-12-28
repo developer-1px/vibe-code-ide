@@ -107,8 +107,8 @@ export const collapseDependencies = (
   // Step 3: Find which candidates are still reachable from other visible nodes
   const stillReachable = new Set<string>();
 
-  const findReachableFromNode = (nodeId: string) => {
-    const n = fullNodeMap.get(nodeId);
+  const findReachableFromNode = (searchNodeId: string) => {
+    const n = fullNodeMap.get(searchNodeId);
     if (!n) return;
 
     n.dependencies.forEach(depId => {
@@ -120,9 +120,12 @@ export const collapseDependencies = (
     });
   };
 
-  // Check from all remaining visible nodes
+  // Check from all remaining visible nodes EXCEPT the node we're collapsing
+  // (otherwise it would immediately mark its own dependencies as reachable)
   next.forEach(visibleId => {
-    findReachableFromNode(visibleId);
+    if (visibleId !== nodeId) {
+      findReachableFromNode(visibleId);
+    }
   });
 
   // Step 4: Restore nodes that are still reachable

@@ -6,7 +6,7 @@ export interface TokenRange {
   text: string;
 }
 
-export type SegmentType = 'text' | 'self' | 'token' | 'primitive' | 'import-source' | 'string' | 'comment';
+export type SegmentType = 'text' | 'self' | 'token' | 'primitive' | 'import-source' | 'string' | 'comment' | 'directive-if' | 'directive-for' | 'directive-else' | 'directive-else-if';
 
 export interface LineSegment {
     text: string;

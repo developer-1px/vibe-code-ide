@@ -1,21 +1,55 @@
-import React from 'react';
+import React, { useMemo } from 'react';
+import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import { Terminal, Box, FunctionSquare, LayoutTemplate, Database, Link2, PlayCircle, BoxSelect, ChevronsDown, ChevronsUp } from 'lucide-react';
 import { CanvasNode } from '../../../CanvasNode';
+import { visibleNodeIdsAtom, fullNodeMapAtom, lastExpandedIdAtom } from '../../../../store/atoms';
+import { checkAllDepsExpanded, expandDependenciesRecursive, collapseDependencies, getFirstDependency } from '../../model/nodeVisibility';
 
 interface CodeCardHeaderProps {
   node: CanvasNode;
-  allDepsExpanded: boolean;
-  onToggleAll: (e: React.MouseEvent) => void;
-  showToggleButton: boolean;
 }
 
-const CodeCardHeader: React.FC<CodeCardHeaderProps> = ({ node, allDepsExpanded, onToggleAll, showToggleButton }) => {
+const CodeCardHeader: React.FC<CodeCardHeaderProps> = ({ node }) => {
+  const [visibleNodeIds, setVisibleNodeIds] = useAtom(visibleNodeIdsAtom);
+  const fullNodeMap = useAtomValue(fullNodeMapAtom);
+  const setLastExpandedId = useSetAtom(lastExpandedIdAtom);
+
+  // Check if all dependencies are expanded
+  const allDepsExpanded = useMemo(() => {
+    return checkAllDepsExpanded(node.dependencies, visibleNodeIds);
+  }, [node.dependencies, visibleNodeIds]);
+
+  const showToggleButton = node.dependencies.length > 0;
+
+  const handleToggleAll = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (node.dependencies.length === 0) return;
+
+    setVisibleNodeIds(prev => {
+      if (!allDepsExpanded) {
+        // Expand all dependencies recursively
+        const newVisible = expandDependenciesRecursive(node.id, fullNodeMap, prev);
+
+        // Center on the first expanded dependency
+        const firstDep = getFirstDependency(node.id, fullNodeMap);
+        if (firstDep) {
+          setLastExpandedId(firstDep);
+        }
+
+        return newVisible;
+      } else {
+        // Collapse dependencies (keep nodes reachable from other paths)
+        return collapseDependencies(node.id, fullNodeMap, prev);
+      }
+    });
+  };
   const getIcon = () => {
     switch (node.type) {
       case 'template': return <LayoutTemplate className="w-4 h-4 text-pink-400" />;
       case 'computed': return <FunctionSquare className="w-4 h-4 text-vibe-accent" />;
       case 'ref': return <Database className="w-4 h-4 text-emerald-400" />;
       case 'function': return <Terminal className="w-4 h-4 text-amber-400" />;
+      case 'pure-function': return <Terminal className="w-4 h-4 text-cyan-400" />;
       case 'hook': return <Link2 className="w-4 h-4 text-violet-400" />;
       case 'call': return <PlayCircle className="w-4 h-4 text-yellow-400" />;
       case 'module': return <BoxSelect className="w-4 h-4 text-orange-400" />;
@@ -29,7 +63,7 @@ const CodeCardHeader: React.FC<CodeCardHeaderProps> = ({ node, allDepsExpanded, 
         {/* Toggle All Dependencies Button */}
         {showToggleButton && (
           <button
-            onClick={onToggleAll}
+            onClick={handleToggleAll}
             className="p-1 rounded hover:bg-white/10 transition-colors group/toggle"
             title={allDepsExpanded ? "Collapse all dependencies" : "Expand all dependencies"}
           >

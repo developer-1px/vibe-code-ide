@@ -91,10 +91,12 @@ export const processCodeLines = (
                     });
                 }
 
-                // Token, String, or Comment segment
+                // Token, String, Comment, or Directive segment
                 const isString = range.type === 'string';
                 const isComment = range.type === 'comment';
-                if (!isString && !isComment) hasInput = true;
+                const isDirective = range.type === 'directive-if' || range.type === 'directive-for' || range.type === 'directive-else' || range.type === 'directive-else-if';
+
+                if (!isString && !isComment && !isDirective) hasInput = true;
 
                 const primaryTokenId = range.tokenIds && range.tokenIds.length > 0 ? range.tokenIds[0] : undefined;
                 const tokenText = line.substring(range.relativeStart, Math.min(range.relativeEnd, line.length));

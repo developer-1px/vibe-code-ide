@@ -8,7 +8,7 @@ export interface TemplateTokenRange {
   tokenIds: string[];   // Dependency IDs found in this expression
   relativeStart?: number; // Line-relative column position
   relativeEnd?: number;   // Line-relative column position
-  type?: 'token' | 'string' | 'comment'; // Added to distinguish variable tokens from string literals and comments
+  type?: 'token' | 'string' | 'comment' | 'directive-if' | 'directive-for' | 'directive-else' | 'directive-else-if'; // Added to distinguish variable tokens from string literals, comments, and directives
 }
 
 export interface CanvasNode extends VariableNode {

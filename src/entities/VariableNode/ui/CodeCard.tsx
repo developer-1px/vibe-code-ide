@@ -1,15 +1,6 @@
 
 import React, { useMemo } from 'react';
-import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import { CanvasNode } from '../../CanvasNode';
-
-// Model - Business Logic
-import {
-  checkAllDepsExpanded,
-  expandDependenciesRecursive,
-  collapseDependencies,
-  getFirstDependency
-} from '../model/nodeVisibility';
 
 // Lib - Pure Utilities
 import { extractTokenRanges } from '../lib/tokenUtils.ts';
@@ -22,47 +13,12 @@ import CodeCardCopyButton from './components/CodeCardCopyButton.tsx';
 import CodeCardLine from './components/CodeCardLine.tsx';
 import LocalReferenceItem from './components/LocalReferenceItem.tsx';
 
-// Atoms
-import { visibleNodeIdsAtom, fullNodeMapAtom, lastExpandedIdAtom } from '../../../store/atoms';
-
 interface CodeCardProps {
   node: CanvasNode;
 }
 
 const CodeCard: React.FC<CodeCardProps> = ({ node }) => {
-  const [visibleNodeIds, setVisibleNodeIds] = useAtom(visibleNodeIdsAtom);
-  const fullNodeMap = useAtomValue(fullNodeMapAtom);
-  const setLastExpandedId = useSetAtom(lastExpandedIdAtom);
-
   const isTemplate = node.type === 'template';
-
-  // Check if all dependencies are expanded
-  const allDepsExpanded = useMemo(() => {
-    return checkAllDepsExpanded(node.dependencies, visibleNodeIds);
-  }, [node.dependencies, visibleNodeIds]);
-
-  const handleToggleAll = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    if (node.dependencies.length === 0) return;
-
-    setVisibleNodeIds(prev => {
-      if (!allDepsExpanded) {
-        // Expand all dependencies recursively
-        const newVisible = expandDependenciesRecursive(node.id, fullNodeMap, prev);
-
-        // Center on the first expanded dependency
-        const firstDep = getFirstDependency(node.id, fullNodeMap);
-        if (firstDep) {
-          setLastExpandedId(firstDep);
-        }
-
-        return newVisible;
-      } else {
-        // Collapse dependencies (keep nodes reachable from other paths)
-        return collapseDependencies(node.id, fullNodeMap, prev);
-      }
-    });
-  };
 
   // --- 1. Prepare Data (Pure Logic) ---
   const tokenRanges = useMemo(() => {
@@ -94,12 +50,7 @@ const CodeCard: React.FC<CodeCardProps> = ({ node }) => {
       `}
     >
       {/* Header */}
-      <CodeCardHeader
-        node={node}
-        allDepsExpanded={allDepsExpanded}
-        onToggleAll={handleToggleAll}
-        showToggleButton={node.dependencies.length > 0}
-      />
+      <CodeCardHeader node={node} />
 
       {/* Local References (for JSX_ROOT only) */}
       {node.localReferences && node.localReferences.length > 0 && (

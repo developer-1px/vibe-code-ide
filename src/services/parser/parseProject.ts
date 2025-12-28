@@ -111,7 +111,12 @@ export function parseProject(files: Record<string, string>, entryFile: string): 
       resolveDependencies(filePath, localDefs, nodes);
 
       // Step 4: Extract return statements for ALL function nodes
+      // This also creates VariableNodes for function-local variables
       extractReturnStatements(filePath, scriptContent, localDefs, scriptStartLine, nodes);
+
+      // Step 4.5: Resolve dependencies again for function-local variables
+      // (They were added in Step 4, after the initial Step 3 dependency resolution)
+      resolveDependencies(filePath, localDefs, nodes);
 
       // Step 5: Handle Vue Templates and Default Export linkage
       if (isVue) {

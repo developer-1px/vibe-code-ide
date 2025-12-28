@@ -11,7 +11,7 @@ export interface VariableNode {
   id: string; // Globally unique ID (usually filePath::localName)
   label: string;
   filePath: string; // The file where this variable is defined
-  type: 'ref' | 'computed' | 'prop' | 'store' | 'function' | 'hook' | 'template' | 'call' | 'module';
+  type: 'ref' | 'computed' | 'prop' | 'store' | 'function' | 'hook' | 'template' | 'call' | 'module' | 'pure-function';
   codeSnippet: string;
   startLine: number;
   dependencies: string[]; // List of IDs

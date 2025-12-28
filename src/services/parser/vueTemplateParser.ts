@@ -6,7 +6,7 @@ export interface TemplateTokenRange {
     endOffset: number;
     text: string;
     tokenIds: string[]; // Local variable names (without file path prefix)
-    type?: 'token' | 'string' | 'comment';
+    type?: 'token' | 'string' | 'comment' | 'directive-if' | 'directive-for' | 'directive-else' | 'directive-else-if';
 }
 
 export interface TemplateParseResult {
@@ -267,32 +267,67 @@ const traverseTemplateAST = (
             }
             
             // Type 7 = Directive (v-if, v-bind, v-on, etc.)
-            if (prop.type === 7 && prop.exp?.content) {
-                const depsInExpr = checkExpressionWithScope(prop.exp.content, childScope);
+            if (prop.type === 7) {
+                const directiveName = prop.name; // 'if', 'for', 'else', 'else-if', 'bind', 'on', etc.
 
-                // Create a token range for each identifier found in the directive expression
-                depsInExpr.forEach(dep => {
-                    foundDeps.add(dep.name);
+                // Highlight the directive name itself (v-if, v-for, v-else, v-else-if)
+                if ((directiveName === 'if' || directiveName === 'for' || directiveName === 'else' || directiveName === 'else-if') && prop.loc) {
+                    // Calculate directive name position: v-if starts at prop.loc.start
+                    // Example: <div v-if="condition">
+                    //              ^^^^^
+                    const directiveFullName = `v-${directiveName}`;
+                    const directiveStart = prop.loc.start.offset;
+                    const directiveEnd = directiveStart + directiveFullName.length;
 
-                    // dep.start/end are offsets within the expression text
-                    // prop.exp.loc.start.offset is the absolute offset of the expression in the template
-                    const absoluteStart = prop.exp.loc.start.offset + dep.start;
-                    const absoluteEnd = prop.exp.loc.start.offset + dep.end;
+                    const relativeStart = directiveStart - baseOffset;
+                    const relativeEnd = directiveEnd - baseOffset;
 
-                    // Adjust to be relative to templateContent
-                    const relativeStart = absoluteStart - baseOffset;
-                    const relativeEnd = absoluteEnd - baseOffset;
+                    console.log(`🎯 Directive "${directiveFullName}" at offset ${directiveStart}-${directiveEnd} (relative: ${relativeStart}-${relativeEnd})`);
 
-                    console.log(`🔍 Directive identifier "${dep.name}" at offset ${absoluteStart}-${absoluteEnd} (relative: ${relativeStart}-${relativeEnd})`);
+                    // Determine type
+                    let directiveType: 'directive-if' | 'directive-for' | 'directive-else' | 'directive-else-if';
+                    if (directiveName === 'if') directiveType = 'directive-if';
+                    else if (directiveName === 'for') directiveType = 'directive-for';
+                    else if (directiveName === 'else') directiveType = 'directive-else';
+                    else directiveType = 'directive-else-if';
 
                     tokenRanges.push({
                         startOffset: relativeStart,
                         endOffset: relativeEnd,
-                        text: dep.name,
-                        tokenIds: [dep.name],
-                        type: 'token'
+                        text: directiveFullName,
+                        tokenIds: [],
+                        type: directiveType
                     });
-                });
+                }
+
+                // Process expression content
+                if (prop.exp?.content) {
+                    const depsInExpr = checkExpressionWithScope(prop.exp.content, childScope);
+
+                    // Create a token range for each identifier found in the directive expression
+                    depsInExpr.forEach(dep => {
+                        foundDeps.add(dep.name);
+
+                        // dep.start/end are offsets within the expression text
+                        // prop.exp.loc.start.offset is the absolute offset of the expression in the template
+                        const absoluteStart = prop.exp.loc.start.offset + dep.start;
+                        const absoluteEnd = prop.exp.loc.start.offset + dep.end;
+
+                        // Adjust to be relative to templateContent
+                        const relativeStart = absoluteStart - baseOffset;
+                        const relativeEnd = absoluteEnd - baseOffset;
+
+                        console.log(`🔍 Directive identifier "${dep.name}" at offset ${absoluteStart}-${absoluteEnd} (relative: ${relativeStart}-${relativeEnd})`);
+
+                        tokenRanges.push({
+                            startOffset: relativeStart,
+                            endOffset: relativeEnd,
+                            text: dep.name,
+                            tokenIds: [dep.name],
+                            type: 'token'
+                        });
+                    });
+                }
             }
         });
     }

@@ -1,4 +1,5 @@
 import { VariableNode } from '../../../entities/VariableNode';
+import { LocalReferenceData } from '../types';
 import { parseVueTemplate } from '../vueTemplateParser';
 
 /**
@@ -23,6 +24,23 @@ export function processVueTemplate(
   // Parse template using dedicated parser (adjust offsets to be relative to templateContent)
   const parseResult = parseVueTemplate(templateAst, fileVarNames, templateContentOffset);
 
+  // Create local references from template dependencies
+  const localReferences: LocalReferenceData[] = [];
+  parseResult.dependencies.forEach((varName) => {
+    const nodeId = `${filePath}::${varName}`;
+    const varNode = nodes.get(nodeId);
+
+    if (varNode) {
+      const summary = varNode.codeSnippet.split('\n')[0].trim();
+      localReferences.push({
+        name: varName,
+        nodeId: varNode.id,
+        summary,
+        type: varNode.type,
+      });
+    }
+  });
+
   const fileName = filePath.split('/').pop() || 'Component';
   const templateNode: VariableNode = {
     id: templateId,
@@ -32,6 +50,7 @@ export function processVueTemplate(
     codeSnippet: templateContent, // Don't trim! AST offsets are based on original content
     startLine: templateStartLine,
     dependencies: parseResult.dependencies.map((name) => `${filePath}::${name}`),
+    localReferences: localReferences.length > 0 ? localReferences : undefined,
     templateTokenRanges: parseResult.tokenRanges.map((range) => ({
       ...range,
       tokenIds: range.tokenIds.map((name: string) => `${filePath}::${name}`),

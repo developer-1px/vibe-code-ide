@@ -9,6 +9,7 @@ export const getNodeBorderColor = (type: VariableNode['type']): string => {
         case 'call': return 'border-yellow-500/50 shadow-yellow-900/20';
         case 'module': return 'border-indigo-500/50 shadow-indigo-900/20'; // Imported Component/Module (Distinct Indigo)
         case 'function': return 'border-amber-500/50 shadow-amber-900/20';
+        case 'pure-function': return 'border-cyan-500/50 shadow-cyan-900/20'; // Pure Function (Cyan - clean and deterministic)
         default: return 'border-vibe-border shadow-black/20';
     }
 };
@@ -40,6 +41,8 @@ export const getSlotColor = (type: VariableNode['type']): string => {
             return 'bg-indigo-500/60 border-indigo-400/80 shadow-indigo-500/30 group-hover/line:border-indigo-300';
         case 'function':
             return 'bg-amber-500/60 border-amber-400/80 shadow-amber-500/30 group-hover/line:border-amber-300';
+        case 'pure-function':
+            return 'bg-cyan-500/60 border-cyan-400/80 shadow-cyan-500/30 group-hover/line:border-cyan-300';
         case 'hook':
             return 'bg-violet-500/60 border-violet-400/80 shadow-violet-500/30 group-hover/line:border-violet-300';
         default:
@@ -55,6 +58,7 @@ export const getEdgeColor = (type: VariableNode['type']): string => {
         case 'call': return '#eab308'; // yellow-500
         case 'module': return '#6366f1'; // indigo-500
         case 'function': return '#f59e0b'; // amber-500
+        case 'pure-function': return '#06b6d4'; // cyan-500
         case 'hook': return '#8b5cf6'; // violet-500
         case 'store': return '#14b8a6'; // teal-500
         default: return '#38bdf8'; // sky-400 (default blue)
