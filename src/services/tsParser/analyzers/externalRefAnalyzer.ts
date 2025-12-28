@@ -62,6 +62,25 @@ const GLOBAL_OBJECTS = new Set([
 ]);
 
 /**
+ * 최상위 statement 노드 가져오기
+ * (getCodeSnippet과 동일한 로직)
+ */
+function getStatementNode(node: ts.Node, sourceFile: ts.SourceFile): ts.Node {
+  let statementNode: ts.Node = node;
+  let current = node.parent;
+
+  while (current && !ts.isSourceFile(current)) {
+    if (ts.isStatement(current) && current.parent && ts.isSourceFile(current.parent)) {
+      statementNode = current;
+      break;
+    }
+    current = current.parent;
+  }
+
+  return statementNode;
+}
+
+/**
  * 함수의 외부 참조 분석
  */
 export function analyzeExternalReferences(
@@ -78,8 +97,12 @@ export function analyzeExternalReferences(
   ]);
 
   // 2. 파라미터와 리턴 타입의 타입 참조 추출
-  visitTypeReferences(funcAnalysis.astNode, (identifier) => {
+  // 상위 statement까지 올라가서 변수 타입 어노테이션도 포함
+  const statementNode = getStatementNode(funcAnalysis.astNode, funcAnalysis.sourceFile);
+  visitTypeReferences(statementNode, (identifier) => {
     const name = identifier.text;
+
+    console.log(`🔍 [externalRefAnalyzer] Found type reference in ${funcAnalysis.name}: ${name}`);
 
     // 이미 처리됨
     if (refs.has(name)) {
@@ -92,6 +115,7 @@ export function analyzeExternalReferences(
     const refType = determineRefType(name, fileContext);
 
     if (refType) {
+      console.log(`✅ [externalRefAnalyzer] Type reference ${name} in ${funcAnalysis.name}: ${refType}`);
       const ref: ExternalReference = {
         name,
         refType,
@@ -101,6 +125,8 @@ export function analyzeExternalReferences(
         isFunction: getIsFunction(name, refType, fileContext),
       };
       refs.set(name, ref);
+    } else {
+      console.log(`❌ [externalRefAnalyzer] Type reference ${name} in ${funcAnalysis.name}: not found in context`);
     }
   });
 
