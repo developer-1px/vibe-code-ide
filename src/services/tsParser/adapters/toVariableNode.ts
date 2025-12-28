@@ -36,7 +36,9 @@ export function tsProjectToGraphData(
     const allVariables = fileAnalysis.fileVariables.map(v => v.id);
     const allTopLevelItems = [...allFunctions, ...allVariables];
 
-    if (allTopLevelItems.length > 0) {
+    // Export가 있거나 top-level 항목이 있으면 FILE_ROOT 생성
+    // (index.ts 같은 re-export 전용 파일도 포함)
+    if (allTopLevelItems.length > 0 || fileAnalysis.exports.length > 0) {
       // FILE_ROOT 노드 생성 - 원본 코드 사용 (렌더링에서 함수 본문 접기)
       const fileRootNode: VariableNode = {
         id: `${fileAnalysis.filePath}::FILE_ROOT`,
