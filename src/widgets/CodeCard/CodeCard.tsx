@@ -4,6 +4,7 @@ import { CanvasNode } from '../../entities/CanvasNode';
 
 // Lib - Pure Utilities
 import { renderCodeLines } from '../../entities/CodeRenderer/lib/renderCodeLines';
+import { renderVueFile } from '../../entities/CodeRenderer/lib/renderVueFile';
 import type { CodeLine } from '../../entities/CodeRenderer/model/types';
 import { getNodeBorderColor } from '../../entities/SourceFileNode/lib/styleUtils';
 
@@ -22,6 +23,11 @@ const CodeCard = ({ node }: { node: CanvasNode }) => {
 
   // Render code lines with syntax highlighting
   const processedLines = useMemo(() => {
+    // Vue 파일인 경우 renderVueFile 사용
+    if (node.filePath.endsWith('.vue')) {
+      return renderVueFile(node, files);
+    }
+    // 그 외의 경우 기존 renderCodeLines 사용
     return renderCodeLines(node, files);
   }, [node, files]);
 
