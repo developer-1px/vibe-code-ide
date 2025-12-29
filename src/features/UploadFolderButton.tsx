@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
 import { useSetAtom } from 'jotai';
-import { Upload } from 'lucide-react';
+import { Upload as IconUpload } from 'lucide-react';
 import { filesAtom, activeFileAtom, entryFileAtom } from '../store/atoms';
 
 const UploadFolderButton: React.FC = () => {
@@ -54,7 +54,7 @@ const UploadFolderButton: React.FC = () => {
         className="flex items-center gap-1 text-[10px] px-2 py-1 rounded bg-vibe-accent/10 text-vibe-accent hover:bg-vibe-accent/20 transition-colors"
         title="Upload Vue project folder"
       >
-        <Upload className="w-3 h-3" />
+        <IconUpload className="w-3 h-3" />
         Upload
       </button>
       <input

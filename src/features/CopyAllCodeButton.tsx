@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useAtomValue } from 'jotai';
-import { Copy, Check } from 'lucide-react';
+import { Copy as IconCopy, Check as IconCheck } from 'lucide-react';
 import { layoutNodesAtom, fullNodeMapAtom, entryFileAtom } from '../store/atoms.ts';
 
 const CopyAllCodeButton: React.FC = () => {
@@ -66,12 +66,12 @@ const CopyAllCodeButton: React.FC = () => {
       >
         {isAllCopied ? (
           <>
-            <Check className="w-4 h-4 text-emerald-400" />
+            <IconCheck className="w-4 h-4 text-emerald-400" />
             <span className="text-emerald-400">Copied!</span>
           </>
         ) : (
           <>
-            <Copy className="w-4 h-4 text-purple-400 group-hover:text-purple-300" />
+            <IconCopy className="w-4 h-4 text-purple-400 group-hover:text-purple-300" />
             <span>Copy All for AI</span>
             <span className="text-xs text-slate-500 bg-slate-800/50 px-1.5 py-0.5 rounded">
               {layoutNodes.length} nodes

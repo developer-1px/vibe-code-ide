@@ -1,6 +1,6 @@
 import React from 'react';
 import { useAtomValue, useSetAtom } from 'jotai';
-import { RotateCcw } from 'lucide-react';
+import { RotateCcw as IconRotateCcw } from 'lucide-react';
 import {
   visibleNodeIdsAtom,
   lastExpandedIdAtom,
@@ -35,7 +35,7 @@ const ResetViewButton: React.FC = () => {
         onClick={handleReset}
         className="bg-vibe-panel/90 backdrop-blur px-4 py-2 rounded-lg border border-vibe-border text-slate-200 hover:text-white hover:border-vibe-accent flex items-center gap-2 text-sm shadow-xl transition-all font-medium"
       >
-        <RotateCcw className="w-4 h-4 text-pink-500" />
+        <IconRotateCcw className="w-4 h-4 text-pink-500" />
         Reset View
       </button>
     </div>

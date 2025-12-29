@@ -1,6 +1,6 @@
 import React, { useMemo, useRef, useEffect } from 'react';
 import { useAtom, useSetAtom } from 'jotai';
-import { FolderOpen, Search, X, ChevronDown, ChevronRight, Folder } from 'lucide-react';
+import { FolderOpen as IconFolderOpen, Search as IconSearch, X as IconX, ChevronDown as IconChevronDown, ChevronRight as IconChevronRight, Folder as IconFolder } from 'lucide-react';
 import { FileItem, fuzzyMatch } from '../../entities/File';
 import UploadFolderButton from '../../features/UploadFolderButton';
 import { lastExpandedIdAtom, fileSearchQueryAtom, focusedFileIndexAtom, collapsedFoldersAtom } from '../../store/atoms';
@@ -150,7 +150,7 @@ const FileExplorer: React.FC<FileExplorerProps> = ({ files }) => {
       {/* Header */}
       <div className="px-3 py-1.5 text-[11px] font-semibold text-slate-400 flex items-center justify-between bg-black/20 flex-shrink-0">
         <div className="flex items-center gap-1">
-          <FolderOpen className="w-2.5 h-2.5" />
+          <IconFolderOpen className="w-2.5 h-2.5" />
           <span>Explorer</span>
         </div>
         <UploadFolderButton />
@@ -159,7 +159,7 @@ const FileExplorer: React.FC<FileExplorerProps> = ({ files }) => {
       {/* Search Field */}
       <div className="px-2.5 py-1.5 border-b border-vibe-border/50 flex-shrink-0">
         <div className="relative">
-          <Search className="absolute left-2 top-1/2 -translate-y-1/2 w-2.5 h-2.5 text-slate-500" />
+          <IconSearch className="absolute left-2 top-1/2 -translate-y-1/2 w-2.5 h-2.5 text-slate-500" />
           <input
             ref={searchInputRef}
             type="text"
@@ -175,7 +175,7 @@ const FileExplorer: React.FC<FileExplorerProps> = ({ files }) => {
               className="absolute right-1.5 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 transition-colors"
               title="Clear search"
             >
-              <X className="w-2.5 h-2.5" />
+              <IconX className="w-2.5 h-2.5" />
             </button>
           )}
         </div>
@@ -210,28 +210,28 @@ const FileExplorer: React.FC<FileExplorerProps> = ({ files }) => {
           <div>
             {filesByFolder.map(([folder, folderFiles]) => {
               const isCollapsed = collapsedFolders.has(folder);
-              const folderName = folder === '/' ? 'Root' : folder.split('/').pop() || folder;
+              const folderName = folder === '/' ? '/' : folder;
 
               return (
                 <div key={folder}>
                   {/* Folder Header */}
                   <div
                     onClick={() => toggleFolder(folder)}
-                    className="sticky top-0 z-10 px-2 py-1 text-[10px] font-semibold text-slate-400 bg-[#0f172a]/95 backdrop-blur-sm border-b border-vibe-border/30 flex items-center gap-1.5 cursor-pointer hover:bg-white/5 transition-colors"
+                    className="sticky top-0 z-10 px-2 py-1 text-[10px] font-semibold text-slate-400 bg-slate-800/80 backdrop-blur-sm border-b border-vibe-border/30 flex items-center gap-1.5 cursor-pointer hover:bg-slate-700/60 transition-colors"
                   >
                     {isCollapsed ? (
-                      <ChevronRight className="w-2.5 h-2.5 flex-shrink-0" />
+                      <IconChevronRight className="w-2.5 h-2.5 flex-shrink-0" />
                     ) : (
-                      <ChevronDown className="w-2.5 h-2.5 flex-shrink-0" />
+                      <IconChevronDown className="w-2.5 h-2.5 flex-shrink-0" />
                     )}
-                    <Folder className="w-2.5 h-2.5 flex-shrink-0" />
+                    <IconFolder className="w-2.5 h-2.5 flex-shrink-0" />
                     <span className="truncate">{folderName}</span>
                     <span className="text-slate-600 ml-auto">({folderFiles.length})</span>
                   </div>
 
                   {/* Folder Files */}
                   {!isCollapsed && (
-                    <ul>
+                    <ul className="pb-2">
                       {folderFiles.map((fileName) => {
                         const fileIndex = flatFileList.indexOf(fileName);
                         return (

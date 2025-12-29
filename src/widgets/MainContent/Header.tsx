@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { useAtom } from 'jotai';
-import { Box, AlertCircle, PanelLeft } from 'lucide-react';
+import { Box as IconBox, AlertCircle as IconAlertCircle, PanelLeft as IconPanelLeft } from 'lucide-react';
 import { isSidebarOpenAtom } from '../../store/atoms.ts';
 import { useGraphData } from '../../hooks/useGraphData';
 
@@ -17,11 +17,11 @@ const Header: React.FC = () => {
           className={`p-1.5 rounded-md text-slate-400 hover:text-white hover:bg-white/5 transition-colors ${!isSidebarOpen ? 'text-vibe-accent bg-vibe-accent/10' : ''}`}
           title="Toggle Sidebar (Cmd/Ctrl + \)"
         >
-          <PanelLeft className="w-4 h-4" />
+          <IconPanelLeft className="w-4 h-4" />
         </button>
 
         <h2 className="font-semibold text-slate-200 flex items-center gap-2">
-          <Box className="w-4 h-4 text-vibe-purple" />
+          <IconBox className="w-4 h-4 text-vibe-purple" />
           <span className="text-slate-500 font-normal">Logic Visualization</span>
         </h2>
       </div>
@@ -29,7 +29,7 @@ const Header: React.FC = () => {
       <div className="flex gap-2 items-center text-xs">
         {parseError ? (
           <span className="px-2 py-1 bg-red-500/10 text-red-400 rounded border border-red-500/20 flex items-center gap-1">
-            <AlertCircle className="w-3 h-3" />
+            <IconAlertCircle className="w-3 h-3" />
             Syntax Error
           </span>
         ) : (

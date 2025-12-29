@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useAtomValue } from 'jotai';
-import { Box, FileCode } from 'lucide-react';
+import { Box as IconBox, FileCode as IconFileCode } from 'lucide-react';
 import { filesAtom } from '../../store/atoms';
 import ResetFilesButton from '../../features/ResetFilesButton';
 import FileExplorer from './FileExplorer';
@@ -45,7 +45,7 @@ const Sidebar: React.FC = () => {
       {/* Header */}
       <div className="p-4 border-b border-vibe-border bg-[#162032] flex-shrink-0">
         <h1 className="font-bold text-slate-100 flex items-center gap-2 mb-1">
-          <Box className="w-5 h-5 text-vibe-accent" />
+          <IconBox className="w-5 h-5 text-vibe-accent" />
           Vibe Coder
         </h1>
         <p className="text-xs text-slate-500">Project Logic Visualization</p>
@@ -57,7 +57,7 @@ const Sidebar: React.FC = () => {
       {/* Footer */}
       <div className="p-3 border-t border-vibe-border bg-[#162032] flex justify-between items-center flex-shrink-0">
         <div className="flex items-center gap-2 text-xs text-slate-500">
-          <FileCode className="w-3 h-3" />
+          <IconFileCode className="w-3 h-3" />
           <span>TypeScript Project</span>
         </div>
         <ResetFilesButton />

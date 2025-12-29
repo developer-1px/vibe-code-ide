@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { useAtomValue } from 'jotai';
-import { Layers } from 'lucide-react';
+import { Layers as IconLayers } from 'lucide-react';
 import { ComponentGroup, CanvasNode } from '../../entities/CanvasNode';
 import { layoutNodesAtom } from '../../store/atoms';
 import { estimateNodeHeight } from './utils';
@@ -59,7 +59,7 @@ const CanvasBackground: React.FC = () => {
                     }}
                 >
                     <div className="absolute -top-10 left-0 flex items-center gap-2 px-3 py-1.5 bg-slate-800/80 rounded-t-lg border border-slate-700 border-b-0 text-slate-300">
-                        <Layers className="w-4 h-4 text-vibe-purple" />
+                        <IconLayers className="w-4 h-4 text-vibe-purple" />
                         <span className="text-sm font-semibold">{group.label}</span>
                     </div>
                     {/* Visual Tree Connector (Folder Tab style) */}
