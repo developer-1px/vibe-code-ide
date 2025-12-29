@@ -5,8 +5,8 @@
 
 import * as ts from 'typescript';
 import type { CanvasNode } from '../../CanvasNode';
-import type { CodeLine } from '../model/types';
-import { parse } from '@vue/compiler-sfc';
+import type { CodeLine, CodeSegment } from '../model/types';
+import { parse, compileTemplate } from '@vue/compiler-sfc';
 import { renderCodeLines } from './renderCodeLines';
 
 /**
@@ -105,19 +105,68 @@ function renderScriptSection(
 }
 
 /**
- * Template 섹션 렌더링 (plain text로 출력)
+ * Template 섹션 렌더링 (Vue template AST 기반 segment 생성)
  */
-function renderTemplateSection(section: VueSection): CodeLine[] {
+function renderTemplateSection(section: VueSection, vueContent: string, filePath: string): CodeLine[] {
   const lines = section.content.split('\n');
 
-  return lines.map((lineText, idx) => ({
-    num: section.startLine + idx,
-    segments: [{
-      text: lineText,
-      kinds: ['text']
-    }],
-    hasInput: false
-  }));
+  try {
+    // Vue template AST 파싱
+    const { descriptor } = parse(vueContent, { filename: filePath });
+
+    if (!descriptor.template) {
+      return lines.map((lineText, idx) => ({
+        num: section.startLine + idx,
+        segments: [{ text: lineText, kinds: ['text'] }],
+        hasInput: false
+      }));
+    }
+
+    // Template AST를 사용하여 segment 생성
+    const result: CodeLine[] = lines.map((lineText, idx) => ({
+      num: section.startLine + idx,
+      segments: parseTemplateLine(lineText),
+      hasInput: false
+    }));
+
+    return result;
+
+  } catch (error) {
+    console.error('❌ Error parsing template:', error);
+    // Fallback: plain text
+    return lines.map((lineText, idx) => ({
+      num: section.startLine + idx,
+      segments: [{ text: lineText, kinds: ['text'] }],
+      hasInput: false
+    }));
+  }
+}
+
+/**
+ * Template 라인을 segment로 파싱
+ * 간단한 정규식 기반 파싱 (태그, 속성, mustache 표현식)
+ */
+function parseTemplateLine(lineText: string): CodeSegment[] {
+  const segments: CodeSegment[] = [];
+  let currentPos = 0;
+
+  // 정규식 패턴들
+  const tagOpenPattern = /<(\w+)/g;  // Opening tag
+  const tagClosePattern = /<\/(\w+)>/g;  // Closing tag
+  const attrPattern = /(\w+)="([^"]*)"/g;  // Attributes
+  const mustachePattern = /\{\{([^}]+)\}\}/g;  // {{ expression }}
+
+  // 간단한 파싱: 전체 라인을 텍스트로 처리하되, 특정 패턴만 하이라이트
+  // 더 정교한 파싱을 위해서는 Vue template compiler의 AST를 순회해야 함
+
+  // 일단 전체를 text로 반환 (향후 개선 예정)
+  if (lineText.trim() === '') {
+    segments.push({ text: lineText, kinds: ['text'] });
+  } else {
+    segments.push({ text: lineText, kinds: ['text'] });
+  }
+
+  return segments;
 }
 
 /**
@@ -161,7 +210,7 @@ function renderSectionTags(vueContent: string, section: VueSection): CodeLine[] 
 
 /**
  * Vue 파일 전체 렌더링
- * 간단한 방식: 전체를 plain text로 렌더링하되, script 부분만 TypeScript로 재렌더링
+ * 섹션별로 다른 파서 사용 + 태그 라인 하이라이팅
  */
 export function renderVueFile(node: CanvasNode, files: Record<string, string>): CodeLine[] {
   const vueContent = node.codeSnippet;
@@ -178,20 +227,103 @@ export function renderVueFile(node: CanvasNode, files: Record<string, string>): 
   // Vue 섹션 파싱
   const sections = parseVueSections(vueContent, filePath);
 
-  // Script 섹션만 찾아서 TypeScript로 재렌더링
-  const scriptSection = sections.find(s => s.type === 'script');
+  // 각 섹션 처리
+  sections.forEach(section => {
+    // 섹션 opening tag 찾기 (content 시작 라인 이전)
+    const openingTagLineNum = section.startLine - 1;
+    if (openingTagLineNum > 0 && openingTagLineNum <= vueLines.length) {
+      const openingTagText = vueLines[openingTagLineNum - 1];
 
-  if (scriptSection) {
-    const scriptLines = renderScriptSection(scriptSection, node, files);
+      // Opening tag를 keyword로 하이라이팅
+      allLines[openingTagLineNum - 1] = {
+        num: openingTagLineNum,
+        segments: renderSectionTag(openingTagText, section.type),
+        hasInput: false
+      };
+    }
 
-    // Script 섹션의 라인들만 교체
-    scriptLines.forEach(line => {
-      const lineIdx = line.num - 1;
-      if (lineIdx >= 0 && lineIdx < allLines.length) {
-        allLines[lineIdx] = line;
-      }
-    });
-  }
+    // 섹션 closing tag 찾기 (content 끝 라인 이후)
+    const closingTagLineNum = section.endLine + 1;
+    if (closingTagLineNum > 0 && closingTagLineNum <= vueLines.length) {
+      const closingTagText = vueLines[closingTagLineNum - 1];
+
+      // Closing tag를 keyword로 하이라이팅
+      allLines[closingTagLineNum - 1] = {
+        num: closingTagLineNum,
+        segments: renderSectionTag(closingTagText, section.type),
+        hasInput: false
+      };
+    }
+
+    // 섹션 내용 렌더링
+    if (section.type === 'script') {
+      const scriptLines = renderScriptSection(section, node, files);
+
+      // Script 섹션의 라인들만 교체
+      scriptLines.forEach(line => {
+        const lineIdx = line.num - 1;
+        if (lineIdx >= 0 && lineIdx < allLines.length) {
+          allLines[lineIdx] = line;
+        }
+      });
+    } else if (section.type === 'template') {
+      const templateLines = renderTemplateSection(section, vueContent, filePath);
+
+      // Template 섹션의 라인들만 교체
+      templateLines.forEach(line => {
+        const lineIdx = line.num - 1;
+        if (lineIdx >= 0 && lineIdx < allLines.length) {
+          allLines[lineIdx] = line;
+        }
+      });
+    }
+  });
 
   return allLines;
+}
+
+/**
+ * 섹션 태그 렌더링 (<template>, <script>, <style> 태그 하이라이팅)
+ */
+function renderSectionTag(tagText: string, sectionType: 'script' | 'template' | 'style'): CodeSegment[] {
+  // 간단한 파싱: < > 사이의 내용을 keyword로 표시
+  const segments: CodeSegment[] = [];
+
+  // 공백 처리
+  const leadingSpaceMatch = tagText.match(/^(\s*)/);
+  if (leadingSpaceMatch && leadingSpaceMatch[1].length > 0) {
+    segments.push({ text: leadingSpaceMatch[1], kinds: ['text'] });
+  }
+
+  const trimmed = tagText.trim();
+
+  if (trimmed.startsWith('</')) {
+    // Closing tag: </template>, </script>, </style>
+    segments.push({ text: '</', kinds: ['punctuation'] });
+    segments.push({ text: sectionType, kinds: ['keyword'] });
+    segments.push({ text: '>', kinds: ['punctuation'] });
+  } else if (trimmed.startsWith('<')) {
+    // Opening tag: <template>, <script setup lang="ts">, etc.
+    segments.push({ text: '<', kinds: ['punctuation'] });
+
+    // Tag name
+    const tagMatch = trimmed.match(/<(\w+)(.*)>$/);
+    if (tagMatch) {
+      segments.push({ text: tagMatch[1], kinds: ['keyword'] });
+
+      // Attributes
+      if (tagMatch[2].trim()) {
+        segments.push({ text: tagMatch[2], kinds: ['text'] });
+      }
+
+      segments.push({ text: '>', kinds: ['punctuation'] });
+    } else {
+      // Fallback
+      segments.push({ text: trimmed.substring(1), kinds: ['text'] });
+    }
+  } else {
+    segments.push({ text: tagText, kinds: ['text'] });
+  }
+
+  return segments;
 }
