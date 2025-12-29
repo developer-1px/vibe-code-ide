@@ -22,6 +22,7 @@ import {
 const IDENTIFIER_KINDS: SegmentKind[] = [
   'identifier',
   'local-variable',
+  'parameter',
   'self',
   'external-import',
   'external-closure',
@@ -106,8 +107,8 @@ export const SegmentRenderer = ({
     segment.definedIn &&
     (visibleNodeIds.has(segment.definedIn) || visibleNodeIds.has(segment.definedIn.split('::')[0]));
 
-  // local-variable의 active 상태 체크 (사용자가 활성화했는지)
-  const isLocalActive = segment.kinds.includes('local-variable') &&
+  // local-variable 또는 parameter의 active 상태 체크 (사용자가 활성화했는지)
+  const isLocalActive = (segment.kinds.includes('local-variable') || segment.kinds.includes('parameter')) &&
     activeLocalVariables.get(node.id)?.has(segment.text) || false;
 
   // Check if this segment is focused

@@ -2,6 +2,8 @@
  * Code Segment entity - represents a syntax-highlighted token within a code line
  */
 
+import type React from 'react';
+
 /**
  * Segment kind flags - multiple kinds can be combined
  */

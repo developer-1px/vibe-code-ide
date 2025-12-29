@@ -185,3 +185,31 @@ export function shouldSkipIdentifier(node: ts.Node, parent: ts.Node): boolean {
 
   return !isJsxTag && (isPropertyAccess || isPropertyK);
 }
+
+/**
+ * SourceFile에서 모든 함수 파라미터 추출 (destructuring 지원)
+ */
+export function extractParametersFromAST(sourceFile: ts.SourceFile): Set<string> {
+  const parameters = new Set<string>();
+
+  function visit(node: ts.Node) {
+    // 함수 선언, 함수 표현식, 화살표 함수 등
+    if (
+      ts.isFunctionDeclaration(node) ||
+      ts.isFunctionExpression(node) ||
+      ts.isArrowFunction(node) ||
+      ts.isMethodDeclaration(node) ||
+      ts.isConstructorDeclaration(node)
+    ) {
+      // 파라미터 추출
+      node.parameters.forEach(param => {
+        extractBindingIdentifiers(param.name, parameters);
+      });
+    }
+
+    ts.forEachChild(node, visit);
+  }
+
+  visit(sourceFile);
+  return parameters;
+}

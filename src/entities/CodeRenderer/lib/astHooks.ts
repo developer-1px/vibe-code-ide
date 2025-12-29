@@ -163,8 +163,9 @@ export function processIdentifier(
     addKind(start, end, 'identifier', undefined, undefined, node);
   }
 
-  // Parameter
-  if (parameters.has(name)) {
+  // Parameter detection (includes destructured parameters)
+  const isParameter = parameters.has(name) || isDestructuredParameter(node);
+  if (isParameter) {
     addKind(start, end, 'parameter', undefined, undefined, node);
     addKind(start, end, 'identifier', undefined, undefined, node);
   }
@@ -196,4 +197,35 @@ export function processIdentifier(
   } else if (localIdentifiers.has(name)) {
     addKind(start, end, 'identifier', undefined, undefined, node);
   }
+}
+
+/**
+ * Check if an identifier is a destructured parameter
+ * Example: ({node}) => { ... } - "node" should be detected as parameter
+ */
+function isDestructuredParameter(identifier: ts.Identifier): boolean {
+  const parent = (identifier as any).parent;
+
+  // Check if this identifier is inside a BindingElement
+  if (ts.isBindingElement(parent)) {
+    // Walk up to find if this is part of a function parameter
+    let current: ts.Node = parent;
+    while (current) {
+      // If we find an ObjectBindingPattern or ArrayBindingPattern
+      if (ts.isObjectBindingPattern(current) || ts.isArrayBindingPattern(current)) {
+        const bindingParent = (current as any).parent;
+        // Check if the binding pattern's parent is a Parameter
+        if (ts.isParameter(bindingParent)) {
+          return true;
+        }
+      }
+      current = (current as any).parent;
+      // Stop if we've gone too far up the tree
+      if (!current || ts.isFunctionLike(current)) {
+        break;
+      }
+    }
+  }
+
+  return false;
 }

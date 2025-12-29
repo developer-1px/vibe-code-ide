@@ -292,7 +292,7 @@ const loadDynamicFiles = (): Record<string, string> | null => {
   try {
     const files: Record<string, string> = {};
 
-    // @ts-expect-error - import.meta.glob is a Vite feature
+    // @ts-ignore - import.meta.glob is a Vite feature
     const srcFiles = import.meta.glob('/src/**/*.{tsx,ts,vue}', {
       query: '?raw',
       eager: true

@@ -7,7 +7,7 @@ import * as ts from 'typescript'
 import type {CanvasNode} from '../../CanvasNode'
 import {findDefinitionLocation, getQuickInfoAtPosition} from './tsLanguageService'
 import {collectFoldMetadata} from '../../../features/CodeFold/lib/collectFoldMetadata'
-import type {CodeLine, CodeSegment, SegmentKind} from '../model/types'
+import type {CodeLine, SegmentKind} from '../model/types'
 import {getImportSource} from '../../SourceFileNode/lib/getters'
 import {resolvePath} from '../../../services/tsParser/utils/pathResolver'
 import {
@@ -16,15 +16,15 @@ import {
   isTsxFile,
   extractLocalIdentifiers,
   shouldSkipIdentifier,
-  getSegmentKey
+  getSegmentKey,
+  extractParametersFromAST
 } from './segmentUtils'
 import {extractAllComments} from './commentExtractor'
 import {groupSegmentsByLine, populateLineSegments, type SegmentData} from './lineSegmentBuilder'
 import {
   processDeclarationNode,
   processTemplateLiteral,
-  processIdentifier,
-  type AddKindFunction
+  processIdentifier
 } from './astHooks'
 
 // AST에서 segment kind를 결정하는 Hook
@@ -61,8 +61,6 @@ export function renderCodeLines(node: CanvasNode, files: Record<string, string>)
   const startLineNum = node.startLine || 1;
   const nodeId = node.id;
   const dependencies = node.dependencies;
-  const localVariableNames = node.localVariableNames;
-  const functionAnalysis = node.functionAnalysis;
   const filePath = node.filePath;
 
   const isTsx = isTsxFile(filePath);
@@ -81,8 +79,7 @@ export function renderCodeLines(node: CanvasNode, files: Record<string, string>)
   const nodeShortId = extractShortId(nodeId);
 
   // 참조 맵 생성
-  const localVars = new Set(localVariableNames || []);
-  const parameters = functionAnalysis?.parameters ? new Set(functionAnalysis.parameters) : new Set<string>();
+  const parameters = extractParametersFromAST(sourceFile);
   const dependencyMap = createDependencyMap(dependencies);
 
   // Local identifiers 추적 (파일 내에서 선언된 identifier)
@@ -104,8 +101,6 @@ export function renderCodeLines(node: CanvasNode, files: Record<string, string>)
     function visit(node: ts.Node) {
       const start = node.getStart(sourceFile);
       const end = node.getEnd();
-      const pos = sourceFile.getLineAndCharacterOfPosition(start);
-      const lineIdx = pos.line;
 
       // Hook 0: Declaration 노드 처리
       processDeclarationNode(node, sourceFile, result, localIdentifiers, addKind);
@@ -145,7 +140,7 @@ export function renderCodeLines(node: CanvasNode, files: Record<string, string>)
           nodeId,
           filePath,
           parameters,
-          localVars,
+          new Set(), // localVars - 현재 사용하지 않음
           localIdentifiers,
           dependencyMap,
           files,

@@ -23,6 +23,10 @@ export interface SourceFileNode {
 
   // 계산된 속성 (캐싱용 - getter로 계산한 결과를 저장)
   dependencies?: string[];  // getDependencies()로 계산
+
+  // Vue 파일 지원
+  vueTemplate?: string;  // Vue 파일의 template 섹션
+  vueTemplateRefs?: Array<any>;  // Vue template에서 참조하는 변수/컴포넌트
 }
 
 export interface GraphData {

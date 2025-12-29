@@ -208,21 +208,46 @@ export function buildSegmentStyle(
     };
   }
 
-  // Parameter (클릭 가능한 토큰)
+  // Parameter (클릭하여 하이라이트 가능한 파라미터)
   if (primaryKind === 'parameter') {
-    // Focus mode: grayscale
-    if (hasFocusMode) {
+    const isActive = options.isActive;
+
+    // Active 상태 && Focus mode: 최대 강조
+    if (isActive && isFocused) {
       return {
-        className: 'inline-block px-1 py-0.5 rounded text-slate-600 border border-slate-700 transition-all cursor-default select-text',
-        clickable: false,
-        title: 'Parameter'
+        className: 'inline-block px-1 py-0.5 rounded bg-orange-400/30 text-orange-100 font-bold border border-orange-300/60 shadow-[0_0_12px_rgba(251,146,60,0.6)] hover:bg-orange-400/40 transition-all cursor-pointer select-text',
+        clickable: true,
+        clickType: 'local-variable',
+        title: 'Click to deactivate highlight (Focus mode) - Parameter'
       };
     }
 
+    // Active 상태: 강조 하이라이트
+    if (isActive) {
+      return {
+        className: 'inline-block px-1 py-0.5 rounded bg-orange-500/20 text-orange-200 font-semibold border border-orange-400/40 hover:bg-orange-500/30 hover:border-orange-300/60 transition-all cursor-pointer select-text',
+        clickable: true,
+        clickType: 'local-variable',
+        title: 'Click to deactivate highlight - Parameter'
+      };
+    }
+
+    // Focus mode에서 다른 변수가 활성화된 경우: grayscale
+    if (hasFocusMode) {
+      return {
+        className: 'inline-block px-1 py-0.5 rounded text-slate-600 border border-slate-700 hover:text-orange-400 hover:border-orange-600 transition-all cursor-pointer select-text',
+        clickable: true,
+        clickType: 'local-variable',
+        title: 'Click to activate highlight - Parameter'
+      };
+    }
+
+    // 기본 상태: 클릭 가능 (orange 계열)
     return {
-      className: 'inline-block px-1 py-0.5 rounded bg-violet-500/15 text-violet-300 font-semibold border border-violet-500/30 hover:bg-violet-500/25 hover:border-violet-400/50 transition-all cursor-default select-text',
-      clickable: false,
-      title: 'Parameter'
+      className: 'inline-block px-1 py-0.5 rounded bg-orange-500/15 text-orange-300 font-semibold border border-orange-500/30 hover:bg-orange-500/25 hover:border-orange-400/50 transition-all cursor-pointer select-text',
+      clickable: true,
+      clickType: 'local-variable',
+      title: 'Click to activate highlight - Parameter'
     };
   }
 

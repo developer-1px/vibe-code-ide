@@ -12,7 +12,6 @@ import { getNodeBorderColor } from '../../entities/SourceFileNode/lib/styleUtils
 import CodeCardHeader from './ui/CodeCardHeader';
 import CodeCardCopyButton from './ui/CodeCardCopyButton';
 import CodeCardLine from './ui/CodeCardLine';
-import CodeCardReferences from './ui/CodeCardReferences';
 import VueTemplateSection from './ui/VueTemplateSection';
 
 // Atoms

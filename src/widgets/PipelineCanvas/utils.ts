@@ -4,10 +4,8 @@ import { VariableNode } from '../../entities/SourceFileNode';
 
 // --- Constants ---
 export const LEVEL_SPACING = 850; // Horizontal space between columns
-export const VERTICAL_GAP = 150; // Gap between vertically stacked nodes (increased for external refs)
+export const VERTICAL_GAP = 150; // Gap between vertically stacked nodes
 export const CHAR_WRAP_LIMIT = 120; // Estimated characters per line before wrapping
-export const EXTERNAL_REF_HEIGHT = 28; // Height per external reference item
-export const EXTERNAL_REF_SECTION_PADDING = 40; // Header + padding for external refs section
 
 // --- Helpers ---
 
@@ -49,23 +47,7 @@ export const estimateNodeHeight = (node: CanvasNode) => {
 
     const baseHeight = 60; // Header + padding
     const lineHeight = 20; // Approximation of line-height in pixels
-    let totalHeight = baseHeight + (visualLineCount * lineHeight);
-
-    // Add height for External References section
-    if (node.functionAnalysis?.externalDeps) {
-        const externalRefsCount = node.functionAnalysis.externalDeps.filter(
-            dep => dep.definedIn // Only count refs with definedIn
-        ).length;
-
-        if (externalRefsCount > 0) {
-            totalHeight += EXTERNAL_REF_SECTION_PADDING + (externalRefsCount * EXTERNAL_REF_HEIGHT);
-        }
-    }
-
-    // Add height for Local References section (for templates/modules)
-    if (node.localReferences && node.localReferences.length > 0) {
-        totalHeight += EXTERNAL_REF_SECTION_PADDING + (node.localReferences.length * EXTERNAL_REF_HEIGHT);
-    }
+    const totalHeight = baseHeight + (visualLineCount * lineHeight);
 
     return totalHeight;
 };
