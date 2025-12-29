@@ -348,17 +348,17 @@ export const findEntryFile = (files: Record<string, string>): string => {
     throw new Error('No files available to find entry point');
   }
 
+  const appTsx = filePaths.find(path => path.endsWith('App.tsx'));
+  if (appTsx) {
+    console.log('📍 Entry file detected: App.tsx ->', appTsx);
+    return appTsx;
+  }
+
   // Priority 1: Look for App.vue or App.tsx
   const appVue = filePaths.find(path => path.endsWith('App.vue'));
   if (appVue) {
     console.log('📍 Entry file detected: App.vue ->', appVue);
     return appVue;
-  }
-
-  const appTsx = filePaths.find(path => path.endsWith('App.tsx'));
-  if (appTsx) {
-    console.log('📍 Entry file detected: App.tsx ->', appTsx);
-    return appTsx;
   }
 
   // Priority 2: Look for main.vue or main.tsx

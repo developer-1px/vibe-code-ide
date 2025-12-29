@@ -15,6 +15,31 @@ export type AddKindFunction = (
 ) => void;
 
 /**
+ * BindingName에서 모든 identifier 순회 (destructuring 지원)
+ */
+function forEachBindingIdentifier(
+  bindingName: ts.BindingName,
+  sourceFile: ts.SourceFile,
+  callback: (id: ts.Identifier) => void
+): void {
+  if (ts.isIdentifier(bindingName)) {
+    callback(bindingName);
+  } else if (ts.isObjectBindingPattern(bindingName)) {
+    // const { a, b: c } = obj;
+    bindingName.elements.forEach(element => {
+      forEachBindingIdentifier(element.name, sourceFile, callback);
+    });
+  } else if (ts.isArrayBindingPattern(bindingName)) {
+    // const [a, b] = arr;
+    bindingName.elements.forEach(element => {
+      if (ts.isBindingElement(element)) {
+        forEachBindingIdentifier(element.name, sourceFile, callback);
+      }
+    });
+  }
+}
+
+/**
  * Hook 0: Declaration 노드 처리
  * - hasDeclarationKeyword 플래그 설정
  * - Declaration 이름에 'self' kind 추가
@@ -37,16 +62,25 @@ export function processDeclarationNode(
   result[lineIdx].hasDeclarationKeyword = true; // Output Port 표시용
 
   // 선언 이름 추출 및 glow 표시
-  const declarationName = getDeclarationName(node);
-
-  if (declarationName) {
-    const nameStart = declarationName.getStart(sourceFile);
-    const nameEnd = declarationName.getEnd();
-
-    addKind(nameStart, nameEnd, 'self', undefined, true); // isDeclarationName = true
-
-    // Local identifier로 등록
-    localIdentifiers.add(declarationName.text);
+  if (ts.isVariableStatement(node)) {
+    // VariableStatement은 여러 declaration을 가질 수 있고, destructuring도 지원
+    node.declarationList.declarations.forEach(declaration => {
+      forEachBindingIdentifier(declaration.name, sourceFile, id => {
+        const nameStart = id.getStart(sourceFile);
+        const nameEnd = id.getEnd();
+        addKind(nameStart, nameEnd, 'self', undefined, true); // isDeclarationName = true
+        localIdentifiers.add(id.text);
+      });
+    });
+  } else {
+    // 다른 declaration은 단일 identifier
+    const declarationName = getDeclarationName(node);
+    if (declarationName) {
+      const nameStart = declarationName.getStart(sourceFile);
+      const nameEnd = declarationName.getEnd();
+      addKind(nameStart, nameEnd, 'self', undefined, true); // isDeclarationName = true
+      localIdentifiers.add(declarationName.text);
+    }
   }
 }
 

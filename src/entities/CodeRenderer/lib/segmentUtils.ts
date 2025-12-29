@@ -40,6 +40,27 @@ export function isTsxFile(filePath?: string): boolean {
 }
 
 /**
+ * BindingName에서 모든 identifier 추출 (destructuring 지원)
+ */
+function extractBindingIdentifiers(bindingName: ts.BindingName, identifiers: Set<string>) {
+  if (ts.isIdentifier(bindingName)) {
+    identifiers.add(bindingName.text);
+  } else if (ts.isObjectBindingPattern(bindingName)) {
+    // const { a, b: c } = obj;
+    bindingName.elements.forEach(element => {
+      extractBindingIdentifiers(element.name, identifiers);
+    });
+  } else if (ts.isArrayBindingPattern(bindingName)) {
+    // const [a, b] = arr;
+    bindingName.elements.forEach(element => {
+      if (ts.isBindingElement(element)) {
+        extractBindingIdentifiers(element.name, identifiers);
+      }
+    });
+  }
+}
+
+/**
  * SourceFile에서 local identifiers 추출
  */
 export function extractLocalIdentifiers(sourceFile: ts.SourceFile): Set<string> {
@@ -57,29 +78,23 @@ export function extractLocalIdentifiers(sourceFile: ts.SourceFile): Set<string> 
       ts.isModuleDeclaration(node)
     ) {
       // 선언 이름 추출
-      let declarationName: ts.Identifier | undefined;
-
       if (ts.isVariableStatement(node)) {
-        const declaration = node.declarationList.declarations[0];
-        if (declaration && ts.isIdentifier(declaration.name)) {
-          declarationName = declaration.name;
-        }
+        // VariableStatement은 여러 declaration을 가질 수 있음
+        node.declarationList.declarations.forEach(declaration => {
+          extractBindingIdentifiers(declaration.name, localIdentifiers);
+        });
       } else if (ts.isFunctionDeclaration(node) && node.name) {
-        declarationName = node.name;
+        localIdentifiers.add(node.name.text);
       } else if (ts.isInterfaceDeclaration(node)) {
-        declarationName = node.name;
+        localIdentifiers.add(node.name.text);
       } else if (ts.isTypeAliasDeclaration(node)) {
-        declarationName = node.name;
+        localIdentifiers.add(node.name.text);
       } else if (ts.isClassDeclaration(node) && node.name) {
-        declarationName = node.name;
+        localIdentifiers.add(node.name.text);
       } else if (ts.isEnumDeclaration(node)) {
-        declarationName = node.name;
+        localIdentifiers.add(node.name.text);
       } else if (ts.isModuleDeclaration(node)) {
-        declarationName = node.name as ts.Identifier;
-      }
-
-      if (declarationName) {
-        localIdentifiers.add(declarationName.text);
+        localIdentifiers.add((node.name as ts.Identifier).text);
       }
     }
 
