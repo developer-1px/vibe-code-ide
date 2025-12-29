@@ -6,6 +6,9 @@
 import * as ts from 'typescript';
 import type { CanvasNode } from '../../CanvasNode';
 import type { FunctionAnalysis } from '../../../services/functionalParser/types';
+import { findDefinitionLocation, getQuickInfoAtPosition } from './tsLanguageService';
+import { collectFoldMetadata } from '../../../features/CodeFold/lib/collectFoldMetadata';
+import type { FoldInfo, FoldPlaceholder } from '../../../features/CodeFold/lib/types';
 
 export interface CodeSegment {
   text: string;
@@ -14,6 +17,13 @@ export interface CodeSegment {
   definedIn?: string;
   offset?: number; // Position in line for accurate sorting
   isDeclarationName?: boolean; // 선언되는 변수/함수/타입 이름인지 여부
+  position?: number; // 🆕 AST position for Language Service queries
+  hoverInfo?: string; // 🆕 Quick info from Language Service
+  definitionLocation?: { // 🆕 Definition location from Language Service
+    filePath: string;
+    line: number;
+    character: number;
+  };
 }
 
 // AST에서 segment kind를 결정하는 Hook
@@ -36,16 +46,6 @@ function getSegmentKind(node: ts.Node): CodeSegment['kind'] | null {
   return null;
 }
 
-export interface FoldInfo {
-  isFoldable: boolean;        // 접을 수 있는 라인인가? (블록 시작)
-  foldStart: number;           // 접기 시작 라인 번호
-  foldEnd: number;             // 접기 끝 라인 번호
-  isInsideFold: boolean;       // 접힌 범위 내부에 있는가?
-  parentFoldLine?: number;     // 부모 fold 라인 번호 (중첩 지원)
-  foldType?: 'statement-block' | 'jsx-children' | 'jsx-fragment';
-  tagName?: string;            // JSX인 경우 태그 이름
-}
-
 export interface CodeLine {
   num: number;
   segments: CodeSegment[];
@@ -55,115 +55,6 @@ export interface CodeLine {
   foldInfo?: FoldInfo;        // 🆕 Fold 관련 메타데이터
   isFolded?: boolean;          // 🆕 현재 접혀있는 상태인가? (UI에서 설정)
   foldedCount?: number;        // 🆕 접힌 라인 수 (UI에서 설정)
-}
-
-export interface FoldPlaceholder {
-  type: 'fold-placeholder';
-  parentLine: number;
-  foldStart: number;
-  foldEnd: number;
-  foldedCount: number;
-  foldType: 'statement-block' | 'jsx-children' | 'jsx-fragment';
-  tagName?: string;
-}
-
-/**
- * Statement Block의 fold 메타데이터 수집
- * 각 라인에 fold 정보를 추가
- */
-function collectFoldMetadata(
-  sourceFile: ts.SourceFile,
-  lines: CodeLine[]
-): void {
-  function visit(node: ts.Node) {
-    let block: ts.Block | undefined;
-    let blockType: 'statement-block' | 'jsx-children' | undefined;
-
-    // ===== Statement Block 감지 =====
-    if (ts.isFunctionDeclaration(node) && node.body) {
-      block = node.body;
-      blockType = 'statement-block';
-    }
-    else if (ts.isArrowFunction(node) && ts.isBlock(node.body)) {
-      block = node.body;
-      blockType = 'statement-block';
-    }
-    else if (ts.isFunctionExpression(node) && node.body) {
-      block = node.body;
-      blockType = 'statement-block';
-    }
-    else if (ts.isMethodDeclaration(node) && node.body) {
-      block = node.body;
-      blockType = 'statement-block';
-    }
-    else if (ts.isIfStatement(node) && ts.isBlock(node.thenStatement)) {
-      block = node.thenStatement;
-      blockType = 'statement-block';
-    }
-    else if (ts.isForStatement(node) && ts.isBlock(node.statement)) {
-      block = node.statement;
-      blockType = 'statement-block';
-    }
-    else if (ts.isWhileStatement(node) && ts.isBlock(node.statement)) {
-      block = node.statement;
-      blockType = 'statement-block';
-    }
-    else if (ts.isTryStatement(node)) {
-      block = node.tryBlock;
-      blockType = 'statement-block';
-    }
-
-    // Block이 있고, 비어있지 않으면 fold 가능
-    if (block && block.statements.length > 0) {
-      const openBrace = block.getStart(sourceFile);
-      const closeBrace = block.getEnd() - 1;
-
-      // TypeScript는 0-based line numbers를 반환
-      const tsStartLine = sourceFile.getLineAndCharacterOfPosition(openBrace).line;
-      const tsEndLine = sourceFile.getLineAndCharacterOfPosition(closeBrace).line;
-
-      // lines 배열은 0-based 인덱스
-      // CodeLine.num은 startLineNum + idx (실제 파일 라인 번호)
-      // 한 줄짜리는 접을 필요 없음
-      if (tsEndLine > tsStartLine && tsStartLine >= 0 && tsStartLine < lines.length) {
-        // 시작 라인에 fold 메타데이터 추가
-        const actualStartLineNum = lines[tsStartLine].num;
-        const actualEndLineNum = lines[tsEndLine].num;
-
-        lines[tsStartLine].foldInfo = {
-          isFoldable: true,
-          foldStart: actualStartLineNum,
-          foldEnd: actualEndLineNum,
-          isInsideFold: false,
-          foldType: blockType
-        };
-
-        // 중간 라인들에 "접힌 범위 내부" 표시
-        for (let i = tsStartLine + 1; i < tsEndLine; i++) {
-          if (i >= 0 && i < lines.length) {
-            lines[i].foldInfo = {
-              isFoldable: false,
-              foldStart: actualStartLineNum,
-              foldEnd: actualEndLineNum,
-              isInsideFold: true,
-              parentFoldLine: actualStartLineNum,
-              foldType: blockType
-            };
-          }
-        }
-
-        console.log(`📁 [collectFoldMetadata] Found foldable block at lines ${actualStartLineNum}-${actualEndLineNum} (ts: ${tsStartLine}-${tsEndLine})`);
-      }
-    }
-
-    ts.forEachChild(node, visit);
-  }
-
-  try {
-    visit(sourceFile);
-  } catch (err) {
-    console.error('❌ [collectFoldMetadata] Error:', err);
-  }
 }
 
 /**
@@ -467,7 +358,7 @@ export function renderCodeLines(node: CanvasNode): CodeLine[] {
           const line = result[lineIdx];
           const text = processedCode.slice(start, end);
           const offset = startPos.character; // Character position in line
-          line.segments.push({ text, kind, nodeId, definedIn, offset, isDeclarationName });
+          line.segments.push({ text, kind, nodeId, definedIn, offset, isDeclarationName, position: start });
           if (kind !== 'local-variable' && kind !== 'parameter') {
             line.hasInput = true;
           }
@@ -493,7 +384,7 @@ export function renderCodeLines(node: CanvasNode): CodeLine[] {
           const text = processedCode.slice(segStart, segEnd);
           const segPos = sourceFile.getLineAndCharacterOfPosition(segStart);
           const offset = segPos.character; // Character position in line
-          line.segments.push({ text, kind, nodeId, definedIn, offset, isDeclarationName });
+          line.segments.push({ text, kind, nodeId, definedIn, offset, isDeclarationName, position: segStart });
           if (kind !== 'local-variable' && kind !== 'parameter') {
             line.hasInput = true;
           }
@@ -596,6 +487,39 @@ export function renderCodeLines(node: CanvasNode): CodeLine[] {
     if (foldableLines.length > 0) {
       console.log(`📁 [renderCodeLines] Found ${foldableLines.length} foldable lines:`, foldableLines.map(l => `Line ${l.num}`));
     }
+
+    // 🆕 Language Service로 모든 identifier에 대한 정의 위치 및 hover 정보 추가
+    result.forEach(line => {
+      line.segments.forEach(segment => {
+        // identifier 계열 segment만 처리 (nodeId가 있는 것은 이미 처리됨)
+        if (
+          segment.position !== undefined &&
+          (segment.kind === 'identifier' ||
+           segment.kind === 'external-import' ||
+           segment.kind === 'external-closure' ||
+           segment.kind === 'external-function' ||
+           segment.kind === 'local-variable' ||
+           segment.kind === 'parameter') &&
+          !segment.nodeId // nodeId가 없는 경우만 (있으면 이미 Go to Definition 있음)
+        ) {
+          // Get definition location
+          const defLocation = findDefinitionLocation(processedCode, filePath || '', segment.position, isTsx);
+          if (defLocation) {
+            segment.definitionLocation = {
+              filePath: defLocation.filePath,
+              line: defLocation.line,
+              character: defLocation.character,
+            };
+          }
+
+          // Get hover info
+          const hoverInfo = getQuickInfoAtPosition(processedCode, segment.position, isTsx);
+          if (hoverInfo) {
+            segment.hoverInfo = hoverInfo;
+          }
+        }
+      });
+    });
 
     return result;
 

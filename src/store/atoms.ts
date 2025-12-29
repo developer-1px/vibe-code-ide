@@ -27,7 +27,13 @@ export const transformAtom = atom({ k: 1, x: 0, y: 0 });
 export const visibleNodeIdsAtom = atom(new Set<string>());
 export const lastExpandedIdAtom = atom(null as string | null);
 
+// Go to Definition - target line to highlight and scroll to
+export const targetLineAtom = atom(null as { nodeId: string; lineNum: number } | null);
+
 // File Explorer atoms
 export const fileSearchQueryAtom = atom('');
 export const focusedFileIndexAtom = atom(0);
 export const collapsedFoldersAtom = atom(new Set<string>()); // 접힌 폴더들
+
+// Code Fold atoms - Map<nodeId, Set<lineNumber>>
+export const foldedLinesAtom = atom(new Map<string, Set<number>>());

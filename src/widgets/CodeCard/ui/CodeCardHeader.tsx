@@ -5,15 +5,11 @@ import {
   PlayCircle as IconPlayCircle, BoxSelect as IconBoxSelect, ChevronsDown as IconChevronsDown, ChevronsUp as IconChevronsUp,
   Calculator as IconCalculator, Shield as IconShield, Zap as IconZap, RefreshCw as IconRefreshCw, AlertCircle as IconAlertCircle
 } from 'lucide-react';
-import { CanvasNode } from '../../../CanvasNode';
-import { visibleNodeIdsAtom, fullNodeMapAtom, lastExpandedIdAtom } from '../../../../store/atoms';
-import { checkAllDepsExpanded, expandDependenciesRecursive, collapseDependencies, getFirstDependency } from '../../model/nodeVisibility';
+import { CanvasNode } from '../../../entities/CanvasNode';
+import { visibleNodeIdsAtom, fullNodeMapAtom, lastExpandedIdAtom } from '../../../store/atoms';
+import { checkAllDepsExpanded, expandDependenciesRecursive, collapseDependencies, getFirstDependency } from '../../../entities/VariableNode/model/nodeVisibility';
 
-interface CodeCardHeaderProps {
-  node: CanvasNode;
-}
-
-const CodeCardHeader: React.FC<CodeCardHeaderProps> = ({ node }) => {
+const CodeCardHeader = ({ node }: { node: CanvasNode }) => {
   const [visibleNodeIds, setVisibleNodeIds] = useAtom(visibleNodeIdsAtom);
   const fullNodeMap = useAtomValue(fullNodeMapAtom);
   const setLastExpandedId = useSetAtom(lastExpandedIdAtom);

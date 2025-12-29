@@ -1,17 +1,15 @@
 
 import React from 'react';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
-import { getTokenStyle } from '../../lib/styleUtils.ts';
-import { visibleNodeIdsAtom, fullNodeMapAtom, lastExpandedIdAtom, entryFileAtom, templateRootIdAtom } from '../../../../store/atoms';
-import { pruneDetachedNodes } from '../../../../widgets/PipelineCanvas/utils.ts';
+import { getTokenStyle } from '../../../entities/VariableNode/lib/styleUtils';
+import { visibleNodeIdsAtom, fullNodeMapAtom, lastExpandedIdAtom, entryFileAtom, templateRootIdAtom } from '../../../store/atoms';
+import { pruneDetachedNodes } from '../../PipelineCanvas/utils';
 
-interface CodeCardTokenProps {
+const CodeCardToken = ({text, tokenId, nodeId }: {
   text: string;
   tokenId: string;
   nodeId: string;
-}
-
-const CodeCardToken: React.FC<CodeCardTokenProps> = ({ text, tokenId, nodeId }) => {
+}) => {
   const [visibleNodeIds, setVisibleNodeIds] = useAtom(visibleNodeIdsAtom);
   const fullNodeMap = useAtomValue(fullNodeMapAtom);
   const entryFile = useAtomValue(entryFileAtom);
@@ -34,48 +32,28 @@ const CodeCardToken: React.FC<CodeCardTokenProps> = ({ text, tokenId, nodeId }) 
 
     if (!isLinkable) return;
 
-    // Use current state reference for decision making, but verify inside setter
-    const forceExpand = e.metaKey || e.ctrlKey; // cmd (Mac) or ctrl (Windows/Linux)
-    let isExpanding = false;
+    let shouldCenterCamera = false;
 
     setVisibleNodeIds((prev: Set<string>) => {
       const next = new Set(prev);
 
       // Check existence in the PREVIOUS state to ensure we are toggling correctly
-      if (next.has(tokenId) && !forceExpand) {
+      if (next.has(tokenId)) {
         // TOGGLE OFF (Fold)
         next.delete(tokenId);
-        
+
         // When turning off, remove any nodes that are now "stranded" (unreachable)
         return pruneDetachedNodes(next, fullNodeMap, entryFile, templateRootId);
       } else {
-        // TOGGLE ON (Unfold Recursively)
-        isExpanding = true;
-        
-        const expandRecursive = (id: string) => {
-          if (next.has(id)) return;
-          next.add(id);
-
-          const node = fullNodeMap.get(id);
-          if (node) {
-            // Stop expanding if we hit a template node
-            if (node.type === 'template') return;
-
-            node.dependencies.forEach(depId => {
-              if (fullNodeMap.has(depId)) {
-                expandRecursive(depId);
-              }
-            });
-          }
-        };
-
-        expandRecursive(tokenId);
+        // TOGGLE ON (Add only this node, no recursive expansion)
+        next.add(tokenId);
+        shouldCenterCamera = true;
       }
       return next;
     });
 
-    // Center camera if we are Unfolding (Expanding) OR force expanding
-    if (isExpanding || forceExpand) {
+    // Center camera when opening a node
+    if (shouldCenterCamera) {
       setLastExpandedId(tokenId);
     }
   };

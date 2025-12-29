@@ -7,18 +7,16 @@
 
 import React, { useMemo } from 'react';
 import { useSetAtom } from 'jotai';
-import { visibleNodeIdsAtom, fullNodeMapAtom, lastExpandedIdAtom, filesAtom } from '../../../../store/atoms';
+import { visibleNodeIdsAtom, fullNodeMapAtom, lastExpandedIdAtom, filesAtom } from '../../../store/atoms';
 import { useAtomValue } from 'jotai';
-import type { CanvasNode } from '../../../CanvasNode';
-import { extractTemplateComponents, extractTemplateVariables } from '../../../../services/tsParser/utils/vueTemplateParser';
+import type { CanvasNode } from '../../../entities/CanvasNode';
+import { extractTemplateComponents, extractTemplateVariables } from '../../../services/tsParser/utils/vueTemplateParser';
 
-interface VueTemplateSectionProps {
+const VueTemplateSection = ({template, node, scriptEndLine }: {
   template: string;
   node: CanvasNode;
   scriptEndLine: number; // script 영역의 마지막 라인 번호
-}
-
-const VueTemplateSection: React.FC<VueTemplateSectionProps> = ({ template, node, scriptEndLine }) => {
+}) => {
   const setVisibleNodeIds = useSetAtom(visibleNodeIdsAtom);
   const fullNodeMap = useAtomValue(fullNodeMapAtom);
   const setLastExpandedId = useSetAtom(lastExpandedIdAtom);

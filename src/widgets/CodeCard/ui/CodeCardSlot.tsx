@@ -1,18 +1,16 @@
 
 import React from 'react';
 import { useSetAtom } from 'jotai';
-import { VariableNode } from '../../model/types';
-import { getSlotColor } from '../../lib/styleUtils.ts';
-import { lastExpandedIdAtom } from '../../../../store/atoms';
+import { VariableNode } from '../../../entities/VariableNode/model/types';
+import { getSlotColor } from '../../../entities/VariableNode/lib/styleUtils';
+import { lastExpandedIdAtom } from '../../../store/atoms';
 
-interface CodeCardSlotProps {
+const CodeCardSlot = ({tokenId, lineNum, slotIdx, depNode }: {
   tokenId: string;
   lineNum: number;
   slotIdx: number;
   depNode?: VariableNode;
-}
-
-const CodeCardSlot: React.FC<CodeCardSlotProps> = ({ tokenId, lineNum, slotIdx, depNode }) => {
+}) => {
   const setLastExpandedId = useSetAtom(lastExpandedIdAtom);
 
   const slotColorClass = depNode

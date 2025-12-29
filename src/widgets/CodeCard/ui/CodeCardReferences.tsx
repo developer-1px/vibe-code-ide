@@ -1,12 +1,10 @@
 import React, { useMemo } from 'react';
-import { CanvasNode } from '../../../CanvasNode';
-import LocalReferenceItem from './LocalReferenceItem.tsx';
+import { CanvasNode } from '../../../entities/CanvasNode';
+import LocalReferenceItem from './LocalReferenceItem';
 
-interface CodeCardReferencesProps {
+const CodeCardReferences = ({node }: {
   node: CanvasNode;
-}
-
-const CodeCardReferences: React.FC<CodeCardReferencesProps> = ({ node }) => {
+}) => {
   // Extract external references from functionAnalysis
   const externalReferences = useMemo(() => {
     if (!node.functionAnalysis) return [];

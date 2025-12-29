@@ -1,16 +1,14 @@
 
 import React from 'react';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
-import { LocalReference } from '../../model/types';
-import { visibleNodeIdsAtom, fullNodeMapAtom, lastExpandedIdAtom, entryFileAtom, templateRootIdAtom } from '../../../../store/atoms';
-import { pruneDetachedNodes } from '../../../../widgets/PipelineCanvas/utils';
-import { getNodeBorderColor } from '../../lib/styleUtils';
+import { LocalReference } from '../../../entities/VariableNode/model/types';
+import { visibleNodeIdsAtom, fullNodeMapAtom, lastExpandedIdAtom, entryFileAtom, templateRootIdAtom } from '../../../store/atoms';
+import { pruneDetachedNodes } from '../../PipelineCanvas/utils';
+import { getNodeBorderColor } from '../../../entities/VariableNode/lib/styleUtils';
 
-interface LocalReferenceItemProps {
+const LocalReferenceItem = ({reference }: {
   reference: LocalReference;
-}
-
-const LocalReferenceItem: React.FC<LocalReferenceItemProps> = ({ reference }) => {
+}) => {
   const [visibleNodeIds, setVisibleNodeIds] = useAtom(visibleNodeIdsAtom);
   const fullNodeMap = useAtomValue(fullNodeMapAtom);
   const entryFile = useAtomValue(entryFileAtom);

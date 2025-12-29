@@ -1,64 +1,60 @@
-import React, { useMemo, useState } from 'react';
-import { CanvasNode } from '../../CanvasNode';
+import React, { useMemo, useEffect } from 'react';
+import { useAtomValue, useSetAtom } from 'jotai';
+import { CanvasNode } from '../../entities/CanvasNode';
 
 // Lib - Pure Utilities
-import { renderCodeLines, CodeLine, FoldPlaceholder } from '../lib/renderCodeLines.ts';
-import { getNodeBorderColor } from '../lib/styleUtils.ts';
+import { renderCodeLines, CodeLine } from '../../entities/VariableNode/lib/renderCodeLines';
+import { getNodeBorderColor } from '../../entities/VariableNode/lib/styleUtils';
 
 // UI Components
-import CodeCardHeader from './components/CodeCardHeader.tsx';
-import CodeCardCopyButton from './components/CodeCardCopyButton.tsx';
-import CodeCardLine from './components/CodeCardLine.tsx';
-import CodeCardReferences from './components/CodeCardReferences.tsx';
-import VueTemplateSection from './components/VueTemplateSection.tsx';
+import CodeCardHeader from './ui/CodeCardHeader';
+import CodeCardCopyButton from './ui/CodeCardCopyButton';
+import CodeCardLine from './ui/CodeCardLine';
+import CodeCardReferences from './ui/CodeCardReferences';
+import VueTemplateSection from './ui/VueTemplateSection';
 
-interface CodeCardProps {
-  node: CanvasNode;
-}
+// Atoms
+import { foldedLinesAtom } from '../../store/atoms';
 
-const CodeCard: React.FC<CodeCardProps> = ({ node }) => {
+const CodeCard = ({ node }: { node: CanvasNode }) => {
   // Render code lines with syntax highlighting
   const processedLines = useMemo(() => {
     return renderCodeLines(node);
   }, [node]);
 
-  // 접힌 라인 번호를 Set으로 관리 (fold 시작 라인 번호)
-  const [foldedLines, setFoldedLines] = useState<Set<number>>(() => {
-    const initialFolds = new Set<number>();
+  const foldedLinesMap = useAtomValue(foldedLinesAtom);
+  const setFoldedLinesMap = useSetAtom(foldedLinesAtom);
 
-    // Module 노드면 자동으로 모든 함수 접기
+  const foldedLines = foldedLinesMap.get(node.id) || new Set<number>();
+
+  // Module 노드면 자동으로 모든 함수 접기 (초기화)
+  useEffect(() => {
     const isModule = node.id.endsWith('::FILE_ROOT');
 
-    console.log(`📁 [CodeCard] Node: ${node.id}, isModule: ${isModule}, processedLines: ${processedLines.length}`);
+    if (isModule && !foldedLinesMap.has(node.id)) {
+      const initialFolds = new Set<number>();
 
-    // 모든 foldable 라인 찾기 (디버깅)
-    const foldableLines = processedLines.filter(line => line.foldInfo?.isFoldable);
-    console.log(`📁 [CodeCard] Foldable lines found:`, foldableLines.map(l => `Line ${l.num} (${l.foldInfo?.foldStart}-${l.foldInfo?.foldEnd})`));
+      console.log(`📁 [CodeCard] Node: ${node.id}, isModule: ${isModule}, processedLines: ${processedLines.length}`);
 
-    if (isModule) {
+      // 모든 foldable 라인 찾기 (디버깅)
+      const foldableLines = processedLines.filter(line => line.foldInfo?.isFoldable);
+      console.log(`📁 [CodeCard] Foldable lines found:`, foldableLines.map(l => `Line ${l.num} (${l.foldInfo?.foldStart}-${l.foldInfo?.foldEnd})`));
+
       processedLines.forEach(line => {
         if (line.foldInfo?.isFoldable) {
           initialFolds.add(line.num);
         }
       });
+
       console.log(`📁 [CodeCard] Module node ${node.id}: auto-folding ${initialFolds.size} lines`, Array.from(initialFolds));
+
+      setFoldedLinesMap(prev => {
+        const next = new Map(prev);
+        next.set(node.id, initialFolds);
+        return next;
+      });
     }
-
-    return initialFolds;
-  });
-
-  // 토글 함수
-  const toggleFold = (lineNum: number) => {
-    setFoldedLines(prev => {
-      const next = new Set(prev);
-      if (next.has(lineNum)) {
-        next.delete(lineNum);
-      } else {
-        next.add(lineNum);
-      }
-      return next;
-    });
-  };
+  }, [node.id, processedLines, foldedLinesMap, setFoldedLinesMap]);
 
   // 렌더링할 라인 계산 (접힌 경우 마지막 닫는 중괄호만 inline으로 추가)
   const displayLines = useMemo(() => {
@@ -121,7 +117,6 @@ const CodeCard: React.FC<CodeCardProps> = ({ node }) => {
               key={line.num}
               line={line}
               node={node}
-              onToggleFold={toggleFold}
             />
           ))}
         </div>

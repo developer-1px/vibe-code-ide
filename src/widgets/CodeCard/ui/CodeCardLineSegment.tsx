@@ -1,28 +1,29 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useAtomValue, useSetAtom } from 'jotai';
-import { CanvasNode } from '../../../CanvasNode';
-import { CodeSegment } from '../../lib/renderCodeLines.ts';
-import CodeCardToken from './CodeCardToken.tsx';
-import { fullNodeMapAtom, visibleNodeIdsAtom, entryFileAtom, templateRootIdAtom } from '../../../../store/atoms';
-import { pruneDetachedNodes } from '../../../../widgets/PipelineCanvas/utils.ts';
+import { CanvasNode } from '../../../entities/CanvasNode';
+import { CodeSegment } from '../../../entities/VariableNode/lib/renderCodeLines';
+import CodeCardToken from './CodeCardToken';
+import { fullNodeMapAtom, visibleNodeIdsAtom, entryFileAtom, templateRootIdAtom, lastExpandedIdAtom, targetLineAtom } from '../../../store/atoms';
+import { pruneDetachedNodes } from '../../PipelineCanvas/utils';
 
-interface CodeCardLineSegmentProps {
+const CodeCardLineSegment = ({segment,
+  segIdx,
+  node,
+  isInReturnStatement
+}: {
   segment: CodeSegment;
   segIdx: number;
   node: CanvasNode;
   isInReturnStatement: boolean;
-}
-
-const CodeCardLineSegment: React.FC<CodeCardLineSegmentProps> = ({
-  segment,
-  segIdx,
-  node,
-  isInReturnStatement
 }) => {
   const fullNodeMap = useAtomValue(fullNodeMapAtom);
   const setVisibleNodeIds = useSetAtom(visibleNodeIdsAtom);
   const entryFile = useAtomValue(entryFileAtom);
   const templateRootId = useAtomValue(templateRootIdAtom);
+  const setLastExpandedId = useSetAtom(lastExpandedIdAtom);
+  const setTargetLine = useSetAtom(targetLineAtom);
+
+  const [showTooltip, setShowTooltip] = useState(false);
 
   const returnBgClass = isInReturnStatement ? 'bg-green-500/10 px-0.5 rounded' : '';
 
@@ -250,6 +251,96 @@ const CodeCardLineSegment: React.FC<CodeCardLineSegmentProps> = ({
           tokenId={segment.nodeId}
           nodeId={node.id}
         />
+      </span>
+    );
+  }
+
+  // Identifier with Language Service data (hover tooltip or go-to-definition)
+  if (
+    segment.kind === 'identifier' &&
+    !segment.nodeId &&
+    (segment.hoverInfo || segment.definitionLocation)
+  ) {
+    const hasDefinition = !!segment.definitionLocation;
+
+    const handleDefinitionClick = (e: React.MouseEvent) => {
+      e.stopPropagation();
+      if (!segment.definitionLocation) return;
+
+      const { filePath, line } = segment.definitionLocation;
+
+      console.log('[Go to Definition]', { filePath, line });
+
+      // Find all nodes from the target file
+      const nodesInFile = Array.from(fullNodeMap.values()).filter(
+        n => n.filePath === filePath
+      );
+
+      // Find the node that contains this line
+      // Priority: 1) Exact startLine match, 2) Line within node range, 3) FILE_ROOT fallback
+      let targetNode = nodesInFile.find(n => n.startLine === line);
+
+      if (!targetNode) {
+        targetNode = nodesInFile.find(
+          n =>
+            n.startLine !== undefined &&
+            n.endLine !== undefined &&
+            line >= n.startLine &&
+            line <= n.endLine
+        );
+      }
+
+      if (!targetNode) {
+        // Fallback: open FILE_ROOT node
+        const fileRootId = `${filePath}::FILE_ROOT`;
+        targetNode = fullNodeMap.get(fileRootId);
+      }
+
+      if (!targetNode) {
+        console.warn('[Go to Definition] No node found for', { filePath, line });
+        alert(`Could not find node for ${filePath}:${line}`);
+        return;
+      }
+
+      // Open the target node and center camera
+      setVisibleNodeIds((prev: Set<string>) => {
+        const next = new Set(prev);
+        next.add(targetNode!.id);
+        return next;
+      });
+
+      setLastExpandedId(targetNode.id);
+
+      // Set target line for highlighting
+      setTargetLine({ nodeId: targetNode.id, lineNum: line });
+
+      // Clear target line after 2 seconds
+      setTimeout(() => {
+        setTargetLine(null);
+      }, 2000);
+    };
+
+    return (
+      <span
+        key={segIdx}
+        onClick={hasDefinition ? handleDefinitionClick : undefined}
+        onMouseEnter={() => setShowTooltip(true)}
+        onMouseLeave={() => setShowTooltip(false)}
+        className={`relative inline-block px-0.5 rounded transition-colors select-text ${
+          hasDefinition
+            ? 'text-sky-300 underline decoration-dotted decoration-sky-300/40 cursor-pointer hover:bg-sky-400/15'
+            : 'text-slate-300'
+        } ${returnBgClass}`}
+        title={segment.hoverInfo || undefined}
+      >
+        {segment.text}
+
+        {/* Hover Tooltip */}
+        {showTooltip && segment.hoverInfo && (
+          <div className="absolute bottom-full left-0 mb-1 z-50 px-2 py-1 bg-slate-800 border border-slate-600 rounded text-xs text-slate-200 whitespace-pre-wrap max-w-md shadow-lg pointer-events-none">
+            <code className="font-mono text-[10px]">{segment.hoverInfo}</code>
+          </div>
+        )}
       </span>
     );
   }

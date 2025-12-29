@@ -1,20 +1,22 @@
 
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useAtomValue } from 'jotai';
-import { CanvasNode } from '../../../CanvasNode';
-import { CodeLine } from '../../lib/renderCodeLines.ts';
-import CodeCardSlot from './CodeCardSlot.tsx';
-import CodeCardLineSegment from './CodeCardLineSegment.tsx';
-import { fullNodeMapAtom } from '../../../../store/atoms';
+import { CanvasNode } from '../../../entities/CanvasNode';
+import { CodeLine } from '../../../entities/VariableNode/lib/renderCodeLines';
+import CodeCardSlot from './CodeCardSlot';
+import CodeCardLineSegment from './CodeCardLineSegment';
+import FoldButton from '../../../features/CodeFold/ui/FoldButton';
+import FoldBadge from '../../../features/CodeFold/ui/FoldBadge';
+import { fullNodeMapAtom, targetLineAtom } from '../../../store/atoms';
 
-interface CodeCardLineProps {
+const CodeCardLine = ({line, node }: {
   line: CodeLine;
   node: CanvasNode;
-  onToggleFold: (lineNum: number) => void;  // 🆕 토글 콜백
-}
-
-const CodeCardLine: React.FC<CodeCardLineProps> = ({ line, node, onToggleFold }) => {
+}) => {
   const fullNodeMap = useAtomValue(fullNodeMapAtom);
+  const targetLine = useAtomValue(targetLineAtom);
+  const lineRef = useRef<HTMLDivElement>(null);
+
   const foldInfo = line.foldInfo;
   const isFolded = line.isFolded || false; // 🆕 line 자체에 fold 상태 저장됨
 
@@ -23,6 +25,16 @@ const CodeCardLine: React.FC<CodeCardLineProps> = ({ line, node, onToggleFold })
   const isTemplate = node.type === 'template';
   const isModule = node.type === 'module';
   const hasDeclarationKeyword = line.hasDeclarationKeyword || false;
+
+  // Check if this line is the target for Go to Definition
+  const isTargetLine = targetLine?.nodeId === node.id && targetLine.lineNum === line.num;
+
+  // Auto-scroll to target line
+  useEffect(() => {
+    if (isTargetLine && lineRef.current) {
+      lineRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  }, [isTargetLine]);
 
   // 최상위 return 문의 범위 찾기 (return 키워드 인덱스부터 세미콜론까지)
   let returnStartIdx = -1;
@@ -44,9 +56,11 @@ const CodeCardLine: React.FC<CodeCardLineProps> = ({ line, node, onToggleFold })
 
   return (
     <div
+      ref={lineRef}
       className={`
-        flex w-full group/line relative
+        flex w-full group/line relative transition-colors
         ${isDefinitionLine && !isTemplate && !isModule ? 'bg-vibe-accent/5' : ''}
+        ${isTargetLine ? 'bg-yellow-400/20 ring-2 ring-yellow-400/50' : ''}
       `}
       data-line-num={line.num}
     >
@@ -81,36 +95,13 @@ const CodeCardLine: React.FC<CodeCardLineProps> = ({ line, node, onToggleFold })
             {line.num}
           </span>
 
-          {/* 🆕 Fold 버튼 또는 Placeholder (항상 w-3 h-3 공간 확보) */}
-          {foldInfo?.isFoldable ? (
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                onToggleFold(line.num);
-              }}
-              className={`flex-shrink-0 w-3 h-3 flex items-center justify-center transition-colors cursor-pointer ${
-                isFolded
-                  ? 'text-vibe-accent hover:text-vibe-accent/80'
-                  : 'text-slate-500 hover:text-vibe-accent'
-              }`}
-              title={isFolded ? 'Unfold' : 'Fold'}
-            >
-              {/* Chevron SVG 아이콘 */}
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="3"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className={`w-3 h-3 transition-transform ${isFolded ? '' : 'rotate-90'}`}
-              >
-                <polyline points="9 18 15 12 9 6"></polyline>
-              </svg>
-            </button>
-          ) : (
-            <div className="flex-shrink-0 w-3 h-3" />
-          )}
+          {/* Fold Button */}
+          <FoldButton
+            nodeId={node.id}
+            lineNum={line.num}
+            foldInfo={foldInfo}
+            isFolded={isFolded}
+          />
         </div>
       </div>
 
@@ -134,19 +125,13 @@ const CodeCardLine: React.FC<CodeCardLineProps> = ({ line, node, onToggleFold })
           );
         })}
 
-        {/* 🆕 접힌 상태면 {...} 전체 표시 (클릭 시 unfold) */}
-        {isFolded && line.foldedCount !== undefined && (
-          <span
-            onClick={(e) => {
-              e.stopPropagation();
-              onToggleFold(line.num);
-            }}
-            className="ml-1 px-1 py-1 rounded bg-slate-700/40 text-slate-400 text-[10px] select-none border border-slate-600/30 cursor-pointer hover:bg-slate-600/60 hover:text-slate-300 hover:border-slate-500/50 transition-colors"
-            title="Click to unfold"
-          >
-            {'{...}'}
-          </span>
-        )}
+        {/* Inline Fold Badge */}
+        <FoldBadge
+          nodeId={node.id}
+          lineNum={line.num}
+          isFolded={isFolded}
+          foldedCount={line.foldedCount}
+        />
       </div>
 
       {/* Output Port: Show for declaration keyword lines (함수 본문 내 선언) */}

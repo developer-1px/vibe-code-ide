@@ -5,11 +5,9 @@ import { FileItem, fuzzyMatch } from '../../entities/File';
 import UploadFolderButton from '../../features/UploadFolderButton';
 import { lastExpandedIdAtom, fileSearchQueryAtom, focusedFileIndexAtom, collapsedFoldersAtom } from '../../store/atoms';
 
-interface FileExplorerProps {
+const FileExplorer = ({files }: {
   files: Record<string, string>;
-}
-
-const FileExplorer: React.FC<FileExplorerProps> = ({ files }) => {
+}) => {
   const [searchQuery, setSearchQuery] = useAtom(fileSearchQueryAtom);
   const [focusedIndex, setFocusedIndex] = useAtom(focusedFileIndexAtom);
   const [collapsedFolders, setCollapsedFolders] = useAtom(collapsedFoldersAtom);

@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
 import { useAtomValue } from 'jotai';
-import CodeCard from '../entities/VariableNode/ui/CodeCard.tsx';
+import CodeCard from './CodeCard/CodeCard';
 
 // Hooks & Sub-components
 import { useCanvasLayout } from './PipelineCanvas/useCanvasLayout.ts';

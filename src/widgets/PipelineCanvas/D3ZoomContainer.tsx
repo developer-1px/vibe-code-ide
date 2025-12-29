@@ -1,12 +1,10 @@
 import React, { useRef, ReactNode, RefObject } from 'react';
 import { useD3Zoom } from './useD3Zoom';
 
-interface D3ZoomContainerProps {
+const D3ZoomContainer = ({containerRef, children }: {
   containerRef: RefObject<HTMLDivElement>;
   children: ReactNode;
-}
-
-const D3ZoomContainer: React.FC<D3ZoomContainerProps> = ({ containerRef, children }) => {
+}) => {
   const { transform } = useD3Zoom(containerRef);
 
   return (
