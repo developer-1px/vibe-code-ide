@@ -1,15 +1,20 @@
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useSetAtom } from 'jotai';
 import Sidebar from './widgets/Sidebar/Sidebar';
 import Header from './widgets/MainContent/Header.tsx';
 import PipelineCanvas from './widgets/PipelineCanvas.tsx';
 import JotaiDevTools from './widgets/JotaiDevTools/JotaiDevTools';
-import { isSidebarOpenAtom } from './store/atoms';
+import { isSidebarOpenAtom, searchModalOpenAtom } from './store/atoms';
 import { useGraphDataInit } from './hooks/useGraphData';
+import { UnifiedSearchModal } from './features/UnifiedSearch/UnifiedSearchModal';
 
 const App: React.FC = () => {
   const setIsSidebarOpen = useSetAtom(isSidebarOpenAtom);
+  const setSearchModalOpen = useSetAtom(searchModalOpenAtom);
+
+  // Track Shift key double-tap for search modal
+  const lastShiftPressRef = useRef<number>(0);
 
   // Initialize and parse graph data (stores in atoms)
   useGraphDataInit();
@@ -21,11 +26,26 @@ const App: React.FC = () => {
         e.preventDefault();
         setIsSidebarOpen(prev => !prev);
       }
+
+      // Shift+Shift to open search modal
+      if (e.key === 'Shift') {
+        const now = Date.now();
+        const timeSinceLastPress = now - lastShiftPressRef.current;
+
+        if (timeSinceLastPress < 300) {
+          // Double-tap detected
+          e.preventDefault();
+          setSearchModalOpen(true);
+          lastShiftPressRef.current = 0; // Reset
+        } else {
+          lastShiftPressRef.current = now;
+        }
+      }
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, []);
+  }, [setIsSidebarOpen, setSearchModalOpen]);
 
   return (
     <div className="flex h-screen w-screen overflow-hidden bg-vibe-dark text-slate-200 font-sans">
@@ -46,6 +66,9 @@ const App: React.FC = () => {
 
       {/* Jotai DevTools */}
       <JotaiDevTools />
+
+      {/* Unified Search Modal (Shift+Shift) */}
+      <UnifiedSearchModal />
     </div>
   );
 };

@@ -6,7 +6,7 @@
 import * as ts from 'typescript'
 import type {CanvasNode} from '../../CanvasNode'
 import {findDefinitionLocation, getQuickInfoAtPosition} from './tsLanguageService'
-import type {CodeLine, CodeSegment, SegmentKind, FoldInfo} from '../model/types'
+import type {CodeLine, CodeSegment, SegmentKind} from '../model/types'
 import {getImportSource} from '../../SourceFileNode/lib/getters'
 import {resolvePath} from '../../../services/tsParser/utils/pathResolver'
 import {
@@ -22,6 +22,7 @@ import {
   processTemplateLiteral,
   processIdentifier
 } from './astHooks'
+import { collectFoldMetadata } from '../../../features/CodeFold/lib'
 
 // ===== 타입 정의 =====
 
@@ -33,16 +34,6 @@ interface SegmentToAdd {
   definedIn?: string;
   isDeclarationName?: boolean;
   tsNode?: ts.Node;
-}
-
-interface ImportRange {
-  start: number;
-  end: number;
-}
-
-interface LineState {
-  lines: CodeLine[];
-  importRanges: ImportRange[];
 }
 
 // ===== 순수 함수들 =====
@@ -180,63 +171,7 @@ const addSegmentToLines = (
   });
 };
 
-/**
- * Import 블록 추적
- */
-const trackImport = (
-  importRanges: ImportRange[],
-  node: ts.ImportDeclaration,
-  sourceFile: ts.SourceFile
-): ImportRange[] => {
-  const startLine = getLinePosition(node.getStart(sourceFile), sourceFile).line;
-  const endLine = getLinePosition(node.getEnd(), sourceFile).line;
 
-  if (importRanges.length === 0) {
-    return [{ start: startLine, end: endLine }];
-  }
-
-  const lastRange = importRanges[importRanges.length - 1];
-
-  // 연속된 import (빈 줄 1개까지 허용)
-  if (startLine <= lastRange.end + 2) {
-    return [
-      ...importRanges.slice(0, -1),
-      { start: lastRange.start, end: endLine }
-    ];
-  }
-
-  // 연속이 끊김 - 새 블록 시작
-  return [...importRanges, { start: startLine, end: endLine }];
-};
-
-/**
- * Fold 메타데이터 적용
- */
-const applyFoldMetadata = (
-  lines: CodeLine[],
-  importRanges: ImportRange[]
-): CodeLine[] => {
-  return lines.map((line, idx) => {
-    // Import 블록 fold
-    const importRange = importRanges.find(
-      range => idx === range.start && range.end > range.start
-    );
-
-    if (importRange) {
-      return {
-        ...line,
-        foldInfo: {
-          isFoldable: true,
-          foldStart: importRange.start,
-          foldEnd: importRange.end,
-          foldType: 'import-block'
-        }
-      };
-    }
-
-    return line;
-  });
-};
 
 /**
  * 라인의 segments를 정렬하고 빈 공간을 'text'로 채우기
@@ -440,7 +375,6 @@ export function renderCodeLinesDirect(node: CanvasNode, files: Record<string, st
   try {
     // 초기 상태
     let currentLines = createInitialLines(lines.length, startLineNum);
-    let importRanges: ImportRange[] = [];
 
     // Helper: segment 추가 함수
     const addKind = (
@@ -517,11 +451,6 @@ export function renderCodeLinesDirect(node: CanvasNode, files: Record<string, st
         );
       }
 
-      // Import 블록 추적
-      if (ts.isImportDeclaration(node)) {
-        importRanges = trackImport(importRanges, node, sourceFile);
-      }
-
       // 자식 노드 순회
       node.getChildren(sourceFile).forEach(visit);
     };
@@ -529,11 +458,11 @@ export function renderCodeLinesDirect(node: CanvasNode, files: Record<string, st
     // AST 순회 실행
     visit(sourceFile);
 
-    // Fold 메타데이터 적용
-    currentLines = applyFoldMetadata(currentLines, importRanges);
-
     // 라인 마무리 (정렬 및 빈 공간 채우기)
     currentLines = finalizeAllLines(currentLines, lines, sourceFile);
+
+    // Fold 메타데이터 적용 (lines를 직접 수정)
+    collectFoldMetadata(sourceFile, currentLines);
 
     // Language Service로 정의 위치 및 hover 정보 추가
     currentLines = enrichWithLanguageService(currentLines, codeSnippet, filePath || '', isTsx);

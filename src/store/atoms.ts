@@ -36,6 +36,24 @@ export const fileSearchQueryAtom = atom('');
 export const focusedFileIndexAtom = atom(0);
 export const collapsedFoldersAtom = atom(new Set<string>()); // 접힌 폴더들
 
+// Unified Search atoms (Shift+Shift)
+export interface SearchResult {
+  id: string;
+  type: 'file' | 'symbol';
+  name: string;
+  filePath: string;
+  nodeType?: string; // For symbols: 'pure-function', 'state-ref', etc.
+  nodeId?: string; // For navigation
+  lineNumber?: number;
+  score: number;
+}
+
+export const searchModalOpenAtom = atom(false);
+export const searchQueryAtom = atom('');
+export const searchResultsAtom = atom([] as SearchResult[]);
+export const searchFocusedIndexAtom = atom(0);
+export const searchModeAtom = atom<'all' | 'files' | 'symbols'>('all');
+
 // Code Fold atoms - Map<nodeId, Set<lineNumber>>
 export const foldedLinesAtom = atom(new Map<string, Set<number>>());
 

@@ -7,6 +7,7 @@ import { renderCodeLinesDirect } from '../../entities/CodeRenderer/lib/renderCod
 import { renderVueFile } from '../../entities/CodeRenderer/lib/renderVueFile';
 import type { CodeLine } from '../../entities/CodeRenderer/model/types';
 import { getNodeBorderColor } from '../../entities/SourceFileNode/lib/styleUtils';
+import { extractImportFoldLines, calculateFoldRanges } from '../../features/CodeFold/lib';
 
 // UI Components
 import CodeCardHeader from './ui/CodeCardHeader';
@@ -34,9 +35,7 @@ const CodeCard = ({ node }: { node: CanvasNode }) => {
 
   // Import 블록 자동 접기 (초기 렌더링 시 한 번만)
   useEffect(() => {
-    const importFoldLines = processedLines
-      .filter(line => line.foldInfo?.isFoldable && line.foldInfo.foldType === 'import-block')
-      .map(line => line.num);
+    const importFoldLines = extractImportFoldLines(processedLines);
 
     if (importFoldLines.length > 0) {
       setFoldedLinesMap(prev => {
@@ -54,17 +53,7 @@ const CodeCard = ({ node }: { node: CanvasNode }) => {
   const foldedLines = foldedLinesMap.get(node.id) || new Set<number>();
 
   const foldRanges = useMemo(() => {
-    const ranges: Array<{ start: number; end: number }> = [];
-    for (const foldedLineNum of foldedLines) {
-      const foldedLine = processedLines.find(l => l.num === foldedLineNum);
-      if (foldedLine?.foldInfo?.isFoldable) {
-        ranges.push({
-          start: foldedLine.foldInfo.foldStart,
-          end: foldedLine.foldInfo.foldEnd
-        });
-      }
-    }
-    return ranges;
+    return calculateFoldRanges(foldedLines, processedLines);
   }, [processedLines, foldedLines]);
 
   // Script 영역의 마지막 라인 번호 계산

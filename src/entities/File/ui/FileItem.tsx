@@ -4,6 +4,7 @@ import { FileJson as IconFileJson, FileCode as IconFileCode, Component as IconCo
 import type { FileItemProps } from '../model/types';
 import { getFuzzyMatchIndices, splitFilePath } from '../lib/fuzzyMatch';
 import { entryFileAtom, lastExpandedIdAtom, fileSearchQueryAtom, focusedFileIndexAtom } from '../../../store/atoms';
+import { openFile } from '../../../features/File';
 
 // 확장자에 따른 아이콘 반환
 const getFileIcon = (fileName: string) => {
@@ -71,15 +72,13 @@ const FileItem: React.FC<FileItemProps> = ({ fileName, index }) => {
 
   // Handlers
   const handleClick = useCallback(() => {
-    if (isEntry) {
-      // 이미 엔트리 파일이면 해당 노드로 이동
-      const fileRootId = `${fileName}::FILE_ROOT`;
-      setLastExpandedId(fileRootId);
-    } else {
-      // 엔트리 파일이 아니면 엔트리로 설정
-      setEntryFile(fileName);
-    }
-  }, [isEntry, fileName, setEntryFile, setLastExpandedId]);
+    openFile({
+      filePath: fileName,
+      currentEntryFile: entryFile,
+      setEntryFile,
+      setLastExpandedId,
+    });
+  }, [fileName, entryFile, setEntryFile, setLastExpandedId]);
 
   const handleMouseEnter = useCallback(() => {
     setFocusedIndex(index);

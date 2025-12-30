@@ -7,6 +7,7 @@ import CodeCardLineSlots from './CodeCardLineSlots';
 import CodeCardLineSegment from './CodeCardLineSegment';
 import FoldButton from '../../../features/CodeFold/ui/FoldButton';
 import FoldBadge from '../../../features/CodeFold/ui/FoldBadge';
+import { isLineInsideFold } from '../../../features/CodeFold/lib';
 import { targetLineAtom, foldedLinesAtom } from '../../../store/atoms';
 
 const CodeCardLine = ({
@@ -53,11 +54,7 @@ const CodeCardLine = ({
   }, [isTargetLine]);
 
   // 접힌 범위 내부 라인은 숨김 처리 (모든 Hook 호출 이후에 체크)
-  const isInsideFold = foldRanges.some(range =>
-    line.num > range.start && line.num <= range.end
-  );
-
-  if (isInsideFold) {
+  if (isLineInsideFold(line.num, foldRanges)) {
     return null;
   }
 
