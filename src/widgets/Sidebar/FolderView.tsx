@@ -154,13 +154,13 @@ const FolderView = ({ files }: { files: Record<string, string> }) => {
           onClick={() => handleFileClick(node.filePath!)}
           className={`flex items-center gap-1.5 py-0.5 px-2 text-[11px] cursor-pointer transition-colors border-l-2 ${
             isEntry
-              ? 'text-vibe-accent border-vibe-accent'
-              : 'text-slate-400 border-transparent'
+              ? 'text-vibe-accent border-vibe-accent bg-slate-700/30'
+              : 'text-slate-400 border-transparent hover:bg-slate-700/20'
           }`}
           style={{ paddingLeft: `${paddingLeft}px` }}
         >
           <FileIcon className={`w-2.5 h-2.5 flex-shrink-0 opacity-40 ${isEntry ? 'text-vibe-accent opacity-70' : iconColor}`} />
-          <span className={`font-medium truncate ${isEntry ? 'text-vibe-accent' : 'text-slate-300'}`}>
+          <span className={`font-medium truncate ${isEntry ? 'text-vibe-accent' : 'text-slate-400'}`}>
             {node.name}
           </span>
         </div>
