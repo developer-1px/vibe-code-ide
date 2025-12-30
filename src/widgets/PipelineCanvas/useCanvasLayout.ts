@@ -1,6 +1,6 @@
 
 import { useEffect, useState, useMemo } from 'react';
-import { useSetAtom } from 'jotai';
+import { useSetAtom, useAtomValue } from 'jotai';
 import { GraphData, VariableNode } from '../../entities/SourceFileNode';
 import { CanvasNode } from '../../entities/CanvasNode';
 import { LEVEL_SPACING, VERTICAL_GAP, estimateNodeHeight, getUsageIndex, hasCycle } from './utils.ts';
@@ -10,7 +10,8 @@ import {
   fullNodeMapAtom,
   entryFileAtom,
   templateRootIdAtom,
-  visibleNodeIdsAtom
+  visibleNodeIdsAtom,
+  layoutTriggerAtom
 } from '../../store/atoms';
 
 // Visual Tree Structure for Layout Calculation
@@ -35,19 +36,17 @@ export const useCanvasLayout = (
     const setTemplateRootIdAtom = useSetAtom(templateRootIdAtom);
     const setVisibleNodeIdsAtom = useSetAtom(visibleNodeIdsAtom);
 
+    // Atom values (for layout calculation)
+    const layoutTrigger = useAtomValue(layoutTriggerAtom);
+
     const fullNodeMap = useMemo(() => {
         if (!initialData) return new Map<string, VariableNode>();
         const map = new Map<string, VariableNode>(initialData.nodes.map(n => [n.id, n]));
-        console.log(`📊 Full node map has ${map.size} nodes`);
-        console.log(`🔑 Node IDs:`, Array.from(map.keys()).slice(0, 10));
         return map;
     }, [initialData]);
 
     // Template Root ID (파일 자체를 Root로 사용)
     const templateRootId = useMemo(() => {
-        console.log(`🎯 Looking for entry file: ${entryFile}`);
-        console.log(`🔍 Has entry file in map?`, fullNodeMap.has(entryFile));
-
         // 파일 경로를 직접 사용
         if (fullNodeMap.has(entryFile)) return entryFile;
 
@@ -56,11 +55,9 @@ export const useCanvasLayout = (
             n.filePath === entryFile && n.label === 'App'
         );
         if (appNode) {
-            console.log(`✅ Found App component:`, appNode.id);
             return appNode.id;
         }
 
-        console.log(`❌ No template root found`);
         return null;
     }, [initialData, entryFile, fullNodeMap]);
 
@@ -122,11 +119,6 @@ export const useCanvasLayout = (
             visited.add(nodeId);
 
             const raw = layoutNodeMap.get(nodeId)!;
-
-            if (level === 0 || nodeId === entryFile) {
-                console.log(`🌳 Building tree from: ${nodeId}`);
-                console.log(`   Dependencies (${raw.dependencies.length}):`, raw.dependencies);
-            }
 
             // Skip nodes with empty code snippets (virtual intermediate nodes)
             if (!raw.codeSnippet || raw.codeSnippet.trim() === '') {
@@ -291,12 +283,7 @@ export const useCanvasLayout = (
         setLayoutNodes([...flatNodes, ...orphanNodes]);
         setLayoutLinks([...flatLinks, ...extraLinks]);
 
-        console.log(`🔗 Generated ${flatLinks.length} tree links + ${extraLinks.length} extra links`);
-        if (flatLinks.length > 0) {
-            console.log(`📍 Sample links:`, flatLinks.slice(0, 3));
-        }
-
-    }, [visibleNodeIds, fullNodeMap, templateRootId, entryFile]);
+    }, [visibleNodeIds, fullNodeMap, templateRootId, entryFile, layoutTrigger]);
 
     // --- Sync atoms with layout data ---
     useEffect(() => {

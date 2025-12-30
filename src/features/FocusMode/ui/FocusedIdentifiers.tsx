@@ -8,7 +8,7 @@ import { useAtomValue } from 'jotai';
 import { CanvasNode } from '../../../entities/CanvasNode';
 import { activeLocalVariablesAtom, filesAtom } from '../../../store/atoms';
 import { FocusedIdentifierItem } from './FocusedIdentifierItem';
-import { renderCodeLines } from '../../../entities/CodeRenderer/lib/renderCodeLines';
+import { renderCodeLinesDirect } from '../../../entities/CodeRenderer/lib/renderCodeLinesDirect';
 import { renderVueFile } from '../../../entities/CodeRenderer/lib/renderVueFile';
 
 interface FocusedIdentifiersProps {
@@ -31,7 +31,7 @@ export const FocusedIdentifiers: React.FC<FocusedIdentifiersProps> = ({ node }) 
     if (node.filePath.endsWith('.vue')) {
       return renderVueFile(node, files);
     }
-    return renderCodeLines(node, files);
+    return renderCodeLinesDirect(node, files);
   }, [node, files]);
 
   // Extract metadata for each focused identifier

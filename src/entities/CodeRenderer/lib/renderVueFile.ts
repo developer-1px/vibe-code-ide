@@ -7,7 +7,7 @@ import * as ts from 'typescript';
 import type { CanvasNode } from '../../CanvasNode';
 import type { CodeLine, CodeSegment } from '../model/types';
 import { parse, compileTemplate } from '@vue/compiler-sfc';
-import { renderCodeLines } from './renderCodeLines';
+import { renderCodeLinesDirect } from './renderCodeLinesDirect';
 
 /**
  * AST 노드 순회하여 토큰 추출
@@ -268,8 +268,9 @@ function renderTemplateWithAST(
  */
 function findTagLine(source: string, tagPattern: string, startFromLine: number = 1): number {
   const lines = source.split('\n');
-  for (let i = startFromLine - 1; i < lines.length; i++) {
-    if (lines[i].includes(tagPattern)) {
+  const startIndex = Math.max(0, startFromLine - 1); // Ensure non-negative
+  for (let i = startIndex; i < lines.length; i++) {
+    if (lines[i] && lines[i].includes(tagPattern)) { // Add existence check
       return i + 1; // 1-based line number
     }
   }
@@ -336,8 +337,19 @@ export function renderVueFile(node: CanvasNode, files: Record<string, string>): 
     const importedComponents = script ? extractImportedComponents(script.content) : new Set<string>();
     console.log('🎨 Imported components:', Array.from(importedComponents));
 
-    // <template> 태그 (plain)
-    if (descriptor.template) {
+    // 원본 파일 순서대로 섹션 렌더링하기 위한 준비
+    interface Section {
+      type: 'template' | 'script' | 'style';
+      startLine: number;
+      render: () => void;
+    }
+
+    const sections: Section[] = [];
+
+    // Template 섹션 준비
+    const renderTemplate = () => {
+      if (!descriptor.template) return;
+
       const templateOpenLine = findTagLine(vueContent, '<template>');
       allLines.push({
         num: templateOpenLine,
@@ -358,20 +370,12 @@ export function renderVueFile(node: CanvasNode, files: Record<string, string>): 
         segments: [{ text: sourceLines[templateCloseLine - 1], kinds: ['text'] }],
         hasInput: false
       });
-    }
+    };
 
-    // 빈 라인 18 (template과 script 사이)
-    const emptyLine18 = 18;
-    if (sourceLines[emptyLine18 - 1] === '') {
-      allLines.push({
-        num: emptyLine18,
-        segments: [{ text: '', kinds: ['text'] }],
-        hasInput: false
-      });
-    }
+    // Script 섹션 준비
+    const renderScript = () => {
+      if (!script) return;
 
-    // <script> 태그 (plain)
-    if (script) {
       const scriptOpenLine = findTagLine(vueContent, '<script', script.loc.start.line - 5);
 
       allLines.push({
@@ -398,7 +402,7 @@ export function renderVueFile(node: CanvasNode, files: Record<string, string>): 
         sourceFile: scriptSource
       };
 
-      const scriptLines = renderCodeLines(tempNode, files);
+      const scriptLines = renderCodeLinesDirect(tempNode, files);
       allLines.push(...scriptLines);
 
       const scriptCloseLine = findTagLine(vueContent, '</script>', script.loc.end.line);
@@ -407,6 +411,50 @@ export function renderVueFile(node: CanvasNode, files: Record<string, string>): 
         segments: [{ text: sourceLines[scriptCloseLine - 1], kinds: ['text'] }],
         hasInput: false
       });
+    };
+
+    // 섹션 목록 생성 (원본 파일 순서대로)
+    if (descriptor.template) {
+      sections.push({
+        type: 'template',
+        startLine: descriptor.template.loc.start.line,
+        render: renderTemplate
+      });
+    }
+
+    if (script) {
+      sections.push({
+        type: 'script',
+        startLine: script.loc.start.line,
+        render: renderScript
+      });
+    }
+
+    // 시작 라인 기준으로 정렬
+    sections.sort((a, b) => a.startLine - b.startLine);
+
+    // 원본 순서대로 렌더링
+    for (let i = 0; i < sections.length; i++) {
+      sections[i].render();
+
+      // 섹션 사이의 빈 라인 추가
+      if (i < sections.length - 1) {
+        const currentSectionEnd = sections[i].type === 'template'
+          ? descriptor.template!.loc.end.line
+          : script!.loc.end.line;
+        const nextSectionStart = sections[i + 1].startLine;
+
+        // 사이에 있는 빈 라인들 추가
+        for (let lineNum = currentSectionEnd + 1; lineNum < nextSectionStart; lineNum++) {
+          if (sourceLines[lineNum - 1] !== undefined) {
+            allLines.push({
+              num: lineNum,
+              segments: [{ text: sourceLines[lineNum - 1], kinds: ['text'] }],
+              hasInput: false
+            });
+          }
+        }
+      }
     }
 
     return allLines;

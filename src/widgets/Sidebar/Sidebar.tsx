@@ -39,7 +39,7 @@ export const Sidebar: React.FC = () => {
 
   return (
     <div
-      className={`transition-all duration-300 ease-in-out overflow-hidden flex-shrink-0 relative z-50 ${isSidebarOpen ? `w-[${width}px]` : 'w-0'}`}
+      className={`overflow-hidden flex-shrink-0 relative z-50 ${isSidebarOpen ? `w-[${width}px]` : 'w-0'}`}
       style={{ width: isSidebarOpen ? `${width}px` : '0px' }}
     >
       <div
@@ -71,7 +71,7 @@ export const Sidebar: React.FC = () => {
       {/* Resize Handle */}
       <div
         onMouseDown={() => setIsResizing(true)}
-        className={`absolute top-0 right-0 w-1 h-full cursor-col-resize hover:bg-vibe-accent/50 transition-colors ${isResizing ? 'bg-vibe-accent' : ''}`}
+        className={`absolute top-0 right-0 w-1 h-full cursor-col-resize hover:bg-vibe-accent/50 ${isResizing ? 'bg-vibe-accent' : ''}`}
       />
       </div>
     </div>

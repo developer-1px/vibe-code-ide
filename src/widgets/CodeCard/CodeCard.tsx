@@ -1,9 +1,9 @@
-import React, { useMemo, useEffect } from 'react';
+import React, { useMemo, useEffect, useRef } from 'react';
 import { useAtomValue, useSetAtom } from 'jotai';
 import { CanvasNode } from '../../entities/CanvasNode';
 
 // Lib - Pure Utilities
-import { renderCodeLines } from '../../entities/CodeRenderer/lib/renderCodeLines';
+import { renderCodeLinesDirect } from '../../entities/CodeRenderer/lib/renderCodeLinesDirect';
 import { renderVueFile } from '../../entities/CodeRenderer/lib/renderVueFile';
 import type { CodeLine } from '../../entities/CodeRenderer/model/types';
 import { getNodeBorderColor } from '../../entities/SourceFileNode/lib/styleUtils';
@@ -15,7 +15,7 @@ import CodeCardLine from './ui/CodeCardLine';
 import VueTemplateSection from './ui/VueTemplateSection';
 
 // Atoms
-import { foldedLinesAtom, cardPositionsAtom, filesAtom } from '../../store/atoms';
+import { foldedLinesAtom, cardPositionsAtom, filesAtom, layoutTriggerAtom } from '../../store/atoms';
 
 const CodeCard = ({ node }: { node: CanvasNode }) => {
   const files = useAtomValue(filesAtom);
@@ -26,8 +26,8 @@ const CodeCard = ({ node }: { node: CanvasNode }) => {
     if (node.filePath.endsWith('.vue')) {
       return renderVueFile(node, files);
     }
-    // 그 외의 경우 기존 renderCodeLines 사용
-    return renderCodeLines(node, files);
+    // 그 외의 경우 renderCodeLinesDirect 사용
+    return renderCodeLinesDirect(node, files);
   }, [node, files]);
 
   const setFoldedLinesMap = useSetAtom(foldedLinesAtom);
@@ -73,8 +73,29 @@ const CodeCard = ({ node }: { node: CanvasNode }) => {
     return processedLines[processedLines.length - 1].num;
   }, [processedLines]);
 
+  // ResizeObserver로 카드 크기 변화 감지하여 레이아웃 재계산
+  const cardRef = useRef<HTMLDivElement>(null);
+  const setLayoutTrigger = useSetAtom(layoutTriggerAtom);
+
+  useEffect(() => {
+    const cardElement = cardRef.current;
+    if (!cardElement) return;
+
+    const resizeObserver = new ResizeObserver(() => {
+      // 크기가 변하면 레이아웃 재계산 트리거
+      setLayoutTrigger(prev => prev + 1);
+    });
+
+    resizeObserver.observe(cardElement);
+
+    return () => {
+      resizeObserver.disconnect();
+    };
+  }, [setLayoutTrigger]);
+
   return (
     <div
+      ref={cardRef}
       id={`node-${node.visualId || node.id}`}
       className={`
         bg-vibe-panel/95 backdrop-blur-md border shadow-2xl rounded-lg flex flex-col relative group/card overflow-visible transition-colors

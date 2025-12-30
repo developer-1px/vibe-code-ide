@@ -116,21 +116,8 @@ const CanvasConnections: React.FC = () => {
               const endX = endPoint.x;
               const endY = endPoint.y;
 
-              console.log('🔍 [Connection Debug]', {
-                  dependency: dependencyNode.id,
-                  consumer: consumerNode.id,
-                  endPoint,
-                  defLine: endPoint.defLine
-              });
-
               // Find matching output port by definition line
               const outputPort = findOutputPort(depEl, dependencyNode.id, endPoint.defLine);
-
-              console.log('📍 [Output Port Found]', {
-                  found: !!outputPort,
-                  defLine: endPoint.defLine,
-                  portLine: outputPort ? (outputPort as HTMLElement).dataset.outputPortLine : null
-              });
 
               // Calculate start point
               let startX: number, startY: number;

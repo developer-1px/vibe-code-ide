@@ -3,6 +3,7 @@
  * clickType에 따라 적절한 하위 컴포넌트로 라우팅
  */
 
+
 import React, { useMemo } from 'react';
 import { useAtomValue } from 'jotai';
 import type { CodeSegment, SegmentKind } from '../../../entities/CodeSegment';

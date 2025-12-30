@@ -9,7 +9,7 @@ import {
 import { CanvasNode } from '../../../entities/CanvasNode';
 import { visibleNodeIdsAtom, fullNodeMapAtom, lastExpandedIdAtom, cardPositionsAtom, transformAtom, activeFileAtom, activeLocalVariablesAtom, filesAtom, entryFileAtom, templateRootIdAtom } from '../../../store/atoms';
 import { checkAllDepsExpanded, expandDependenciesRecursive, collapseDependencies, getFirstDependency } from '../../../entities/SourceFileNode/model/nodeVisibility';
-import { renderCodeLines } from '../../../entities/CodeRenderer/lib/renderCodeLines';
+import { renderCodeLinesDirect } from '../../../entities/CodeRenderer/lib/renderCodeLinesDirect';
 import { renderVueFile } from '../../../entities/CodeRenderer/lib/renderVueFile';
 import { pruneDetachedNodes } from '../../PipelineCanvas/utils';
 
@@ -41,7 +41,7 @@ const CodeCardHeader = ({ node }: { node: CanvasNode }) => {
     if (node.filePath.endsWith('.vue')) {
       return renderVueFile(node, files);
     }
-    return renderCodeLines(node, files);
+    return renderCodeLinesDirect(node, files);
   }, [node, files]);
 
   // Extract metadata for each focused identifier
