@@ -1,9 +1,9 @@
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useSetAtom, useAtomValue } from 'jotai';
 import { VariableNode } from '../../../entities/SourceFileNode/model/types';
 import { getSlotColor } from '../../../entities/SourceFileNode/lib/styleUtils';
-import { targetLineAtom, visibleNodeIdsAtom, lastExpandedIdAtom } from '../../../store/atoms';
+import { targetLineAtom, visibleNodeIdsAtom, lastExpandedIdAtom, layoutLinksAtom } from '../../../store/atoms';
 
 const CodeCardSlot = ({tokenId, lineNum, slotIdx, depNode, definitionLine }: {
   tokenId: string;
@@ -15,6 +15,12 @@ const CodeCardSlot = ({tokenId, lineNum, slotIdx, depNode, definitionLine }: {
   const setTargetLine = useSetAtom(targetLineAtom);
   const setLastExpandedId = useSetAtom(lastExpandedIdAtom);
   const visibleNodeIds = useAtomValue(visibleNodeIdsAtom);
+  const layoutLinks = useAtomValue(layoutLinksAtom);
+
+  // Check if this slot has an active connection
+  const hasConnection = useMemo(() => {
+    return layoutLinks.some(link => link.source === tokenId);
+  }, [layoutLinks, tokenId]);
 
   const slotColorClass = depNode
     ? getSlotColor(depNode.type)
@@ -57,9 +63,12 @@ const CodeCardSlot = ({tokenId, lineNum, slotIdx, depNode, definitionLine }: {
   // Stagger multiple slots by 5px to avoid complete overlap while minimizing collision with line numbers.
   const leftPos = 2 + (slotIdx * 5);
 
+  // Border only shown when connected
+  const borderClass = hasConnection ? 'border-2' : 'border-0';
+
   return (
     <div
-      className={`w-2 h-2 rounded-full absolute z-10 transition-all duration-300 border-2 group-hover/line:scale-110 shadow-lg cursor-pointer hover:scale-125 ${slotColorClass}`}
+      className={`w-2 h-2 rounded-full absolute z-10 transition-all duration-300 ${borderClass} group-hover/line:scale-110 shadow-lg cursor-pointer hover:scale-125 ${slotColorClass}`}
       style={{ top: '6px', left: `${leftPos}px` }}
       data-input-slot-for={tokenId}
       data-input-slot-line={lineNum}
