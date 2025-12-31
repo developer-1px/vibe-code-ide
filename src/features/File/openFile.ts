@@ -9,25 +9,26 @@ interface OpenFileParams {
   currentEntryFile: string;
   setEntryFile: (update: SetStateAction<string>) => void;
   setLastExpandedId: (update: SetStateAction<string | null>) => void;
+  openedFiles?: Set<string>;
+  setOpenedFiles?: (update: SetStateAction<Set<string>>) => void;
 }
 
 /**
  * Open a file in the editor
- * If the file is already the entry file, navigate to its FILE_ROOT
- * Otherwise, set it as the new entry file
+ * Adds file to openedFiles for multi-file overlay view
  */
 export function openFile({
   filePath,
   currentEntryFile,
   setEntryFile,
   setLastExpandedId,
+  openedFiles,
+  setOpenedFiles,
 }: OpenFileParams): void {
-  if (filePath === currentEntryFile) {
-    // Already entry file → navigate to FILE_ROOT
-    const fileRootId = `${filePath}::FILE_ROOT`;
-    setLastExpandedId(fileRootId);
-  } else {
-    // Set as new entry file
-    setEntryFile(filePath);
+  // Only add to opened files (don't change entryFile to avoid re-parsing)
+  if (openedFiles && setOpenedFiles) {
+    const newOpenedFiles = new Set(openedFiles);
+    newOpenedFiles.add(filePath);
+    setOpenedFiles(newOpenedFiles);
   }
 }

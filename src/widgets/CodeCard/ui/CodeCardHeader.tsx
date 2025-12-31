@@ -7,7 +7,7 @@ import {
   X as IconX
 } from 'lucide-react';
 import { CanvasNode } from '../../../entities/CanvasNode';
-import { visibleNodeIdsAtom, fullNodeMapAtom, lastExpandedIdAtom, cardPositionsAtom, transformAtom, activeFileAtom, activeLocalVariablesAtom, filesAtom, entryFileAtom, templateRootIdAtom } from '../../../store/atoms';
+import { visibleNodeIdsAtom, fullNodeMapAtom, lastExpandedIdAtom, cardPositionsAtom, transformAtom, activeFileAtom, activeLocalVariablesAtom, filesAtom, entryFileAtom } from '../../../store/atoms';
 import { checkAllDepsExpanded, expandDependenciesRecursive, collapseDependencies, getFirstDependency } from '../../../entities/SourceFileNode/model/nodeVisibility';
 import { renderCodeLinesDirect } from '../../../entities/CodeRenderer/lib/renderCodeLinesDirect';
 import { renderVueFile } from '../../../entities/CodeRenderer/lib/renderVueFile';
@@ -23,7 +23,6 @@ const CodeCardHeader = ({ node }: { node: CanvasNode }) => {
   const activeLocalVariables = useAtomValue(activeLocalVariablesAtom);
   const files = useAtomValue(filesAtom);
   const entryFile = useAtomValue(entryFileAtom);
-  const templateRootId = useAtomValue(templateRootIdAtom);
 
   const [isDragging, setIsDragging] = useState(false);
   const dragStartRef = useRef<{ x: number; y: number; startOffset: { x: number; y: number } } | null>(null);
@@ -112,7 +111,7 @@ const CodeCardHeader = ({ node }: { node: CanvasNode }) => {
           next.delete(filePath);
         }
 
-        return pruneDetachedNodes(next, fullNodeMap, entryFile, templateRootId);
+        return pruneDetachedNodes(next, fullNodeMap, entryFile, null);
       });
     }
   };

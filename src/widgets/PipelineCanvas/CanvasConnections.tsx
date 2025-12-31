@@ -151,7 +151,7 @@ const CanvasConnections: React.FC = () => {
                     strokeWidth={isHorizontal ? "3" : "2"}
                     strokeOpacity={isHorizontal ? "0.8" : "0.5"}
                     strokeDasharray={isCrossFile ? "8,8" : "none"}
-                    className="transition-all duration-300 pointer-events-none"
+                    className="pointer-events-none"
                 />
               );
           });

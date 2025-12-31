@@ -6,7 +6,7 @@
 import React, { useMemo, useState, useCallback, useEffect } from 'react';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import { useHotkeys } from 'react-hotkeys-hook';
-import { entryFileAtom, lastExpandedIdAtom, focusedPaneAtom } from '../../store/atoms';
+import { entryFileAtom, lastExpandedIdAtom, focusedPaneAtom, openedFilesAtom } from '../../store/atoms';
 import { openFile } from '../../features/File';
 import FolderItemView from './FolderItemView';
 import FileItemView from './FileItemView';
@@ -23,6 +23,7 @@ const FolderView = ({ files }: { files: Record<string, string> }) => {
   const entryFile = useAtomValue(entryFileAtom);
   const setEntryFile = useSetAtom(entryFileAtom);
   const setLastExpandedId = useSetAtom(lastExpandedIdAtom);
+  const [openedFiles, setOpenedFiles] = useAtom(openedFilesAtom);
   const [focusedPane, setFocusedPane] = useAtom(focusedPaneAtom);
   const [focusedIndex, setFocusedIndex] = useState(0);
 
@@ -123,8 +124,10 @@ const FolderView = ({ files }: { files: Record<string, string> }) => {
       currentEntryFile: entryFile,
       setEntryFile,
       setLastExpandedId,
+      openedFiles,
+      setOpenedFiles,
     });
-  }, [entryFile, setEntryFile, setLastExpandedId]);
+  }, [entryFile, setEntryFile, setLastExpandedId, openedFiles, setOpenedFiles]);
 
   // Get flat list of all visible items (folders + files for keyboard navigation)
   const flatItemList = useMemo(() => {

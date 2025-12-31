@@ -1,7 +1,7 @@
 
 import React, { useEffect, useRef } from 'react';
 import { Provider, useSetAtom } from 'jotai';
-import { HotkeysProvider, useHotkeys } from 'react-hotkeys-hook';
+import { HotkeysProvider } from 'react-hotkeys-hook';
 import Sidebar from './widgets/Sidebar/Sidebar';
 import Header from './widgets/MainContent/Header.tsx';
 import PipelineCanvas from './widgets/PipelineCanvas.tsx';
@@ -21,25 +21,6 @@ const AppContent: React.FC = () => {
 
   // Initialize and parse graph data (stores in atoms)
   useGraphDataInit();
-
-  // TEST: Simple hotkey to verify react-hotkeys-hook works
-  useEffect(() => {
-    console.log('[App] Component mounted');
-  }, []);
-
-  // TEST: Global hotkey - should work anywhere
-  useHotkeys('t', () => {
-    console.log('[App] T key pressed - TEST HOTKEY WORKS!');
-    alert('T key works!');
-  });
-
-  // TEST: Sidebar scope hotkey
-  useHotkeys('s', () => {
-    console.log('[App] S key pressed in sidebar scope');
-    alert('S key in sidebar scope!');
-  }, {
-    scopes: ['sidebar']
-  });
 
   // Toggle Sidebar Shortcut
   useEffect(() => {

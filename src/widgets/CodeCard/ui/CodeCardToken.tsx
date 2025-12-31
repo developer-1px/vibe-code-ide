@@ -2,7 +2,7 @@
 import React from 'react';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import { getTokenStyle } from '../../../entities/SourceFileNode/lib/styleUtils';
-import { visibleNodeIdsAtom, fullNodeMapAtom, lastExpandedIdAtom, entryFileAtom, templateRootIdAtom, activeLocalVariablesAtom } from '../../../store/atoms';
+import { visibleNodeIdsAtom, fullNodeMapAtom, lastExpandedIdAtom, entryFileAtom, activeLocalVariablesAtom, cardPositionsAtom, transformAtom } from '../../../store/atoms';
 import { pruneDetachedNodes } from '../../PipelineCanvas/utils';
 
 const CodeCardToken = ({text, tokenId, nodeId, lineHasFocusedVariable }: {
@@ -14,9 +14,11 @@ const CodeCardToken = ({text, tokenId, nodeId, lineHasFocusedVariable }: {
   const [visibleNodeIds, setVisibleNodeIds] = useAtom(visibleNodeIdsAtom);
   const fullNodeMap = useAtomValue(fullNodeMapAtom);
   const entryFile = useAtomValue(entryFileAtom);
-  const templateRootId = useAtomValue(templateRootIdAtom);
   const setLastExpandedId = useSetAtom(lastExpandedIdAtom);
   const activeLocalVariables = useAtomValue(activeLocalVariablesAtom);
+  const setCardPositions = useSetAtom(cardPositionsAtom);
+  const cardPositions = useAtomValue(cardPositionsAtom);
+  const transform = useAtomValue(transformAtom);
 
   const isActive = visibleNodeIds.has(tokenId);
 
@@ -38,7 +40,7 @@ const CodeCardToken = ({text, tokenId, nodeId, lineHasFocusedVariable }: {
 
     if (!isLinkable) return;
 
-    let shouldCenterCamera = false;
+    const isOpening = !visibleNodeIds.has(tokenId);
 
     setVisibleNodeIds((prev: Set<string>) => {
       const next = new Set(prev);
@@ -49,18 +51,45 @@ const CodeCardToken = ({text, tokenId, nodeId, lineHasFocusedVariable }: {
         next.delete(tokenId);
 
         // When turning off, remove any nodes that are now "stranded" (unreachable)
-        return pruneDetachedNodes(next, fullNodeMap, entryFile, templateRootId);
+        return pruneDetachedNodes(next, fullNodeMap, entryFile, null);
       } else {
         // TOGGLE ON (Add only this node, no recursive expansion)
         next.add(tokenId);
-        shouldCenterCamera = true;
       }
       return next;
     });
 
-    // Center camera when opening a node
-    if (shouldCenterCamera) {
-      setLastExpandedId(tokenId);
+    // Calculate position for newly opened node
+    if (isOpening) {
+      // Get current card's DOM element
+      const currentCard = document.getElementById(`node-${nodeId}`);
+      if (currentCard) {
+        const cardRect = currentCard.getBoundingClientRect();
+
+        // Get current card's position (including offset)
+        const currentNode = fullNodeMap.get(nodeId);
+        const currentOffset = cardPositions.get(nodeId) || { x: 0, y: 0 };
+
+        if (currentNode) {
+          // Get clicked element's position within the card
+          const clickedElement = e.target as HTMLElement;
+          const clickedRect = clickedElement.getBoundingClientRect();
+
+          // Calculate relative Y position of clicked line within the card
+          const relativeY = (clickedRect.top - cardRect.top) / transform.k;
+
+          // Position new card to the left of current card
+          const HORIZONTAL_SPACING = 600; // Distance to the left
+          const newX = currentNode.x + currentOffset.x - HORIZONTAL_SPACING;
+          const newY = currentNode.y + currentOffset.y + relativeY - 100; // Align with clicked line (offset for header)
+
+          setCardPositions(prev => {
+            const next = new Map(prev);
+            next.set(tokenId, { x: newX, y: newY });
+            return next;
+          });
+        }
+      }
     }
   };
 

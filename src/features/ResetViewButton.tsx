@@ -3,28 +3,18 @@ import { useAtomValue, useSetAtom } from 'jotai';
 import { RotateCcw as IconRotateCcw } from 'lucide-react';
 import {
   visibleNodeIdsAtom,
-  lastExpandedIdAtom,
-  templateRootIdAtom,
-  fullNodeMapAtom,
-  entryFileAtom
+  openedFilesAtom
 } from '../store/atoms.ts';
 
 const ResetViewButton: React.FC = () => {
   const visibleNodeIds = useAtomValue(visibleNodeIdsAtom);
   const setVisibleNodeIds = useSetAtom(visibleNodeIdsAtom);
-  const setLastExpandedId = useSetAtom(lastExpandedIdAtom);
-  const templateRootId = useAtomValue(templateRootIdAtom);
-  const fullNodeMap = useAtomValue(fullNodeMapAtom);
-  const entryFile = useAtomValue(entryFileAtom);
+  const setOpenedFiles = useSetAtom(openedFilesAtom);
 
   const handleReset = () => {
-    const initialSet = new Set<string>();
-    if (templateRootId) initialSet.add(templateRootId);
-    fullNodeMap.forEach(n => {
-      if (n.type === 'call' && n.filePath === entryFile) initialSet.add(n.id);
-    });
-    setVisibleNodeIds(initialSet);
-    if (templateRootId) setLastExpandedId(templateRootId);
+    // Clear all opened files and visible nodes
+    setVisibleNodeIds(new Set());
+    setOpenedFiles(new Set());
   };
 
   if (visibleNodeIds.size <= 1) return null;

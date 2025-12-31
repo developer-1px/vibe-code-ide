@@ -8,7 +8,7 @@ import React from 'react';
 import { useSetAtom, useAtomValue } from 'jotai';
 import type { CodeSegment, SegmentStyle } from '../../../../entities/CodeSegment';
 import type { CanvasNode } from '../../../../entities/CanvasNode';
-import { visibleNodeIdsAtom, fullNodeMapAtom, entryFileAtom, templateRootIdAtom, activeLocalVariablesAtom } from '../../../../store/atoms';
+import { visibleNodeIdsAtom, fullNodeMapAtom, entryFileAtom, activeLocalVariablesAtom, cardPositionsAtom, transformAtom } from '../../../../store/atoms';
 import { pruneDetachedNodes } from '../../../PipelineCanvas/utils';
 
 interface ExternalSegmentProps {
@@ -25,7 +25,9 @@ export const ExternalSegment: React.FC<ExternalSegmentProps> = ({ segment, node,
   const visibleNodeIds = useAtomValue(visibleNodeIdsAtom);
   const fullNodeMap = useAtomValue(fullNodeMapAtom);
   const entryFile = useAtomValue(entryFileAtom);
-  const templateRootId = useAtomValue(templateRootIdAtom);
+  const setCardPositions = useSetAtom(cardPositionsAtom);
+  const cardPositions = useAtomValue(cardPositionsAtom);
+  const transform = useAtomValue(transformAtom);
 
   // Check if active
   const isActive = segment.kinds.includes('external-import') &&
@@ -52,7 +54,7 @@ export const ExternalSegment: React.FC<ExternalSegmentProps> = ({ segment, node,
             next.delete(filePath);
           }
 
-          return pruneDetachedNodes(next, fullNodeMap, entryFile, templateRootId);
+          return pruneDetachedNodes(next, fullNodeMap, entryFile, null);
         });
       }
       return;
@@ -102,11 +104,14 @@ export const ExternalSegment: React.FC<ExternalSegmentProps> = ({ segment, node,
             next.delete(filePath);
           }
 
-          return pruneDetachedNodes(next, fullNodeMap, entryFile, templateRootId);
+          return pruneDetachedNodes(next, fullNodeMap, entryFile, null);
         });
       } else if (!wasFocused && !isActive) {
         // Focus 추가 + 노드 안 열려있음 → 노드 열기
+        let targetNodeId: string | null = null;
+
         if (fullNodeMap.has(segment.definedIn)) {
+          targetNodeId = segment.definedIn;
           setVisibleNodeIds((prev: Set<string>) => {
             const next = new Set(prev);
             next.add(segment.definedIn!);
@@ -116,9 +121,37 @@ export const ExternalSegment: React.FC<ExternalSegmentProps> = ({ segment, node,
           // 파일 노드 열기
           const filePath = segment.definedIn.split('::')[0];
           if (fullNodeMap.has(filePath)) {
+            targetNodeId = filePath;
             setVisibleNodeIds((prev: Set<string>) => {
               const next = new Set(prev);
               next.add(filePath);
+              return next;
+            });
+          }
+        }
+
+        // Calculate position for newly opened node
+        if (targetNodeId) {
+          const currentCard = document.getElementById(`node-${node.id}`);
+          if (currentCard) {
+            const cardRect = currentCard.getBoundingClientRect();
+            const currentOffset = cardPositions.get(node.id) || { x: 0, y: 0 };
+
+            // Get clicked element's position within the card
+            const clickedElement = e.target as HTMLElement;
+            const clickedRect = clickedElement.getBoundingClientRect();
+
+            // Calculate relative Y position of clicked line within the card
+            const relativeY = (clickedRect.top - cardRect.top) / transform.k;
+
+            // Position new card to the left of current card
+            const HORIZONTAL_SPACING = 600;
+            const newX = node.x + currentOffset.x - HORIZONTAL_SPACING;
+            const newY = node.y + currentOffset.y + relativeY - 100;
+
+            setCardPositions(prev => {
+              const next = new Map(prev);
+              next.set(targetNodeId!, { x: newX, y: newY });
               return next;
             });
           }

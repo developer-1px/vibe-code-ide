@@ -19,9 +19,6 @@ export function parseProject(
   files: Record<string, string>,
   entryFile: string
 ): GraphData {
-  console.log('📦 File-based parsing with identifier tracking...');
-  console.log(`🎯 Entry: ${entryFile}`);
-
   const nodes: SourceFileNode[] = [];
   const processedFiles = new Set<string>();
 
@@ -100,9 +97,6 @@ export function parseProject(
 
   // Entry file부터 시작
   processFile(entryFile);
-
-  console.log(`✅ Created ${nodes.length} file nodes`);
-
   return { nodes };
 }
 
