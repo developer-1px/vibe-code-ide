@@ -2,11 +2,10 @@
 import React, { useMemo } from 'react';
 import { Box as IconBox, AlertCircle as IconAlertCircle, FileCode, X } from 'lucide-react';
 import { useAtomValue, useSetAtom } from 'jotai';
-import { useGraphData } from '../../hooks/useGraphData';
-import { openedFilesAtom, selectedNodeIdsAtom, layoutNodesAtom } from '../../store/atoms';
+import { openedFilesAtom, selectedNodeIdsAtom, layoutNodesAtom, parseErrorAtom } from '../../store/atoms';
 
 const Header: React.FC = () => {
-  const { error: parseError } = useGraphData();
+  const parseError = useAtomValue(parseErrorAtom);
   const openedFiles = useAtomValue(openedFilesAtom);
   const setOpenedFiles = useSetAtom(openedFilesAtom);
   const setSelectedNodeIds = useSetAtom(selectedNodeIdsAtom);

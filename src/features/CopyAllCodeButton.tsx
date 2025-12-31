@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
 import { useAtomValue } from 'jotai';
 import { Copy as IconCopy, Check as IconCheck } from 'lucide-react';
-import { layoutNodesAtom, fullNodeMapAtom, entryFileAtom } from '../store/atoms.ts';
+import { layoutNodesAtom, fullNodeMapAtom } from '../store/atoms.ts';
 
 const CopyAllCodeButton: React.FC = () => {
   const layoutNodes = useAtomValue(layoutNodesAtom);
   const fullNodeMap = useAtomValue(fullNodeMapAtom);
-  const entryFile = useAtomValue(entryFileAtom);
   const [isAllCopied, setIsAllCopied] = useState(false);
 
   const handleCopyAllCode = async () => {
@@ -33,7 +32,6 @@ const CopyAllCodeButton: React.FC = () => {
 
       // Simple format: Path -> Code
       let text = `# Code Context (Dependency Order)\n\n`;
-      text += `Entry: ${entryFile}\n`;
       text += `Total: ${sortedNodes.length} blocks\n\n`;
       text += `---\n\n`;
 

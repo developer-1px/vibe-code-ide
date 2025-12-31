@@ -15,8 +15,8 @@ import {
   fullNodeMapAtom,
   symbolMetadataAtom,
 } from '../../store/atoms';
-import { extractSearchableSymbols, extractSearchableFiles } from '../../services/symbolExtractor';
-import { searchResults } from '../../services/searchService';
+import { extractAllSearchableItems } from '../../services/symbolExtractor';
+import { searchResults, searchResultsFuzzy } from '../../services/searchService';
 import { SearchInput } from './SearchInput';
 import { SearchResults } from './SearchResults';
 
@@ -25,27 +25,37 @@ export const UnifiedSearchModal: React.FC = () => {
   const [query, setQuery] = useAtom(searchQueryAtom);
   const [results, setResults] = useAtom(searchResultsAtom);
   const [focusedIndex, setFocusedIndex] = useAtom(searchFocusedIndexAtom);
-  const [mode, setMode] = useAtom(searchModeAtom);
 
   const files = useAtomValue(filesAtom);
   const fullNodeMap = useAtomValue(fullNodeMapAtom);
   const symbolMetadata = useAtomValue(symbolMetadataAtom);
 
-  // Extract all searchable items (files + symbols)
+  // Extract all searchable items (files + folders + symbols + usages) from single source
   const allSearchableItems = useMemo(() => {
-    const fileResults = extractSearchableFiles(files);
-    const symbolResults = extractSearchableSymbols(fullNodeMap, symbolMetadata);
-    return [...fileResults, ...symbolResults];
-  }, [files, fullNodeMap, symbolMetadata]);
+    return extractAllSearchableItems(fullNodeMap, symbolMetadata, files);
+  }, [fullNodeMap, symbolMetadata, files]);
 
-  // Perform search and update results
+  // Perform fuzzy search only
   useEffect(() => {
     if (!isOpen) return;
 
-    const results = searchResults(query, allSearchableItems, mode);
-    setResults(results);
-    setFocusedIndex(0); // Reset focus to first result
-  }, [query, allSearchableItems, mode, isOpen, setResults, setFocusedIndex]);
+    // Empty query - show all results (limited)
+    if (!query.trim()) {
+      setResults(allSearchableItems.slice(0, 50));
+      setFocusedIndex(0);
+      return;
+    }
+
+    // Fuzzy search only
+    searchResultsFuzzy(query, allSearchableItems).then(fuzzyResults => {
+      console.log(`[Search] Query: "${query}", Results: ${fuzzyResults.length}`);
+      if (fuzzyResults.length > 0 && fuzzyResults.length <= 20) {
+        console.log('[Search] Top results:', fuzzyResults.map(r => `${r.name} (${r.type}) - ${r.filePath}`));
+      }
+      setResults(fuzzyResults);
+      setFocusedIndex(0);
+    });
+  }, [query, allSearchableItems, isOpen, setResults, setFocusedIndex]);
 
   // Keyboard shortcuts
   useEffect(() => {
@@ -70,7 +80,7 @@ export const UnifiedSearchModal: React.FC = () => {
 
   const handleClose = () => {
     setIsOpen(false);
-    setQuery('');
+    // Keep query - don't clear it
     setResults([]);
     setFocusedIndex(0);
   };
@@ -85,46 +95,12 @@ export const UnifiedSearchModal: React.FC = () => {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-start justify-center bg-black/60 backdrop-blur-sm pt-[15vh]"
+      className="fixed inset-0 z-50 flex items-start justify-center pt-[15vh]"
       onClick={handleBackdropClick}
     >
       <div className="w-full max-w-2xl bg-[#0f172a] border border-vibe-border rounded shadow-2xl overflow-hidden">
         {/* Search Input */}
         <SearchInput />
-
-        {/* Mode Selector */}
-        <div className="flex gap-1 px-2.5 py-1.5 bg-black/20 border-b border-vibe-border/50">
-          <button
-            onClick={() => setMode('all')}
-            className={`px-2 py-0.5 text-[10px] rounded transition-colors ${
-              mode === 'all'
-                ? 'bg-vibe-accent/20 text-vibe-accent border border-vibe-accent/50'
-                : 'text-slate-400 hover:text-slate-200 hover:bg-white/5'
-            }`}
-          >
-            All
-          </button>
-          <button
-            onClick={() => setMode('files')}
-            className={`px-2 py-0.5 text-[10px] rounded transition-colors ${
-              mode === 'files'
-                ? 'bg-vibe-accent/20 text-vibe-accent border border-vibe-accent/50'
-                : 'text-slate-400 hover:text-slate-200 hover:bg-white/5'
-            }`}
-          >
-            Files
-          </button>
-          <button
-            onClick={() => setMode('symbols')}
-            className={`px-2 py-0.5 text-[10px] rounded transition-colors ${
-              mode === 'symbols'
-                ? 'bg-vibe-accent/20 text-vibe-accent border border-vibe-accent/50'
-                : 'text-slate-400 hover:text-slate-200 hover:bg-white/5'
-            }`}
-          >
-            Symbols
-          </button>
-        </div>
 
         {/* Search Results */}
         <SearchResults onSelect={handleClose} />
@@ -135,6 +111,8 @@ export const UnifiedSearchModal: React.FC = () => {
             <span>↑↓ Navigate</span>
             <span>↵ Select</span>
             <span>ESC Close</span>
+            <span className="text-slate-600">|</span>
+            <span className="text-vibe-accent/70">symbol/file or symbol file</span>
           </div>
           <div>Shift+Shift to open</div>
         </div>

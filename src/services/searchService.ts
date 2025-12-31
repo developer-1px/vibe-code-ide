@@ -1,8 +1,24 @@
 /**
- * Search Service - Fuzzy search with scoring for files and symbols
+ * Search Service - Dual-mode search (basic + fuzzy)
+ * Basic search executes immediately on main thread
+ * Fuzzy search runs in Web Worker for performance
  */
 
 import type { SearchResult } from '../store/atoms';
+import type { FuzzySearchRequest, FuzzySearchResponse } from '../workers/fuzzySearchWorker';
+
+// Lazy-load Web Worker
+let fuzzyWorker: Worker | null = null;
+
+function getFuzzyWorker(): Worker {
+  if (!fuzzyWorker) {
+    fuzzyWorker = new Worker(
+      new URL('../workers/fuzzySearchWorker.ts', import.meta.url),
+      { type: 'module' }
+    );
+  }
+  return fuzzyWorker;
+}
 
 /**
  * Calculate search score for a candidate string against a query
@@ -65,13 +81,11 @@ function matchesCamelCase(query: string, candidate: string): boolean {
 export function searchResults(
   query: string,
   allResults: SearchResult[],
-  mode: 'all' | 'files' | 'symbols' = 'all',
   maxResults: number = 50
 ): SearchResult[] {
   // Empty query returns all results (limited)
   if (!query.trim()) {
-    const filtered = filterByMode(allResults, mode);
-    return filtered.slice(0, maxResults);
+    return allResults.slice(0, maxResults);
   }
 
   // Score all results
@@ -79,8 +93,8 @@ export function searchResults(
     // Score against name
     const nameScore = calculateScore(query, result.name);
 
-    // Score against file path (for files)
-    const pathScore = result.type === 'file'
+    // Score against file path (for files/folders)
+    const pathScore = (result.type === 'file' || result.type === 'folder')
       ? calculateScore(query, result.filePath)
       : 0;
 
@@ -90,16 +104,12 @@ export function searchResults(
     return {
       ...result,
       score: finalScore,
+      matchType: 'basic' as const, // Mark as basic match
     };
   });
 
-  // Filter by mode and score > 0
-  const filtered = scored.filter((result) => {
-    if (result.score === 0) return false;
-    if (mode === 'files' && result.type !== 'file') return false;
-    if (mode === 'symbols' && result.type !== 'symbol') return false;
-    return true;
-  });
+  // Filter by score > 0
+  const filtered = scored.filter((result) => result.score > 0);
 
   // Sort by score (descending)
   filtered.sort((a, b) => {
@@ -116,16 +126,113 @@ export function searchResults(
 }
 
 /**
- * Filter results by search mode
+ * Perform fuzzy search in Web Worker (background thread)
+ * Returns a Promise that resolves with fuzzy search results
+ *
+ * Worker receives lightweight data (id, name, type) and returns IDs + matches
+ * Main thread merges with original data to preserve all fields (codeSnippet, etc.)
  */
-function filterByMode(
-  results: SearchResult[],
-  mode: 'all' | 'files' | 'symbols'
-): SearchResult[] {
-  if (mode === 'all') return results;
-  return results.filter((result) => {
-    if (mode === 'files') return result.type === 'file';
-    if (mode === 'symbols') return result.type === 'symbol';
-    return true;
+export function searchResultsFuzzy(
+  query: string,
+  allResults: SearchResult[],
+): Promise<SearchResult[]> {
+  return new Promise((resolve) => {
+    // Empty query returns empty results immediately
+    if (!query.trim()) {
+      resolve([]);
+      return;
+    }
+
+    // Create lookup map for fast access to original data
+    const resultMap = new Map(allResults.map(item => [item.id, item]));
+
+    // Send only lightweight data to worker (id, name, type, filePath)
+    const lightweightItems = allResults.map(item => ({
+      id: item.id,
+      name: item.name,
+      type: item.type,
+      filePath: item.filePath
+    }));
+
+    const worker = getFuzzyWorker();
+
+    // Listen for results from worker
+    const handleMessage = (event: MessageEvent<FuzzySearchResponse>) => {
+      if (event.data.type === 'results') {
+        worker.removeEventListener('message', handleMessage);
+
+        // Merge worker results (id + matches) with original data
+        const results: SearchResult[] = event.data.results
+          .map(workerResult => {
+            const originalData = resultMap.get(workerResult.id);
+            if (!originalData) return null;
+
+            return {
+              ...originalData,  // Full original data (includes codeSnippet!)
+              score: 50,
+              matchType: 'fuzzy' as const,
+              matches: workerResult.matches,
+            };
+          })
+          .filter((item): item is SearchResult => item !== null);
+
+        // Boost priority: files matching query without extension
+        const queryLower = query.toLowerCase();
+        results.sort((a, b) => {
+          // Check if file name (without extension) matches query exactly
+          const isFileA = a.type === 'file';
+          const isFileB = b.type === 'file';
+
+          if (isFileA) {
+            const nameWithoutExt = a.name.replace(/\.[^/.]+$/, '').toLowerCase();
+            const exactMatchA = nameWithoutExt === queryLower ? 1 : 0;
+
+            if (isFileB) {
+              const nameWithoutExtB = b.name.replace(/\.[^/.]+$/, '').toLowerCase();
+              const exactMatchB = nameWithoutExtB === queryLower ? 1 : 0;
+
+              // Both files: exact match first
+              if (exactMatchA !== exactMatchB) return exactMatchB - exactMatchA;
+            } else {
+              // A is file, B is not: exact match file wins
+              if (exactMatchA) return -1;
+            }
+          } else if (isFileB) {
+            const nameWithoutExtB = b.name.replace(/\.[^/.]+$/, '').toLowerCase();
+            const exactMatchB = nameWithoutExtB === queryLower ? 1 : 0;
+            // B is file, A is not: exact match file wins
+            if (exactMatchB) return 1;
+          }
+
+          // Keep Fuse.js order
+          return 0;
+        });
+
+        resolve(results);
+      }
+    };
+
+    worker.addEventListener('message', handleMessage);
+
+    // Send search request to worker
+    const request: FuzzySearchRequest = {
+      type: 'search',
+      query,
+      items: lightweightItems,
+    };
+
+    worker.postMessage(request);
+  });
+}
+
+/**
+ * Cleanup worker on page unload
+ */
+if (typeof window !== 'undefined') {
+  window.addEventListener('beforeunload', () => {
+    if (fuzzyWorker) {
+      fuzzyWorker.terminate();
+      fuzzyWorker = null;
+    }
   });
 }

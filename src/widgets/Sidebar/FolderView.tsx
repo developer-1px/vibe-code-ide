@@ -4,10 +4,9 @@
  */
 
 import React, { useMemo, useState, useCallback, useEffect } from 'react';
-import { useAtom, useAtomValue, useSetAtom } from 'jotai';
+import { useAtom, useSetAtom } from 'jotai';
 import { useHotkeys } from 'react-hotkeys-hook';
-import { entryFileAtom, lastExpandedIdAtom, focusedPaneAtom, openedFilesAtom } from '../../store/atoms';
-import { openFile } from '../../features/File';
+import { focusedPaneAtom, openedFilesAtom } from '../../store/atoms';
 import FolderItemView from './FolderItemView';
 import FileItemView from './FileItemView';
 
@@ -20,10 +19,7 @@ interface FolderNode {
 }
 
 const FolderView = ({ files }: { files: Record<string, string> }) => {
-  const entryFile = useAtomValue(entryFileAtom);
-  const setEntryFile = useSetAtom(entryFileAtom);
-  const setLastExpandedId = useSetAtom(lastExpandedIdAtom);
-  const [openedFiles, setOpenedFiles] = useAtom(openedFilesAtom);
+  const setOpenedFiles = useSetAtom(openedFilesAtom);
   const [focusedPane, setFocusedPane] = useAtom(focusedPaneAtom);
   const [focusedIndex, setFocusedIndex] = useState(0);
 
@@ -119,15 +115,9 @@ const FolderView = ({ files }: { files: Record<string, string> }) => {
   };
 
   const handleFileClick = useCallback((filePath: string) => {
-    openFile({
-      filePath,
-      currentEntryFile: entryFile,
-      setEntryFile,
-      setLastExpandedId,
-      openedFiles,
-      setOpenedFiles,
-    });
-  }, [entryFile, setEntryFile, setLastExpandedId, openedFiles, setOpenedFiles]);
+    // Open file - add to openedFiles
+    setOpenedFiles(prev => new Set([...prev, filePath]));
+  }, [setOpenedFiles]);
 
   // Get flat list of all visible items (folders + files for keyboard navigation)
   const flatItemList = useMemo(() => {
@@ -159,19 +149,6 @@ const FolderView = ({ files }: { files: Record<string, string> }) => {
     console.log('[FolderView] focusedPane changed:', focusedPane);
   }, [focusedPane]);
 
-  // Sync focusedIndex with entryFile changes (only when entryFile actually changes)
-  useEffect(() => {
-    if (entryFile && flatItemList.length > 0) {
-      const entryIndex = flatItemList.findIndex(
-        item => item.type === 'file' && item.filePath === entryFile
-      );
-      if (entryIndex >= 0) {
-        console.log('[FolderView] Syncing focusedIndex with entryFile:', entryFile, 'index:', entryIndex);
-        setFocusedIndex(entryIndex);
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [entryFile]); // Only depend on entryFile, not flatItemList
 
   // TEST: Always-enabled hotkey
   useHotkeys('g', () => {
@@ -255,7 +232,6 @@ const FolderView = ({ files }: { files: Record<string, string> }) => {
           key={node.path}
           node={node}
           depth={depth}
-          isEntry={node.filePath === entryFile}
           isFocused={flatItemList[focusedIndex]?.type === 'file' && flatItemList[focusedIndex].filePath === node.filePath}
           onFileFocus={(filePath) => {
             // Single click - update focus

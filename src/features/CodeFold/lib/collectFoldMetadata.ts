@@ -64,7 +64,8 @@ export function collectFoldMetadata(
         isFoldable: true,
         foldStart: actualStartLineNum,
         foldEnd: actualEndLineNum,
-        foldType: 'import-block'
+        foldType: 'import-block',
+        depth: 1  // Import는 항상 depth 1
       };
 
       // 중간 라인들에 "접힌 범위 내부" 표시
@@ -74,52 +75,62 @@ export function collectFoldMetadata(
             isFoldable: false,
             foldStart: actualStartLineNum,
             foldEnd: actualEndLineNum,
-            foldType: 'import-block'
+            foldType: 'import-block',
+            depth: 1
           };
         }
       }
     }
   });
 
-  function visit(node: ts.Node) {
+  function visit(node: ts.Node, currentDepth: number = 1) {
     let block: ts.Block | undefined;
     let blockType: 'statement-block' | 'jsx-children' | 'jsx-fragment' | undefined;
     let tagName: string | undefined;
     let customStart: number | undefined;
     let customEnd: number | undefined;
+    let nextDepth: number = currentDepth;
 
     // ===== Statement Block 감지 =====
     if (ts.isFunctionDeclaration(node) && node.body) {
       block = node.body;
       blockType = 'statement-block';
+      nextDepth = currentDepth + 1;
     }
     else if (ts.isArrowFunction(node) && ts.isBlock(node.body)) {
       block = node.body;
       blockType = 'statement-block';
+      nextDepth = currentDepth + 1;
     }
     else if (ts.isFunctionExpression(node) && node.body) {
       block = node.body;
       blockType = 'statement-block';
+      nextDepth = currentDepth + 1;
     }
     else if (ts.isMethodDeclaration(node) && node.body) {
       block = node.body;
       blockType = 'statement-block';
+      nextDepth = currentDepth + 1;
     }
     else if (ts.isIfStatement(node) && ts.isBlock(node.thenStatement)) {
       block = node.thenStatement;
       blockType = 'statement-block';
+      nextDepth = currentDepth + 1;
     }
     else if (ts.isForStatement(node) && ts.isBlock(node.statement)) {
       block = node.statement;
       blockType = 'statement-block';
+      nextDepth = currentDepth + 1;
     }
     else if (ts.isWhileStatement(node) && ts.isBlock(node.statement)) {
       block = node.statement;
       blockType = 'statement-block';
+      nextDepth = currentDepth + 1;
     }
     else if (ts.isTryStatement(node)) {
       block = node.tryBlock;
       blockType = 'statement-block';
+      nextDepth = currentDepth + 1;
     }
     // ===== JSX Element 감지 =====
     else if (ts.isJsxElement(node)) {
@@ -136,6 +147,7 @@ export function collectFoldMetadata(
       customEnd = closingElement.getEnd() - 1;
 
       blockType = 'jsx-children';
+      nextDepth = currentDepth + 1;
     }
     // ===== JSX Fragment 감지 =====
     else if (ts.isJsxFragment(node)) {
@@ -152,6 +164,7 @@ export function collectFoldMetadata(
       customEnd = closingFragment.getEnd() - 1;
 
       blockType = 'jsx-fragment';
+      nextDepth = currentDepth + 1;
     }
 
     // Block이 있고, 비어있지 않으면 fold 가능
@@ -176,7 +189,8 @@ export function collectFoldMetadata(
           foldStart: actualStartLineNum,
           foldEnd: actualEndLineNum,
           foldType: blockType,
-          tagName
+          tagName,
+          depth: currentDepth
         };
 
         // 중간 라인들에 "접힌 범위 내부" 표시
@@ -187,7 +201,8 @@ export function collectFoldMetadata(
               foldStart: actualStartLineNum,
               foldEnd: actualEndLineNum,
               foldType: blockType,
-              tagName
+              tagName,
+              depth: currentDepth
             };
           }
         }
@@ -208,7 +223,8 @@ export function collectFoldMetadata(
           foldStart: actualStartLineNum,
           foldEnd: actualEndLineNum,
           foldType: blockType,
-          tagName
+          tagName,
+          depth: currentDepth
         };
 
         // 중간 라인들에 "접힌 범위 내부" 표시
@@ -219,18 +235,21 @@ export function collectFoldMetadata(
               foldStart: actualStartLineNum,
               foldEnd: actualEndLineNum,
               foldType: blockType,
-              tagName
+              tagName,
+              depth: currentDepth
             };
           }
         }
       }
     }
 
-    ts.forEachChild(node, visit);
+    ts.forEachChild(node, (child) => visit(child, nextDepth));
   }
 
   try {
-    visit(sourceFile);
+    // sourceFile의 직접 자식(최상위 함수/클래스)은 depth 2로 시작
+    // (import는 depth 1로 이미 처리됨)
+    visit(sourceFile, 2);
   } catch (err) {
     console.error('❌ [collectFoldMetadata] Error:', err);
   }

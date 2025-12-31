@@ -6,8 +6,7 @@ import { DEFAULT_FILES, DEFAULT_ENTRY_FILE } from '../constants';
 
 // File management atoms
 export const filesAtom = atom<Record<string, string>>(DEFAULT_FILES);
-export const activeFileAtom = atom<string>(DEFAULT_ENTRY_FILE);
-export const entryFileAtom = atom<string>(DEFAULT_ENTRY_FILE);
+export const activeFileAtom = atom<string>(''); // Active file in editor
 export const isSidebarOpenAtom = atom<boolean>(true);
 
 // Graph data atom (parsed project data)
@@ -27,7 +26,7 @@ export const visibleNodeIdsAtom = atom(new Set<string>());
 export const lastExpandedIdAtom = atom(null as string | null);
 
 // Multiple opened files (for overlapping view)
-export const openedFilesAtom = atom(new Set<string>([DEFAULT_ENTRY_FILE]));
+export const openedFilesAtom = atom(new Set<string>());
 
 // Go to Definition - target line to highlight and scroll to
 export const targetLineAtom = atom(null as { nodeId: string; lineNum: number } | null);
@@ -40,13 +39,18 @@ export const collapsedFoldersAtom = atom(new Set<string>()); // 접힌 폴더들
 // Unified Search atoms (Shift+Shift)
 export interface SearchResult {
   id: string;
-  type: 'file' | 'symbol';
+  type: 'file' | 'folder' | 'symbol';
   name: string;
   filePath: string;
   nodeType?: string; // For symbols: 'pure-function', 'state-ref', etc.
   nodeId?: string; // For navigation
   lineNumber?: number;
   score: number;
+  matchType?: 'basic' | 'fuzzy'; // Match type for visual indication
+  matches?: Array<{ // Fuzzy match indices for highlighting
+    key: string;      // Which field matched (name, filePath, etc.)
+    indices: number[][]; // [start, end] pairs for highlighting
+  }>;
   // Enriched metadata
   typeInfo?: string; // TypeScript type information from Language Service
   codeSnippet?: string; // First line of code snippet
@@ -64,7 +68,6 @@ export const searchModalOpenAtom = atom(false);
 export const searchQueryAtom = atom('');
 export const searchResultsAtom = atom([] as SearchResult[]);
 export const searchFocusedIndexAtom = atom(0);
-export const searchModeAtom = atom<'all' | 'files' | 'symbols'>('all');
 export const symbolMetadataAtom = atom(new Map<string, SymbolMetadata>());
 
 // Code Fold atoms - Re-export from feature

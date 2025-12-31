@@ -8,7 +8,7 @@ import React from 'react';
 import { useSetAtom, useAtomValue } from 'jotai';
 import type { CodeSegment, SegmentStyle } from '../../../../entities/CodeSegment';
 import type { CanvasNode } from '../../../../entities/CanvasNode';
-import { visibleNodeIdsAtom, fullNodeMapAtom, entryFileAtom, activeLocalVariablesAtom, cardPositionsAtom, transformAtom } from '../../../../store/atoms';
+import { visibleNodeIdsAtom, fullNodeMapAtom, activeLocalVariablesAtom, cardPositionsAtom, transformAtom } from '../../../../store/atoms';
 import { pruneDetachedNodes } from '../../../PipelineCanvas/utils';
 
 interface ExternalSegmentProps {
@@ -24,7 +24,6 @@ export const ExternalSegment: React.FC<ExternalSegmentProps> = ({ segment, node,
   const activeLocalVariables = useAtomValue(activeLocalVariablesAtom);
   const visibleNodeIds = useAtomValue(visibleNodeIdsAtom);
   const fullNodeMap = useAtomValue(fullNodeMapAtom);
-  const entryFile = useAtomValue(entryFileAtom);
   const setCardPositions = useSetAtom(cardPositionsAtom);
   const cardPositions = useAtomValue(cardPositionsAtom);
   const transform = useAtomValue(transformAtom);
@@ -54,7 +53,7 @@ export const ExternalSegment: React.FC<ExternalSegmentProps> = ({ segment, node,
             next.delete(filePath);
           }
 
-          return pruneDetachedNodes(next, fullNodeMap, entryFile, null);
+          return pruneDetachedNodes(next, fullNodeMap, null, null);
         });
       }
       return;
@@ -104,7 +103,7 @@ export const ExternalSegment: React.FC<ExternalSegmentProps> = ({ segment, node,
             next.delete(filePath);
           }
 
-          return pruneDetachedNodes(next, fullNodeMap, entryFile, null);
+          return pruneDetachedNodes(next, fullNodeMap, null, null);
         });
       } else if (!wasFocused && !isActive) {
         // Focus 추가 + 노드 안 열려있음 → 노드 열기

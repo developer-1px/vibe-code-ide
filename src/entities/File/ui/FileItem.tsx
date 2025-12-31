@@ -3,8 +3,7 @@ import { useAtomValue, useSetAtom } from 'jotai';
 import { FileJson as IconFileJson, FileCode as IconFileCode, Component as IconComponent } from 'lucide-react';
 import type { FileItemProps } from '../model/types';
 import { getFuzzyMatchIndices, splitFilePath } from '../lib/fuzzyMatch';
-import { entryFileAtom, lastExpandedIdAtom, fileSearchQueryAtom, focusedFileIndexAtom } from '../../../store/atoms';
-import { openFile } from '../../../features/File';
+import { fileSearchQueryAtom, focusedFileIndexAtom, openedFilesAtom } from '../../../store/atoms';
 
 // 확장자에 따른 아이콘 반환
 const getFileIcon = (fileName: string) => {
@@ -28,15 +27,12 @@ const getFileIcon = (fileName: string) => {
 
 const FileItem: React.FC<FileItemProps> = ({ fileName, index }) => {
   // Atoms
-  const entryFile = useAtomValue(entryFileAtom);
-  const setEntryFile = useSetAtom(entryFileAtom);
-  const setLastExpandedId = useSetAtom(lastExpandedIdAtom);
   const searchQuery = useAtomValue(fileSearchQueryAtom);
   const focusedIndex = useAtomValue(focusedFileIndexAtom);
   const setFocusedIndex = useSetAtom(focusedFileIndexAtom);
+  const setOpenedFiles = useSetAtom(openedFilesAtom);
 
   // Computed values
-  const isEntry = fileName === entryFile;
   const isFocused = index === focusedIndex;
   // 파일명과 폴더 경로 분리
   const { name, folder } = useMemo(() => splitFilePath(fileName), [fileName]);
@@ -72,13 +68,9 @@ const FileItem: React.FC<FileItemProps> = ({ fileName, index }) => {
 
   // Handlers
   const handleClick = useCallback(() => {
-    openFile({
-      filePath: fileName,
-      currentEntryFile: entryFile,
-      setEntryFile,
-      setLastExpandedId,
-    });
-  }, [fileName, entryFile, setEntryFile, setLastExpandedId]);
+    // Open file - add to openedFiles
+    setOpenedFiles(prev => new Set([...prev, fileName]));
+  }, [fileName, setOpenedFiles]);
 
   const handleMouseEnter = useCallback(() => {
     setFocusedIndex(index);
@@ -91,18 +83,16 @@ const FileItem: React.FC<FileItemProps> = ({ fileName, index }) => {
       onMouseEnter={handleMouseEnter}
       className={`
         px-3 py-1 text-[11px] font-mono cursor-pointer flex items-center gap-2 border-l-2 transition-colors group
-        ${isEntry
-          ? 'bg-vibe-accent/10 text-vibe-accent border-vibe-accent'
-          : isFocused
+        ${isFocused
           ? 'bg-blue-500/10 text-slate-200 border-blue-500'
           : 'text-slate-400 border-transparent hover:bg-white/5 hover:text-slate-200'}
       `}
     >
       {/* File icon based on extension */}
-      <FileIcon className={`w-2.5 h-2.5 flex-shrink-0 opacity-40 ${isEntry ? 'text-vibe-accent opacity-70' : iconColor}`} />
+      <FileIcon className={`w-2.5 h-2.5 flex-shrink-0 opacity-40 ${iconColor}`} />
 
       {/* File name */}
-      <span className={`font-medium ${isEntry ? 'text-vibe-accent' : isFocused ? 'text-slate-100' : 'text-slate-200'}`}>
+      <span className={`font-medium ${isFocused ? 'text-slate-100' : 'text-slate-200'}`}>
         {highlightedName.map((part, i) => (
           part.isHighlight ? (
             <mark key={i} className="bg-yellow-400/30 text-yellow-200">

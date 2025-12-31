@@ -72,8 +72,6 @@ export function extractSymbolMetadata(
       return;
     }
 
-    console.log('[symbolMetadataExtractor] Processing node:', node.id, 'type:', node.type, 'codeSnippet:', node.codeSnippet?.substring(0, 50));
-
     // Extract code snippet (first line)
     const codeSnippet = extractFirstLine(node.codeSnippet || '');
 

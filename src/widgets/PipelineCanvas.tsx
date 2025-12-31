@@ -1,5 +1,6 @@
 import React, { useRef, useMemo, useEffect } from 'react';
 import { useAtomValue, useSetAtom, useAtom } from 'jotai';
+import { useHotkeys } from 'react-hotkeys-hook';
 
 // Hooks & Sub-components
 import { useCanvasLayout } from './PipelineCanvas/useCanvasLayout.ts';
@@ -11,8 +12,7 @@ import CopyAllCodeButton from '../features/CopyAllCodeButton.tsx';
 import ResetViewButton from '../features/ResetViewButton.tsx';
 
 // Atoms & Hooks
-import { visibleNodeIdsAtom, entryFileAtom, selectedNodeIdsAtom, openedFilesAtom, fullNodeMapAtom, symbolMetadataAtom, filesAtom } from '../store/atoms';
-import { useGraphData } from '../hooks/useGraphData';
+import { visibleNodeIdsAtom, selectedNodeIdsAtom, openedFilesAtom, fullNodeMapAtom, symbolMetadataAtom, filesAtom, focusedPaneAtom, graphDataAtom } from '../store/atoms';
 import { extractSymbolMetadata } from '../services/symbolMetadataExtractor';
 
 const PipelineCanvas: React.FC = () => {
@@ -20,13 +20,13 @@ const PipelineCanvas: React.FC = () => {
 
   // Read atoms
   const visibleNodeIds = useAtomValue(visibleNodeIdsAtom);
-  const entryFile = useAtomValue(entryFileAtom);
   const [openedFiles, setOpenedFiles] = useAtom(openedFilesAtom);
-  const { data: graphData } = useGraphData();
-  const setSelectedNodeIds = useSetAtom(selectedNodeIdsAtom);
+  const graphData = useAtomValue(graphDataAtom);
+  const [selectedNodeIds, setSelectedNodeIds] = useAtom(selectedNodeIdsAtom);
   const fullNodeMap = useAtomValue(fullNodeMapAtom);
   const files = useAtomValue(filesAtom);
   const setSymbolMetadata = useSetAtom(symbolMetadataAtom);
+  const [focusedPane, setFocusedPane] = useAtom(focusedPaneAtom);
 
   // Extract symbol metadata after parsing completes
   useEffect(() => {
@@ -64,30 +64,81 @@ const PipelineCanvas: React.FC = () => {
   // Expand visibleNodeIds to include file nodes from opened files
   // (but not individual function/variable nodes)
   const expandedVisibleNodeIds = useMemo(() => {
-    if (!graphData || openedFiles.size === 0) return visibleNodeIds;
+    if (openedFiles.size === 0) return visibleNodeIds;
 
     const expanded = new Set(visibleNodeIds);
 
-    // Add only file-type nodes from opened files
-    graphData.nodes.forEach(node => {
-      if (openedFiles.has(node.filePath) && node.type === 'file') {
-        expanded.add(node.id);
+    // Add file nodes from opened files (check fullNodeMap for all files including orphaned)
+    openedFiles.forEach(filePath => {
+      // Check if file exists in fullNodeMap (for connected files)
+      const fileNode = fullNodeMap.get(filePath);
+      if (fileNode) {
+        expanded.add(filePath);
+      } else {
+        // For orphaned files not in fullNodeMap, still add the filePath as ID
+        // (they will be rendered directly from filesAtom)
+        expanded.add(filePath);
       }
     });
 
     return expanded;
-  }, [graphData, openedFiles, visibleNodeIds]);
+  }, [openedFiles, visibleNodeIds, fullNodeMap]);
 
   // 1. Layout Logic (simple display of visible nodes)
-  const { layoutNodes } = useCanvasLayout(graphData, entryFile, expandedVisibleNodeIds);
+  const { layoutNodes } = useCanvasLayout(graphData, expandedVisibleNodeIds);
 
   // Clear selection when clicking on canvas background
   const handleCanvasClick = (e: React.MouseEvent) => {
+    // Set focus to canvas
+    setFocusedPane('canvas');
+
     // Only clear if clicking directly on canvas, not on children (cards)
     if (e.target === e.currentTarget) {
       setSelectedNodeIds(new Set());
     }
   };
+
+  // Delete/Backspace key handler - close selected files
+  useHotkeys('delete, backspace', (e) => {
+    console.log('[PipelineCanvas] Delete/Backspace pressed, focusedPane:', focusedPane, 'selectedNodeIds:', selectedNodeIds.size);
+
+    if (selectedNodeIds.size === 0) return;
+
+    // Prevent default backspace navigation
+    e.preventDefault();
+
+    // Extract file paths from selected node IDs
+    const filesToClose = new Set<string>();
+    selectedNodeIds.forEach(nodeId => {
+      // Check if nodeId is a file path (orphaned file)
+      if (files[nodeId]) {
+        filesToClose.add(nodeId);
+      } else {
+        // Check if nodeId exists in fullNodeMap
+        const node = fullNodeMap.get(nodeId);
+        if (node) {
+          filesToClose.add(node.filePath);
+        }
+      }
+    });
+
+    console.log('[PipelineCanvas] Files to close:', Array.from(filesToClose));
+
+    // Remove files from openedFiles
+    if (filesToClose.size > 0) {
+      setOpenedFiles(prev => {
+        const next = new Set(prev);
+        filesToClose.forEach(filePath => next.delete(filePath));
+        return next;
+      });
+
+      // Clear selection
+      setSelectedNodeIds(new Set());
+    }
+  }, {
+    scopes: ['canvas'],
+    enabled: focusedPane === 'canvas'
+  });
 
   return (
     <div

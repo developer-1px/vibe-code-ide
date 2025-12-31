@@ -7,7 +7,7 @@ import React, { useMemo, useRef, useState, useEffect } from 'react';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import type { CanvasNode } from '../../entities/CanvasNode';
 import CodeCard from '../CodeCard/CodeCard';
-import { cardPositionsAtom, selectedNodeIdsAtom, transformAtom } from '../../store/atoms';
+import { cardPositionsAtom, selectedNodeIdsAtom, transformAtom, focusedPaneAtom } from '../../store/atoms';
 
 interface CanvasCodeCardProps {
   node: CanvasNode;
@@ -17,6 +17,7 @@ export const CanvasCodeCard: React.FC<CanvasCodeCardProps> = ({ node }) => {
   const [cardPositions, setCardPositions] = useAtom(cardPositionsAtom);
   const [selectedNodeIds, setSelectedNodeIds] = useAtom(selectedNodeIdsAtom);
   const transform = useAtomValue(transformAtom);
+  const setFocusedPane = useSetAtom(focusedPaneAtom);
 
   const offset = cardPositions.get(node.id) || { x: 0, y: 0 };
   const isSelected = selectedNodeIds.has(node.id);
@@ -28,6 +29,9 @@ export const CanvasCodeCard: React.FC<CanvasCodeCardProps> = ({ node }) => {
   // Handle card selection
   const handleMouseDown = (e: React.MouseEvent) => {
     console.log('[CanvasCodeCard] mouseDown on:', node.id);
+
+    // Set focus to canvas
+    setFocusedPane('canvas');
 
     // Prevent if clicking on interactive elements
     const target = e.target as HTMLElement;

@@ -1,6 +1,6 @@
 
 import { useEffect, useState, useMemo } from 'react';
-import { useSetAtom } from 'jotai';
+import { useSetAtom, useAtomValue } from 'jotai';
 import { GraphData, VariableNode } from '../../entities/SourceFileNode';
 import { CanvasNode } from '../../entities/CanvasNode';
 import {
@@ -11,7 +11,6 @@ import {
 
 export const useCanvasLayout = (
     initialData: GraphData | null,
-    entryFile: string,
     visibleNodeIds: Set<string>
 ) => {
     const [layoutNodes, setLayoutNodes] = useState<CanvasNode[]>([]);
@@ -24,20 +23,19 @@ export const useCanvasLayout = (
 
     const fullNodeMap = useMemo(() => {
         if (!initialData) return new Map<string, VariableNode>();
-        const map = new Map<string, VariableNode>(initialData.nodes.map(n => [n.id, n]));
-        return map;
+        // All files are already parsed by parseProject
+        return new Map<string, VariableNode>(initialData.nodes.map(n => [n.id, n]));
     }, [initialData]);
 
     // --- Simple Layout: Just display visible nodes without auto-positioning ---
     useEffect(() => {
-        if (fullNodeMap.size === 0) return;
-
         // Create canvas nodes for all visible nodes
         const canvasNodes: CanvasNode[] = [];
         const links: {source: string, target: string}[] = [];
 
         visibleNodeIds.forEach(nodeId => {
             const node = fullNodeMap.get(nodeId);
+
             if (node && node.codeSnippet && node.codeSnippet.trim() !== '') {
                 canvasNodes.push({
                     ...node,

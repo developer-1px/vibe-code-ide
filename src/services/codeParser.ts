@@ -9,6 +9,6 @@
 import { GraphData } from '../entities/SourceFileNode';
 import { parseProject as parseProjectTS } from './tsParser';
 
-export const parseProject = (files: Record<string, string>, entryFile: string): GraphData => {
+export const parseProject = (files: Record<string, string>, entryFile?: string): GraphData => {
     return parseProjectTS(files, entryFile);
 };

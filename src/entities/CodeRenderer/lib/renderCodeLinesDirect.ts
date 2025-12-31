@@ -364,7 +364,13 @@ export function renderCodeLinesDirect(node: CanvasNode, files: Record<string, st
   const sourceFile = (node as any).sourceFile as ts.SourceFile | undefined;
 
   if (!sourceFile) {
-    return [];
+    // Fallback: 단순 텍스트 렌더링 (orphaned files without AST)
+    console.log(`[renderCodeLinesDirect] No sourceFile for ${node.id}, using fallback text rendering`);
+    return lines.map((lineText, idx) => ({
+      num: startLineNum + idx,
+      segments: [{ text: lineText, kinds: ['text'] }],
+      hasInput: false
+    }));
   }
 
   const nodeShortId = extractShortId(nodeId);

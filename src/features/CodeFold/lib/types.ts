@@ -8,6 +8,7 @@ export interface FoldInfo {
   foldEnd: number;             // 접기 끝 라인 번호
   foldType?: 'statement-block' | 'jsx-children' | 'jsx-fragment' | 'import-block';
   tagName?: string;            // JSX인 경우 태그 이름
+  depth?: number;              // 블록의 중첩 깊이 (1: import, 2: 최상위 블록, 3+: 중첩 블록)
 }
 
 export interface FoldPlaceholder {

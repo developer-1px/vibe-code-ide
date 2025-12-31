@@ -2,7 +2,7 @@
 import React from 'react';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import { getTokenStyle } from '../../../entities/SourceFileNode/lib/styleUtils';
-import { visibleNodeIdsAtom, fullNodeMapAtom, lastExpandedIdAtom, entryFileAtom, activeLocalVariablesAtom, cardPositionsAtom, transformAtom } from '../../../store/atoms';
+import { visibleNodeIdsAtom, fullNodeMapAtom, lastExpandedIdAtom, activeLocalVariablesAtom, cardPositionsAtom, transformAtom } from '../../../store/atoms';
 import { pruneDetachedNodes } from '../../PipelineCanvas/utils';
 
 const CodeCardToken = ({text, tokenId, nodeId, lineHasFocusedVariable }: {
@@ -13,7 +13,6 @@ const CodeCardToken = ({text, tokenId, nodeId, lineHasFocusedVariable }: {
 }) => {
   const [visibleNodeIds, setVisibleNodeIds] = useAtom(visibleNodeIdsAtom);
   const fullNodeMap = useAtomValue(fullNodeMapAtom);
-  const entryFile = useAtomValue(entryFileAtom);
   const setLastExpandedId = useSetAtom(lastExpandedIdAtom);
   const activeLocalVariables = useAtomValue(activeLocalVariablesAtom);
   const setCardPositions = useSetAtom(cardPositionsAtom);
@@ -51,7 +50,7 @@ const CodeCardToken = ({text, tokenId, nodeId, lineHasFocusedVariable }: {
         next.delete(tokenId);
 
         // When turning off, remove any nodes that are now "stranded" (unreachable)
-        return pruneDetachedNodes(next, fullNodeMap, entryFile, null);
+        return pruneDetachedNodes(next, fullNodeMap, null, null);
       } else {
         // TOGGLE ON (Add only this node, no recursive expansion)
         next.add(tokenId);

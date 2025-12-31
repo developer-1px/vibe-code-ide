@@ -11,9 +11,12 @@ export const SearchInput: React.FC = () => {
   const [query, setQuery] = useAtom(searchQueryAtom);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  // Auto-focus on mount
+  // Auto-focus and select on mount
   useEffect(() => {
-    inputRef.current?.focus();
+    if (inputRef.current) {
+      inputRef.current.focus();
+      inputRef.current.select();
+    }
   }, []);
 
   return (

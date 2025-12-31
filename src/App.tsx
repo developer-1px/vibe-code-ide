@@ -1,57 +1,40 @@
 
-import React, { useEffect, useRef } from 'react';
-import { Provider, useSetAtom } from 'jotai';
+import React, { useEffect } from 'react';
+import { Provider, useAtomValue, useSetAtom } from 'jotai';
 import { HotkeysProvider } from 'react-hotkeys-hook';
 import Sidebar from './widgets/Sidebar/Sidebar';
 import Header from './widgets/MainContent/Header.tsx';
 import PipelineCanvas from './widgets/PipelineCanvas.tsx';
 import LeftSideToolbar from './widgets/LeftSideToolbar/LeftSideToolbar';
 import JotaiDevTools from './widgets/JotaiDevTools/JotaiDevTools';
-import { isSidebarOpenAtom, searchModalOpenAtom } from './store/atoms';
-import { useGraphDataInit } from './hooks/useGraphData';
 import { UnifiedSearchModal } from './features/UnifiedSearch/UnifiedSearchModal';
+import { KeyboardShortcuts } from './features/KeyboardShortcuts';
 import { store } from './store/store';
+import { filesAtom, graphDataAtom, parseErrorAtom } from './store/atoms';
+import { parseProject } from './services/codeParser';
 
 const AppContent: React.FC = () => {
-  const setIsSidebarOpen = useSetAtom(isSidebarOpenAtom);
-  const setSearchModalOpen = useSetAtom(searchModalOpenAtom);
+  // Parse project when files change
+  const files = useAtomValue(filesAtom);
+  const setGraphData = useSetAtom(graphDataAtom);
+  const setParseError = useSetAtom(parseErrorAtom);
 
-  // Track Shift key double-tap for search modal
-  const lastShiftPressRef = useRef<number>(0);
-
-  // Initialize and parse graph data (stores in atoms)
-  useGraphDataInit();
-
-  // Toggle Sidebar Shortcut
   useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === '\\') {
-        e.preventDefault();
-        setIsSidebarOpen(prev => !prev);
-      }
-
-      // Shift+Shift to open search modal
-      if (e.key === 'Shift') {
-        const now = Date.now();
-        const timeSinceLastPress = now - lastShiftPressRef.current;
-
-        if (timeSinceLastPress < 300) {
-          // Double-tap detected
-          e.preventDefault();
-          setSearchModalOpen(true);
-          lastShiftPressRef.current = 0; // Reset
-        } else {
-          lastShiftPressRef.current = now;
-        }
-      }
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [setIsSidebarOpen, setSearchModalOpen]);
+    try {
+      const parsedData = parseProject(files);
+      setParseError(null);
+      setGraphData(parsedData);
+    } catch (e: any) {
+      console.warn("Project Parse Error:", e);
+      setParseError(e.message || "Syntax Error");
+    }
+  }, [files, setGraphData, setParseError]);
 
   return (
     <div className="flex h-screen w-screen overflow-hidden bg-vibe-dark text-slate-200 font-sans">
+      {/* 키보드 단축키 관리 */}
+      <KeyboardShortcuts />
+
       {/* Left Icon Tab Bar */}
       <LeftSideToolbar />
 

@@ -7,7 +7,7 @@ import { renderCodeLinesDirect } from '../../entities/CodeRenderer/lib/renderCod
 import { renderVueFile } from '../../entities/CodeRenderer/lib/renderVueFile';
 import type { CodeLine } from '../../entities/CodeRenderer/model/types';
 import { getNodeBorderColor } from '../../entities/SourceFileNode/lib/styleUtils';
-import { extractImportFoldLines, calculateFoldRanges } from '../../features/CodeFold/lib';
+import { getFoldableLinesByMaxDepth, calculateFoldRanges } from '../../features/CodeFold/lib';
 
 // UI Components
 import CodeCardHeader from './ui/CodeCardHeader';
@@ -34,24 +34,22 @@ const CodeCard = ({ node }: { node: CanvasNode }) => {
   const foldedLinesMap = useAtomValue(foldedLinesAtom);
   const setFoldedLinesMap = useSetAtom(foldedLinesAtom);
 
-  // Import 블록 자동 접기 (초기 렌더링 시 한 번만)
+  // Import만 접기 (초기 렌더링 시 한 번만) - Level 0 (import only folded)
   useEffect(() => {
     // 이미 fold 상태가 설정되어 있으면 초기화하지 않음
     if (foldedLinesMap.has(node.id)) {
       return;
     }
 
-    const importFoldLines = extractImportFoldLines(processedLines);
-
-    if (importFoldLines.length > 0) {
-      setFoldedLinesMap(prev => {
-        const next = new Map(prev);
-        const nodeFolds = new Set<number>();
-        importFoldLines.forEach(lineNum => nodeFolds.add(lineNum));
-        next.set(node.id, nodeFolds);
-        return next;
-      });
-    }
+    // depth 1 (import)만 접기 (Level 0)
+    const linesToFold = getFoldableLinesByMaxDepth(processedLines, 1);
+    setFoldedLinesMap(prev => {
+      const next = new Map(prev);
+      const nodeFolds = new Set<number>();
+      linesToFold.forEach(lineNum => nodeFolds.add(lineNum));
+      next.set(node.id, nodeFolds);
+      return next;
+    });
   }, [node.id, processedLines, foldedLinesMap, setFoldedLinesMap]);
 
   // Fold ranges 계산 (CodeCardLine에서 사용)
@@ -86,14 +84,22 @@ const CodeCard = ({ node }: { node: CanvasNode }) => {
       {/* Code Lines (script가 있을 때만) */}
       {processedLines.length > 0 && (
         <div className="flex flex-col bg-[#0b1221] py-2">
-          {processedLines.map((line) => (
-            <CodeCardLine
-              key={line.num}
-              line={line}
-              node={node}
-              foldRanges={foldRanges}
-            />
-          ))}
+          {processedLines.map((line) => {
+            // Check for duplicate line numbers
+            const duplicates = processedLines.filter(l => l.num === line.num);
+            if (duplicates.length > 1) {
+              console.warn(`[CodeCard] Duplicate line number detected: ${line.num} in node ${node.id}`, duplicates);
+            }
+
+            return (
+              <CodeCardLine
+                key={`${node.id}-line-${line.num}`}
+                line={line}
+                node={node}
+                foldRanges={foldRanges}
+              />
+            );
+          })}
         </div>
       )}
 

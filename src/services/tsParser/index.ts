@@ -129,14 +129,13 @@ function extractDeclarations(
 }
 
 /**
- * 프로젝트 파싱 메인 함수
+ * 프로젝트 파싱 메인 함수 - 모든 파일을 단순히 파싱
  */
 export function parseProject(
   files: Record<string, string>,
-  entryFile: string
+  _entryFile?: string // Deprecated, kept for backwards compatibility
 ): GraphData {
   const nodes: SourceFileNode[] = [];
-  const processedFiles = new Set<string>();
 
   // ✅ Language Service 생성 (identifier 정의 위치 파악용)
   const languageService = createLanguageService(files);
@@ -147,25 +146,18 @@ export function parseProject(
     return { nodes: [] };
   }
 
-  // ✅ 간단한 파일 처리: 각 파일 = 1개 노드
-  function processFile(filePath: string): void {
-    if (processedFiles.has(filePath)) return;
-
+  // ✅ 모든 파일을 단순히 순회하며 파싱
+  Object.keys(files).forEach(filePath => {
     const content = files[filePath];
     if (!content) return;
 
     // .d.ts 제외
     if (filePath.endsWith('.d.ts')) return;
 
-    processedFiles.add(filePath);
-
     // ✅ 파일을 하나의 노드로 생성
     const fileName = filePath.split('/').pop() || filePath;
     const fileNameWithoutExt = fileName.replace(/\.(tsx?|jsx?|vue)$/, '');
 
-    let node: SourceFileNode;
-
-    // ✅ TypeScript로 import 및 identifier 추출
     try {
       const scriptKind = filePath.endsWith('.tsx') ? ts.ScriptKind.TSX :
                         filePath.endsWith('.jsx') ? ts.ScriptKind.JSX :
@@ -190,7 +182,7 @@ export function parseProject(
       // SourceFileNode 생성 (sourceFile 포함)
       const dependencies = getDependencies({ sourceFile, filePath, id: filePath } as any, files, resolvePath);
 
-      node = {
+      const node: SourceFileNode = {
         id: filePath,
         label: fileNameWithoutExt,
         filePath,
@@ -198,7 +190,7 @@ export function parseProject(
         codeSnippet: content,
         startLine: 1,
         sourceFile,
-        dependencies  // 캐싱
+        dependencies
       };
 
       nodes.push(node);
@@ -206,16 +198,12 @@ export function parseProject(
       // ✅ Extract functions and variables from this file
       extractDeclarations(sourceFile, filePath, nodes, parseContent);
 
-      // Import 재귀 처리
-      dependencies.forEach(dep => processFile(dep));
-
     } catch (error) {
       console.error(`❌ Error parsing ${filePath}:`, error);
     }
-  }
+  });
 
-  // Entry file부터 시작
-  processFile(entryFile);
+  console.log(`[parseProject] Parsed ${nodes.length} nodes from ${Object.keys(files).length} files`);
   return { nodes };
 }
 

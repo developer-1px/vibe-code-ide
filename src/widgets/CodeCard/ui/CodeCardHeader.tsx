@@ -1,36 +1,25 @@
-import React, { useMemo, useState, useRef, useEffect } from 'react';
+import React, { useMemo } from 'react';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import {
   Terminal as IconTerminal, Box as IconBox, FunctionSquare as IconFunctionSquare, LayoutTemplate as IconLayoutTemplate, Database as IconDatabase, Link2 as IconLink2,
-  PlayCircle as IconPlayCircle, BoxSelect as IconBoxSelect, ChevronsDown as IconChevronsDown, ChevronsUp as IconChevronsUp,
-  Calculator as IconCalculator, Shield as IconShield, Zap as IconZap, RefreshCw as IconRefreshCw, AlertCircle as IconAlertCircle, GripVertical as IconGripVertical,
-  X as IconX
+  PlayCircle as IconPlayCircle, BoxSelect as IconBoxSelect,
+  Calculator as IconCalculator, Shield as IconShield, Zap as IconZap, RefreshCw as IconRefreshCw, AlertCircle as IconAlertCircle,
+  Maximize as IconMaximize, AlignJustify as IconCompact, Minimize as IconMinimize
 } from 'lucide-react';
 import { CanvasNode } from '../../../entities/CanvasNode';
-import { visibleNodeIdsAtom, fullNodeMapAtom, lastExpandedIdAtom, cardPositionsAtom, transformAtom, activeFileAtom, activeLocalVariablesAtom, filesAtom, entryFileAtom } from '../../../store/atoms';
-import { checkAllDepsExpanded, expandDependenciesRecursive, collapseDependencies, getFirstDependency } from '../../../entities/SourceFileNode/model/nodeVisibility';
+import { visibleNodeIdsAtom, fullNodeMapAtom, activeLocalVariablesAtom, filesAtom, foldedLinesAtom } from '../../../store/atoms';
 import { renderCodeLinesDirect } from '../../../entities/CodeRenderer/lib/renderCodeLinesDirect';
 import { renderVueFile } from '../../../entities/CodeRenderer/lib/renderVueFile';
 import { pruneDetachedNodes } from '../../PipelineCanvas/utils';
+import { getFoldableLinesByMaxDepth, getFoldableLinesExcludingDepth } from '../../../features/CodeFold/lib';
 
 const CodeCardHeader = ({ node }: { node: CanvasNode }) => {
   const [visibleNodeIds, setVisibleNodeIds] = useAtom(visibleNodeIdsAtom);
   const fullNodeMap = useAtomValue(fullNodeMapAtom);
-  const setLastExpandedId = useSetAtom(lastExpandedIdAtom);
-  const setCardPositions = useSetAtom(cardPositionsAtom);
-  const transform = useAtomValue(transformAtom);
   const setActiveLocalVariables = useSetAtom(activeLocalVariablesAtom);
   const activeLocalVariables = useAtomValue(activeLocalVariablesAtom);
   const files = useAtomValue(filesAtom);
-  const entryFile = useAtomValue(entryFileAtom);
-
-  const [isDragging, setIsDragging] = useState(false);
-  const dragStartRef = useRef<{ x: number; y: number; startOffset: { x: number; y: number } } | null>(null);
-
-  // Check if all dependencies are expanded
-  const allDepsExpanded = useMemo(() => {
-    return checkAllDepsExpanded(node.dependencies, visibleNodeIds);
-  }, [node.dependencies, visibleNodeIds]);
+  const [foldedLinesMap, setFoldedLinesMap] = useAtom(foldedLinesAtom);
 
   // Focused identifiers for this node
   const focusedVariables = activeLocalVariables.get(node.id);
@@ -111,85 +100,97 @@ const CodeCardHeader = ({ node }: { node: CanvasNode }) => {
           next.delete(filePath);
         }
 
-        return pruneDetachedNodes(next, fullNodeMap, entryFile, null);
+        return pruneDetachedNodes(next, fullNodeMap, null, null);
       });
     }
   };
 
-  const showToggleButton = node.dependencies.length > 0;
+  // Determine current fold level based on what's folded
+  const foldedLines = foldedLinesMap.get(node.id) || new Set<number>();
 
-  const handleToggleAll = (e: React.MouseEvent) => {
+  const currentFoldLevel = useMemo(() => {
+    const allFoldableLines = getFoldableLinesByMaxDepth(processedLines, 999);
+    const depth1Lines = getFoldableLinesByMaxDepth(processedLines, 1); // import only
+    const depth2ExcludedLines = getFoldableLinesExcludingDepth(processedLines, 2);
+
+    // 실제로 접혀있는 라인 수 계산
+    const allFoldedCount = allFoldableLines.filter(line => foldedLines.has(line)).length;
+    const depth1FoldedCount = depth1Lines.filter(line => foldedLines.has(line)).length;
+    const depth2ExcludedFoldedCount = depth2ExcludedLines.filter(line => foldedLines.has(line)).length;
+
+    console.log(`[${node.label}] all: ${allFoldedCount}/${allFoldableLines.length}, depth1: ${depth1FoldedCount}/${depth1Lines.length}, excludeDepth2: ${depth2ExcludedFoldedCount}/${depth2ExcludedLines.length}, total folded: ${foldedLines.size}`);
+
+    // Level 2 (all): 모든 foldable 라인이 접혀있음
+    if (allFoldedCount === allFoldableLines.length && allFoldableLines.length > 0) {
+      return 2;
+    }
+
+    // Level 1: depth 2를 제외한 모든 라인이 접혀있음
+    if (depth2ExcludedFoldedCount === depth2ExcludedLines.length && depth2ExcludedLines.length > 0) {
+      return 1;
+    }
+
+    // Level 0: depth 1 (import)만 접혀있음
+    if (depth1FoldedCount === depth1Lines.length && depth1Lines.length > 0 && allFoldedCount === depth1FoldedCount) {
+      return 0;
+    }
+
+    // 부분적으로 접힘 - 기본값 0
+    return 0;
+  }, [processedLines, foldedLines, node.label]);
+
+  // Toggle fold level in cycle: 2 → 1 → 0 → 2
+  const toggleFoldLevel = (e: React.MouseEvent) => {
     e.stopPropagation();
-    if (node.dependencies.length === 0) return;
+    if (processedLines.length === 0) return;
 
-    setVisibleNodeIds(prev => {
-      if (!allDepsExpanded) {
-        // Expand all dependencies recursively
-        const newVisible = expandDependenciesRecursive(node.id, fullNodeMap, prev);
-        // Center on the first expanded dependency
-        const firstDep = getFirstDependency(node.id, fullNodeMap);
-        if (firstDep) {
-          setLastExpandedId(firstDep);
-        }
+    const nextLevel = currentFoldLevel === 2 ? 1 : currentFoldLevel === 1 ? 0 : 2;
+    console.log(`[${node.label}] Cycling fold level: ${currentFoldLevel} → ${nextLevel}`);
 
-        return newVisible;
-      } else {
-        // Collapse dependencies (keep nodes reachable from other paths)
-        return collapseDependencies(node.id, fullNodeMap, prev);
+    setFoldedLinesMap(prev => {
+      const next = new Map(prev);
+
+      if (nextLevel === 0) {
+        // Level 0: import만 접기, 나머지는 펴기
+        const linesToFold = getFoldableLinesByMaxDepth(processedLines, 1); // depth 1 (import only)
+        console.log(`[${node.label}] Level 0: Fold imports only:`, linesToFold);
+        const nodeFolds = new Set<number>();
+        linesToFold.forEach(lineNum => nodeFolds.add(lineNum));
+        next.set(node.id, nodeFolds);
+      } else if (nextLevel === 1) {
+        // Level 1: 1개씩만 더 펴기 = depth 2만 펼치고 나머지 접기 (import + 중첩 블록 접기)
+        const linesToFold = getFoldableLinesExcludingDepth(processedLines, 2);
+        console.log(`[${node.label}] Level 1: Fold all except depth 2:`, linesToFold);
+        const nodeFolds = new Set<number>();
+        linesToFold.forEach(lineNum => nodeFolds.add(lineNum));
+        next.set(node.id, nodeFolds);
+      } else if (nextLevel === 2) {
+        // Level 2: 다 접기 - 모든 foldable 라인 접기
+        const linesToFold = getFoldableLinesByMaxDepth(processedLines, 999);
+        console.log(`[${node.label}] Level 2: Fold all:`, linesToFold);
+        const nodeFolds = new Set<number>();
+        linesToFold.forEach(lineNum => nodeFolds.add(lineNum));
+        next.set(node.id, nodeFolds);
       }
+
+      console.log(`[${node.label}] New fold state size:`, next.get(node.id)?.size);
+      return next;
     });
   };
 
-  // Drag handlers
-  const handleDragStart = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    e.preventDefault();
-    setIsDragging(true);
-
-    // Get current card position offset
-    setCardPositions(prev => {
-      const currentOffset = prev.get(node.id) || { x: 0, y: 0 };
-      dragStartRef.current = {
-        x: e.clientX,
-        y: e.clientY,
-        startOffset: currentOffset
-      };
-      return prev;
-    });
+  // Get icon based on current fold level
+  const getFoldIcon = () => {
+    if (currentFoldLevel === 2) return <IconMinimize className="w-3.5 h-3.5" />;
+    if (currentFoldLevel === 1) return <IconCompact className="w-3.5 h-3.5" />;
+    return <IconMaximize className="w-3.5 h-3.5" />;
   };
 
-  useEffect(() => {
-    if (!isDragging) return;
-
-    const handleMouseMove = (e: MouseEvent) => {
-      if (!dragStartRef.current) return;
-
-      const dx = (e.clientX - dragStartRef.current.x) / transform.k;
-      const dy = (e.clientY - dragStartRef.current.y) / transform.k;
-
-      setCardPositions(prev => {
-        const newMap = new Map(prev);
-        newMap.set(node.id, {
-          x: dragStartRef.current!.startOffset.x + dx,
-          y: dragStartRef.current!.startOffset.y + dy
-        });
-        return newMap;
-      });
-    };
-
-    const handleMouseUp = () => {
-      setIsDragging(false);
-      dragStartRef.current = null;
-    };
-
-    document.addEventListener('mousemove', handleMouseMove);
-    document.addEventListener('mouseup', handleMouseUp);
-
-    return () => {
-      document.removeEventListener('mousemove', handleMouseMove);
-      document.removeEventListener('mouseup', handleMouseUp);
-    };
-  }, [isDragging, node.id, setCardPositions, transform.k]);
+  // Get tooltip based on current fold level
+  const getFoldTooltip = () => {
+    if (currentFoldLevel === 2) return "Minimal - 다 접기 → Compact";
+    if (currentFoldLevel === 1) return "Compact - 최상위 블록만 펼침 → Maximize";
+    return "Maximize - Import만 접기 → Minimal";
+  };
 
   const getIcon = () => {
     switch (node.type) {
@@ -221,28 +222,14 @@ const CodeCardHeader = ({ node }: { node: CanvasNode }) => {
   return (
     <div className="px-3 py-1.5 border-b border-white/5 flex justify-between items-center bg-black/20">
       <div className="flex items-center gap-2 overflow-hidden">
-        {/* Drag Handle */}
-        <div
-          onMouseDown={handleDragStart}
-          className={`p-1 rounded hover:bg-white/10 transition-colors ${isDragging ? 'cursor-grabbing' : 'cursor-grab'} card-drag-handle`}
-          data-drag-handle="true"
-          title="Drag to move card"
-        >
-          <IconGripVertical className="w-3.5 h-3.5 text-slate-400 hover:text-slate-200" />
-        </div>
-
-        {/* Toggle All Dependencies Button */}
-        {showToggleButton && (
+        {/* Fold Level Toggle Button */}
+        {processedLines.length > 0 && (
           <button
-            onClick={handleToggleAll}
-            className="p-1 rounded hover:bg-white/10 transition-colors group/toggle"
-            title={allDepsExpanded ? "Collapse all dependencies" : "Expand all dependencies"}
+            onClick={toggleFoldLevel}
+            className="p-1 rounded transition-colors text-slate-400 hover:bg-white/10 hover:text-slate-200"
+            title={getFoldTooltip()}
           >
-            {allDepsExpanded ? (
-              <IconChevronsUp className="w-3.5 h-3.5 text-slate-400 group-hover/toggle:text-slate-200" />
-            ) : (
-              <IconChevronsDown className="w-3.5 h-3.5 text-slate-400 group-hover/toggle:text-slate-200" />
-            )}
+            {getFoldIcon()}
           </button>
         )}
         {getIcon()}

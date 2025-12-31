@@ -1,12 +1,11 @@
 import React, { useRef } from 'react';
 import { useSetAtom } from 'jotai';
 import { Upload as IconUpload } from 'lucide-react';
-import { filesAtom, activeFileAtom, entryFileAtom } from '../store/atoms';
+import { filesAtom, activeFileAtom } from '../store/atoms';
 
 const UploadFolderButton: React.FC = () => {
   const setFiles = useSetAtom(filesAtom);
   const setActiveFile = useSetAtom(activeFileAtom);
-  const setEntryFile = useSetAtom(entryFileAtom);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFolderSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -33,13 +32,12 @@ const UploadFolderButton: React.FC = () => {
     if (Object.keys(uploadedFiles).length > 0) {
       setFiles(uploadedFiles);
 
-      // Try to find a default entry file
+      // Set the first file as active
       const allFiles = Object.keys(uploadedFiles);
       if (allFiles.length > 0) {
         const entry = allFiles.find(f => f.includes('Index') || f.includes('index') || f.includes('App') || f.includes('main')) ||
                       allFiles.find(f => f.endsWith('.vue') || f.endsWith('.tsx') || f.endsWith('.jsx')) ||
                       allFiles[0];
-        setEntryFile(entry);
         setActiveFile(entry);
       }
     } else {

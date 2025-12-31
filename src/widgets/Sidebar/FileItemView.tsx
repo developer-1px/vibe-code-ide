@@ -12,7 +12,6 @@ interface FolderNode {
 interface FileItemViewProps {
   node: FolderNode;
   depth: number;
-  isEntry: boolean;
   isFocused: boolean;
   onFileClick: (filePath: string) => void;
   onFileFocus: (filePath: string) => void;
@@ -38,7 +37,7 @@ const getFileIcon = (fileName: string) => {
   }
 };
 
-const FileItemView: React.FC<FileItemViewProps> = ({ node, depth, isEntry, isFocused, onFileClick, onFileFocus }) => {
+const FileItemView: React.FC<FileItemViewProps> = ({ node, depth, isFocused, onFileClick, onFileFocus }) => {
   // 파일은 폴더보다 한 단계 더 들여쓰기 (chevron 공간 + 추가 indent)
   const paddingLeft = depth * 12 + 8 + 16;
   const { Icon: FileIcon, color: iconColor } = getFileIcon(node.filePath!);
@@ -62,16 +61,14 @@ const FileItemView: React.FC<FileItemViewProps> = ({ node, depth, isEntry, isFoc
       onClick={handleClick}
       onDoubleClick={handleDoubleClick}
       className={`flex items-center gap-1.5 py-0.5 px-2 text-[11px] cursor-pointer transition-colors border-l-2 ${
-        isEntry
-          ? 'text-vibe-accent border-vibe-accent bg-slate-700/30'
-          : isFocused
+        isFocused
           ? 'text-slate-200 border-blue-500 bg-blue-900/20'
           : 'text-slate-400 border-transparent'
       }`}
       style={{ paddingLeft: `${paddingLeft}px` }}
     >
-      <FileIcon className={`w-2.5 h-2.5 flex-shrink-0 opacity-40 ${isEntry ? 'text-vibe-accent opacity-70' : isFocused ? 'text-blue-400 opacity-70' : iconColor}`} />
-      <span className={`font-medium truncate ${isEntry ? 'text-vibe-accent' : isFocused ? 'text-slate-200' : 'text-slate-400'}`}>
+      <FileIcon className={`w-2.5 h-2.5 flex-shrink-0 opacity-40 ${isFocused ? 'text-blue-400 opacity-70' : iconColor}`} />
+      <span className={`font-medium truncate ${isFocused ? 'text-slate-200' : 'text-slate-400'}`}>
         {node.name}
       </span>
     </div>

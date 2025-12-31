@@ -64,3 +64,41 @@ export function getFoldedCount(line: CodeLine): number | undefined {
   if (!line.foldInfo) return undefined;
   return line.foldInfo.foldEnd - line.foldInfo.foldStart;
 }
+
+/**
+ * Get all foldable line numbers up to maxDepth
+ * @param lines - All code lines
+ * @param maxDepth - Maximum depth to fold (1: import only, 2: import + top-level blocks, etc.)
+ * @returns Array of line numbers to fold
+ */
+export function getFoldableLinesByMaxDepth(
+  lines: CodeLine[],
+  maxDepth: number
+): number[] {
+  return lines
+    .filter(line =>
+      line.foldInfo?.isFoldable &&
+      line.foldInfo.depth !== undefined &&
+      line.foldInfo.depth <= maxDepth
+    )
+    .map(line => line.num);
+}
+
+/**
+ * Get all foldable line numbers excluding specific depth
+ * @param lines - All code lines
+ * @param excludeDepth - Depth to exclude from folding (will be unfolded)
+ * @returns Array of line numbers to fold
+ */
+export function getFoldableLinesExcludingDepth(
+  lines: CodeLine[],
+  excludeDepth: number
+): number[] {
+  return lines
+    .filter(line =>
+      line.foldInfo?.isFoldable &&
+      line.foldInfo.depth !== undefined &&
+      line.foldInfo.depth !== excludeDepth
+    )
+    .map(line => line.num);
+}
