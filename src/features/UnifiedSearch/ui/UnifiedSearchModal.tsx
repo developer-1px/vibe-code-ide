@@ -15,7 +15,7 @@ import {
   fullNodeMapAtom,
   symbolMetadataAtom,
 } from '../../../store/atoms';
-import { extractAllSearchableItems } from '../../../services/symbolExtractor';
+import { extractAllSearchableItems } from '../lib/symbolExtractor';
 import { searchResultsFuzzy } from '../lib/searchService';
 import { SearchInput } from './SearchInput';
 import { SearchResults } from './SearchResults';

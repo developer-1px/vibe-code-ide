@@ -3,8 +3,8 @@
  */
 
 import * as ts from 'typescript';
-import type { VariableNode } from '../entities/SourceFileNode';
-import type { SearchResult, SymbolMetadata } from '../store/atoms';
+import type { VariableNode } from '../../../entities/SourceFileNode';
+import type { SearchResult, SymbolMetadata } from '../model/types';
 
 /**
  * Extract all identifiers (usages) from a parsed source file
