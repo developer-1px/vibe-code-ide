@@ -199,8 +199,27 @@ export function extractAllSearchableItems(
   const totalFiles = fileCount + orphanedFileCount;
   console.log(`[extractAllSearchableItems] Total results: ${results.length} (${totalFiles} files [${fileCount} in graph + ${orphanedFileCount} orphaned] + ${folderSet.size} folders + ${symbolCount} symbols + usages)`);
 
+  // Remove duplicate usages (same file + same line as declaration)
+  const declarationKeys = new Set<string>();
+  results.forEach(item => {
+    if (item.type === 'symbol' && item.nodeType !== 'usage' && item.lineNumber) {
+      declarationKeys.add(`${item.filePath}:${item.lineNumber}`);
+    }
+  });
+
+  const deduped = results.filter(item => {
+    // Keep non-usages
+    if (item.type !== 'symbol' || item.nodeType !== 'usage') return true;
+
+    // Remove usage if same file+line as declaration
+    const key = `${item.filePath}:${item.lineNumber}`;
+    return !declarationKeys.has(key);
+  });
+
+  console.log(`[extractAllSearchableItems] After deduplication: ${deduped.length} (removed ${results.length - deduped.length} duplicate usages)`);
+
   // Sort by type priority: file > folder > symbol, then alphabetically
-  return results.sort((a, b) => {
+  return deduped.sort((a, b) => {
     // Priority: file (0) > folder (1) > symbol (2)
     const typeOrder = { file: 0, folder: 1, symbol: 2 };
     const priorityA = typeOrder[a.type] ?? 3;
