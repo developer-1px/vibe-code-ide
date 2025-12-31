@@ -67,7 +67,8 @@ export function buildSegmentStyle(
 
   // 주석
   if (primaryKind === 'comment') {
-    const textColor = hasFocusMode && !isFocused ? 'text-slate-500' : 'text-slate-400/85';
+    // Focus mode일 때는 주석을 더 밝게 표시
+    const textColor = hasFocusMode ? 'text-slate-400' : 'text-slate-400/85';
     return {
       className: `${textColor} italic select-text`,
       clickable: false
