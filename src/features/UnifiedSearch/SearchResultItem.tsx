@@ -21,16 +21,12 @@ export const SearchResultItem = forwardRef<HTMLDivElement, SearchResultItemProps
 
       // Symbol icons based on node type
       switch (result.nodeType) {
-        case 'pure-function':
-          return <Calculator className="w-2.5 h-2.5 text-cyan-400" />;
-        case 'immutable-data':
-          return <Shield className="w-2.5 h-2.5 text-blue-400" />;
-        case 'computed':
-          return <Code2 className="w-2.5 h-2.5 text-sky-400" />;
-        case 'state-ref':
-          return <Database className="w-2.5 h-2.5 text-amber-400" />;
-        case 'effect-action':
-          return <Zap className="w-2.5 h-2.5 text-red-400" />;
+        case 'function':
+          return <Code2 className="w-2.5 h-2.5 text-cyan-400" />;
+        case 'variable':
+          return <Box className="w-2.5 h-2.5 text-amber-400" />;
+        case 'file':
+          return <File className="w-2.5 h-2.5 text-blue-400" />;
         default:
           return <Box className="w-2.5 h-2.5 text-slate-400" />;
       }
@@ -55,23 +51,41 @@ export const SearchResultItem = forwardRef<HTMLDivElement, SearchResultItemProps
           {getIcon()}
         </div>
 
-        {/* Name and Path */}
+        {/* Name and Metadata */}
         <div className="flex-1 min-w-0">
-          <div className="text-[11px] text-slate-100 font-mono truncate">
+          {/* Name */}
+          <div className="text-[11px] text-slate-100 font-mono font-semibold truncate">
             {result.name}
           </div>
-          <div className="text-[9px] text-slate-500 font-mono truncate">
-            {result.filePath}
-            {result.lineNumber && ` :${result.lineNumber}`}
-          </div>
+          {/* Type Info */}
+          {result.typeInfo && (
+            <div className="text-[9px] text-cyan-400/70 font-mono truncate">
+              {result.typeInfo}
+            </div>
+          )}
+          {/* Code Snippet */}
+          {result.codeSnippet && (
+            <div className="text-[9px] text-slate-600 font-mono truncate">
+              {result.codeSnippet}
+            </div>
+          )}
         </div>
 
-        {/* Type Badge */}
-        <div className="flex-shrink-0">
-          <span className="text-[9px] uppercase tracking-wider bg-white/5 border border-white/10 px-1.5 py-0.5 rounded text-slate-400 font-mono">
-            {getTypeLabel()}
-          </span>
-        </div>
+        {/* File and Line - Only show for symbols */}
+        {result.type === 'symbol' && (
+          <div className="flex-shrink-0 flex flex-col gap-1 items-end">
+            <span className="text-[9px] text-slate-500 font-mono">
+              {result.filePath.split('/').pop()}
+              {result.lineNumber && `:${result.lineNumber}`}
+            </span>
+            {/* Usage Count */}
+            {result.usageCount !== undefined && result.usageCount > 0 && (
+              <span className="text-[8px] bg-vibe-accent/10 border border-vibe-accent/30 px-1.5 py-0.5 rounded text-vibe-accent font-mono">
+                {result.usageCount} {result.usageCount === 1 ? 'usage' : 'usages'}
+              </span>
+            )}
+          </div>
+        )}
       </div>
     );
   }

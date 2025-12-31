@@ -47,6 +47,17 @@ export interface SearchResult {
   nodeId?: string; // For navigation
   lineNumber?: number;
   score: number;
+  // Enriched metadata
+  typeInfo?: string; // TypeScript type information from Language Service
+  codeSnippet?: string; // First line of code snippet
+  usageCount?: number; // Number of places this symbol is used
+}
+
+// Symbol metadata cache (extracted once after parsing)
+export interface SymbolMetadata {
+  typeInfo: string | null; // TS Language Service hover info
+  codeSnippet: string; // Definition line code snippet
+  usageCount: number; // Number of dependencies referencing this symbol
 }
 
 export const searchModalOpenAtom = atom(false);
@@ -54,6 +65,7 @@ export const searchQueryAtom = atom('');
 export const searchResultsAtom = atom([] as SearchResult[]);
 export const searchFocusedIndexAtom = atom(0);
 export const searchModeAtom = atom<'all' | 'files' | 'symbols'>('all');
+export const symbolMetadataAtom = atom(new Map<string, SymbolMetadata>());
 
 // Code Fold atoms - Re-export from feature
 export { foldedLinesAtom } from '../features/CodeFold/model/atoms';

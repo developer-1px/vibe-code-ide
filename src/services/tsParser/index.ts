@@ -13,6 +13,122 @@ import { getDependencies } from '../../entities/SourceFileNode/lib/getters';
 import { resolvePath } from './utils/pathResolver';
 
 /**
+ * Extract function and variable declarations from a source file
+ */
+function extractDeclarations(
+  sourceFile: ts.SourceFile,
+  filePath: string,
+  nodes: SourceFileNode[],
+  content: string
+): void {
+  function visit(node: ts.Node): void {
+    // Function declarations
+    if (ts.isFunctionDeclaration(node) && node.name) {
+      const name = node.name.text;
+      const start = node.getStart(sourceFile);
+      const end = node.getEnd();
+      const snippet = content.substring(start, end);
+      const lineAndChar = sourceFile.getLineAndCharacterOfPosition(start);
+
+      // Create a new sourceFile for this snippet to avoid offset issues
+      const snippetSourceFile = ts.createSourceFile(
+        `${filePath}::${name}`,
+        snippet,
+        ts.ScriptTarget.Latest,
+        true,
+        sourceFile.scriptKind
+      );
+
+      nodes.push({
+        id: `${filePath}::${name}`,
+        label: name,
+        filePath,
+        type: 'function',
+        codeSnippet: snippet,
+        startLine: lineAndChar.line + 1,
+        sourceFile: snippetSourceFile,
+        dependencies: []
+      });
+    }
+
+    // Variable declarations (const, let, var)
+    if (ts.isVariableStatement(node)) {
+      node.declarationList.declarations.forEach(decl => {
+        if (ts.isIdentifier(decl.name)) {
+          const name = decl.name.text;
+          const start = node.getStart(sourceFile);
+          const end = node.getEnd();
+          const snippet = content.substring(start, end);
+          const lineAndChar = sourceFile.getLineAndCharacterOfPosition(start);
+
+          // Determine type based on initializer
+          let type = 'variable';
+          if (decl.initializer) {
+            if (ts.isArrowFunction(decl.initializer) || ts.isFunctionExpression(decl.initializer)) {
+              type = 'function';
+            }
+          }
+
+          // Create a new sourceFile for this snippet to avoid offset issues
+          const snippetSourceFile = ts.createSourceFile(
+            `${filePath}::${name}`,
+            snippet,
+            ts.ScriptTarget.Latest,
+            true,
+            sourceFile.scriptKind
+          );
+
+          nodes.push({
+            id: `${filePath}::${name}`,
+            label: name,
+            filePath,
+            type,
+            codeSnippet: snippet,
+            startLine: lineAndChar.line + 1,
+            sourceFile: snippetSourceFile,
+            dependencies: []
+          });
+        }
+      });
+    }
+
+    // Arrow functions assigned to variables are handled above
+    // Class declarations
+    if (ts.isClassDeclaration(node) && node.name) {
+      const name = node.name.text;
+      const start = node.getStart(sourceFile);
+      const end = node.getEnd();
+      const snippet = content.substring(start, end);
+      const lineAndChar = sourceFile.getLineAndCharacterOfPosition(start);
+
+      // Create a new sourceFile for this snippet to avoid offset issues
+      const snippetSourceFile = ts.createSourceFile(
+        `${filePath}::${name}`,
+        snippet,
+        ts.ScriptTarget.Latest,
+        true,
+        sourceFile.scriptKind
+      );
+
+      nodes.push({
+        id: `${filePath}::${name}`,
+        label: name,
+        filePath,
+        type: 'function', // Treat classes as functions for now
+        codeSnippet: snippet,
+        startLine: lineAndChar.line + 1,
+        sourceFile: snippetSourceFile,
+        dependencies: []
+      });
+    }
+
+    ts.forEachChild(node, visit);
+  }
+
+  visit(sourceFile);
+}
+
+/**
  * 프로젝트 파싱 메인 함수
  */
 export function parseProject(
@@ -78,7 +194,7 @@ export function parseProject(
         id: filePath,
         label: fileNameWithoutExt,
         filePath,
-        type: 'module',
+        type: 'file',
         codeSnippet: content,
         startLine: 1,
         sourceFile,
@@ -86,6 +202,9 @@ export function parseProject(
       };
 
       nodes.push(node);
+
+      // ✅ Extract functions and variables from this file
+      extractDeclarations(sourceFile, filePath, nodes, parseContent);
 
       // Import 재귀 처리
       dependencies.forEach(dep => processFile(dep));

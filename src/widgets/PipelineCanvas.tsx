@@ -11,8 +11,9 @@ import CopyAllCodeButton from '../features/CopyAllCodeButton.tsx';
 import ResetViewButton from '../features/ResetViewButton.tsx';
 
 // Atoms & Hooks
-import { visibleNodeIdsAtom, entryFileAtom, selectedNodeIdsAtom, openedFilesAtom, fullNodeMapAtom } from '../store/atoms';
+import { visibleNodeIdsAtom, entryFileAtom, selectedNodeIdsAtom, openedFilesAtom, fullNodeMapAtom, symbolMetadataAtom, filesAtom } from '../store/atoms';
 import { useGraphData } from '../hooks/useGraphData';
+import { extractSymbolMetadata } from '../services/symbolMetadataExtractor';
 
 const PipelineCanvas: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -24,6 +25,16 @@ const PipelineCanvas: React.FC = () => {
   const { data: graphData } = useGraphData();
   const setSelectedNodeIds = useSetAtom(selectedNodeIdsAtom);
   const fullNodeMap = useAtomValue(fullNodeMapAtom);
+  const files = useAtomValue(filesAtom);
+  const setSymbolMetadata = useSetAtom(symbolMetadataAtom);
+
+  // Extract symbol metadata after parsing completes
+  useEffect(() => {
+    if (fullNodeMap.size > 0 && files && Object.keys(files).length > 0) {
+      const metadata = extractSymbolMetadata(fullNodeMap, files);
+      setSymbolMetadata(metadata);
+    }
+  }, [fullNodeMap, files, setSymbolMetadata]);
 
   // Sync openedFiles with visibleNodeIds - auto-add files when nodes are opened
   useEffect(() => {
@@ -50,15 +61,16 @@ const PipelineCanvas: React.FC = () => {
     }
   }, [visibleNodeIds, fullNodeMap, openedFiles, setOpenedFiles]);
 
-  // Expand visibleNodeIds to include all nodes from opened files
+  // Expand visibleNodeIds to include file nodes from opened files
+  // (but not individual function/variable nodes)
   const expandedVisibleNodeIds = useMemo(() => {
     if (!graphData || openedFiles.size === 0) return visibleNodeIds;
 
     const expanded = new Set(visibleNodeIds);
 
-    // Add all nodes from opened files
+    // Add only file-type nodes from opened files
     graphData.nodes.forEach(node => {
-      if (openedFiles.has(node.filePath)) {
+      if (openedFiles.has(node.filePath) && node.type === 'file') {
         expanded.add(node.id);
       }
     });

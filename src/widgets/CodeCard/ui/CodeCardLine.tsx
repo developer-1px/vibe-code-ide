@@ -110,8 +110,8 @@ const CodeCardLine = ({
         />
       </div>
 
-      {/* Output Port: Show for declaration keyword lines or definition lines */}
-      {(hasDeclarationKeyword || isDefinitionLine) && (
+      {/* Output Port: Show only for exported declarations */}
+      {hasDeclarationKeyword && (
         <div
           className="absolute right-0 top-3 -translate-y-1/2 w-2 h-2 rounded-full bg-slate-500 translate-x-[50%] ring-2 ring-vibe-panel"
           data-output-port={node.id}

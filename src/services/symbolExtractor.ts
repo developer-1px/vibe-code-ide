@@ -3,13 +3,12 @@
  */
 
 import type { VariableNode } from '../entities/SourceFileNode';
-import type { SearchResult } from '../store/atoms';
+import type { SearchResult, SymbolMetadata } from '../store/atoms';
 
 /**
  * Node types to exclude from symbol search
  */
 const EXCLUDED_NODE_TYPES = new Set([
-  'module', // Import/export nodes
   'template', // TEMPLATE_ROOT, JSX_ROOT, FILE_ROOT
 ]);
 
@@ -18,8 +17,10 @@ const EXCLUDED_NODE_TYPES = new Set([
  * Returns symbols sorted by name for consistent ordering
  */
 export function extractSearchableSymbols(
-  fullNodeMap: Map<string, VariableNode>
+  fullNodeMap: Map<string, VariableNode>,
+  symbolMetadata: Map<string, SymbolMetadata>
 ): SearchResult[] {
+  console.log('[extractSearchableSymbols] fullNodeMap size:', fullNodeMap.size, 'symbolMetadata size:', symbolMetadata.size);
   const symbols: SearchResult[] = [];
 
   fullNodeMap.forEach((node) => {
@@ -40,6 +41,9 @@ export function extractSearchableSymbols(
     // Extract symbol name from node label
     const name = node.label;
 
+    // Get metadata for this symbol
+    const metadata = symbolMetadata.get(node.id);
+
     symbols.push({
       id: `symbol-${node.id}`,
       type: 'symbol',
@@ -49,10 +53,15 @@ export function extractSearchableSymbols(
       nodeId: node.id,
       lineNumber: node.startLine,
       score: 0, // Will be calculated during search
+      // Enriched metadata
+      typeInfo: metadata?.typeInfo || undefined,
+      codeSnippet: metadata?.codeSnippet || undefined,
+      usageCount: metadata?.usageCount || 0,
     });
   });
 
   // Sort by name for consistent ordering
+  console.log('[extractSearchableSymbols] Extracted symbols:', symbols.length);
   return symbols.sort((a, b) => a.name.localeCompare(b.name));
 }
 

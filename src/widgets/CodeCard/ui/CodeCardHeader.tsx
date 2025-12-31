@@ -126,7 +126,6 @@ const CodeCardHeader = ({ node }: { node: CanvasNode }) => {
       if (!allDepsExpanded) {
         // Expand all dependencies recursively
         const newVisible = expandDependenciesRecursive(node.id, fullNodeMap, prev);
-
         // Center on the first expanded dependency
         const firstDep = getFirstDependency(node.id, fullNodeMap);
         if (firstDep) {

@@ -13,6 +13,7 @@ import {
   searchModeAtom,
   filesAtom,
   fullNodeMapAtom,
+  symbolMetadataAtom,
 } from '../../store/atoms';
 import { extractSearchableSymbols, extractSearchableFiles } from '../../services/symbolExtractor';
 import { searchResults } from '../../services/searchService';
@@ -28,13 +29,14 @@ export const UnifiedSearchModal: React.FC = () => {
 
   const files = useAtomValue(filesAtom);
   const fullNodeMap = useAtomValue(fullNodeMapAtom);
+  const symbolMetadata = useAtomValue(symbolMetadataAtom);
 
   // Extract all searchable items (files + symbols)
   const allSearchableItems = useMemo(() => {
     const fileResults = extractSearchableFiles(files);
-    const symbolResults = extractSearchableSymbols(fullNodeMap);
+    const symbolResults = extractSearchableSymbols(fullNodeMap, symbolMetadata);
     return [...fileResults, ...symbolResults];
-  }, [files, fullNodeMap]);
+  }, [files, fullNodeMap, symbolMetadata]);
 
   // Perform search and update results
   useEffect(() => {

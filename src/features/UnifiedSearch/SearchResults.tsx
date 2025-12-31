@@ -10,6 +10,7 @@ import {
   entryFileAtom,
   visibleNodeIdsAtom,
   lastExpandedIdAtom,
+  targetLineAtom,
 } from '../../store/atoms';
 import { SearchResultItem } from './SearchResultItem';
 import { openFile, openSymbol } from '../File';
@@ -22,9 +23,11 @@ export const SearchResults: React.FC<SearchResultsProps> = ({ onSelect }) => {
   const results = useAtomValue(searchResultsAtom);
   const focusedIndex = useAtomValue(searchFocusedIndexAtom);
   const entryFile = useAtomValue(entryFileAtom);
+  const visibleNodeIds = useAtomValue(visibleNodeIdsAtom);
   const setEntryFile = useSetAtom(entryFileAtom);
   const setVisibleNodeIds = useSetAtom(visibleNodeIdsAtom);
   const setLastExpandedId = useSetAtom(lastExpandedIdAtom);
+  const setTargetLine = useSetAtom(targetLineAtom);
 
   const containerRef = useRef<HTMLDivElement>(null);
   const focusedItemRef = useRef<HTMLDivElement>(null);
@@ -55,17 +58,22 @@ export const SearchResults: React.FC<SearchResultsProps> = ({ onSelect }) => {
         setEntryFile,
         setLastExpandedId,
       });
-    } else if (result.type === 'symbol' && result.nodeId) {
-      // Open symbol
-      openSymbol({
-        nodeId: result.nodeId,
-        setVisibleNodeIds,
+    } else if (result.type === 'symbol' && result.filePath && result.lineNumber) {
+      // Open the file containing this symbol
+      openFile({
+        filePath: result.filePath,
+        currentEntryFile: entryFile,
+        setEntryFile,
         setLastExpandedId,
       });
+
+      // Scroll to the definition line in the file
+      // Use filePath as nodeId since files are opened as single nodes
+      setTargetLine({ nodeId: result.filePath, lineNum: result.lineNumber });
     }
 
     onSelect();
-  }, [entryFile, setEntryFile, setVisibleNodeIds, setLastExpandedId, onSelect]);
+  }, [entryFile, setEntryFile, setLastExpandedId, setTargetLine, onSelect]);
 
   // Handle Enter key to select focused result
   useEffect(() => {
