@@ -67,9 +67,9 @@ export function buildSegmentStyle(
 
   // 주석
   if (primaryKind === 'comment') {
-    const textColor = hasFocusMode && !isFocused ? 'text-slate-600' : 'text-slate-500';
+    const textColor = hasFocusMode && !isFocused ? 'text-slate-600' : 'text-slate-400';
     return {
-      className: `${textColor} italic opacity-80 select-text`,
+      className: `${textColor} italic select-text`,
       clickable: false
     };
   }
