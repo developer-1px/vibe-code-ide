@@ -1,6 +1,6 @@
 /**
- * Default App Theme
- * Neutral gray-black tones for the entire application
+ * Default App Theme - Figma Dark inspired
+ * High contrast, modern dark theme with cyan/teal identity
  */
 
 import type { AppTheme } from '../types';
@@ -9,29 +9,43 @@ export const defaultAppTheme: AppTheme = {
   name: 'default',
 
   colors: {
-    // Main backgrounds - Semantic tokens
-    background: 'bg-theme-background',
-    canvas: 'bg-theme-canvas',
-    sidebar: 'bg-theme-sidebar',
-    header: 'bg-theme-header',
+    // Main backgrounds - Figma Dark style
+    background: '#0e0e0e',    // Very dark background
+    canvas: '#1e1e1e',        // Canvas/workspace
+    sidebar: '#1e1e1e',       // Sidebar
+    header: '#181818',        // Header (slightly darker)
+    panel: '#2c2c2c',         // Panel/card (lighter for hierarchy)
 
-    // Text colors - Semantic tokens
-    text: {
-      primary: 'text-theme-text-primary',
-      secondary: 'text-theme-text-secondary',
-      accent: 'text-theme-text-accent',
+    // Borders - Minimal, Figma style
+    border: {
+      DEFAULT: '#333333',     // Subtle border
+      subtle: '#282828',      // Very subtle
+      strong: '#444444',      // Strong border
     },
 
-    // Interactive elements
-    border: 'border-theme-border',
-    hover: 'hover:bg-theme-hover',
-    active: 'bg-theme-active',
+    // Text - High contrast
+    text: {
+      primary: '#f5f5f5',     // Very bright primary
+      secondary: '#b3b3b3',   // Clear secondary
+      tertiary: '#8c8c8c',    // Muted but readable
+      accent: '#22d3ee',      // Cyan accent (AI identity)
+    },
 
-    // Status colors
-    success: 'text-theme-success',
-    warning: 'text-theme-warning',
-    error: 'text-theme-error',
-    info: 'text-theme-info',
+    // Interactive states
+    hover: 'rgba(255, 255, 255, 0.06)',   // Subtle hover
+    active: 'rgba(255, 255, 255, 0.10)',  // Active state
+    focus: 'rgba(255, 255, 255, 0.12)',   // Focus state
+
+    // Status colors - Vibrant on dark
+    success: '#5fb76b',       // Green
+    warning: '#f5a623',       // Figma orange
+    error: '#f24822',         // Figma red
+    info: '#18a0fb',          // Figma blue
+
+    // Special colors
+    purple: '#b58bf7',        // Figma purple
+    amber: '#f5a623',         // Figma amber
+    emerald: '#5fb76b',       // Emerald green
   },
 
   effects: {

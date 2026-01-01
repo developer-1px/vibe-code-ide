@@ -15,54 +15,54 @@
               mono: ['Fira Code', 'monospace'],
             },
             colors: {
-              // Semantic theme tokens - Figma Dark inspired + Cyan/Teal identity
+              // Semantic theme tokens - Reference CSS variables injected by ThemeProvider
               theme: {
-                // Backgrounds - Figma Dark style (very dark, high contrast)
-                background: '#0e0e0e',    // Very dark background (Figma style)
-                canvas: '#1e1e1e',        // Canvas/workspace (dark gray)
-                sidebar: '#1e1e1e',       // Sidebar background (matches canvas)
-                header: '#181818',        // Header background (slightly darker)
-                panel: '#2c2c2c',         // Panel/card background (lighter for hierarchy)
+                // Backgrounds - From AppTheme via CSS variables
+                background: 'var(--theme-background)',
+                canvas: 'var(--theme-canvas)',
+                sidebar: 'var(--theme-sidebar)',
+                header: 'var(--theme-header)',
+                panel: 'var(--theme-panel)',
 
-                // Borders - Figma style (subtle, minimal)
+                // Borders - From AppTheme via CSS variables
                 border: {
-                  DEFAULT: '#333333',     // Subtle border (Figma style)
-                  subtle: '#282828',      // Very subtle
-                  strong: '#444444',      // Strong border (still minimal)
+                  DEFAULT: 'var(--theme-border)',
+                  subtle: 'var(--theme-border-subtle)',
+                  strong: 'var(--theme-border-strong)',
                 },
 
-                // Text - Figma style (high contrast, bright)
+                // Text - From AppTheme via CSS variables
                 text: {
-                  primary: '#f5f5f5',     // Very bright primary text (Figma style)
-                  secondary: '#b3b3b3',   // Clear secondary text
-                  tertiary: '#8c8c8c',    // Muted but readable
-                  accent: '#22d3ee',      // Cyan-400 accent (AI vibe, our identity)
+                  primary: 'var(--theme-text-primary)',
+                  secondary: 'var(--theme-text-secondary)',
+                  tertiary: 'var(--theme-text-tertiary)',
+                  accent: 'var(--theme-text-accent)',
                 },
 
-                // Interactive states - Figma style
-                hover: 'rgba(255, 255, 255, 0.06)',   // Subtle hover (Figma minimal)
-                active: 'rgba(255, 255, 255, 0.10)',  // Active state
-                focus: 'rgba(255, 255, 255, 0.12)',   // Focus state
+                // Interactive states - From AppTheme via CSS variables
+                hover: 'var(--theme-hover)',
+                active: 'var(--theme-active)',
+                focus: 'var(--theme-focus)',
 
-                // Status colors - Vibrant on dark
-                success: '#5fb76b',       // Green
-                warning: '#f5a623',       // Figma-style orange
-                error: '#f24822',         // Figma-style red
-                info: '#18a0fb',          // Figma blue (keep cyan for identity)
+                // Status colors - From AppTheme via CSS variables
+                success: 'var(--theme-success)',
+                warning: 'var(--theme-warning)',
+                error: 'var(--theme-error)',
+                info: 'var(--theme-info)',
 
-                // Special
-                purple: '#b58bf7',        // Figma purple
-                amber: '#f5a623',         // Figma amber
-                emerald: '#5fb76b',       // Emerald green
+                // Special colors - From AppTheme via CSS variables
+                purple: 'var(--theme-purple)',
+                amber: 'var(--theme-amber)',
+                emerald: 'var(--theme-emerald)',
               },
 
-              // Legacy tokens (for backward compatibility)
-              'vibe-dark': '#0e0e0e',
-              'vibe-panel': '#2c2c2c',
-              'vibe-border': '#333333',
-              'vibe-accent': '#22d3ee',
-              'vibe-success': '#5fb76b',
-              'vibe-purple': '#b58bf7',
+              // Legacy tokens (for backward compatibility) - Also use CSS variables
+              'vibe-dark': 'var(--theme-background)',
+              'vibe-panel': 'var(--theme-panel)',
+              'vibe-border': 'var(--theme-border)',
+              'vibe-accent': 'var(--theme-text-accent)',
+              'vibe-success': 'var(--theme-success)',
+              'vibe-purple': 'var(--theme-purple)',
             }
           }
         }
@@ -70,24 +70,24 @@
     </script>
     <style>
       body {
-        background-color: #0e0e0e;  /* Figma Dark style */
-        color: #f5f5f5;             /* Bright primary text */
+        background-color: var(--theme-background);  /* From AppTheme */
+        color: var(--theme-text-primary);           /* From AppTheme */
       }
 
-      /* Custom Scrollbar - Figma style */
+      /* Custom Scrollbar - Uses AppTheme colors */
       ::-webkit-scrollbar {
         width: 8px;
         height: 8px;
       }
       ::-webkit-scrollbar-track {
-        background: #1e1e1e;        /* Canvas background */
+        background: var(--theme-canvas);        /* From AppTheme */
       }
       ::-webkit-scrollbar-thumb {
-        background: #444444;        /* Minimal scrollbar */
+        background: var(--theme-border-strong); /* From AppTheme */
         border-radius: 4px;
       }
       ::-webkit-scrollbar-thumb:hover {
-        background: #555555;        /* Lighter on hover */
+        background: #555555;                    /* Slightly lighter */
       }
     </style>
   <script type="importmap">

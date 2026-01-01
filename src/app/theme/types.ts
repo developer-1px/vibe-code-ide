@@ -5,36 +5,52 @@
 
 /**
  * App Theme - Global UI styling
+ * All color values are hex codes that will be injected as CSS variables
  */
 export interface AppTheme {
   name: string;
 
   colors: {
-    // Main backgrounds
+    // Main backgrounds (hex values)
     background: string;      // Main app background
     canvas: string;          // Canvas/workspace area
     sidebar: string;         // Sidebar background
     header: string;          // Header background
+    panel: string;           // Panel/card background
 
-    // Text colors
+    // Borders (hex values)
+    border: {
+      DEFAULT: string;       // Default border
+      subtle: string;        // Subtle border
+      strong: string;        // Strong border
+    };
+
+    // Text colors (hex values)
     text: {
       primary: string;       // Main text
       secondary: string;     // Secondary/muted text
+      tertiary: string;      // Tertiary/muted text
       accent: string;        // Accent/highlight text
     };
 
-    // Interactive elements
-    border: string;          // Default border color
+    // Interactive states (rgba values)
     hover: string;           // Hover state
     active: string;          // Active/selected state
+    focus: string;           // Focus state
 
-    // Status colors
+    // Status colors (hex values)
     success: string;
     warning: string;
     error: string;
     info: string;
+
+    // Special colors (hex values)
+    purple: string;
+    amber: string;
+    emerald: string;
   };
 
+  // Tailwind utility classes (not injected as CSS vars)
   effects: {
     blur: string;            // Backdrop blur
     shadow: string;          // Box shadow

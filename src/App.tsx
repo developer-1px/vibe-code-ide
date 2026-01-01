@@ -2,6 +2,7 @@
 import React, { useEffect } from 'react';
 import { Provider, useAtomValue, useSetAtom } from 'jotai';
 import { HotkeysProvider } from 'react-hotkeys-hook';
+import { ThemeProvider } from './app/theme';
 import Sidebar from './widgets/Sidebar/Sidebar';
 import Header from './widgets/MainContent/Header.tsx';
 import PipelineCanvas from './widgets/PipelineCanvas.tsx';
@@ -65,9 +66,11 @@ const AppContent: React.FC = () => {
 const App: React.FC = () => {
   return (
     <Provider store={store}>
-      <HotkeysProvider initiallyActiveScopes={['sidebar']}>
-        <AppContent />
-      </HotkeysProvider>
+      <ThemeProvider initialTheme="default">
+        <HotkeysProvider initiallyActiveScopes={['sidebar']}>
+          <AppContent />
+        </HotkeysProvider>
+      </ThemeProvider>
     </Provider>
   );
 };
