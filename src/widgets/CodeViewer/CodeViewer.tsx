@@ -8,7 +8,7 @@ import { useAtomValue } from 'jotai';
 import { CanvasNode } from '../../entities/CanvasNode';
 import type { CodeLine as CodeLineType } from './core/types';
 import CodeLine from './ui/CodeLine';
-import { defaultTheme, jetbrainsTheme, vscodeTheme, CodeThemeProvider } from './config';
+import { defaultTheme, jetbrainsTheme, vscodeTheme, EditorThemeProvider } from '../../app/theme/editor';
 import { currentThemeAtom } from '../../store/atoms';
 
 interface CodeViewerProps {
@@ -33,7 +33,7 @@ const CodeViewer = ({ processedLines, node, foldRanges }: CodeViewerProps) => {
   }, [currentThemeName]);
 
   return (
-    <CodeThemeProvider theme={theme}>
+    <EditorThemeProvider theme={theme}>
       <div className={`flex flex-col ${theme.colors.background} ${theme.spacing.containerY}`}>
         {processedLines.map((line) => {
           // Check for duplicate line numbers
@@ -52,7 +52,7 @@ const CodeViewer = ({ processedLines, node, foldRanges }: CodeViewerProps) => {
           );
         })}
       </div>
-    </CodeThemeProvider>
+    </EditorThemeProvider>
   );
 };
 

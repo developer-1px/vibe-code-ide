@@ -11,14 +11,14 @@ import { visibleNodeIdsAtom, fullNodeMapAtom, lastExpandedIdAtom, filesAtom } fr
 import { useAtomValue } from 'jotai';
 import type { CanvasNode } from '../../../entities/CanvasNode';
 import { extractTemplateComponents, extractTemplateVariables } from '../../../services/tsParser/utils/vueTemplateParser';
-import { useCodeTheme } from '../config';
+import { useEditorTheme } from '../../../app/theme/editor';
 
 const VueTemplateSection = ({template, node, scriptEndLine }: {
   template: string;
   node: CanvasNode;
   scriptEndLine: number; // script 영역의 마지막 라인 번호
 }) => {
-  const theme = useCodeTheme();
+  const theme = useEditorTheme();
   const setVisibleNodeIds = useSetAtom(visibleNodeIdsAtom);
   const fullNodeMap = useAtomValue(fullNodeMapAtom);
   const setLastExpandedId = useSetAtom(lastExpandedIdAtom);

@@ -10,7 +10,7 @@ import type { CodeSegment, SegmentKind, CodeLine } from '../core/types';
 import type { CanvasNode } from '../../../entities/CanvasNode';
 import { buildSegmentStyle } from '../core';
 import { visibleNodeIdsAtom, activeLocalVariablesAtom } from '../../../store/atoms';
-import { useCodeTheme } from '../config';
+import { useEditorTheme } from '../../../app/theme/editor';
 import {
   StaticSegment,
   ExpandSegment,
@@ -49,7 +49,7 @@ export const SegmentRenderer = ({
   isFolded?: boolean;
   foldedCount?: number;
 }) => {
-  const theme = useCodeTheme();
+  const theme = useEditorTheme();
   const visibleNodeIds = useAtomValue(visibleNodeIdsAtom);
   const activeLocalVariables = useAtomValue(activeLocalVariablesAtom);
 

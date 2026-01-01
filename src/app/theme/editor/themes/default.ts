@@ -1,11 +1,12 @@
 /**
- * Default CodeContent Theme
+ * Default Editor Theme
  * Extracts current hardcoded values into a JSON-serializable theme object
  */
 
-import type { CodeTheme } from '../types';
+import type { EditorTheme } from '../../types';
 
-export const defaultTheme: CodeTheme = {
+export const defaultTheme: EditorTheme = {
+  name: 'default',
   typography: {
     fontSize: 'text-xs',
     fontFamily: 'font-mono',

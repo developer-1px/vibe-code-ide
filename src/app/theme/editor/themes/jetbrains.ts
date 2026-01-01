@@ -3,9 +3,10 @@
  * Based on IntelliJ IDEA's Darcula color scheme
  */
 
-import type { CodeTheme } from '../types';
+import type { EditorTheme } from '../../types';
 
-export const jetbrainsTheme: CodeTheme = {
+export const jetbrainsTheme: EditorTheme = {
+  name: 'jetbrains',
   typography: {
     fontSize: 'text-sm',        // Slightly larger than default
     fontFamily: 'font-mono',

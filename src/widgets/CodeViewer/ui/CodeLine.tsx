@@ -9,7 +9,7 @@ import FoldButton from '../../../features/CodeFold/ui/FoldButton';
 import FoldBadge from '../../../features/CodeFold/ui/FoldBadge';
 import { isLineInsideFold, isLineFolded, getFoldedCount } from '../../../features/CodeFold/lib';
 import { targetLineAtom, foldedLinesAtom } from '../../../store/atoms';
-import { useCodeTheme } from '../config';
+import { useEditorTheme } from '../../../app/theme/editor';
 
 const CodeLine = ({
   line,
@@ -20,7 +20,7 @@ const CodeLine = ({
   node: CanvasNode;
   foldRanges: Array<{ start: number; end: number }>;
 }) => {
-  const theme = useCodeTheme();
+  const theme = useEditorTheme();
   const targetLine = useAtomValue(targetLineAtom);
   const foldedLinesMap = useAtomValue(foldedLinesAtom);
   const lineRef = useRef<HTMLDivElement>(null);

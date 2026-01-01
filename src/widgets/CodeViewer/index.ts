@@ -13,4 +13,3 @@ export { SegmentRenderer } from './ui/SegmentRenderer';
 
 // Core engine exports
 export * from './core';
-export * from './config';
