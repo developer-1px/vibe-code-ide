@@ -8,8 +8,7 @@ import {
 } from 'lucide-react';
 import { CanvasNode } from '../../../entities/CanvasNode';
 import { visibleNodeIdsAtom, fullNodeMapAtom, activeLocalVariablesAtom, filesAtom, foldedLinesAtom } from '../../../store/atoms';
-import { renderCodeLinesDirect } from '../../../entities/CodeRenderer/lib/renderCodeLinesDirect';
-import { renderVueFile } from '../../../entities/CodeRenderer/lib/renderVueFile';
+import { renderCodeLinesDirect, renderVueFile } from '../../CodeViewer/core';
 import { pruneDetachedNodes } from '../../PipelineCanvas/utils';
 import { getFoldableLinesByMaxDepth, getFoldableLinesExcludingDepth } from '../../../features/CodeFold/lib';
 

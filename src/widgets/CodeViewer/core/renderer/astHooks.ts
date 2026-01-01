@@ -3,7 +3,7 @@
  */
 
 import * as ts from 'typescript';
-import type { CodeLine, SegmentKind } from '../model/types';
+import type { CodeLine, SegmentKind } from '../types';
 import { isDeclarationNode, getDeclarationName } from './segmentUtils';
 
 export type AddKindFunction = (

@@ -6,10 +6,9 @@
 
 import React, { useMemo } from 'react';
 import { useAtomValue } from 'jotai';
-import type { CodeSegment, SegmentKind } from '../../../entities/CodeSegment';
+import type { CodeSegment, SegmentKind, CodeLine } from '../core/types';
 import type { CanvasNode } from '../../../entities/CanvasNode';
-import type { CodeLine } from '../../../entities/CodeRenderer/model/types';
-import { buildSegmentStyle } from '../../../entities/CodeSegment';
+import { buildSegmentStyle } from '../core';
 import { visibleNodeIdsAtom, activeLocalVariablesAtom } from '../../../store/atoms';
 import { useCodeTheme } from '../config';
 import {

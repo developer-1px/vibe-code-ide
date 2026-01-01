@@ -3,7 +3,7 @@
  */
 
 import type { FoldInfo } from '../../../features/CodeFold/lib/types';
-import type { CodeSegment, SegmentKind } from '../../CodeSegment';
+import type { CodeSegment, SegmentKind } from './segment';
 
 // Re-export for backward compatibility
 export type { CodeSegment, SegmentKind };

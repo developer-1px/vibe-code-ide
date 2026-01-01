@@ -4,10 +4,10 @@
  */
 
 import * as ts from 'typescript'
-import type {CanvasNode} from '../../CanvasNode'
+import type {CanvasNode} from '../../../../entities/CanvasNode'
 import {findDefinitionLocation, getQuickInfoAtPosition} from './tsLanguageService'
-import type {CodeLine, CodeSegment, SegmentKind} from '../model/types'
-import {getImportSource} from '../../SourceFileNode/lib/getters'
+import type {CodeLine, CodeSegment, SegmentKind} from '../types'
+import {getImportSource} from '../../../../entities/SourceFileNode/lib/getters'
 import {resolvePath} from '../../../services/tsParser/utils/pathResolver'
 import {
   extractShortId,

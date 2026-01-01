@@ -8,8 +8,7 @@ import { useAtomValue } from 'jotai';
 import { CanvasNode } from '../../../entities/CanvasNode';
 import { activeLocalVariablesAtom, filesAtom } from '../../../store/atoms';
 import { FocusedIdentifierItem } from './FocusedIdentifierItem';
-import { renderCodeLinesDirect } from '../../../entities/CodeRenderer/lib/renderCodeLinesDirect';
-import { renderVueFile } from '../../../entities/CodeRenderer/lib/renderVueFile';
+import { renderCodeLinesDirect, renderVueFile } from '../../../widgets/CodeViewer/core';
 
 interface FocusedIdentifiersProps {
   node: CanvasNode;

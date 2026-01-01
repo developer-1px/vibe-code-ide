@@ -5,7 +5,7 @@
 
 import type { VariableNode } from '../entities/SourceFileNode';
 import type { SymbolMetadata } from '../store/atoms';
-import { getQuickInfoAtPosition } from '../entities/CodeRenderer/lib/tsLanguageService';
+import { getQuickInfoAtPosition } from '../widgets/CodeViewer/core';
 
 /**
  * Node types to exclude from metadata extraction

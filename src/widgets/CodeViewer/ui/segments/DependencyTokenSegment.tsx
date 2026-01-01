@@ -4,7 +4,7 @@
  */
 
 import React from 'react';
-import type { CodeSegment, SegmentStyle } from '../../../../entities/CodeSegment';
+import type { CodeSegment, SegmentStyle } from '../../core/types';
 import type { CanvasNode } from '../../../../entities/CanvasNode';
 import CodeToken from '../CodeToken';
 

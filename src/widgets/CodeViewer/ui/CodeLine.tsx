@@ -2,7 +2,7 @@
 import React, { useEffect, useRef, useMemo } from 'react';
 import { useAtomValue } from 'jotai';
 import { CanvasNode } from '../../../entities/CanvasNode';
-import type { CodeLine as CodeLineType } from '../../../entities/CodeRenderer/model/types';
+import type { CodeLine as CodeLineType } from '../core/types';
 import CodeLineSlots from './CodeLineSlots';
 import CodeLineSegment from './CodeLineSegment';
 import FoldButton from '../../../features/CodeFold/ui/FoldButton';

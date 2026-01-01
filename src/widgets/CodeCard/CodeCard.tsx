@@ -3,17 +3,15 @@ import { useAtomValue, useSetAtom } from 'jotai';
 import { CanvasNode } from '../../entities/CanvasNode';
 
 // Lib - Pure Utilities
-import { renderCodeLinesDirect } from '../../entities/CodeRenderer/lib/renderCodeLinesDirect';
-import { renderVueFile } from '../../entities/CodeRenderer/lib/renderVueFile';
-import type { CodeLine } from '../../entities/CodeRenderer/model/types';
+import { renderCodeLinesDirect, renderVueFile } from '../CodeViewer/core';
+import type { CodeLine } from '../CodeViewer/core/types';
 import { getNodeBorderColor } from '../../entities/SourceFileNode/lib/styleUtils';
 import { getFoldableLinesByMaxDepth, calculateFoldRanges } from '../../features/CodeFold/lib';
 
 // UI Components
 import CodeCardHeader from './ui/CodeCardHeader';
 import CodeCardCopyButton from './ui/CodeCardCopyButton';
-import CodeContent from '../CodeContent/CodeContent';
-import VueTemplateSection from '../CodeContent/ui/VueTemplateSection';
+import { CodeViewer, VueTemplateSection } from '../CodeViewer';
 
 // Atoms
 import { foldedLinesAtom, cardPositionsAtom, filesAtom } from '../../store/atoms';
@@ -83,7 +81,7 @@ const CodeCard = ({ node }: { node: CanvasNode }) => {
 
       {/* Code Lines (script가 있을 때만) */}
       {processedLines.length > 0 && (
-        <CodeContent
+        <CodeViewer
           processedLines={processedLines}
           node={node}
           foldRanges={foldRanges}

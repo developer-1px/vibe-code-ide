@@ -3,8 +3,8 @@
  * 여러 kind를 조합하여 최종 스타일과 동작을 결정
  */
 
-import type { SegmentKind, SegmentStyle } from '../model/types';
-import type { CodeTheme } from '../../../widgets/CodeContent/config/types';
+import type { SegmentKind, SegmentStyle } from '../types';
+import type { CodeTheme } from '../../config/types';
 
 /**
  * Primary kind에 따른 기본 스타일 결정

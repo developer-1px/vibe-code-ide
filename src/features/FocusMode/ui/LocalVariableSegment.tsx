@@ -6,7 +6,7 @@
 
 import React from 'react';
 import { useSetAtom, useAtomValue } from 'jotai';
-import type { CodeSegment, SegmentStyle } from '../../../entities/CodeSegment';
+import type { CodeSegment, SegmentStyle } from '../../../widgets/CodeViewer/core/types';
 import type { CanvasNode } from '../../../entities/CanvasNode';
 import { activeLocalVariablesAtom } from '../model/atoms';
 import {

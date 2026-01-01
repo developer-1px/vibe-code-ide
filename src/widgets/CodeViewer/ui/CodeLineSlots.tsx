@@ -6,7 +6,7 @@
 import React from 'react';
 import { useAtomValue } from 'jotai';
 import { fullNodeMapAtom } from '../../../store/atoms';
-import type { CodeLine } from '../../../entities/CodeRenderer/model/types';
+import type { CodeLine } from '../core/types';
 import CodeSlot from './CodeSlot';
 
 interface CodeLineSlotsProps {

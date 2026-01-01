@@ -1,23 +1,23 @@
 /**
- * CodeContent - Code rendering widget
+ * CodeViewer - Code rendering widget
  * Handles code lines, slots, syntax highlighting, and fold management
  */
 
 import React, { useMemo } from 'react';
 import { useAtomValue } from 'jotai';
 import { CanvasNode } from '../../entities/CanvasNode';
-import type { CodeLine as CodeLineType } from '../../entities/CodeRenderer/model/types';
+import type { CodeLine as CodeLineType } from './core/types';
 import CodeLine from './ui/CodeLine';
 import { defaultTheme, jetbrainsTheme, vscodeTheme, CodeThemeProvider } from './config';
 import { currentThemeAtom } from '../../store/atoms';
 
-interface CodeContentProps {
+interface CodeViewerProps {
   processedLines: CodeLineType[];
   node: CanvasNode;
   foldRanges: Array<{ start: number; end: number }>;
 }
 
-const CodeContent = ({ processedLines, node, foldRanges }: CodeContentProps) => {
+const CodeViewer = ({ processedLines, node, foldRanges }: CodeViewerProps) => {
   const currentThemeName = useAtomValue(currentThemeAtom);
 
   // Select theme based on atom value
@@ -39,7 +39,7 @@ const CodeContent = ({ processedLines, node, foldRanges }: CodeContentProps) => 
           // Check for duplicate line numbers
           const duplicates = processedLines.filter(l => l.num === line.num);
           if (duplicates.length > 1) {
-            console.warn(`[CodeContent] Duplicate line number detected: ${line.num} in node ${node.id}`, duplicates);
+            console.warn(`[CodeViewer] Duplicate line number detected: ${line.num} in node ${node.id}`, duplicates);
           }
 
           return (
@@ -56,4 +56,4 @@ const CodeContent = ({ processedLines, node, foldRanges }: CodeContentProps) => 
   );
 };
 
-export default CodeContent;
+export default CodeViewer;

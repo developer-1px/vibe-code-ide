@@ -4,7 +4,7 @@
 
 import React from 'react';
 import { useSetAtom } from 'jotai';
-import type { CodeSegment, SegmentStyle } from '../../../../entities/CodeSegment';
+import type { CodeSegment, SegmentStyle } from '../../core/types';
 import type { CanvasNode } from '../../../../entities/CanvasNode';
 import { visibleNodeIdsAtom } from '../../../../store/atoms';
 
