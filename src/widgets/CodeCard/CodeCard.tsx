@@ -71,7 +71,7 @@ const CodeCard = ({ node }: { node: CanvasNode }) => {
       ref={cardRef}
       id={`node-${node.visualId || node.id}`}
       className={`
-        bg-vibe-panel/95 backdrop-blur-md border shadow-2xl rounded-lg flex flex-col relative group/card overflow-visible transition-colors
+        bg-theme-panel/95 backdrop-blur-md border shadow-2xl rounded-lg flex flex-col relative group/card overflow-visible transition-colors
         ${getNodeBorderColor(node.type)}
         min-w-[420px] max-w-[700px] w-fit cursor-default
       `}

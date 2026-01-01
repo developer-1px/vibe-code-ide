@@ -31,7 +31,7 @@ const AppContent: React.FC = () => {
   }, [files, setGraphData, setParseError]);
 
   return (
-    <div className="flex h-screen w-screen overflow-hidden bg-vibe-dark text-slate-200 font-sans">
+    <div className="flex h-screen w-screen overflow-hidden bg-theme-background text-theme-text-primary font-sans">
       {/* 키보드 단축키 관리 */}
       <KeyboardShortcuts />
 
@@ -44,7 +44,7 @@ const AppContent: React.FC = () => {
         <Header />
 
         {/* Main Layout: Canvas with Floating Sidebar */}
-        <div className="flex-1 relative overflow-hidden bg-[#0f172a]">
+        <div className="flex-1 relative overflow-hidden bg-theme-background">
           {/* Canvas Area */}
           <PipelineCanvas />
 
