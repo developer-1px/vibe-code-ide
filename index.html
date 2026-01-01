@@ -17,38 +17,38 @@
             colors: {
               // Semantic theme tokens
               theme: {
-                // Backgrounds
-                background: '#070707',    // Main app background
-                canvas: '#0d0d0d',        // Canvas/workspace area
-                sidebar: '#121212',       // Sidebar background
-                header: '#0a0a0a',        // Header background
-                panel: '#0a0a0a',         // Panel/card background
+                // Backgrounds - Slate tones (subtle blue-gray undertone)
+                background: '#0a0e14',    // Main app background (dark slate)
+                canvas: '#0f1419',        // Canvas/workspace area (slate blue-gray)
+                sidebar: '#14181f',       // Sidebar background (lighter slate)
+                header: '#0c1016',        // Header background (dark slate)
+                panel: '#0f1419',         // Panel/card background (matches canvas)
 
-                // Borders
+                // Borders - Slate-tinted grays
                 border: {
-                  DEFAULT: '#2a2a2a',     // Default border
-                  subtle: '#1a1a1a',      // Subtle border
-                  strong: '#3a3a3a',      // Strong border
+                  DEFAULT: '#252a31',     // Default border (slate gray)
+                  subtle: '#1a1e24',      // Subtle border
+                  strong: '#353b44',      // Strong border
                 },
 
                 // Text
                 text: {
-                  primary: '#e5e5e5',     // Primary text
-                  secondary: '#a3a3a3',   // Secondary text
-                  tertiary: '#737373',    // Tertiary/muted text
-                  accent: '#e5e5e5',      // Accent text
+                  primary: '#e5e7eb',     // Primary text (slightly cool)
+                  secondary: '#9ca3af',   // Secondary text (slate gray)
+                  tertiary: '#6b7280',    // Tertiary/muted text
+                  accent: '#cbd5e1',      // Accent text (light slate)
                 },
 
                 // Interactive states
-                hover: 'rgba(255, 255, 255, 0.05)',
-                active: 'rgba(255, 255, 255, 0.1)',
-                focus: 'rgba(255, 255, 255, 0.15)',
+                hover: 'rgba(148, 163, 184, 0.08)',   // Slate-tinted hover
+                active: 'rgba(148, 163, 184, 0.12)',  // Slate-tinted active
+                focus: 'rgba(148, 163, 184, 0.16)',   // Slate-tinted focus
 
                 // Status colors
                 success: '#4ade80',
                 warning: '#fbbf24',
                 error: '#f87171',
-                info: '#d4d4d4',
+                info: '#94a3b8',          // Slate info color
 
                 // Special
                 purple: '#a78bfa',
@@ -57,10 +57,10 @@
               },
 
               // Legacy tokens (for backward compatibility)
-              'vibe-dark': '#070707',
-              'vibe-panel': '#0a0a0a',
-              'vibe-border': '#2a2a2a',
-              'vibe-accent': '#e5e5e5',
+              'vibe-dark': '#0a0e14',
+              'vibe-panel': '#0f1419',
+              'vibe-border': '#252a31',
+              'vibe-accent': '#cbd5e1',
               'vibe-success': '#4ade80',
               'vibe-purple': '#a78bfa',
             }
@@ -70,8 +70,8 @@
     </script>
     <style>
       body {
-        background-color: #070707;
-        color: #e5e5e5;
+        background-color: #0a0e14;  /* Dark slate */
+        color: #e5e7eb;             /* Light gray-white */
       }
 
       /* Custom Scrollbar */
@@ -80,14 +80,14 @@
         height: 8px;
       }
       ::-webkit-scrollbar-track {
-        background: #0d0d0d;
+        background: #0f1419;        /* Slate canvas */
       }
       ::-webkit-scrollbar-thumb {
-        background: #3a3a3a;
+        background: #353b44;        /* Slate gray thumb */
         border-radius: 4px;
       }
       ::-webkit-scrollbar-thumb:hover {
-        background: #4a4a4a;
+        background: #454d58;        /* Lighter slate on hover */
       }
     </style>
   <script type="importmap">
