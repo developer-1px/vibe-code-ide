@@ -160,6 +160,298 @@ function process(node: SourceFileNode) { }
 
 ---
 
+## ⚠️ CRITICAL RULES - KEYBOARD SHORTCUTS
+
+**ALWAYS use scope system for react-hotkeys-hook to prevent conflicts.**
+
+### The Problem: Multiple Components Using Same Keys
+
+When multiple components use the same keyboard shortcuts (e.g., `down`, `up`, `enter`) without scopes, they conflict and neither works properly.
+
+**Common scenario**:
+- `FolderView` uses `down`/`up` for file navigation
+- `UnifiedSearchModal` uses `down`/`up` for search result navigation
+- **Without scopes**: Both try to handle the same keys → conflicts and bugs
+
+### The Solution: Scope System
+
+#### Step 1: HotkeysProvider Setup
+
+**MUST have HotkeysProvider in App.tsx**:
+```typescript
+import { HotkeysProvider } from 'react-hotkeys-hook';
+
+function App() {
+  return (
+    <HotkeysProvider initiallyActiveScopes={['sidebar']}>
+      <AppContent />
+    </HotkeysProvider>
+  );
+}
+```
+
+#### Step 2: Assign Unique Scope to Each Component
+
+**Static component (always active)**:
+```typescript
+// widgets/Sidebar/FolderView.tsx
+import { useHotkeys } from 'react-hotkeys-hook';
+
+const FolderView = () => {
+  useHotkeys('down', () => {
+    setFocusedIndex(prev => prev + 1);
+  }, {
+    scopes: ['sidebar'],              // ✅ Unique scope
+    enabled: focusedPane === 'sidebar'
+  }, [focusedPane]);
+
+  useHotkeys('up', () => {
+    setFocusedIndex(prev => prev - 1);
+  }, {
+    scopes: ['sidebar'],              // ✅ Unique scope
+    enabled: focusedPane === 'sidebar'
+  }, [focusedPane]);
+};
+```
+
+**Dynamic component (modal/conditional)**:
+```typescript
+// features/UnifiedSearch/ui/UnifiedSearchModal.tsx
+import { useHotkeys, useHotkeysContext } from 'react-hotkeys-hook';
+
+const UnifiedSearchModal = () => {
+  const [isOpen, setIsOpen] = useAtom(searchModalOpenAtom);
+
+  // Get scope control functions
+  const { enableScope, disableScope } = useHotkeysContext();
+
+  // Enable 'search' scope when modal opens
+  useEffect(() => {
+    if (isOpen) {
+      enableScope('search');
+      console.log('[UnifiedSearchModal] Enabled search scope');
+    } else {
+      disableScope('search');
+      console.log('[UnifiedSearchModal] Disabled search scope');
+    }
+  }, [isOpen, enableScope, disableScope]);
+
+  // All hotkeys scoped to 'search'
+  useHotkeys('escape', (e) => {
+    e.preventDefault();
+    handleClose();
+  }, {
+    scopes: ['search'],               // ✅ Unique scope
+    enabled: isOpen,
+    enableOnFormTags: true            // Works in input fields
+  }, [isOpen]);
+
+  useHotkeys('down', (e) => {
+    e.preventDefault();
+    setFocusedIndex(prev => Math.min(prev + 1, results.length - 1));
+  }, {
+    scopes: ['search'],               // ✅ Unique scope
+    enabled: isOpen,
+    enableOnFormTags: true            // Works in input fields
+  }, [isOpen, results.length, setFocusedIndex]);
+};
+```
+
+### How Scope Isolation Works
+
+**Scope state determines which component's hotkeys are active**:
+- Modal closed: `'sidebar'` scope active → FolderView's `down`/`up` work
+- Modal open: `'search'` scope active → UnifiedSearchModal's `down`/`up` work
+- **No conflicts!** Each scope can independently use the same keys
+
+### enableOnFormTags Option
+
+**When to set `true`**:
+```typescript
+// ✅ enableOnFormTags: true
+// When hotkeys should work even inside input/textarea elements
+useHotkeys('escape', handleClose, {
+  scopes: ['search'],
+  enableOnFormTags: true  // ✅ ESC works even when typing in input
+});
+
+useHotkeys('down', handleNavigate, {
+  scopes: ['search'],
+  enableOnFormTags: true  // ✅ Arrow navigation while searching
+});
+
+// ❌ enableOnFormTags: false (default)
+// Normal case - let typing have priority
+useHotkeys('ctrl+s', handleSave, {
+  scopes: ['editor'],
+  enableOnFormTags: false  // Don't interfere with form input
+});
+```
+
+### useHotkeys Signature
+
+```typescript
+useHotkeys(
+  keys: string,                    // 'down', 'escape', 'ctrl+k', 'shift+shift'
+  callback: (e: KeyboardEvent) => void,
+  options: {
+    scopes?: string[],             // ✅ REQUIRED! Unique scope name
+    enabled?: boolean,             // Conditional activation
+    enableOnFormTags?: boolean     // Work in input/textarea?
+  },
+  dependencies: any[]              // ✅ REQUIRED! All values used in callback
+);
+```
+
+### Dependencies Array (Critical!)
+
+**❌ Missing dependencies causes stale closure bugs**:
+```typescript
+// ❌ WRONG - Missing dependencies
+useHotkeys('down', () => {
+  setFocusedIndex(prev => Math.min(prev + 1, results.length - 1));
+}, {
+  scopes: ['search'],
+  enabled: isOpen
+});
+// Bug: results.length changes won't be seen
+```
+
+**✅ Proper dependencies**:
+```typescript
+// ✅ CORRECT - All values included
+useHotkeys('down', () => {
+  setFocusedIndex(prev => Math.min(prev + 1, results.length - 1));
+}, {
+  scopes: ['search'],
+  enabled: isOpen,
+  enableOnFormTags: true
+}, [isOpen, results.length, setFocusedIndex]);
+// ✅ Callback always sees latest values
+```
+
+### Current Scope Assignments
+
+| Component/Feature | Scope Name | Description |
+|-------------------|------------|-------------|
+| Sidebar (FolderView) | `'sidebar'` | File explorer keyboard navigation |
+| UnifiedSearchModal | `'search'` | Unified search modal |
+| CodeCard/Canvas | `'canvas'` | Canvas navigation (future) |
+| IDEView | `'ide'` | IDE mode (future) |
+
+### Detection and Enforcement
+
+**IF** you see `useHotkeys` without `scopes`:
+```typescript
+// ❌ WRONG - No scope specified
+useHotkeys('down', handler, { enabled: true });
+```
+
+**THEN** immediately:
+1. 🚨 **STOP** and warn about potential conflicts
+2. Ask: "Which component is this? What scope should it use?"
+3. Add appropriate scope from the table above, or create new unique scope
+4. If it's a modal/conditional component, add `useHotkeysContext()` and scope lifecycle management
+
+### Custom Scope Hook Pattern (Recommended)
+
+**Naming convention**: `useHotkeys` prefix + scope name → Easy to find in IDE autocomplete
+
+```typescript
+// ✅ Recommended pattern: Encapsulate scope options in custom hook
+const UnifiedSearchModal = () => {
+  const [isOpen, setIsOpen] = useAtom(searchModalOpenAtom);
+  const [results, setResults] = useAtom(searchResultsAtom);
+
+  // useHotkeys prefix enables IDE autocomplete
+  const useHotkeysSearch = (
+    keys: string,
+    callback: (e: KeyboardEvent) => void,
+    deps: any[]
+  ) => {
+    useHotkeys(keys, callback, {
+      scopes: ['search'],
+      enabled: isOpen,
+      enableOnFormTags: true
+    }, deps);
+  };
+
+  // Usage: Concise, no repeated options
+  useHotkeysSearch('escape', (e) => {
+    e.preventDefault();
+    handleClose();
+  }, [isOpen]);
+
+  useHotkeysSearch('down', (e) => {
+    e.preventDefault();
+    setFocusedIndex(prev => Math.min(prev + 1, results.length - 1));
+  }, [isOpen, results.length, setFocusedIndex]);
+};
+```
+
+**Benefits**:
+- ✅ Type `useHotkeys` in IDE → `useHotkeysSearch` appears in autocomplete
+- ✅ DRY - options defined once, no repetition
+- ✅ Prevents accidentally using wrong scope
+- ✅ Separates component logic from scope configuration
+
+**Naming convention**:
+- `useHotkeysSearch` - Search modal (scope: 'search')
+- `useHotkeysSidebar` - Sidebar (scope: 'sidebar')
+- `useHotkeysCanvas` - Canvas (scope: 'canvas')
+
+### Checklist for Adding Keyboard Shortcuts
+
+When adding keyboard shortcuts to a component:
+- [ ] Is HotkeysProvider set up in App.tsx?
+- [ ] Chosen a unique scope name? (check existing scopes)
+- [ ] Created `useHotkeys{ScopeName}` custom hook? (recommended)
+- [ ] If modal/dynamic component, added scope enable/disable in useEffect?
+- [ ] Set `enableOnFormTags: true` for keys that should work in input fields?
+- [ ] Included all callback dependencies in 4th parameter array?
+
+### Debugging Tips
+
+**Add console logs to track scope activation**:
+```typescript
+useEffect(() => {
+  if (isOpen) {
+    enableScope('search');
+    console.log('[ComponentName] Enabled search scope');
+  } else {
+    disableScope('search');
+    console.log('[ComponentName] Disabled search scope');
+  }
+}, [isOpen, enableScope, disableScope]);
+
+// Test if hotkey is firing
+useHotkeys('down', (e) => {
+  console.log('[ComponentName] Down key pressed');
+  // actual logic
+}, {
+  scopes: ['search'],
+  enabled: isOpen,
+  enableOnFormTags: true
+}, [isOpen]);
+```
+
+**If hotkeys not working, check**:
+1. Is the scope currently active? (check console logs)
+2. Is `enabled` option true?
+3. If in input field, is `enableOnFormTags: true`?
+4. Are dependencies up to date?
+5. Is another component using same scope? (should be unique!)
+
+### Reference Implementation
+
+See these files for correct patterns:
+- `src/App.tsx` - HotkeysProvider setup (src/App.tsx:79)
+- `src/features/UnifiedSearch/ui/UnifiedSearchModal.tsx` - Dynamic scope management
+- `src/features/UnifiedSearch/ui/SearchResults.tsx` - Scoped hotkeys in feature component
+- `src/widgets/Sidebar/FolderView.tsx` - Static scope usage
+
+---
+
 ## Project Overview
 
 **Vibe Code Viewer** - A developer tool that visualizes file dependencies and code structure in Vue.js and React projects. The tool parses Vue SFC (Single File Components), React TSX files, and TypeScript files to create an interactive dependency graph using custom tree-based layout (not D3 force simulation).

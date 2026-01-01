@@ -5,6 +5,7 @@
 import React, { forwardRef } from 'react';
 import { File, Folder, Code2, Database, Zap, Calculator, Shield, Box, Eye, Upload } from 'lucide-react';
 import type { SearchResult } from '../model/types';
+import { getFileName } from '../../../shared/pathUtils';
 
 interface SearchResultItemProps {
   result: SearchResult;
@@ -121,7 +122,7 @@ export const SearchResultItem = forwardRef<HTMLDivElement, SearchResultItemProps
 
     // For files: show full path
     // For symbols: show just filename
-    const fileName = result.filePath.split('/').pop() || result.filePath;
+    const fileName = getFileName(result.filePath);
 
     return (
       <div

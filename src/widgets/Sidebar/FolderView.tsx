@@ -4,11 +4,13 @@
  */
 
 import React, { useMemo, useState, useCallback, useEffect } from 'react';
-import { useAtom, useSetAtom } from 'jotai';
+import { useAtom } from 'jotai';
 import { useHotkeys } from 'react-hotkeys-hook';
-import { focusedPaneAtom, openedFilesAtom } from '../../store/atoms';
+import { focusedPaneAtom } from '../../store/atoms';
+import { useOpenFile } from '../../features/Files/lib/useOpenFile';
 import FolderItemView from './FolderItemView';
 import FileItemView from './FileItemView';
+import { splitPath, joinPath } from '../../shared/pathUtils';
 
 interface FolderNode {
   name: string;
@@ -19,9 +21,9 @@ interface FolderNode {
 }
 
 const FolderView = ({ files }: { files: Record<string, string> }) => {
-  const setOpenedFiles = useSetAtom(openedFilesAtom);
   const [focusedPane, setFocusedPane] = useAtom(focusedPaneAtom);
   const [focusedIndex, setFocusedIndex] = useState(0);
+  const { openFile } = useOpenFile();
 
   // 초기 상태: 루트 레벨 폴더는 열어두고, 그 하위 폴더들은 모두 접어둠
   const [collapsedFolders, setCollapsedFolders] = useState<Set<string>>(() => {
@@ -46,12 +48,12 @@ const FolderView = ({ files }: { files: Record<string, string> }) => {
     Object.keys(files)
       .sort()
       .forEach((filePath) => {
-        const parts = filePath.split('/').filter(Boolean);
+        const parts = splitPath(filePath);
         let currentNode = root;
 
         parts.forEach((part, index) => {
           const isFile = index === parts.length - 1;
-          const currentPath = parts.slice(0, index + 1).join('/');
+          const currentPath = joinPath(parts.slice(0, index + 1));
 
           if (!currentNode.children) {
             currentNode.children = [];
@@ -115,9 +117,8 @@ const FolderView = ({ files }: { files: Record<string, string> }) => {
   };
 
   const handleFileClick = useCallback((filePath: string) => {
-    // Open file - add to openedFiles
-    setOpenedFiles(prev => new Set([...prev, filePath]));
-  }, [setOpenedFiles]);
+    openFile(filePath);
+  }, [openFile]);
 
   // Get flat list of all visible items (folders + files for keyboard navigation)
   const flatItemList = useMemo(() => {
@@ -149,35 +150,41 @@ const FolderView = ({ files }: { files: Record<string, string> }) => {
     console.log('[FolderView] focusedPane changed:', focusedPane);
   }, [focusedPane]);
 
+  // Custom hook for sidebar-scoped hotkeys
+  // useHotkeys로 시작하는 네이밍으로 IDE 자동완성에서 쉽게 찾을 수 있음
+  const useHotkeysSidebar = (
+    keys: string,
+    callback: (e: KeyboardEvent) => void,
+    deps: any[]
+  ) => {
+    useHotkeys(keys, callback, {
+      scopes: ['sidebar'],
+      enabled: focusedPane === 'sidebar'
+    }, deps);
+  };
 
   // TEST: Always-enabled hotkey
-  useHotkeys('g', () => {
+  useHotkeysSidebar('g', () => {
     console.log('[FolderView] G key pressed - FolderView hotkey WORKS!');
     console.log('[FolderView] Current focusedPane:', focusedPane);
     console.log('[FolderView] Current flatItemList:', flatItemList);
-  });
+  }, [focusedPane, flatItemList]);
 
   // Keyboard navigation - Up/Down for both folders and files
-  useHotkeys('down', () => {
+  useHotkeysSidebar('down', () => {
     console.log('[FolderView] down key pressed');
     if (flatItemList.length === 0) return;
     setFocusedIndex(prev => Math.min(prev + 1, flatItemList.length - 1));
-  }, {
-    scopes: ['sidebar'],
-    enabled: focusedPane === 'sidebar'
-  });
+  }, [flatItemList.length]);
 
-  useHotkeys('up', () => {
+  useHotkeysSidebar('up', () => {
     console.log('[FolderView] up key pressed');
     if (flatItemList.length === 0) return;
     setFocusedIndex(prev => Math.max(prev - 1, 0));
-  }, {
-    scopes: ['sidebar'],
-    enabled: focusedPane === 'sidebar'
-  });
+  }, [flatItemList.length]);
 
   // Enter - open file or toggle folder
-  useHotkeys('enter', () => {
+  useHotkeysSidebar('enter', () => {
     console.log('[FolderView] enter key pressed, focusedIndex:', focusedIndex);
     if (flatItemList.length === 0) return;
     const item = flatItemList[focusedIndex];
@@ -186,13 +193,10 @@ const FolderView = ({ files }: { files: Record<string, string> }) => {
     } else if (item.type === 'folder') {
       toggleFolder(item.path);
     }
-  }, {
-    scopes: ['sidebar'],
-    enabled: focusedPane === 'sidebar'
-  });
+  }, [flatItemList, focusedIndex, handleFileClick]);
 
   // Right - expand folder
-  useHotkeys('right', () => {
+  useHotkeysSidebar('right', () => {
     console.log('[FolderView] right key pressed');
     if (flatItemList.length === 0) return;
     const item = flatItemList[focusedIndex];
@@ -202,13 +206,10 @@ const FolderView = ({ files }: { files: Record<string, string> }) => {
         toggleFolder(item.path);
       }
     }
-  }, {
-    scopes: ['sidebar'],
-    enabled: focusedPane === 'sidebar'
-  });
+  }, [flatItemList, focusedIndex, collapsedFolders]);
 
   // Left - collapse folder
-  useHotkeys('left', () => {
+  useHotkeysSidebar('left', () => {
     console.log('[FolderView] left key pressed');
     if (flatItemList.length === 0) return;
     const item = flatItemList[focusedIndex];
@@ -218,10 +219,7 @@ const FolderView = ({ files }: { files: Record<string, string> }) => {
         toggleFolder(item.path);
       }
     }
-  }, {
-    scopes: ['sidebar'],
-    enabled: focusedPane === 'sidebar'
-  });
+  }, [flatItemList, focusedIndex, collapsedFolders]);
 
   const renderNode = (node: FolderNode, depth: number = 0): React.ReactNode => {
     const isCollapsed = collapsedFolders.has(node.path);

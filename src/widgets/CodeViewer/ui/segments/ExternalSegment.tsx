@@ -1,7 +1,7 @@
 /**
  * ExternalSegment - 외부 import/closure/function 핸들러
- * - 일반 클릭: 파일 닫혀있으면 열기
- * - Cmd+Click: 해당 노드로 시점 이동 (Canvas) 또는 파일 전환 (IDE)
+ * - IDE 모드: 일반 클릭으로 해당 파일 열고 정의 위치로 이동
+ * - Canvas 모드: 일반 클릭으로 파일 열기, Cmd+Click으로 시점 이동
  */
 
 import React from 'react';
@@ -10,6 +10,7 @@ import type { CodeSegment, SegmentStyle } from '../../core/types';
 import type { CanvasNode } from '../../../../entities/CanvasNode/model/types';
 import { visibleNodeIdsAtom, fullNodeMapAtom, cardPositionsAtom, transformAtom, viewModeAtom, focusedNodeIdAtom } from '../../../../store/atoms';
 import { pruneDetachedNodes } from '../../../PipelineCanvas/utils';
+import { useOpenFile } from '../../../../features/Files/lib/useOpenFile';
 
 interface ExternalSegmentProps {
   segment: CodeSegment;
@@ -29,6 +30,7 @@ export const ExternalSegment: React.FC<ExternalSegmentProps> = ({ segment, node,
   const viewMode = useAtomValue(viewModeAtom);
   const setViewMode = useSetAtom(viewModeAtom);
   const setFocusedNodeId = useSetAtom(focusedNodeIdAtom);
+  const { openFile } = useOpenFile();
 
   // Check if active
   const isActive = segment.kinds.includes('external-import') &&
@@ -36,8 +38,35 @@ export const ExternalSegment: React.FC<ExternalSegmentProps> = ({ segment, node,
     (visibleNodeIds.has(segment.definedIn) || visibleNodeIds.has(segment.definedIn.split('::')[0]));
 
   const handleClick = (e: React.MouseEvent) => {
+    console.log('[ExternalSegment] Clicked:', {
+      text: segment.text,
+      definedIn: segment.definedIn,
+      definitionLocation: segment.definitionLocation,
+      viewMode
+    });
+
     e.stopPropagation();
 
+    // IDE 모드: 외부 파일을 새 탭으로 열고 정의 위치로 이동
+    if (viewMode === 'ide' && segment.definedIn) {
+      // definedIn에서 파일 경로 추출 (예: "src/store/atoms.ts" 또는 "src/store/atoms.ts::parseErrorAtom")
+      const filePath = segment.definedIn.split('::')[0];
+
+      console.log('[ExternalSegment] Opening external file:', filePath);
+
+      // definitionLocation이 있고 filePath가 definedIn과 일치하면 라인 번호도 전달
+      if (segment.definitionLocation && segment.definitionLocation.filePath === filePath) {
+        openFile(filePath, {
+          lineNumber: segment.definitionLocation.line
+        });
+      } else {
+        // 라인 번호 없이 파일만 열기
+        openFile(filePath);
+      }
+      return;
+    }
+
+    // Canvas 모드: 기존 동작
     if (!segment.definedIn) return;
 
     // Find target node

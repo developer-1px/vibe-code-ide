@@ -4,15 +4,14 @@
 
 import React, { useEffect, useRef, useCallback } from 'react';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
+import { useHotkeys } from 'react-hotkeys-hook';
 import {
   searchResultsAtom,
   searchFocusedIndexAtom,
-  targetLineAtom,
-  openedFilesAtom,
   collapsedFoldersAtom,
   focusedPaneAtom,
-  activeLocalVariablesAtom,
 } from '../../../store/atoms';
+import { useOpenFile } from '../../Files/lib/useOpenFile';
 import { SearchResultItem } from './SearchResultItem';
 
 interface SearchResultsProps {
@@ -23,10 +22,8 @@ export const SearchResults: React.FC<SearchResultsProps> = ({ onSelect }) => {
   const results = useAtomValue(searchResultsAtom);
   const focusedIndex = useAtomValue(searchFocusedIndexAtom);
   const [collapsedFolders, setCollapsedFolders] = useAtom(collapsedFoldersAtom);
-  const setOpenedFiles = useSetAtom(openedFilesAtom);
-  const setTargetLine = useSetAtom(targetLineAtom);
   const setFocusedPane = useSetAtom(focusedPaneAtom);
-  const setActiveLocalVariables = useSetAtom(activeLocalVariablesAtom);
+  const { openFile } = useOpenFile();
 
   const containerRef = useRef<HTMLDivElement>(null);
   const focusedItemRef = useRef<HTMLDivElement>(null);
@@ -50,8 +47,8 @@ export const SearchResults: React.FC<SearchResultsProps> = ({ onSelect }) => {
 
   const handleSelectResult = useCallback((result: typeof results[0]) => {
     if (result.type === 'file') {
-      // Open file - add to openedFiles
-      setOpenedFiles(prev => new Set([...prev, result.filePath]));
+      // Open file
+      openFile(result.filePath);
     } else if (result.type === 'folder') {
       // Open folder in FolderView (expand recursively)
       const folderPath = result.filePath;
@@ -86,60 +83,46 @@ export const SearchResults: React.FC<SearchResultsProps> = ({ onSelect }) => {
 
       // For Usage: just open file and scroll to line
       if (result.nodeType === 'usage') {
-        // Open file - add to openedFiles
-        setOpenedFiles(prev => new Set([...prev, result.filePath]));
-
-        // Scroll to the usage line
-        setTargetLine({ nodeId: result.filePath, lineNum: result.lineNumber });
-
-        setTimeout(() => {
-          setTargetLine(null);
-        }, 2000);
-
+        openFile(result.filePath, {
+          lineNumber: result.lineNumber
+        });
         return;
       }
 
-      // For Declaration: open file and scroll to symbol location
-      // Open the file containing this symbol
-      setOpenedFiles(prev => new Set([...prev, result.filePath]));
-
-      // Activate focus mode for this symbol (using filePath as key)
-      setActiveLocalVariables((prev: Map<string, Set<string>>) => {
-        const next = new Map(prev);
-        const nodeVars = new Set(next.get(result.filePath) || new Set());
-        nodeVars.add(result.name); // Add the symbol name to focus
-        next.set(result.filePath, nodeVars);
-        console.log('[SearchResults] Activated focus mode for:', result.name, 'in file:', result.filePath);
-        return next;
+      // For Declaration: open file, scroll to symbol, and activate focus mode
+      openFile(result.filePath, {
+        lineNumber: result.lineNumber || 0,
+        focusSymbol: result.name,
+        focusPane: 'canvas'
       });
 
-      // Scroll to the definition line
-      setTargetLine({ nodeId: result.filePath, lineNum: result.lineNumber || 0 });
-
-      // Focus canvas to show the file
-      setFocusedPane('canvas');
-
-      // Clear highlight after 2 seconds
-      setTimeout(() => {
-        setTargetLine(null);
-      }, 2000);
+      console.log('[SearchResults] Activated focus mode for:', result.name, 'in file:', result.filePath);
     }
 
     onSelect();
-  }, [setTargetLine, setOpenedFiles, collapsedFolders, setCollapsedFolders, setFocusedPane, setActiveLocalVariables, onSelect]);
+  }, [openFile, setCollapsedFolders, setFocusedPane, onSelect]);
 
-  // Handle Enter key to select focused result
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Enter' && results.length > 0) {
-        e.preventDefault();
-        handleSelectResult(results[focusedIndex]);
-      }
-    };
+  // Custom hook for search-scoped hotkeys
+  // useHotkeys로 시작하는 네이밍으로 IDE 자동완성에서 쉽게 찾을 수 있음
+  const useHotkeysSearch = (
+    keys: string,
+    callback: (e: KeyboardEvent) => void,
+    deps: any[]
+  ) => {
+    useHotkeys(keys, callback, {
+      scopes: ['search'],
+      enabled: results.length > 0,
+      enableOnFormTags: true
+    }, deps);
+  };
 
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [focusedIndex, results, handleSelectResult]);
+  // Handle Enter key to select focused result - scoped to 'search'
+  useHotkeysSearch('enter', (e) => {
+    if (results.length > 0) {
+      e.preventDefault();
+      handleSelectResult(results[focusedIndex]);
+    }
+  }, [results.length, focusedIndex, handleSelectResult]);
 
   if (results.length === 0) {
     return (

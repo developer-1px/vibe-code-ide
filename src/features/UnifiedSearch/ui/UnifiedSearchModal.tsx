@@ -5,6 +5,7 @@
 
 import React, { useEffect, useMemo } from 'react';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
+import { useHotkeys, useHotkeysContext } from 'react-hotkeys-hook';
 import {
   searchModalOpenAtom,
   searchQueryAtom,
@@ -29,6 +30,20 @@ export const UnifiedSearchModal: React.FC = () => {
   const files = useAtomValue(filesAtom);
   const fullNodeMap = useAtomValue(fullNodeMapAtom);
   const symbolMetadata = useAtomValue(symbolMetadataAtom);
+
+  // Hotkeys scope management
+  const { enableScope, disableScope } = useHotkeysContext();
+
+  // Activate 'search' scope when modal opens, deactivate when closes
+  useEffect(() => {
+    if (isOpen) {
+      enableScope('search');
+      console.log('[UnifiedSearchModal] Enabled search scope');
+    } else {
+      disableScope('search');
+      console.log('[UnifiedSearchModal] Disabled search scope');
+    }
+  }, [isOpen, enableScope, disableScope]);
 
   // Extract all searchable items (files + folders + symbols + usages) from single source
   const allSearchableItems = useMemo(() => {
@@ -57,26 +72,35 @@ export const UnifiedSearchModal: React.FC = () => {
     });
   }, [query, allSearchableItems, isOpen, setResults, setFocusedIndex]);
 
-  // Keyboard shortcuts
-  useEffect(() => {
-    if (!isOpen) return;
+  // Custom hook for search-scoped hotkeys
+  // useHotkeys로 시작하는 네이밍으로 IDE 자동완성에서 쉽게 찾을 수 있음
+  const useHotkeysSearch = (
+    keys: string,
+    callback: (e: KeyboardEvent) => void,
+    deps: any[]
+  ) => {
+    useHotkeys(keys, callback, {
+      scopes: ['search'],
+      enabled: isOpen,
+      enableOnFormTags: true
+    }, deps);
+  };
 
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        e.preventDefault();
-        handleClose();
-      } else if (e.key === 'ArrowDown') {
-        e.preventDefault();
-        setFocusedIndex((prev) => Math.min(prev + 1, results.length - 1));
-      } else if (e.key === 'ArrowUp') {
-        e.preventDefault();
-        setFocusedIndex((prev) => Math.max(prev - 1, 0));
-      }
-    };
+  // Keyboard shortcuts - scoped to 'search'
+  useHotkeysSearch('escape', (e) => {
+    e.preventDefault();
+    handleClose();
+  }, [isOpen]);
 
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+  useHotkeysSearch('down', (e) => {
+    e.preventDefault();
+    setFocusedIndex((prev) => Math.min(prev + 1, results.length - 1));
   }, [isOpen, results.length, setFocusedIndex]);
+
+  useHotkeysSearch('up', (e) => {
+    e.preventDefault();
+    setFocusedIndex((prev) => Math.max(prev - 1, 0));
+  }, [isOpen, setFocusedIndex]);
 
   const handleClose = () => {
     setIsOpen(false);

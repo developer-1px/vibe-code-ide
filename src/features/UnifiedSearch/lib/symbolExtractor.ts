@@ -6,6 +6,7 @@ import * as ts from 'typescript';
 import type { SourceFileNode } from '../../../entities/SourceFileNode/model/types';
 import type { SearchResult } from '../model/types';
 import type { CodeSymbolMetadata } from '../../../entities/CodeSymbol/model/types';
+import { getFileName } from '../../../shared/pathUtils';
 
 /**
  * Extract all identifiers (usages) from a parsed source file
@@ -123,7 +124,7 @@ export function extractAllSearchableItems(
       : undefined;
 
     const uniqueId = isFile ? `file-${node.id}` : `symbol-${node.id}`;
-    const name = isFile ? (node.filePath.split('/').pop() || node.filePath) : node.label;
+    const name = isFile ? getFileName(node.filePath) : node.label;
 
     // Collect declared symbol names for usage extraction
     if (!isFile) {
@@ -159,7 +160,7 @@ export function extractAllSearchableItems(
   // Add files not in dependency graph
   Object.keys(files).forEach(filePath => {
     if (!filesInNodeMap.has(filePath)) {
-      const fileName = filePath.split('/').pop() || filePath;
+      const fileName = getFileName(filePath);
       results.push({
         id: `file-${filePath}`,
         type: 'file',
@@ -183,7 +184,7 @@ export function extractAllSearchableItems(
   });
 
   folderSet.forEach(folderPath => {
-    const folderName = folderPath.split('/').pop() || folderPath;
+    const folderName = getFileName(folderPath);
     results.push({
       id: `folder-${folderPath}`,
       type: 'folder',

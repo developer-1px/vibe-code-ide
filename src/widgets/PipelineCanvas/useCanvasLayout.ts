@@ -19,13 +19,9 @@ export const useCanvasLayout = (
     // Atom setters
     const setLayoutNodesAtom = useSetAtom(layoutNodesAtom);
     const setLayoutLinksAtom = useSetAtom(layoutLinksAtom);
-    const setFullNodeMapAtom = useSetAtom(fullNodeMapAtom);
 
-    const fullNodeMap = useMemo(() => {
-        if (!initialData) return new Map<string, SourceFileNode>();
-        // All files are already parsed by parseProject
-        return new Map<string, SourceFileNode>(initialData.nodes.map(n => [n.id, n]));
-    }, [initialData]);
+    // Read fullNodeMap from atom (now derived from graphDataAtom)
+    const fullNodeMap = useAtomValue(fullNodeMapAtom);
 
     // --- Simple Layout: Just display visible nodes without auto-positioning ---
     useEffect(() => {
@@ -65,8 +61,7 @@ export const useCanvasLayout = (
     useEffect(() => {
         setLayoutNodesAtom(layoutNodes);
         setLayoutLinksAtom(layoutLinks);
-        setFullNodeMapAtom(fullNodeMap);
-    }, [layoutNodes, layoutLinks, fullNodeMap, setLayoutNodesAtom, setLayoutLinksAtom, setFullNodeMapAtom]);
+    }, [layoutNodes, layoutLinks, setLayoutNodesAtom, setLayoutLinksAtom]);
 
     return {
         layoutNodes,

@@ -4,6 +4,7 @@ import { Box as IconBox, AlertCircle as IconAlertCircle, FileCode, X, Settings }
 import { useAtomValue, useSetAtom } from 'jotai';
 import { openedFilesAtom, selectedNodeIdsAtom, layoutNodesAtom, parseErrorAtom } from '../../store/atoms';
 import { useTheme, type ThemeName } from '../../app/theme/ThemeProvider';
+import { getFileName } from '../../shared/pathUtils';
 
 const Header: React.FC = () => {
   const parseError = useAtomValue(parseErrorAtom);
@@ -18,7 +19,7 @@ const Header: React.FC = () => {
   const fileItems = useMemo(() => {
     return Array.from(openedFiles).map(path => ({
       path,
-      name: path.split('/').pop() || path
+      name: getFileName(path)
     }));
   }, [openedFiles]);
 

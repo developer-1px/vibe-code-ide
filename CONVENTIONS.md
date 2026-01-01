@@ -270,6 +270,276 @@ export interface CodeSegment {
 
 ---
 
+## Keyboard Shortcuts (react-hotkeys-hook)
+
+### Scope Management 필수 원칙
+
+**핵심 원칙**: 여러 컴포넌트가 동일한 키를 사용할 때 반드시 **scope 시스템**으로 충돌 방지
+
+#### 🚨 Critical: Scope 없이 사용하면 충돌 발생
+
+```typescript
+// ❌ 잘못된 예 - scope 없음
+// FolderView.tsx
+useHotkeys('down', () => setFocusedIndex(prev => prev + 1), {
+  enabled: true  // scope 없음!
+});
+
+// UnifiedSearchModal.tsx
+useHotkeys('down', () => setFocusedIndex(prev => prev + 1), {
+  enabled: isOpen  // scope 없음!
+});
+
+// 문제: 두 컴포넌트가 동시에 'down' 키를 처리하려고 해서 충돌
+```
+
+#### ✅ 올바른 예 - Scope 시스템 사용
+
+**1단계: App.tsx에서 HotkeysProvider 설정**
+```typescript
+import { HotkeysProvider } from 'react-hotkeys-hook';
+
+function App() {
+  return (
+    <HotkeysProvider initiallyActiveScopes={['sidebar']}>
+      <AppContent />
+    </HotkeysProvider>
+  );
+}
+```
+
+**2단계: 각 컴포넌트마다 고유한 scope 지정**
+
+```typescript
+// widgets/Sidebar/FolderView.tsx - 'sidebar' scope
+import { useHotkeys } from 'react-hotkeys-hook';
+
+const FolderView = () => {
+  useHotkeys('down', () => {
+    setFocusedIndex(prev => prev + 1);
+  }, {
+    scopes: ['sidebar'],           // ✅ 고유 scope
+    enabled: focusedPane === 'sidebar'
+  });
+
+  useHotkeys('up', () => {
+    setFocusedIndex(prev => prev - 1);
+  }, {
+    scopes: ['sidebar'],           // ✅ 고유 scope
+    enabled: focusedPane === 'sidebar'
+  });
+};
+```
+
+```typescript
+// features/UnifiedSearch/ui/UnifiedSearchModal.tsx - 'search' scope
+import { useHotkeys, useHotkeysContext } from 'react-hotkeys-hook';
+
+const UnifiedSearchModal = () => {
+  const [isOpen, setIsOpen] = useAtom(searchModalOpenAtom);
+
+  // Scope 제어 함수
+  const { enableScope, disableScope } = useHotkeysContext();
+
+  // 모달 열릴 때 'search' scope 활성화
+  useEffect(() => {
+    if (isOpen) {
+      enableScope('search');
+      console.log('[UnifiedSearchModal] Enabled search scope');
+    } else {
+      disableScope('search');
+      console.log('[UnifiedSearchModal] Disabled search scope');
+    }
+  }, [isOpen, enableScope, disableScope]);
+
+  // 모든 hotkey에 scopes: ['search'] 지정
+  useHotkeys('escape', (e) => {
+    e.preventDefault();
+    handleClose();
+  }, {
+    scopes: ['search'],             // ✅ 고유 scope
+    enabled: isOpen,
+    enableOnFormTags: true          // input 필드에서도 동작
+  }, [isOpen]);
+
+  useHotkeys('down', (e) => {
+    e.preventDefault();
+    setFocusedIndex((prev) => Math.min(prev + 1, results.length - 1));
+  }, {
+    scopes: ['search'],             // ✅ 고유 scope
+    enabled: isOpen,
+    enableOnFormTags: true          // input 필드에서도 동작
+  }, [isOpen, results.length, setFocusedIndex]);
+};
+```
+
+### Scope 시스템 작동 방식
+
+**Scope 격리 (Isolation)**:
+- 모달 닫혀있을 때: `'sidebar'` scope 활성화 → FolderView의 down/up 작동
+- 모달 열렸을 때: `'search'` scope 활성화 → UnifiedSearchModal의 down/up 작동
+- **충돌 없음!** 각 scope에서 독립적으로 동일한 키 사용 가능
+
+### enableOnFormTags 옵션
+
+**언제 `true`로 설정하는가?**
+
+```typescript
+// ✅ enableOnFormTags: true
+// input/textarea에서도 단축키가 작동해야 할 때
+useHotkeys('escape', handleClose, {
+  scopes: ['search'],
+  enableOnFormTags: true  // ✅ input에 포커스 있어도 ESC는 작동
+});
+
+useHotkeys('down', handleNavigate, {
+  scopes: ['search'],
+  enableOnFormTags: true  // ✅ input에서 검색 중에도 화살표로 결과 탐색
+});
+
+// ❌ enableOnFormTags: false (기본값)
+// 일반적인 경우 - input에서는 타이핑이 우선
+useHotkeys('ctrl+s', handleSave, {
+  scopes: ['editor'],
+  enableOnFormTags: false  // input에서는 Ctrl+S가 브라우저 기본 동작
+});
+```
+
+### useHotkeys 시그니처
+
+```typescript
+useHotkeys(
+  keys: string,              // 'down', 'escape', 'ctrl+k', 'shift+shift'
+  callback: (e: KeyboardEvent) => void,
+  options: {
+    scopes?: string[],       // ✅ 필수! 고유한 scope 지정
+    enabled?: boolean,       // 조건부 활성화
+    enableOnFormTags?: boolean  // input/textarea에서도 작동 여부
+  },
+  dependencies: any[]        // ✅ 필수! callback에서 사용하는 모든 값
+);
+```
+
+### 의존성 배열 (Dependencies)
+
+**❌ 의존성 배열 없으면 stale closure 발생**
+```typescript
+// ❌ 잘못된 예
+useHotkeys('down', () => {
+  setFocusedIndex(prev => Math.min(prev + 1, results.length - 1));
+}, {
+  scopes: ['search'],
+  enabled: isOpen
+});
+// 문제: results.length가 변해도 이전 값 참조
+```
+
+**✅ 의존성 배열 제대로 지정**
+```typescript
+// ✅ 올바른 예
+useHotkeys('down', () => {
+  setFocusedIndex(prev => Math.min(prev + 1, results.length - 1));
+}, {
+  scopes: ['search'],
+  enabled: isOpen,
+  enableOnFormTags: true
+}, [isOpen, results.length, setFocusedIndex]);
+// ✅ callback에서 사용하는 모든 값을 배열에 포함
+```
+
+### Scope 명명 규칙
+
+| Component/Feature | Scope Name | 설명 |
+|-------------------|------------|------|
+| Sidebar (FolderView) | `'sidebar'` | 파일 탐색기 키보드 내비게이션 |
+| UnifiedSearchModal | `'search'` | 통합 검색 모달 |
+| CodeCard/Canvas | `'canvas'` | 캔버스 내비게이션 (향후) |
+| IDEView | `'ide'` | IDE 모드 (향후) |
+
+### 커스텀 Scope Hook 패턴 (권장)
+
+**네이밍 규칙**: `useHotkeys` 접두사 + scope 이름 → IDE 자동완성에서 찾기 쉬움
+
+```typescript
+// ✅ 권장 패턴: 커스텀 훅으로 scope 옵션 캡슐화
+const UnifiedSearchModal = () => {
+  const [isOpen, setIsOpen] = useAtom(searchModalOpenAtom);
+  const [results, setResults] = useAtom(searchResultsAtom);
+
+  // useHotkeys로 시작하는 네이밍으로 IDE 자동완성 활용
+  const useHotkeysSearch = (
+    keys: string,
+    callback: (e: KeyboardEvent) => void,
+    deps: any[]
+  ) => {
+    useHotkeys(keys, callback, {
+      scopes: ['search'],
+      enabled: isOpen,
+      enableOnFormTags: true
+    }, deps);
+  };
+
+  // 사용: 매번 옵션 반복하지 않고 간결하게
+  useHotkeysSearch('escape', (e) => {
+    e.preventDefault();
+    handleClose();
+  }, [isOpen]);
+
+  useHotkeysSearch('down', (e) => {
+    e.preventDefault();
+    setFocusedIndex(prev => Math.min(prev + 1, results.length - 1));
+  }, [isOpen, results.length, setFocusedIndex]);
+};
+```
+
+**장점**:
+- ✅ IDE에서 `useHotkeys` 타이핑하면 `useHotkeysSearch`가 자동완성
+- ✅ 옵션 중복 제거, 한 곳에서 관리
+- ✅ 실수로 다른 scope 사용하는 것 방지
+- ✅ 컴포넌트 로직과 scope 설정 분리
+
+**명명 규칙**:
+- `useHotkeysSearch` - 검색 모달 (scope: 'search')
+- `useHotkeysSidebar` - 사이드바 (scope: 'sidebar')
+- `useHotkeysCanvas` - 캔버스 (scope: 'canvas')
+
+### 체크리스트
+
+새로운 컴포넌트에 키보드 단축키를 추가할 때:
+- [ ] App.tsx에 HotkeysProvider가 설정되어 있는가?
+- [ ] 고유한 scope 이름을 정했는가? (기존 scope와 중복 방지)
+- [ ] `useHotkeys{ScopeName}` 형태의 커스텀 훅을 만들었는가? (권장)
+- [ ] 모달/동적 컴포넌트인 경우 `useHotkeysContext()`로 scope를 활성화/비활성화하는가?
+- [ ] input 필드에서도 동작해야 하는 키는 `enableOnFormTags: true`를 설정했는가?
+- [ ] 의존성 배열을 제대로 지정했는가?
+
+### 디버깅 팁
+
+```typescript
+// Scope 활성화/비활성화 로그 추가
+useEffect(() => {
+  if (isOpen) {
+    enableScope('search');
+    console.log('[ComponentName] Enabled search scope');
+  } else {
+    disableScope('search');
+    console.log('[ComponentName] Disabled search scope');
+  }
+}, [isOpen, enableScope, disableScope]);
+
+// 단축키가 작동하는지 테스트
+useHotkeys('down', (e) => {
+  console.log('[ComponentName] Down key pressed');
+  // 실제 로직
+}, {
+  scopes: ['search'],
+  enabled: isOpen,
+  enableOnFormTags: true
+}, [isOpen]);
+```
+
+---
+
 ## Component Structure
 
 ### Feature Component Template

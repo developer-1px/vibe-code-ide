@@ -3,10 +3,9 @@
  */
 
 import React, { useState } from 'react';
-import { useSetAtom, useAtomValue } from 'jotai';
 import type { CodeSegment, SegmentStyle } from '../../core/types';
 import type { CanvasNode } from '../../../../entities/CanvasNode/model/types';
-import { visibleNodeIdsAtom, fullNodeMapAtom, lastExpandedIdAtom, targetLineAtom } from '../../../../store/atoms';
+import { useGotoDefinition } from '../../../../features/GotoDefinition/lib/useGotoDefinition';
 
 interface DefinitionSegmentProps {
   segment: CodeSegment;
@@ -15,58 +14,20 @@ interface DefinitionSegmentProps {
 }
 
 export const DefinitionSegment: React.FC<DefinitionSegmentProps> = ({ segment, node, style }) => {
-  const setVisibleNodeIds = useSetAtom(visibleNodeIdsAtom);
-  const fullNodeMap = useAtomValue(fullNodeMapAtom);
-  const setLastExpandedId = useSetAtom(lastExpandedIdAtom);
-  const setTargetLine = useSetAtom(targetLineAtom);
-
+  const { handleGotoDefinitionByLocation } = useGotoDefinition();
   const [showTooltip, setShowTooltip] = useState(false);
 
   const handleClick = (e: React.MouseEvent) => {
     e.stopPropagation();
+
     if (!segment.definitionLocation) return;
 
-    const { filePath, line } = segment.definitionLocation;
-
-    // Find all nodes from the target file
-    const nodesInFile = Array.from(fullNodeMap.values()).filter(
-      n => n.filePath === filePath
+    // 일반 클릭도 정의로 이동 (DefinitionSegment는 항상 이동)
+    // Cmd 키 없이도 동작하도록 강제 실행
+    handleGotoDefinitionByLocation(
+      { ...e, metaKey: true } as React.MouseEvent,
+      segment.definitionLocation
     );
-
-    // Find the node that contains this line
-    let targetNode = nodesInFile.find(n => n.startLine === line);
-
-    if (!targetNode) {
-      targetNode = nodesInFile.find(
-        n =>
-          n.startLine !== undefined &&
-          line >= n.startLine
-      );
-    }
-
-    if (!targetNode) {
-      // Fallback: open file node
-      targetNode = fullNodeMap.get(filePath);
-    }
-
-    if (!targetNode) {
-      console.warn('[Go to Definition] No node found for', { filePath, line });
-      return;
-    }
-
-    // Open the target node
-    setVisibleNodeIds((prev: Set<string>) => {
-      const next = new Set(prev);
-      next.add(targetNode!.id);
-      return next;
-    });
-
-    setLastExpandedId(targetNode.id);
-    setTargetLine({ nodeId: targetNode.id, lineNum: line });
-
-    setTimeout(() => {
-      setTargetLine(null);
-    }, 2000);
   };
 
   return (

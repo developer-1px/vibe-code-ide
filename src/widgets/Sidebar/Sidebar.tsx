@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import { useAtom, useAtomValue } from 'jotai';
+import { useDrag } from '@use-gesture/react';
 import { FolderTree } from 'lucide-react';
 import { filesAtom, isSidebarOpenAtom, viewModeAtom } from '../../store/atoms';
 import UploadFolderButton from '../../features/UploadFolderButton';
@@ -10,32 +11,19 @@ export const Sidebar: React.FC = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useAtom(isSidebarOpenAtom);
   const viewMode = useAtomValue(viewModeAtom);
   const [width, setWidth] = useState(300);
-  const [isResizing, setIsResizing] = useState(false);
+  const initialWidth = useRef(300);
 
-  useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      if (!isResizing) return;
-
-      const newWidth = e.clientX;
-      if (newWidth >= 250 && newWidth <= 800) {
-        setWidth(newWidth);
-      }
-    };
-
-    const handleMouseUp = () => {
-      setIsResizing(false);
-    };
-
-    if (isResizing) {
-      document.addEventListener('mousemove', handleMouseMove);
-      document.addEventListener('mouseup', handleMouseUp);
+  // useDrag 훅을 사용한 리사이징 처리
+  const bind = useDrag(({ movement: [mx], first, last }) => {
+    if (first) {
+      initialWidth.current = width;
     }
 
-    return () => {
-      document.removeEventListener('mousemove', handleMouseMove);
-      document.removeEventListener('mouseup', handleMouseUp);
-    };
-  }, [isResizing]);
+    const newWidth = initialWidth.current + mx;
+    if (newWidth >= 250 && newWidth <= 800) {
+      setWidth(newWidth);
+    }
+  });
 
   if (!isSidebarOpen) {
     return null;
@@ -66,8 +54,8 @@ export const Sidebar: React.FC = () => {
 
       {/* Resize Handle */}
       <div
-        onMouseDown={() => setIsResizing(true)}
-        className={`absolute top-0 right-0 w-1 h-full cursor-col-resize hover:bg-vibe-accent/50 ${isResizing ? 'bg-vibe-accent' : ''}`}
+        {...bind()}
+        className="absolute top-0 right-0 w-1 h-full cursor-col-resize hover:bg-vibe-accent/50 active:bg-vibe-accent touch-none"
       />
     </div>
   );
