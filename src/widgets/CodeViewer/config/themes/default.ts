@@ -12,10 +12,10 @@ export const defaultTheme: CodeTheme = {
     lineHeight: 'leading-[1rem]'
   },
   colors: {
-    background: 'bg-[#0b1221]',
+    background: 'bg-[#080a0f]',         // 파란색 → 검은색에 가깝게 (약간의 파란 힌트만)
     lineNumber: {
       text: 'text-slate-600',
-      background: 'bg-[#0f172a]/50',
+      background: 'bg-[#0a0c10]/50',    // 배경과 조화롭게
       border: 'border-white/5'
     },
     code: {
@@ -38,9 +38,9 @@ export const defaultTheme: CodeTheme = {
     tokens: {
       // Syntax highlighting
       text: 'text-slate-300',
-      keyword: 'text-purple-400',
+      keyword: 'text-purple-300/90',      // 보라색 톤 다운 + 약간의 투명도
       punctuation: 'text-slate-400',
-      string: 'text-orange-300',
+      string: 'text-amber-200/85',        // 오렌지 → 앰버로 변경 + 투명도로 부드럽게
       comment: 'text-slate-400/85',
       commentFocus: 'text-slate-400',
 
@@ -55,7 +55,7 @@ export const defaultTheme: CodeTheme = {
       externalFunction: 'text-purple-300',
 
       // Local scope
-      parameter: 'text-orange-300',
+      parameter: 'text-amber-200/85',     // string과 통일감 있게
       localVariable: 'text-cyan-200',
 
       // Focus mode
