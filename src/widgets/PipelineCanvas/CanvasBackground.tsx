@@ -49,7 +49,7 @@ const CanvasBackground: React.FC = () => {
             {componentGroups.map(group => (
                 <div
                     key={group.filePath}
-                    className="absolute border-2 border-dashed border-gray-700/50 bg-gray-800/20 rounded-xl pointer-events-none transition-all duration-500"
+                    className="absolute border-2 border-dashed border-theme-border/50 bg-theme-canvas/20 rounded-xl pointer-events-none transition-all duration-500"
                     style={{
                         left: group.minX,
                         top: group.minY,
@@ -58,7 +58,7 @@ const CanvasBackground: React.FC = () => {
                         zIndex: 0
                     }}
                 >
-                    <div className="absolute -top-10 left-0 flex items-center gap-2 px-3 py-1.5 bg-gray-800/80 rounded-t-lg border border-gray-700 border-b-0 text-gray-300">
+                    <div className="absolute -top-10 left-0 flex items-center gap-2 px-3 py-1.5 bg-theme-canvas/80 rounded-t-lg border border-theme-border border-b-0 text-theme-text-primary">
                         <IconLayers className="w-4 h-4 text-vibe-purple" />
                         <span className="text-sm font-semibold">{group.label}</span>
                     </div>

@@ -53,30 +53,30 @@ const FolderItemView: React.FC<FolderItemViewProps> = ({
         onDoubleClick={handleDoubleClick}
         className={`flex items-center gap-1 py-0.5 px-2 text-[11px] cursor-pointer transition-colors group ${
           isFocused
-            ? 'text-gray-100 bg-white/10 border-l-2 border-gray-500'
-            : 'text-gray-300 border-l-2 border-transparent'
+            ? 'text-theme-text-primary bg-theme-active border-l-2 border-theme-border-strong'
+            : 'text-theme-text-secondary border-l-2 border-transparent'
         }`}
         style={{ paddingLeft: `${paddingLeft}px` }}
       >
         {isCollapsed ? (
           <ChevronRight
-            className="w-2.5 h-2.5 flex-shrink-0 text-gray-500"
+            className="w-2.5 h-2.5 flex-shrink-0 text-theme-text-tertiary"
             onClick={handleChevronClick}
           />
         ) : (
           <ChevronDown
-            className="w-2.5 h-2.5 flex-shrink-0 text-gray-500"
+            className="w-2.5 h-2.5 flex-shrink-0 text-theme-text-tertiary"
             onClick={handleChevronClick}
           />
         )}
         {isCollapsed ? (
-          <Folder className={`w-2.5 h-2.5 flex-shrink-0 ${isFocused ? 'text-amber-400' : 'text-amber-400/70'}`} />
+          <Folder className={`w-2.5 h-2.5 flex-shrink-0 ${isFocused ? 'text-theme-amber' : 'text-theme-amber/70'}`} />
         ) : (
-          <FolderOpen className={`w-2.5 h-2.5 flex-shrink-0 ${isFocused ? 'text-amber-400' : 'text-amber-400/70'}`} />
+          <FolderOpen className={`w-2.5 h-2.5 flex-shrink-0 ${isFocused ? 'text-theme-amber' : 'text-theme-amber/70'}`} />
         )}
         <span className="truncate font-medium">{node.name}</span>
         {node.children && (
-          <span className="text-gray-600 text-[9px] ml-auto">({node.children.length})</span>
+          <span className="text-theme-text-tertiary text-[9px] ml-auto">({node.children.length})</span>
         )}
       </div>
 

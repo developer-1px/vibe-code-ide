@@ -15,10 +15,52 @@
               mono: ['Fira Code', 'monospace'],
             },
             colors: {
-              'vibe-dark': '#070707',      // 더 어두운 검은색
-              'vibe-panel': '#0a0a0a',     // 거의 검은색
-              'vibe-border': '#2a2a2a',    // 중성 회색 테두리
-              'vibe-accent': '#e5e5e5',    // 밝은 회색 (파란색 제거)
+              // Semantic theme tokens
+              theme: {
+                // Backgrounds
+                background: '#070707',    // Main app background
+                canvas: '#0d0d0d',        // Canvas/workspace area
+                sidebar: '#121212',       // Sidebar background
+                header: '#0a0a0a',        // Header background
+                panel: '#0a0a0a',         // Panel/card background
+
+                // Borders
+                border: {
+                  DEFAULT: '#2a2a2a',     // Default border
+                  subtle: '#1a1a1a',      // Subtle border
+                  strong: '#3a3a3a',      // Strong border
+                },
+
+                // Text
+                text: {
+                  primary: '#e5e5e5',     // Primary text
+                  secondary: '#a3a3a3',   // Secondary text
+                  tertiary: '#737373',    // Tertiary/muted text
+                  accent: '#e5e5e5',      // Accent text
+                },
+
+                // Interactive states
+                hover: 'rgba(255, 255, 255, 0.05)',
+                active: 'rgba(255, 255, 255, 0.1)',
+                focus: 'rgba(255, 255, 255, 0.15)',
+
+                // Status colors
+                success: '#4ade80',
+                warning: '#fbbf24',
+                error: '#f87171',
+                info: '#d4d4d4',
+
+                // Special
+                purple: '#a78bfa',
+                amber: '#fbbf24',
+                emerald: '#4ade80',
+              },
+
+              // Legacy tokens (for backward compatibility)
+              'vibe-dark': '#070707',
+              'vibe-panel': '#0a0a0a',
+              'vibe-border': '#2a2a2a',
+              'vibe-accent': '#e5e5e5',
               'vibe-success': '#4ade80',
               'vibe-purple': '#a78bfa',
             }
@@ -28,23 +70,24 @@
     </script>
     <style>
       body {
-        background-color: #070707;  /* 더 어두운 검은색 */
-        color: #e5e5e5;            /* 밝은 회색 텍스트 */
+        background-color: #070707;
+        color: #e5e5e5;
       }
+
       /* Custom Scrollbar */
       ::-webkit-scrollbar {
         width: 8px;
         height: 8px;
       }
       ::-webkit-scrollbar-track {
-        background: #0d0d0d;       /* 더 어두운 트랙 */
+        background: #0d0d0d;
       }
       ::-webkit-scrollbar-thumb {
-        background: #3a3a3a;       /* 중성 회색 썸 */
+        background: #3a3a3a;
         border-radius: 4px;
       }
       ::-webkit-scrollbar-thumb:hover {
-        background: #4a4a4a;       /* hover 시 약간 밝게 */
+        background: #4a4a4a;
       }
     </style>
   <script type="importmap">

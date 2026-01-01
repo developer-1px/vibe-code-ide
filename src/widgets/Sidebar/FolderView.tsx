@@ -281,7 +281,7 @@ const FolderView = ({ files }: { files: Record<string, string> }) => {
       {fileTree.length > 0 ? (
         <div>{fileTree.map((node) => renderNode(node, 0))}</div>
       ) : (
-        <div className="px-3 py-6 text-[11px] text-gray-500 text-center">No files</div>
+        <div className="px-3 py-6 text-[11px] text-theme-text-secondary text-center">No files</div>
       )}
     </div>
   );

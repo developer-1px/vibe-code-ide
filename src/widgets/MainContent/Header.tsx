@@ -37,31 +37,31 @@ const Header: React.FC = () => {
   };
 
   return (
-    <header className="h-10 bg-vibe-panel border-b border-vibe-border flex items-center px-4 relative z-50 flex-shrink-0">
+    <header className="h-10 bg-theme-header border-b border-theme-border flex items-center px-4 relative z-50 flex-shrink-0">
       <div className="flex items-center gap-3">
-        <h1 className="font-bold text-sm text-gray-100 flex items-center gap-2">
-          <IconBox className="w-4 h-4 text-vibe-accent" />
+        <h1 className="font-bold text-sm text-theme-text-primary flex items-center gap-2">
+          <IconBox className="w-4 h-4 text-theme-text-accent" />
           Teo's Devtools
         </h1>
 
-        <span className="text-xs text-gray-500">Project Logic Visualization</span>
+        <span className="text-xs text-theme-text-secondary">Project Logic Visualization</span>
       </div>
 
       {/* Center - Opened Files */}
       {fileItems.length > 0 && (
         <div className="absolute left-1/2 -translate-x-1/2 flex items-center gap-1.5">
-          <FileCode className="w-3.5 h-3.5 text-vibe-accent flex-shrink-0" />
+          <FileCode className="w-3.5 h-3.5 text-theme-text-accent flex-shrink-0" />
           <div className="flex items-center gap-1.5">
             {fileItems.map((file) => (
               <button
                 key={file.path}
                 onClick={() => handleFileClick(file.path)}
-                className="group flex items-center gap-1 px-2 py-0.5 bg-vibe-accent/10 hover:bg-vibe-accent/20 border border-vibe-accent/20 hover:border-vibe-accent/40 rounded text-[11px] font-medium text-gray-300 hover:text-gray-100 transition-all"
+                className="group flex items-center gap-1 px-2 py-0.5 bg-theme-active hover:bg-theme-focus border border-theme-border hover:border-theme-border-strong rounded text-[11px] font-medium text-theme-text-secondary hover:text-theme-text-primary transition-all"
                 title={file.path}
               >
                 <span>{file.name}</span>
                 <X
-                  className="w-3 h-3 text-gray-500 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-opacity"
+                  className="w-3 h-3 text-theme-text-tertiary hover:text-theme-error opacity-0 group-hover:opacity-100 transition-opacity"
                   onClick={(e) => handleRemoveFile(e, file.path)}
                 />
               </button>
@@ -72,12 +72,12 @@ const Header: React.FC = () => {
 
       <div className="flex gap-2 items-center text-xs ml-auto">
         {parseError ? (
-          <span className="px-2 py-0.5 bg-red-500/10 text-red-400 rounded text-[10px] border border-red-500/20 flex items-center gap-1">
+          <span className="px-2 py-0.5 bg-theme-error/10 text-theme-error rounded text-[10px] border border-theme-error/20 flex items-center gap-1">
             <IconAlertCircle className="w-3 h-3" />
             Syntax Error
           </span>
         ) : (
-          <span className="px-2 py-0.5 bg-vibe-accent/10 text-vibe-accent rounded text-[10px] border border-vibe-accent/20">
+          <span className="px-2 py-0.5 bg-theme-success/10 text-theme-success rounded text-[10px] border border-theme-success/20">
             Project Analysis Active
           </span>
         )}
@@ -86,17 +86,17 @@ const Header: React.FC = () => {
         <div className="relative">
           <button
             onClick={() => setShowThemeMenu(!showThemeMenu)}
-            className="p-1.5 hover:bg-white/5 rounded transition-colors"
+            className="p-1.5 hover:bg-theme-hover rounded transition-colors"
             title="Theme Settings"
           >
-            <Settings className="w-4 h-4 text-gray-400 hover:text-gray-200" />
+            <Settings className="w-4 h-4 text-theme-text-secondary hover:text-theme-text-primary" />
           </button>
 
           {/* Theme Menu Dropdown */}
           {showThemeMenu && (
-            <div className="absolute right-0 top-full mt-1 bg-vibe-panel border border-vibe-border rounded-lg shadow-xl z-50 min-w-[160px] overflow-hidden">
-              <div className="px-3 py-2 border-b border-vibe-border">
-                <div className="text-xs font-semibold text-gray-300">Code Theme</div>
+            <div className="absolute right-0 top-full mt-1 bg-theme-panel border border-theme-border rounded-lg shadow-xl z-50 min-w-[160px] overflow-hidden">
+              <div className="px-3 py-2 border-b border-theme-border">
+                <div className="text-xs font-semibold text-theme-text-primary">Code Theme</div>
               </div>
               <div className="py-1">
                 {(['default', 'jetbrains', 'vscode'] as ThemeName[]).map((theme) => (
@@ -108,8 +108,8 @@ const Header: React.FC = () => {
                     }}
                     className={`w-full px-3 py-2 text-left text-xs transition-colors ${
                       currentTheme === theme
-                        ? 'bg-vibe-accent/20 text-vibe-accent font-medium'
-                        : 'text-gray-300 hover:bg-white/5 hover:text-gray-100'
+                        ? 'bg-theme-active text-theme-text-accent font-medium'
+                        : 'text-theme-text-secondary hover:bg-theme-hover hover:text-theme-text-primary'
                     }`}
                   >
                     {theme === 'default' && 'Default (Dark)'}
