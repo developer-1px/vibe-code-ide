@@ -2,12 +2,13 @@
 import React, { useEffect } from 'react';
 import { Provider, useAtomValue, useSetAtom } from 'jotai';
 import { HotkeysProvider } from 'react-hotkeys-hook';
+import { ThemeProvider } from './app/theme';
 import Sidebar from './widgets/Sidebar/Sidebar';
 import Header from './widgets/MainContent/Header.tsx';
 import PipelineCanvas from './widgets/PipelineCanvas.tsx';
 import LeftSideToolbar from './widgets/LeftSideToolbar/LeftSideToolbar';
 import JotaiDevTools from './widgets/JotaiDevTools/JotaiDevTools';
-import { UnifiedSearchModal } from './features/UnifiedSearch/UnifiedSearchModal';
+import { UnifiedSearchModal } from './features/UnifiedSearch';
 import { KeyboardShortcuts } from './features/KeyboardShortcuts';
 import { store } from './store/store';
 import { filesAtom, graphDataAtom, parseErrorAtom } from './store/atoms';
@@ -31,7 +32,7 @@ const AppContent: React.FC = () => {
   }, [files, setGraphData, setParseError]);
 
   return (
-    <div className="flex h-screen w-screen overflow-hidden bg-vibe-dark text-slate-200 font-sans">
+    <div className="flex h-screen w-screen overflow-hidden bg-theme-background text-theme-text-primary font-sans">
       {/* 키보드 단축키 관리 */}
       <KeyboardShortcuts />
 
@@ -44,7 +45,7 @@ const AppContent: React.FC = () => {
         <Header />
 
         {/* Main Layout: Canvas with Floating Sidebar */}
-        <div className="flex-1 relative overflow-hidden bg-[#0f172a]">
+        <div className="flex-1 relative overflow-hidden bg-theme-background">
           {/* Canvas Area */}
           <PipelineCanvas />
 
@@ -54,7 +55,7 @@ const AppContent: React.FC = () => {
       </div>
 
       {/* Jotai DevTools */}
-      <JotaiDevTools />
+      {/*<JotaiDevTools />*/}
 
       {/* Unified Search Modal (Shift+Shift) */}
       <UnifiedSearchModal />
@@ -65,9 +66,11 @@ const AppContent: React.FC = () => {
 const App: React.FC = () => {
   return (
     <Provider store={store}>
-      <HotkeysProvider initiallyActiveScopes={['sidebar']}>
-        <AppContent />
-      </HotkeysProvider>
+      <ThemeProvider initialTheme="default">
+        <HotkeysProvider initiallyActiveScopes={['sidebar']}>
+          <AppContent />
+        </HotkeysProvider>
+      </ThemeProvider>
     </Provider>
   );
 };

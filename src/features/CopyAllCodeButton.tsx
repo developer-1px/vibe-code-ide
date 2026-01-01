@@ -59,19 +59,19 @@ const CopyAllCodeButton: React.FC = () => {
     <div className="absolute bottom-6 right-6 z-40">
       <button
         onClick={handleCopyAllCode}
-        className="bg-vibe-panel/90 backdrop-blur px-4 py-2.5 rounded-lg border border-vibe-border text-slate-200 hover:text-white hover:border-vibe-accent flex items-center gap-2 text-sm shadow-xl transition-all font-medium group"
+        className="bg-theme-panel/90 backdrop-blur px-4 py-2.5 rounded-lg border border-theme-border text-theme-text-primary hover:text-theme-text-accent hover:border-theme-text-accent flex items-center gap-2 text-sm shadow-xl transition-all font-medium group"
         title="Copy all visible code for AI analysis"
       >
         {isAllCopied ? (
           <>
-            <IconCheck className="w-4 h-4 text-emerald-400" />
-            <span className="text-emerald-400">Copied!</span>
+            <IconCheck className="w-4 h-4 text-theme-success" />
+            <span className="text-theme-success">Copied!</span>
           </>
         ) : (
           <>
-            <IconCopy className="w-4 h-4 text-purple-400 group-hover:text-purple-300" />
+            <IconCopy className="w-4 h-4 text-theme-purple group-hover:text-theme-purple/80" />
             <span>Copy All for AI</span>
-            <span className="text-xs text-slate-500 bg-slate-800/50 px-1.5 py-0.5 rounded">
+            <span className="text-xs text-theme-text-tertiary bg-theme-canvas/50 px-1.5 py-0.5 rounded">
               {layoutNodes.length} nodes
             </span>
           </>

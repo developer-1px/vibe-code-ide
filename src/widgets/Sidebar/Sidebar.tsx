@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAtom, useAtomValue } from 'jotai';
-import { FileCode as IconFileCode, FolderTree } from 'lucide-react';
+import { FolderTree } from 'lucide-react';
 import { filesAtom, isSidebarOpenAtom } from '../../store/atoms';
-import ResetFilesButton from '../../features/ResetFilesButton';
 import UploadFolderButton from '../../features/UploadFolderButton';
 import FolderView from './FolderView';
 
@@ -43,12 +42,12 @@ export const Sidebar: React.FC = () => {
 
   return (
     <div
-      className="absolute top-0 left-0 h-full bg-vibe-panel border-r border-vibe-border flex flex-col select-none shadow-2xl z-50 transition-transform duration-200 ease-out"
+      className="absolute top-0 left-0 h-full bg-theme-sidebar border-r border-theme-border flex flex-col select-none shadow-2xl z-50 transition-transform duration-200 ease-out"
       style={{ width: `${width}px` }}
     >
       {/* Compact Header */}
-      <div className="px-2 py-1 border-b border-vibe-border/50 flex items-center justify-between flex-shrink-0 bg-black/10">
-        <div className="flex items-center gap-1.5 text-[10px] text-slate-500 font-medium uppercase tracking-wide">
+      <div className="px-2 py-1 border-b border-theme-border/50 flex items-center justify-between flex-shrink-0">
+        <div className="flex items-center gap-1.5 text-[10px] text-theme-text-tertiary font-medium uppercase tracking-wide">
           <FolderTree className="w-2.5 h-2.5" />
           <span>Project</span>
         </div>
@@ -57,15 +56,6 @@ export const Sidebar: React.FC = () => {
 
       {/* Folder View */}
       <FolderView files={files} />
-
-      {/* Footer */}
-      <div className="p-3 border-t border-vibe-border bg-[#162032] flex justify-between items-center flex-shrink-0">
-        <div className="flex items-center gap-2 text-xs text-slate-500">
-          <IconFileCode className="w-3 h-3" />
-          <span>TypeScript Project</span>
-        </div>
-        <ResetFilesButton />
-      </div>
 
       {/* Resize Handle */}
       <div

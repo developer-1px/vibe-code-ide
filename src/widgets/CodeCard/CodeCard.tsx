@@ -3,17 +3,15 @@ import { useAtomValue, useSetAtom } from 'jotai';
 import { CanvasNode } from '../../entities/CanvasNode';
 
 // Lib - Pure Utilities
-import { renderCodeLinesDirect } from '../../entities/CodeRenderer/lib/renderCodeLinesDirect';
-import { renderVueFile } from '../../entities/CodeRenderer/lib/renderVueFile';
-import type { CodeLine } from '../../entities/CodeRenderer/model/types';
+import { renderCodeLinesDirect, renderVueFile } from '../CodeViewer/core';
+import type { CodeLine } from '../CodeViewer/core/types';
 import { getNodeBorderColor } from '../../entities/SourceFileNode/lib/styleUtils';
 import { getFoldableLinesByMaxDepth, calculateFoldRanges } from '../../features/CodeFold/lib';
 
 // UI Components
 import CodeCardHeader from './ui/CodeCardHeader';
 import CodeCardCopyButton from './ui/CodeCardCopyButton';
-import CodeCardLine from './ui/CodeCardLine';
-import VueTemplateSection from './ui/VueTemplateSection';
+import { CodeViewer, VueTemplateSection } from '../CodeViewer';
 
 // Atoms
 import { foldedLinesAtom, cardPositionsAtom, filesAtom } from '../../store/atoms';
@@ -73,7 +71,7 @@ const CodeCard = ({ node }: { node: CanvasNode }) => {
       ref={cardRef}
       id={`node-${node.visualId || node.id}`}
       className={`
-        bg-vibe-panel/95 backdrop-blur-md border shadow-2xl rounded-lg flex flex-col relative group/card overflow-visible transition-colors
+        bg-theme-panel/95 backdrop-blur-md border shadow-2xl rounded-lg flex flex-col relative group/card overflow-visible transition-colors
         ${getNodeBorderColor(node.type)}
         min-w-[420px] max-w-[700px] w-fit cursor-default
       `}
@@ -83,24 +81,11 @@ const CodeCard = ({ node }: { node: CanvasNode }) => {
 
       {/* Code Lines (script가 있을 때만) */}
       {processedLines.length > 0 && (
-        <div className="flex flex-col bg-[#0b1221] py-2">
-          {processedLines.map((line) => {
-            // Check for duplicate line numbers
-            const duplicates = processedLines.filter(l => l.num === line.num);
-            if (duplicates.length > 1) {
-              console.warn(`[CodeCard] Duplicate line number detected: ${line.num} in node ${node.id}`, duplicates);
-            }
-
-            return (
-              <CodeCardLine
-                key={`${node.id}-line-${line.num}`}
-                line={line}
-                node={node}
-                foldRanges={foldRanges}
-              />
-            );
-          })}
-        </div>
+        <CodeViewer
+          processedLines={processedLines}
+          node={node}
+          foldRanges={foldRanges}
+        />
       )}
 
       {/* Vue Template Section (파일 노드이면서 vueTemplate이 있을 때만) */}

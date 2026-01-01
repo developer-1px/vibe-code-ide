@@ -23,7 +23,7 @@ const ResetViewButton: React.FC = () => {
     <div className="absolute top-4 right-4 z-40 flex gap-2">
       <button
         onClick={handleReset}
-        className="bg-vibe-panel/90 backdrop-blur px-4 py-2 rounded-lg border border-vibe-border text-slate-200 hover:text-white hover:border-vibe-accent flex items-center gap-2 text-sm shadow-xl transition-all font-medium"
+        className="bg-theme-panel/90 backdrop-blur px-4 py-2 rounded-lg border border-theme-border text-theme-text-primary hover:text-theme-text-accent hover:border-theme-text-accent flex items-center gap-2 text-sm shadow-xl transition-all font-medium"
       >
         <IconRotateCcw className="w-4 h-4 text-pink-500" />
         Reset View

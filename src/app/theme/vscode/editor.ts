@@ -1,0 +1,77 @@
+/**
+ * VSCode Dark+ Editor Theme
+ * Based on Visual Studio Code's Dark+ color scheme
+ */
+
+import type { EditorTheme } from '../types';
+
+export const vscodeEditorTheme: EditorTheme = {
+  name: 'vscode',
+  typography: {
+    fontSize: 'text-sm',        // VSCode's comfortable reading size
+    fontFamily: 'font-mono',
+    lineHeight: 'leading-[1.5]' // VSCode's generous line spacing
+  },
+  colors: {
+    background: 'bg-[#252526]',  // VSCode editor background
+    lineNumber: {
+      text: 'text-[#858585]',           // VSCode line number gray
+      background: 'bg-[#1e1e1e]',       // Darker gutter
+      border: 'border-[#2b2b2b]'        // Subtle border
+    },
+    code: {
+      normal: 'text-[#cccccc]',         // VSCode default text
+      comment: {
+        normal: 'text-[#6A9955]',       // VSCode green comments
+        focus: 'text-[#7FB070]'         // Brighter green in focus
+      }
+    },
+    template: {
+      text: 'text-[#cccccc]',
+      clickable: {
+        bg: 'bg-[#4ec9b0]/20',          // Teal selection
+        border: 'border-[#4ec9b0]',     // VSCode teal accent
+        text: 'text-[#4EC9B0]',         // Cyan for components (like classes)
+        hoverBg: 'hover:bg-[#4ec9b0]/30',
+        hoverBorder: 'hover:border-[#4ec9b0]/80'
+      }
+    },
+    tokens: {
+      // Syntax highlighting (Dark+ colors)
+      text: 'text-[#cccccc]',           // Default text
+      keyword: 'text-[#569CD6]',        // Blue keywords
+      punctuation: 'text-[#cccccc]',    // Same as text
+      string: 'text-[#CE9178]',         // Orange strings
+      comment: 'text-[#6A9955]',        // Green comments
+      commentFocus: 'text-[#7FB070]',
+
+      // Special identifiers
+      self: 'text-[#4FC1FF]',           // Light blue for definitions
+      identifier: 'text-[#cccccc]',
+      identifierWithDef: 'text-[#4EC9B0]', // Cyan for definitions
+
+      // External dependencies
+      externalImport: 'text-[#4EC9B0]', // Cyan imports (like types)
+      externalClosure: 'text-[#DCDCAA]', // Yellow closure vars
+      externalFunction: 'text-[#DCDCAA]', // Yellow functions
+
+      // Local scope
+      parameter: 'text-[#9CDCFE]',      // Light blue parameters
+      localVariable: 'text-[#9CDCFE]',  // Light blue local vars
+
+      // Focus mode
+      focusGrayscale: 'text-[#858585]', // Line number gray
+    }
+  },
+  spacing: {
+    containerY: 'py-2',           // Minimal container padding
+    lineX: 'px-4',                // Standard horizontal padding
+    lineY: 'py-0.5',              // Tight vertical padding
+    lineNumberX: 'pr-4'           // More space between line number and code
+  },
+  dimensions: {
+    lineNumberWidth: 'w-16',      // Standard width
+    slotSize: 'w-2 h-2',
+    slotSpacing: 5
+  }
+};

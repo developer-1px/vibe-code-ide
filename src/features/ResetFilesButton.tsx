@@ -18,7 +18,7 @@ const ResetFilesButton: React.FC = () => {
   return (
     <button
       onClick={handleReset}
-      className="text-xs flex items-center gap-1.5 text-slate-400 hover:text-white px-2 py-1 rounded hover:bg-white/5 transition-colors"
+      className="text-xs flex items-center gap-1.5 text-theme-text-secondary hover:text-theme-text-primary px-2 py-1 rounded hover:bg-theme-hover transition-colors"
       title="Reset to sample code"
     >
       <IconEraser className="w-3 h-3" />

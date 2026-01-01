@@ -10,7 +10,10 @@
       "Bash(find src/entities/VariableNode/ui/components -type f ( -name \"*.ts\" -o -name \"*.tsx\" ) -exec sed -i '' \"s|from ''../../model/types.ts''|from ''../../../../CanvasNode''|g\" {} ;)",
       "Bash(npx tsx test-ast.ts)",
       "Bash(npx tsx:*)",
-      "WebSearch"
+      "WebSearch",
+      "Bash(tree:*)",
+      "Bash(git mv:*)",
+      "Bash(npm run dev:*)"
     ],
     "deny": [],
     "ask": []

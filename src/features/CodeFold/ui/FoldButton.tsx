@@ -6,7 +6,7 @@
 import React from 'react';
 import { useAtomValue, useSetAtom } from 'jotai';
 import { foldedLinesAtom } from '../model/atoms';
-import type { CodeLine } from '../../../entities/CodeRenderer/model/types';
+import type { CodeLine } from '../../../widgets/CodeViewer/core/types';
 import type { CanvasNode } from '../../../entities/CanvasNode';
 
 interface FoldButtonProps {
@@ -54,7 +54,7 @@ const FoldButton: React.FC<FoldButtonProps> = ({ line, node }) => {
       className={`flex-shrink-0 w-3 h-3 flex items-center justify-center transition-colors cursor-pointer ${
         isFolded
           ? 'text-vibe-accent hover:text-vibe-accent/80'
-          : 'text-slate-500 hover:text-vibe-accent'
+          : 'text-theme-text-tertiary hover:text-vibe-accent'
       }`}
       title={isFolded ? 'Unfold' : 'Fold'}
     >
