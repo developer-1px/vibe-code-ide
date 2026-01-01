@@ -6,11 +6,12 @@ import {
   Calculator as IconCalculator, Shield as IconShield, Zap as IconZap, RefreshCw as IconRefreshCw, AlertCircle as IconAlertCircle,
   Maximize as IconMaximize, AlignJustify as IconCompact, Minimize as IconMinimize
 } from 'lucide-react';
-import { CanvasNode } from '../../../entities/CanvasNode';
+import { CanvasNode } from '../../../entities/CanvasNode/model/types';
 import { visibleNodeIdsAtom, fullNodeMapAtom, activeLocalVariablesAtom, filesAtom, foldedLinesAtom, viewModeAtom, focusedNodeIdAtom } from '../../../store/atoms';
-import { renderCodeLinesDirect, renderVueFile } from '../../CodeViewer/core';
+import { renderCodeLinesDirect } from '../../CodeViewer/core/renderer/renderCodeLinesDirect';
+import { renderVueFile } from '../../CodeViewer/core/renderer/renderVueFile';
 import { pruneDetachedNodes } from '../../PipelineCanvas/utils';
-import { getFoldableLinesByMaxDepth, getFoldableLinesExcludingDepth } from '../../../features/CodeFold/lib';
+import { getFoldableLinesByMaxDepth, getFoldableLinesExcludingDepth } from '../../../features/CodeFold/lib/foldUtils';
 
 const CodeCardHeader = ({ node }: { node: CanvasNode }) => {
   const [visibleNodeIds, setVisibleNodeIds] = useAtom(visibleNodeIdsAtom);

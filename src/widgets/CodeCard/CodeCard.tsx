@@ -1,17 +1,19 @@
 import React, { useMemo, useEffect, useRef } from 'react';
 import { useAtomValue, useSetAtom } from 'jotai';
-import { CanvasNode } from '../../entities/CanvasNode';
+import { CanvasNode } from '../../entities/CanvasNode/model/types';
 
 // Lib - Pure Utilities
-import { renderCodeLinesDirect, renderVueFile } from '../CodeViewer/core';
-import type { CodeLine } from '../CodeViewer/core/types';
+import { renderCodeLinesDirect } from '../CodeViewer/core/renderer/renderCodeLinesDirect';
+import { renderVueFile } from '../CodeViewer/core/renderer/renderVueFile';
+import type { CodeLine } from '../CodeViewer/core/types/codeLine';
 import { getNodeBorderColor } from '../../entities/SourceFileNode/lib/styleUtils';
-import { getFoldableLinesByMaxDepth } from '../../features/CodeFold/lib';
+import { getFoldableLinesByMaxDepth } from '../../features/CodeFold/lib/foldUtils';
 
 // UI Components
 import CodeCardHeader from './ui/CodeCardHeader';
 import CodeCardCopyButton from './ui/CodeCardCopyButton';
-import { CodeViewer, VueTemplateSection } from '../CodeViewer';
+import CodeViewer from '../CodeViewer/CodeViewer';
+import VueTemplateSection from '../CodeViewer/ui/VueTemplateSection';
 
 // Atoms
 import { foldedLinesAtom, cardPositionsAtom, filesAtom } from '../../store/atoms';

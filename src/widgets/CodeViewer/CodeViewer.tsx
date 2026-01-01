@@ -5,15 +5,18 @@
 
 import React, { useMemo } from 'react';
 import { useAtomValue } from 'jotai';
-import { CanvasNode } from '../../entities/CanvasNode';
-import type { CodeLine as CodeLineType } from './core/types';
-import CodeLine from './ui/CodeLine';
-import { defaultEditorTheme, jetbrainsEditorTheme, vscodeEditorTheme, EditorThemeProvider } from '../../app/theme';
+import { CanvasNode } from '../../entities/CanvasNode/model/types';
+import type { CodeLine } from './core/types';
+import CodeLineView from './ui/CodeLineView.tsx';
+import { defaultEditorTheme } from '../../app/theme/default/editor';
+import { jetbrainsEditorTheme } from '../../app/theme/jetbrains/editor';
+import { vscodeEditorTheme } from '../../app/theme/vscode/editor';
+import { EditorThemeProvider } from '../../app/theme/EditorThemeProvider';
 import { currentThemeAtom, foldedLinesAtom } from '../../store/atoms';
-import { calculateFoldRanges } from '../../features/CodeFold/lib';
+import { calculateFoldRanges } from '../../features/CodeFold/lib/foldUtils';
 
 interface CodeViewerProps {
-  processedLines: CodeLineType[];
+  processedLines: CodeLine[];
   node: CanvasNode;
 }
 
@@ -50,7 +53,7 @@ const CodeViewer = ({ processedLines, node }: CodeViewerProps) => {
           }
 
           return (
-            <CodeLine
+            <CodeLineView
               key={`${node.id}-line-${line.num}`}
               line={line}
               node={node}

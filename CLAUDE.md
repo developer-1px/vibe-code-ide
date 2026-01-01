@@ -2,6 +2,43 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## 🚫 CRITICAL RULES - NO BARREL EXPORTS
+
+**NEVER create index.ts or index.tsx files for re-exporting.**
+
+Barrel exports are FORBIDDEN in this codebase. They cause:
+- ❌ "Go to Definition" navigates to index.ts instead of actual file
+- ❌ Symbol search becomes confusing and slow
+- ❌ Circular dependency risks
+- ❌ Hard to track code flow
+
+**What NOT to do:**
+```typescript
+// ❌ NEVER create src/entities/Foo/index.ts
+export * from './model/types';
+export { someFunction } from './lib/utils';
+
+// ❌ NEVER create src/features/Bar/index.ts
+export { Component } from './ui/Component';
+```
+
+**What TO do:**
+```typescript
+// ✅ ALWAYS use direct imports
+import { FooType } from '@/entities/Foo/model/types';
+import { BarComponent } from '@/features/Bar/ui/BarComponent';
+
+// ✅ Or with relative paths
+import { FooType } from '../../../entities/Foo/model/types';
+import { BarComponent } from '../../features/Bar/ui/BarComponent';
+```
+
+**Rules:**
+1. ✅ **ALWAYS import from the actual file path**
+2. ❌ **NEVER create index.ts for re-exports**
+3. ❌ **NEVER use barrel export pattern**
+4. ✅ **If you see an index.ts that only re-exports, DELETE it and fix all imports**
+
 ## ⚠️ CRITICAL RULES - CODE ANALYSIS
 
 **DO NOT use regular expressions for code parsing or analysis.**
@@ -400,3 +437,4 @@ src/
   - `FSD_LAYER_VIOLATION_ANALYSIS.md` - FSD compliance analysis
   - `CODE_LAYER_DESIGN_ANALYSIS.md` - Code layer design patterns
 - TypeScript Compiler API documentation for AST traversal patterns
+- git push와 pr은 한글로 쓰기 주석도 한글로 남기기

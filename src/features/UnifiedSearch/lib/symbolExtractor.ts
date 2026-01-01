@@ -3,9 +3,9 @@
  */
 
 import * as ts from 'typescript';
-import type { SourceFileNode } from '../../../entities/SourceFileNode';
+import type { SourceFileNode } from '../../../entities/SourceFileNode/model/types';
 import type { SearchResult } from '../model/types';
-import type { CodeSymbolMetadata } from '../../../entities/CodeSymbol';
+import type { CodeSymbolMetadata } from '../../../entities/CodeSymbol/model/types';
 
 /**
  * Extract all identifiers (usages) from a parsed source file

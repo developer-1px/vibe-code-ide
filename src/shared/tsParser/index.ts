@@ -6,7 +6,7 @@
  */
 
 import * as ts from 'typescript';
-import type { GraphData, SourceFileNode } from '../../entities/SourceFileNode';
+import type { GraphData, SourceFileNode } from '../../entities/SourceFileNode/model/types';
 import { extractVueScript, isVueFile } from './utils/vueExtractor';
 import { createLanguageService } from './utils/languageService';
 import { getDependencies } from '../../entities/SourceFileNode/lib/getters';

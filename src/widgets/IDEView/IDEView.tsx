@@ -8,7 +8,8 @@ import { useAtomValue, useSetAtom } from 'jotai';
 import { useHotkeys } from 'react-hotkeys-hook';
 import { ArrowLeft, FileText } from 'lucide-react';
 import { focusedNodeIdAtom, viewModeAtom, fullNodeMapAtom, filesAtom } from '../../store/atoms';
-import { renderCodeLinesDirect, renderVueFile } from '../CodeViewer/core';
+import { renderCodeLinesDirect } from '../CodeViewer/core/renderer/renderCodeLinesDirect';
+import { renderVueFile } from '../CodeViewer/core/renderer/renderVueFile';
 import CodeViewer from '../CodeViewer/CodeViewer';
 
 const IDEView = () => {

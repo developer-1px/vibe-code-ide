@@ -1,1 +1,0 @@
-export { WorkspacePersistence } from './WorkspacePersistence';

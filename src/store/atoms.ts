@@ -1,7 +1,7 @@
 
 import { atom } from 'jotai';
-import type { SourceFileNode, GraphData } from '../entities/SourceFileNode';
-import type { CanvasNode } from '../entities/CanvasNode';
+import type { SourceFileNode, GraphData } from '../entities/SourceFileNode/model/types';
+import type { CanvasNode } from '../entities/CanvasNode/model/types';
 import { DEFAULT_FILES, DEFAULT_ENTRY_FILE } from '../constants';
 
 // File management atoms
@@ -38,7 +38,7 @@ export const collapsedFoldersAtom = atom(new Set<string>()); // 접힌 폴더들
 
 // Unified Search atoms (Shift+Shift)
 import type { SearchResult } from '../features/UnifiedSearch/model/types';
-import type { CodeSymbolMetadata } from '../entities/CodeSymbol';
+import type { CodeSymbolMetadata } from '../entities/CodeSymbol/model/types';
 
 // Re-export for external use
 export type { SearchResult, CodeSymbolMetadata };

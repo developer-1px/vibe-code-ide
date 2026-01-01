@@ -3,9 +3,9 @@
  * Uses TypeScript Language Service to enrich symbols with metadata
  */
 
-import type { SourceFileNode } from '../entities/SourceFileNode';
-import type { CodeSymbolMetadata } from '../entities/CodeSymbol';
-import { getQuickInfoAtPosition } from '../widgets/CodeViewer/core';
+import type { SourceFileNode } from '../entities/SourceFileNode/model/types';
+import type { CodeSymbolMetadata } from '../entities/CodeSymbol/model/types';
+import { getQuickInfoAtPosition } from '../widgets/CodeViewer/core/renderer/tsLanguageService';
 
 /**
  * Node types to exclude from metadata extraction

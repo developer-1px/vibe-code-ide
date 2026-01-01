@@ -3,7 +3,7 @@ import React, { useMemo, useState } from 'react';
 import { Box as IconBox, AlertCircle as IconAlertCircle, FileCode, X, Settings } from 'lucide-react';
 import { useAtomValue, useSetAtom } from 'jotai';
 import { openedFilesAtom, selectedNodeIdsAtom, layoutNodesAtom, parseErrorAtom } from '../../store/atoms';
-import { useTheme, type ThemeName } from '../../app/theme';
+import { useTheme, type ThemeName } from '../../app/theme/ThemeProvider';
 
 const Header: React.FC = () => {
   const parseError = useAtomValue(parseErrorAtom);

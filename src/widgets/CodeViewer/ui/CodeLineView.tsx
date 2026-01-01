@@ -1,34 +1,82 @@
 
 import React, { useEffect, useRef, useMemo } from 'react';
 import { useAtomValue } from 'jotai';
-import { CanvasNode } from '../../../entities/CanvasNode';
-import type { CodeLine as CodeLineType } from '../core/types';
+import * as ts from 'typescript';
+import { CanvasNode } from '../../../entities/CanvasNode/model/types';
+import type { CodeLine } from '../core/types';
 import CodeLineSlots from './CodeLineSlots';
 import CodeLineExportSlots from './CodeLineExportSlots';
 import CodeLineSegment from './CodeLineSegment';
 import FoldButton from '../../../features/CodeFold/ui/FoldButton';
 import FoldBadge from '../../../features/CodeFold/ui/FoldBadge';
-import { isLineInsideFold, isLineFolded, getFoldedCount } from '../../../features/CodeFold/lib';
-import { targetLineAtom, foldedLinesAtom } from '../../../store/atoms';
-import { useEditorTheme } from '../../../app/theme';
+import { isLineInsideFold, isLineFolded, getFoldedCount } from '../../../features/CodeFold/lib/foldUtils';
+import { targetLineAtom, foldedLinesAtom, layoutNodesAtom, visibleNodeIdsAtom } from '../../../store/atoms';
+import { useEditorTheme } from '../../../app/theme/EditorThemeProvider';
 
-const CodeLine = ({
+const CodeLineView = ({
   line,
   node,
   foldRanges
 }: {
-  line: CodeLineType;
+  line: CodeLine;
   node: CanvasNode;
   foldRanges: Array<{ start: number; end: number }>;
 }) => {
   const theme = useEditorTheme();
   const targetLine = useAtomValue(targetLineAtom);
   const foldedLinesMap = useAtomValue(foldedLinesAtom);
+  const layoutNodes = useAtomValue(layoutNodesAtom);
+  const visibleNodeIds = useAtomValue(visibleNodeIdsAtom);
   const lineRef = useRef<HTMLDivElement>(null);
 
-  // Calculate definition line status
-  const isDefinitionLine = line.num === node.startLine;
+  // Calculate definition line status (lines with export declarations)
   const hasDeclarationKeyword = line.hasDeclarationKeyword || false;
+  const isDefinitionLine = hasDeclarationKeyword;
+
+  // Extract symbol name from declaration
+  const exportedSymbolName = useMemo(() => {
+    if (!hasDeclarationKeyword) return undefined;
+    // Find segment with isDeclarationName = true
+    const declSegment = line.segments.find(seg => seg.isDeclarationName);
+    return declSegment?.text;
+  }, [hasDeclarationKeyword, line.segments]);
+
+  // Calculate usage count (how many nodes import THIS SYMBOL)
+  const usageCount = useMemo(() => {
+    if (!hasDeclarationKeyword || !exportedSymbolName) return 0;
+
+    let count = 0;
+
+    // Check all nodes (regardless of visibility)
+    layoutNodes.forEach(n => {
+      // Skip if node doesn't import this file
+      if (!n.dependencies?.includes(node.filePath)) return;
+
+      // Check if this node's sourceFile imports the specific symbol
+      const sourceFile = (n as any).sourceFile as ts.SourceFile | undefined;
+      if (!sourceFile) return;
+
+      // Parse import statements
+      sourceFile.statements.forEach((statement) => {
+        if (!ts.isImportDeclaration(statement)) return;
+
+        // Check named imports
+        const importClause = statement.importClause;
+        if (!importClause?.namedBindings) return;
+        if (!ts.isNamedImports(importClause.namedBindings)) return;
+
+        // Check each imported symbol
+        importClause.namedBindings.elements.forEach((element) => {
+          const importedName = element.name.text;
+          if (importedName === exportedSymbolName) {
+            count++;
+          }
+        });
+      });
+    });
+
+    return count;
+  }, [hasDeclarationKeyword, exportedSymbolName, layoutNodes, node.filePath]);
 
   // Check if this line is the target for Go to Definition
   const isTargetLine = targetLine?.nodeId === node.id && targetLine.lineNum === line.num;
@@ -43,11 +91,10 @@ const CodeLine = ({
     const isHighlighted =
       hasDeclarationKeyword ||
       isDefinitionLine ||
-      isFolded ||
-      line.foldInfo?.isFoldable;
+      isFolded;  // Only highlight when actually folded, not just foldable
 
     return isHighlighted ? 'text-vibe-accent font-bold' : '';
-  }, [hasDeclarationKeyword, isDefinitionLine, isFolded, line.foldInfo]);
+  }, [hasDeclarationKeyword, isDefinitionLine, isFolded]);
 
   // Auto-scroll to target line
   useEffect(() => {
@@ -117,10 +164,27 @@ const CodeLine = ({
       {/* Output Port: Show only for exported declarations */}
       {hasDeclarationKeyword && (
         <div
-          className="absolute right-0 top-3 -translate-y-1/2 w-2 h-2 rounded-full bg-slate-500 translate-x-[50%] ring-2 ring-vibe-panel"
+          className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-[50%] flex items-center gap-1.5 group"
           data-output-port={node.id}
           data-output-port-line={line.num}
-        />
+          data-output-port-symbol={exportedSymbolName}
+        >
+          {/* Usage count badge */}
+          {usageCount > 0 && (
+            <div className="text-[10px] font-bold text-emerald-400 bg-emerald-900/40 px-1.5 py-0.5 rounded-full border border-emerald-500/30 min-w-[20px] text-center">
+              {usageCount}
+            </div>
+          )}
+
+          {/* Output port dot */}
+          <div className="w-3 h-3 rounded-full bg-emerald-500 ring-2 ring-emerald-300/30 shadow-lg shadow-emerald-500/50" />
+
+          {/* Hover tooltip */}
+          <div className="hidden group-hover:block absolute right-5 whitespace-nowrap bg-slate-800 text-emerald-300 text-xs px-2 py-1 rounded border border-emerald-500/30">
+            Export (line {line.num})
+            {usageCount > 0 && ` • ${usageCount} usage${usageCount > 1 ? 's' : ''}`}
+          </div>
+        </div>
       )}
 
       {/* Export Slots: Show for export { ... } statements */}
@@ -131,4 +195,4 @@ const CodeLine = ({
   );
 };
 
-export default CodeLine;
+export default CodeLineView;

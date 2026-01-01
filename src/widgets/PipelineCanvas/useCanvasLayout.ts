@@ -1,8 +1,8 @@
 
 import { useEffect, useState, useMemo } from 'react';
 import { useSetAtom, useAtomValue } from 'jotai';
-import { GraphData, SourceFileNode } from '../../entities/SourceFileNode';
-import { CanvasNode } from '../../entities/CanvasNode';
+import { GraphData, SourceFileNode } from '../../entities/SourceFileNode/model/types';
+import { CanvasNode } from '../../entities/CanvasNode/model/types';
 import {
   layoutNodesAtom,
   layoutLinksAtom,
