@@ -1,130 +1,151 @@
 /**
  * Tailwind CSS v4 - Main Entry
- * Theme variables defined using @theme directive
+ * Theme switching with @theme inline pattern (2025 standard)
  */
 
 @import "tailwindcss";
 
 /* =============================================================================
-   DEFAULT THEME - Figma Dark inspired
+   THEME VARIABLES - Define actual color values
    ============================================================================= */
 
-@theme {
-  /* Backgrounds - generates bg-theme-* utilities */
-  --color-theme-background: #0e0e0e;
-  --color-theme-canvas: #1e1e1e;
-  --color-theme-sidebar: #1e1e1e;
-  --color-theme-header: #181818;
-  --color-theme-panel: #2c2c2c;
+/* Default Theme - Figma Dark inspired */
+:root {
+  /* Backgrounds */
+  --background: #0e0e0e;
+  --canvas: #1e1e1e;
+  --sidebar: #1e1e1e;
+  --header: #181818;
+  --panel: #2c2c2c;
 
-  /* Borders - generates border-theme-* utilities */
-  --color-theme-border: #333333;
-  --color-theme-border-subtle: #282828;
-  --color-theme-border-strong: #444444;
+  /* Borders */
+  --border: #333333;
+  --border-subtle: #282828;
+  --border-strong: #444444;
 
-  /* Text - generates text-theme-text-* utilities */
-  --color-theme-text-primary: #f5f5f5;
-  --color-theme-text-secondary: #b3b3b3;
-  --color-theme-text-tertiary: #8c8c8c;
-  --color-theme-text-accent: #22d3ee;
+  /* Text */
+  --text-primary: #f5f5f5;
+  --text-secondary: #b3b3b3;
+  --text-tertiary: #8c8c8c;
+  --text-accent: #22d3ee;
 
-  /* Status colors - generates text-theme-* utilities */
-  --color-theme-success: #5fb76b;
-  --color-theme-warning: #f5a623;
-  --color-theme-error: #f24822;
-  --color-theme-info: #18a0fb;
+  /* Status colors */
+  --success: #5fb76b;
+  --warning: #f5a623;
+  --error: #f24822;
+  --info: #18a0fb;
 
   /* Special colors */
-  --color-theme-purple: #b58bf7;
-  --color-theme-amber: #f5a623;
-  --color-theme-emerald: #5fb76b;
+  --purple: #b58bf7;
+  --amber: #f5a623;
+  --emerald: #5fb76b;
 
-  /* Interactive states (rgba) - generates bg-theme-* utilities */
-  --color-theme-hover: rgb(255 255 255 / 0.06);
-  --color-theme-active: rgb(255 255 255 / 0.10);
-  --color-theme-focus: rgb(255 255 255 / 0.12);
+  /* Interactive states */
+  --hover: rgb(255 255 255 / 0.06);
+  --active: rgb(255 255 255 / 0.10);
+  --focus: rgb(255 255 255 / 0.12);
+}
+
+/* VSCode Theme */
+[data-theme="vscode"] {
+  --background: #1e1e1e;
+  --canvas: #252526;
+  --sidebar: #252526;
+  --header: #1e1e1e;
+  --panel: #2d2d30;
+
+  --border: #3e3e42;
+  --border-subtle: #2b2b2b;
+  --border-strong: #4d4d50;
+
+  --text-primary: #cccccc;
+  --text-secondary: #969696;
+  --text-tertiary: #6e6e6e;
+  --text-accent: #4ec9b0;
+
+  --success: #89d185;
+  --warning: #dcdcaa;
+  --error: #f48771;
+  --info: #4ec9b0;
+
+  --hover: rgb(255 255 255 / 0.05);
+  --active: rgb(255 255 255 / 0.08);
+  --focus: rgb(255 255 255 / 0.10);
+}
+
+/* JetBrains Theme */
+[data-theme="jetbrains"] {
+  --background: #2b2b2b;
+  --canvas: #313335;
+  --sidebar: #3c3f41;
+  --header: #2b2b2b;
+  --panel: #3c3f41;
+
+  --border: #4e5254;
+  --border-subtle: #323232;
+  --border-strong: #5e6164;
+
+  --text-primary: #a9b7c6;
+  --text-secondary: #787878;
+  --text-tertiary: #606366;
+  --text-accent: #6897bb;
+
+  --success: #629755;
+  --warning: #bbb529;
+  --error: #bc3f3c;
+  --info: #6897bb;
+
+  --hover: rgb(255 255 255 / 0.04);
+  --active: rgb(255 255 255 / 0.07);
+  --focus: rgb(255 255 255 / 0.09);
+}
+
+/* =============================================================================
+   TAILWIND UTILITIES - Map CSS variables to utility classes
+   ============================================================================= */
+
+@theme inline {
+  /* Backgrounds - generates bg-theme-* utilities */
+  --color-theme-background: var(--background);
+  --color-theme-canvas: var(--canvas);
+  --color-theme-sidebar: var(--sidebar);
+  --color-theme-header: var(--header);
+  --color-theme-panel: var(--panel);
+
+  /* Borders - generates border-theme-* utilities */
+  --color-theme-border: var(--border);
+  --color-theme-border-subtle: var(--border-subtle);
+  --color-theme-border-strong: var(--border-strong);
+
+  /* Text - generates text-theme-text-* utilities */
+  --color-theme-text-primary: var(--text-primary);
+  --color-theme-text-secondary: var(--text-secondary);
+  --color-theme-text-tertiary: var(--text-tertiary);
+  --color-theme-text-accent: var(--text-accent);
+
+  /* Status colors */
+  --color-theme-success: var(--success);
+  --color-theme-warning: var(--warning);
+  --color-theme-error: var(--error);
+  --color-theme-info: var(--info);
+
+  /* Special colors */
+  --color-theme-purple: var(--purple);
+  --color-theme-amber: var(--amber);
+  --color-theme-emerald: var(--emerald);
+
+  /* Interactive states */
+  --color-theme-hover: var(--hover);
+  --color-theme-active: var(--active);
+  --color-theme-focus: var(--focus);
 
   /* Legacy vibe-* tokens for backward compatibility */
-  --color-vibe-dark: #0e0e0e;
-  --color-vibe-panel: #2c2c2c;
-  --color-vibe-border: #333333;
-  --color-vibe-accent: #22d3ee;
-  --color-vibe-success: #5fb76b;
-  --color-vibe-purple: #b58bf7;
-}
-
-/* =============================================================================
-   VSCODE THEME
-   ============================================================================= */
-
-[data-theme="vscode"] {
-  @theme {
-    /* Backgrounds */
-    --color-theme-background: #1e1e1e;
-    --color-theme-canvas: #252526;
-    --color-theme-sidebar: #252526;
-    --color-theme-header: #1e1e1e;
-    --color-theme-panel: #2d2d30;
-
-    /* Borders */
-    --color-theme-border: #3e3e42;
-    --color-theme-border-subtle: #2b2b2b;
-    --color-theme-border-strong: #4d4d50;
-
-    /* Text */
-    --color-theme-text-primary: #cccccc;
-    --color-theme-text-secondary: #969696;
-    --color-theme-text-tertiary: #6e6e6e;
-    --color-theme-text-accent: #4ec9b0;
-
-    /* Status */
-    --color-theme-success: #89d185;
-    --color-theme-warning: #dcdcaa;
-    --color-theme-error: #f48771;
-    --color-theme-info: #4ec9b0;
-
-    /* Interactive */
-    --color-theme-hover: rgb(255 255 255 / 0.05);
-    --color-theme-active: rgb(255 255 255 / 0.08);
-    --color-theme-focus: rgb(255 255 255 / 0.10);
-  }
-}
-
-/* =============================================================================
-   JETBRAINS THEME
-   ============================================================================= */
-
-[data-theme="jetbrains"] {
-  @theme {
-    /* Backgrounds */
-    --color-theme-background: #2b2b2b;
-    --color-theme-canvas: #313335;
-    --color-theme-sidebar: #3c3f41;
-    --color-theme-header: #2b2b2b;
-    --color-theme-panel: #3c3f41;
-
-    /* Borders */
-    --color-theme-border: #4e5254;
-    --color-theme-border-subtle: #323232;
-    --color-theme-border-strong: #5e6164;
-
-    /* Text */
-    --color-theme-text-primary: #a9b7c6;
-    --color-theme-text-secondary: #787878;
-    --color-theme-text-tertiary: #606366;
-    --color-theme-text-accent: #6897bb;
-
-    /* Status */
-    --color-theme-success: #629755;
-    --color-theme-warning: #bbb529;
-    --color-theme-error: #bc3f3c;
-    --color-theme-info: #6897bb;
-
-    /* Interactive */
-    --color-theme-hover: rgb(255 255 255 / 0.04);
-    --color-theme-active: rgb(255 255 255 / 0.07);
-    --color-theme-focus: rgb(255 255 255 / 0.09);
-  }
+  --color-vibe-dark: var(--background);
+  --color-vibe-panel: var(--panel);
+  --color-vibe-border: var(--border);
+  --color-vibe-accent: var(--text-accent);
+  --color-vibe-success: var(--success);
+  --color-vibe-purple: var(--purple);
 }
 
 /* =============================================================================
