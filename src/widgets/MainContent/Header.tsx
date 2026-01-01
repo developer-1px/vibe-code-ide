@@ -1,8 +1,9 @@
 
 import React, { useMemo, useState } from 'react';
 import { Box as IconBox, AlertCircle as IconAlertCircle, FileCode, X, Settings } from 'lucide-react';
-import { useAtomValue, useSetAtom, useAtom } from 'jotai';
-import { openedFilesAtom, selectedNodeIdsAtom, layoutNodesAtom, parseErrorAtom, currentThemeAtom, type ThemeName } from '../../store/atoms';
+import { useAtomValue, useSetAtom } from 'jotai';
+import { openedFilesAtom, selectedNodeIdsAtom, layoutNodesAtom, parseErrorAtom } from '../../store/atoms';
+import { useTheme, type ThemeName } from '../../app/theme';
 
 const Header: React.FC = () => {
   const parseError = useAtomValue(parseErrorAtom);
@@ -10,7 +11,7 @@ const Header: React.FC = () => {
   const setOpenedFiles = useSetAtom(openedFilesAtom);
   const setSelectedNodeIds = useSetAtom(selectedNodeIdsAtom);
   const layoutNodes = useAtomValue(layoutNodesAtom);
-  const [currentTheme, setCurrentTheme] = useAtom(currentThemeAtom);
+  const { themeName, setTheme } = useTheme();
   const [showThemeMenu, setShowThemeMenu] = useState(false);
 
   // Extract filenames from paths and pair with full paths
@@ -103,18 +104,18 @@ const Header: React.FC = () => {
                   <button
                     key={theme}
                     onClick={() => {
-                      setCurrentTheme(theme);
+                      setTheme(theme);
                       setShowThemeMenu(false);
                     }}
                     className={`w-full px-3 py-2 text-left text-xs transition-colors ${
-                      currentTheme === theme
+                      themeName === theme
                         ? 'bg-theme-active text-theme-text-accent font-medium'
                         : 'text-theme-text-secondary hover:bg-theme-hover hover:text-theme-text-primary'
                     }`}
                   >
-                    {theme === 'default' && 'Default (Dark)'}
-                    {theme === 'jetbrains' && 'JetBrains (Darcula)'}
-                    {theme === 'vscode' && 'VSCode (Dark+)'}
+                    {theme === 'default' && 'Figma Dark'}
+                    {theme === 'jetbrains' && 'JetBrains New UI'}
+                    {theme === 'vscode' && 'VSCode Dark+'}
                   </button>
                 ))}
               </div>

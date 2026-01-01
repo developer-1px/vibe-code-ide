@@ -10,28 +10,42 @@ export const vscodeAppTheme: AppTheme = {
 
   colors: {
     // VSCode Dark+ backgrounds
-    background: 'bg-[#1E1E1E]',       // VSCode main background
-    canvas: 'bg-[#1E1E1E]',           // Editor background (same)
-    sidebar: 'bg-[#252526]',          // Sidebar background
-    header: 'bg-[#323233]',           // Title bar
+    background: '#1e1e1e',
+    canvas: '#252526',
+    sidebar: '#252526',
+    header: '#1e1e1e',
+    panel: '#2d2d30',
+
+    // Borders
+    border: {
+      DEFAULT: '#3e3e42',
+      subtle: '#2b2b2b',
+      strong: '#4d4d50',
+    },
 
     // Text colors
     text: {
-      primary: 'text-[#CCCCCC]',      // VSCode main text
-      secondary: 'text-[#858585]',    // Dimmed text
-      accent: 'text-[#007ACC]',       // VSCode blue
+      primary: '#cccccc',
+      secondary: '#969696',
+      tertiary: '#6e6e6e',
+      accent: '#4ec9b0',        // VSCode teal
     },
 
-    // Interactive elements
-    border: 'border-[#2D2D30]',
-    hover: 'hover:bg-[#2A2D2E]',
-    active: 'bg-[#37373D]',
+    // Interactive states
+    hover: 'rgb(255 255 255 / 0.05)',
+    active: 'rgb(255 255 255 / 0.08)',
+    focus: 'rgb(255 255 255 / 0.10)',
 
     // Status colors
-    success: 'text-[#89D185]',        // Green
-    warning: 'text-[#D7BA7D]',        // Yellow
-    error: 'text-[#F48771]',          // Red
-    info: 'text-[#75BEFF]',           // Blue
+    success: '#89d185',
+    warning: '#dcdcaa',
+    error: '#f48771',
+    info: '#4ec9b0',
+
+    // Special colors
+    purple: '#c586c0',
+    amber: '#dcdcaa',
+    emerald: '#89d185',
   },
 
   effects: {
