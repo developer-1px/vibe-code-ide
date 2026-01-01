@@ -79,13 +79,15 @@ const CodeLine = ({
           <span className={lineNumberClassName}>
             {line.num}
           </span>
-
-          {/* Fold Button */}
-          <FoldButton
-            line={line}
-            node={node}
-          />
         </div>
+      </div>
+
+      {/* Fold Button Column */}
+      <div className="flex-none w-4 flex items-center justify-center">
+        <FoldButton
+          line={line}
+          node={node}
+        />
       </div>
 
       {/* Code Content Column */}

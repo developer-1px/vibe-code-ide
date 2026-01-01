@@ -51,6 +51,23 @@
   --color-vibe-accent: var(--text-accent);
   --color-vibe-success: var(--success);
   --color-vibe-purple: var(--purple);
+
+  /* Editor syntax tokens - generates text-editor-* utilities */
+  --color-editor-text: var(--editor-text);
+  --color-editor-keyword: var(--editor-keyword);
+  --color-editor-punctuation: var(--editor-punctuation);
+  --color-editor-string: var(--editor-string);
+  --color-editor-comment: var(--editor-comment);
+  --color-editor-comment-focus: var(--editor-comment-focus);
+  --color-editor-self: var(--editor-self);
+  --color-editor-identifier: var(--editor-identifier);
+  --color-editor-identifier-def: var(--editor-identifier-def);
+  --color-editor-import: var(--editor-import);
+  --color-editor-closure: var(--editor-closure);
+  --color-editor-function: var(--editor-function);
+  --color-editor-parameter: var(--editor-parameter);
+  --color-editor-local: var(--editor-local);
+  --color-editor-focus-gray: var(--editor-focus-gray);
 }
 
 /* =============================================================================
@@ -93,6 +110,23 @@
     --hover: rgb(255 255 255 / 0.06);
     --active: rgb(255 255 255 / 0.10);
     --focus: rgb(255 255 255 / 0.12);
+
+    /* Editor syntax tokens */
+    --editor-text: #d4d4d4;
+    --editor-keyword: #a78bfa;
+    --editor-punctuation: #9ca3af;
+    --editor-string: #fde68a;
+    --editor-comment: #9ca3af;
+    --editor-comment-focus: #9ca3af;
+    --editor-self: #22d3ee;
+    --editor-identifier: #d4d4d4;
+    --editor-identifier-def: #7dd3fc;
+    --editor-import: #6ee7b7;
+    --editor-closure: #fcd34d;
+    --editor-function: #d8b4fe;
+    --editor-parameter: #fde68a;
+    --editor-local: #a5f3fc;
+    --editor-focus-gray: #6b7280;
   }
 
   /* VSCode Theme */
@@ -120,6 +154,23 @@
     --hover: rgb(255 255 255 / 0.05);
     --active: rgb(255 255 255 / 0.08);
     --focus: rgb(255 255 255 / 0.10);
+
+    /* Editor syntax tokens - VSCode Dark+ */
+    --editor-text: #cccccc;
+    --editor-keyword: #569CD6;
+    --editor-punctuation: #cccccc;
+    --editor-string: #CE9178;
+    --editor-comment: #6A9955;
+    --editor-comment-focus: #7FB070;
+    --editor-self: #4FC1FF;
+    --editor-identifier: #cccccc;
+    --editor-identifier-def: #4EC9B0;
+    --editor-import: #4EC9B0;
+    --editor-closure: #DCDCAA;
+    --editor-function: #DCDCAA;
+    --editor-parameter: #9CDCFE;
+    --editor-local: #9CDCFE;
+    --editor-focus-gray: #858585;
   }
 
   /* JetBrains New UI / Islands Dark Theme */
@@ -151,6 +202,23 @@
     --hover: rgb(255 255 255 / 0.04);
     --active: rgb(255 255 255 / 0.07);
     --focus: rgb(255 255 255 / 0.09);
+
+    /* Editor syntax tokens - Islands Dark */
+    --editor-text: #bcbec4;
+    --editor-keyword: #cf8e6d;
+    --editor-punctuation: #bcbec4;
+    --editor-string: #6aab73;
+    --editor-comment: #7a7e85;
+    --editor-comment-focus: #868a91;
+    --editor-self: #cf8e6d;
+    --editor-identifier: #bcbec4;
+    --editor-identifier-def: #9a7ecc;
+    --editor-import: #6aab73;
+    --editor-closure: #cf8e6d;
+    --editor-function: #56a8f5;
+    --editor-parameter: #cf8e6d;
+    --editor-local: #9a7ecc;
+    --editor-focus-gray: #6c6e75;
   }
 }
 

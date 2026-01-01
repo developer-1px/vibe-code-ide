@@ -4,7 +4,7 @@
  */
 
 import type { SegmentKind, SegmentStyle } from '../types';
-import type { CodeTheme } from '../../config/types';
+import type { EditorTheme } from '../../../../app/theme/types';
 
 /**
  * Primary kind에 따른 기본 스타일 결정
@@ -21,14 +21,11 @@ export function buildSegmentStyle(
     isActive?: boolean; // external-import 토글 상태
     focusedVariables?: Set<string>; // Focus mode용 활성화된 변수들
     segmentText?: string; // 현재 segment의 텍스트 (focus 확인용)
-    theme?: CodeTheme; // Theme for token colors
+    theme?: EditorTheme; // Theme for token colors
   }
 ): SegmentStyle {
   const primaryKind = getPrimaryKind(kinds);
   const returnBg = options.isInReturn ? 'bg-green-500/10 px-0.5 rounded' : '';
-
-  // Get theme colors (fallback to default if not provided)
-  const tokens = options.theme?.colors.tokens;
 
   // Focus mode: 활성화된 변수가 있고, 현재 segment가 focus 대상이 아니면 grayscale
   const hasFocusMode = options.focusedVariables && options.focusedVariables.size > 0;
@@ -36,9 +33,7 @@ export function buildSegmentStyle(
 
   // 기본 텍스트
   if (primaryKind === 'text') {
-    const textColor = hasFocusMode && !isFocused
-      ? (tokens?.focusGrayscale || 'text-slate-600')
-      : (tokens?.text || 'text-slate-300');
+    const textColor = hasFocusMode && !isFocused ? 'text-editor-focus-gray' : 'text-editor-text';
     return {
       className: `${textColor} select-text ${returnBg}`,
       clickable: false
@@ -47,9 +42,7 @@ export function buildSegmentStyle(
 
   // 키워드
   if (primaryKind === 'keyword') {
-    const textColor = hasFocusMode && !isFocused
-      ? (tokens?.focusGrayscale || 'text-slate-600')
-      : (tokens?.keyword || 'text-purple-400');
+    const textColor = hasFocusMode && !isFocused ? 'text-editor-focus-gray' : 'text-editor-keyword';
     return {
       className: `${textColor} font-semibold select-text ${returnBg}`,
       clickable: false
@@ -58,9 +51,7 @@ export function buildSegmentStyle(
 
   // 구두점
   if (primaryKind === 'punctuation') {
-    const textColor = hasFocusMode && !isFocused
-      ? (tokens?.focusGrayscale || 'text-slate-600')
-      : (tokens?.punctuation || 'text-slate-400');
+    const textColor = hasFocusMode && !isFocused ? 'text-editor-focus-gray' : 'text-editor-punctuation';
     return {
       className: `${textColor} select-text ${returnBg}`,
       clickable: false
@@ -69,9 +60,7 @@ export function buildSegmentStyle(
 
   // 문자열
   if (primaryKind === 'string') {
-    const textColor = hasFocusMode && !isFocused
-      ? (tokens?.focusGrayscale || 'text-slate-600')
-      : (tokens?.string || 'text-orange-300');
+    const textColor = hasFocusMode && !isFocused ? 'text-editor-focus-gray' : 'text-editor-string';
     return {
       className: `${textColor} select-text ${returnBg}`,
       clickable: false
@@ -81,9 +70,7 @@ export function buildSegmentStyle(
   // 주석
   if (primaryKind === 'comment') {
     // Focus mode일 때는 주석을 더 밝게 표시
-    const textColor = hasFocusMode
-      ? (tokens?.commentFocus || 'text-slate-400')
-      : (tokens?.comment || 'text-slate-400/85');
+    const textColor = hasFocusMode ? 'text-editor-comment-focus' : 'text-editor-comment';
     return {
       className: `${textColor} italic select-text`,
       clickable: false
@@ -312,9 +299,7 @@ export function buildSegmentStyle(
 
   // Identifier with nodeId (dependency slot)
   if (primaryKind === 'identifier' && options.hasNodeId) {
-    const textColor = hasFocusMode && !isFocused
-      ? (tokens?.focusGrayscale || 'text-slate-600')
-      : '';
+    const textColor = hasFocusMode && !isFocused ? 'text-editor-focus-gray' : '';
     return {
       className: `${textColor} select-text ${returnBg}`,
       clickable: true,
@@ -325,10 +310,10 @@ export function buildSegmentStyle(
   // Identifier with Language Service
   if (primaryKind === 'identifier' && (options.hasHoverInfo || options.hasDefinition)) {
     const baseColor = hasFocusMode && !isFocused
-      ? (tokens?.focusGrayscale || 'text-slate-600')
+      ? 'text-editor-focus-gray'
       : options.hasDefinition
-        ? (tokens?.identifierWithDef || 'text-sky-300')
-        : (tokens?.identifier || 'text-slate-300');
+        ? 'text-editor-identifier-def'
+        : 'text-editor-identifier';
     const decoration = options.hasDefinition && !(hasFocusMode && !isFocused) ? 'underline decoration-dotted decoration-sky-300/40' : '';
     const hover = options.hasDefinition && !(hasFocusMode && !isFocused) ? 'cursor-pointer hover:bg-sky-400/15' : '';
 
@@ -341,9 +326,7 @@ export function buildSegmentStyle(
   }
 
   // Fallback
-  const textColor = hasFocusMode && !isFocused
-    ? (tokens?.focusGrayscale || 'text-slate-600')
-    : (tokens?.text || 'text-slate-300');
+  const textColor = hasFocusMode && !isFocused ? 'text-editor-focus-gray' : 'text-editor-text';
   return {
     className: `${textColor} select-text ${returnBg}`,
     clickable: false

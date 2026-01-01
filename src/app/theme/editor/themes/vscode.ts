@@ -1,5 +1,5 @@
 /**
- * VSCode (Dark+) Theme
+ * VSCode Dark+ Theme
  * Based on Visual Studio Code's Dark+ color scheme
  */
 
@@ -13,41 +13,41 @@ export const vscodeTheme: EditorTheme = {
     lineHeight: 'leading-[1.5]' // VSCode's generous line spacing
   },
   colors: {
-    background: 'bg-[#1E1E1E]',  // VSCode dark background
+    background: 'bg-[#252526]',  // VSCode editor background
     lineNumber: {
       text: 'text-[#858585]',           // VSCode line number gray
-      background: 'bg-[#1E1E1E]',       // Same as main bg (no distinction)
-      border: 'border-transparent'      // No border in VSCode
+      background: 'bg-[#1e1e1e]',       // Darker gutter
+      border: 'border-[#2b2b2b]'        // Subtle border
     },
     code: {
-      normal: 'text-[#D4D4D4]',         // VSCode default text (light gray)
+      normal: 'text-[#cccccc]',         // VSCode default text
       comment: {
         normal: 'text-[#6A9955]',       // VSCode green comments
         focus: 'text-[#7FB070]'         // Brighter green in focus
       }
     },
     template: {
-      text: 'text-[#D4D4D4]',
+      text: 'text-[#cccccc]',
       clickable: {
-        bg: 'bg-[#264F78]/50',          // VSCode selection blue
-        border: 'border-[#007ACC]',     // VSCode accent blue
+        bg: 'bg-[#4ec9b0]/20',          // Teal selection
+        border: 'border-[#4ec9b0]',     // VSCode teal accent
         text: 'text-[#4EC9B0]',         // Cyan for components (like classes)
-        hoverBg: 'hover:bg-[#264F78]/70',
-        hoverBorder: 'hover:border-[#007ACC]/80'
+        hoverBg: 'hover:bg-[#4ec9b0]/30',
+        hoverBorder: 'hover:border-[#4ec9b0]/80'
       }
     },
     tokens: {
       // Syntax highlighting (Dark+ colors)
-      text: 'text-[#D4D4D4]',           // Default text
+      text: 'text-[#cccccc]',           // Default text
       keyword: 'text-[#569CD6]',        // Blue keywords
-      punctuation: 'text-[#D4D4D4]',    // Same as text
+      punctuation: 'text-[#cccccc]',    // Same as text
       string: 'text-[#CE9178]',         // Orange strings
       comment: 'text-[#6A9955]',        // Green comments
       commentFocus: 'text-[#7FB070]',
 
       // Special identifiers
       self: 'text-[#4FC1FF]',           // Light blue for definitions
-      identifier: 'text-[#D4D4D4]',
+      identifier: 'text-[#cccccc]',
       identifierWithDef: 'text-[#4EC9B0]', // Cyan for definitions
 
       // External dependencies

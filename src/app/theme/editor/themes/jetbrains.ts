@@ -1,6 +1,6 @@
 /**
- * JetBrains (Darcula) Theme
- * Based on IntelliJ IDEA's Darcula color scheme
+ * JetBrains New UI / Islands Dark Theme
+ * Based on IntelliJ IDEA's New UI and Islands Dark color scheme
  */
 
 import type { EditorTheme } from '../../types';
@@ -13,54 +13,54 @@ export const jetbrainsTheme: EditorTheme = {
     lineHeight: 'leading-[1.4]' // More spacious line height
   },
   colors: {
-    background: 'bg-[#2B2B2B]',  // Darcula dark gray
+    background: 'bg-[#1e1f22]',  // Islands Dark canvas
     lineNumber: {
-      text: 'text-[#606366]',           // Muted gray
-      background: 'bg-[#313335]',       // Slightly lighter than main bg
-      border: 'border-[#323232]'        // Subtle border
+      text: 'text-[#6c6e75]',           // Muted gray
+      background: 'bg-[#191a1c]',       // Darker background
+      border: 'border-[#2b2b2b]'        // Subtle border
     },
     code: {
-      normal: 'text-[#A9B7C6]',         // Darcula default text
+      normal: 'text-[#bcbec4]',         // Islands Dark default text
       comment: {
-        normal: 'text-[#808080]',       // Standard gray
-        focus: 'text-[#8C8C8C]'         // Slightly brighter in focus
+        normal: 'text-[#7a7e85]',       // Muted gray comments
+        focus: 'text-[#868a91]'         // Slightly brighter in focus
       }
     },
     template: {
-      text: 'text-[#A9B7C6]',
+      text: 'text-[#bcbec4]',
       clickable: {
-        bg: 'bg-[#214283]/40',          // Dark blue selection
-        border: 'border-[#4A88C7]',     // IntelliJ blue
-        text: 'text-[#FFC66D]',         // Yellow for components
-        hoverBg: 'hover:bg-[#214283]/60',
-        hoverBorder: 'hover:border-[#4A88C7]/80'
+        bg: 'bg-[#56a8f5]/20',          // Blue selection
+        border: 'border-[#56a8f5]',     // Islands blue
+        text: 'text-[#cf8e6d]',         // Warm orange for components
+        hoverBg: 'hover:bg-[#56a8f5]/30',
+        hoverBorder: 'hover:border-[#56a8f5]/80'
       }
     },
     tokens: {
-      // Syntax highlighting (Darcula colors)
-      text: 'text-[#A9B7C6]',           // Default text
-      keyword: 'text-[#CC7832]',        // Orange keywords
-      punctuation: 'text-[#A9B7C6]',    // Same as text
-      string: 'text-[#6A8759]',         // Green strings
-      comment: 'text-[#808080]',        // Gray comments
-      commentFocus: 'text-[#8C8C8C]',
+      // Syntax highlighting (Islands Dark colors)
+      text: 'text-[#bcbec4]',           // Default text
+      keyword: 'text-[#cf8e6d]',        // Warm orange keywords
+      punctuation: 'text-[#bcbec4]',    // Same as text
+      string: 'text-[#6aab73]',         // Fresh green strings
+      comment: 'text-[#7a7e85]',        // Muted gray comments
+      commentFocus: 'text-[#868a91]',
 
       // Special identifiers
-      self: 'text-[#FFC66D]',           // Yellow for definitions
-      identifier: 'text-[#A9B7C6]',
-      identifierWithDef: 'text-[#9876AA]', // Purple for definitions
+      self: 'text-[#cf8e6d]',           // Orange for definitions
+      identifier: 'text-[#bcbec4]',
+      identifierWithDef: 'text-[#9a7ecc]', // Purple for definitions
 
       // External dependencies
-      externalImport: 'text-[#6A8759]', // Green imports
-      externalClosure: 'text-[#FFC66D]', // Yellow closure
-      externalFunction: 'text-[#FFC66D]', // Yellow functions
+      externalImport: 'text-[#6aab73]', // Green imports
+      externalClosure: 'text-[#cf8e6d]', // Orange closure
+      externalFunction: 'text-[#56a8f5]', // Blue functions
 
       // Local scope
-      parameter: 'text-[#CC7832]',      // Orange parameters
-      localVariable: 'text-[#9876AA]',  // Purple local vars
+      parameter: 'text-[#cf8e6d]',      // Orange parameters
+      localVariable: 'text-[#9a7ecc]',  // Purple local vars
 
       // Focus mode
-      focusGrayscale: 'text-[#606366]', // Muted gray
+      focusGrayscale: 'text-[#6c6e75]', // Muted gray
     }
   },
   spacing: {

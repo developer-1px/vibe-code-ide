@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAtom, useAtomValue } from 'jotai';
-import { FileCode as IconFileCode, FolderTree } from 'lucide-react';
+import { FolderTree } from 'lucide-react';
 import { filesAtom, isSidebarOpenAtom } from '../../store/atoms';
-import ResetFilesButton from '../../features/ResetFilesButton';
 import UploadFolderButton from '../../features/UploadFolderButton';
 import FolderView from './FolderView';
 
@@ -57,15 +56,6 @@ export const Sidebar: React.FC = () => {
 
       {/* Folder View */}
       <FolderView files={files} />
-
-      {/* Footer */}
-      <div className="p-3 border-t border-theme-border flex justify-between items-center flex-shrink-0">
-        <div className="flex items-center gap-2 text-xs text-theme-text-secondary">
-          <IconFileCode className="w-3 h-3" />
-          <span>TypeScript Project</span>
-        </div>
-        <ResetFilesButton />
-      </div>
 
       {/* Resize Handle */}
       <div
