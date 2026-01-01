@@ -4,5 +4,5 @@
 
 export { renderCodeLinesDirect } from './renderCodeLinesDirect';
 export { renderVueFile } from './renderVueFile';
-export { segmentUtils } from './segmentUtils';
-export { createTsLanguageService } from './tsLanguageService';
+export * from './segmentUtils';
+export * from './tsLanguageService';
