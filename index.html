@@ -15,28 +15,28 @@
               mono: ['Fira Code', 'monospace'],
             },
             colors: {
-              // Semantic theme tokens - JetBrains New Dark inspired
+              // Semantic theme tokens - Balanced + Cyan/Teal identity
               theme: {
-                // Backgrounds - Lighter slate tones (JetBrains-like)
-                background: '#1e1f22',    // Main app background (JetBrains New Dark base)
-                canvas: '#2b2d30',        // Canvas/workspace area (editor bg)
-                sidebar: '#2b2d30',       // Sidebar background (matches canvas)
-                header: '#25262a',        // Header background
-                panel: '#2b2d30',         // Panel/card background
+                // Backgrounds - Between VSCode & JetBrains
+                background: '#1b1d23',    // Main app background (darker than JetBrains)
+                canvas: '#23252d',        // Canvas/workspace area (medium brightness)
+                sidebar: '#23252d',       // Sidebar background (matches canvas)
+                header: '#1d1f25',        // Header background (subtle distinction)
+                panel: '#23252d',         // Panel/card background
 
-                // Borders - Visible but subtle
+                // Borders - Cool toned
                 border: {
-                  DEFAULT: '#3d3f43',     // Default border (visible gray)
-                  subtle: '#323438',      // Subtle border
-                  strong: '#4e5157',      // Strong border
+                  DEFAULT: '#2d3340',     // Default border (cool slate)
+                  subtle: '#262a35',      // Subtle border
+                  strong: '#3d4352',      // Strong border
                 },
 
                 // Text - Good contrast
                 text: {
-                  primary: '#bcbec4',     // Primary text (JetBrains text)
+                  primary: '#bcbec4',     // Primary text
                   secondary: '#868a91',   // Secondary text (dimmed)
                   tertiary: '#6c6f77',    // Tertiary/muted text
-                  accent: '#dfe1e5',      // Accent text (brighter)
+                  accent: '#22d3ee',      // Cyan-400 accent (AI vibe)
                 },
 
                 // Interactive states
@@ -45,22 +45,22 @@
                 focus: 'rgba(255, 255, 255, 0.12)',   // Focus state
 
                 // Status colors
-                success: '#59a869',       // JetBrains green
-                warning: '#c77c3b',       // JetBrains orange
-                error: '#c55661',         // JetBrains red
-                info: '#5394ec',          // JetBrains blue
+                success: '#59a869',       // Green
+                warning: '#c77c3b',       // Orange
+                error: '#c55661',         // Red
+                info: '#06b6d4',          // Cyan-600 (teal, AI identity)
 
                 // Special
-                purple: '#9876aa',        // JetBrains purple
+                purple: '#9876aa',
                 amber: '#c77c3b',
                 emerald: '#59a869',
               },
 
               // Legacy tokens (for backward compatibility)
-              'vibe-dark': '#1e1f22',
-              'vibe-panel': '#2b2d30',
-              'vibe-border': '#3d3f43',
-              'vibe-accent': '#dfe1e5',
+              'vibe-dark': '#1b1d23',
+              'vibe-panel': '#23252d',
+              'vibe-border': '#2d3340',
+              'vibe-accent': '#22d3ee',
               'vibe-success': '#59a869',
               'vibe-purple': '#9876aa',
             }
@@ -70,8 +70,8 @@
     </script>
     <style>
       body {
-        background-color: #1e1f22;  /* JetBrains New Dark base */
-        color: #bcbec4;             /* JetBrains text color */
+        background-color: #1b1d23;  /* Balanced dark (VSCode ↔ JetBrains) */
+        color: #bcbec4;             /* Primary text color */
       }
 
       /* Custom Scrollbar */
@@ -80,14 +80,14 @@
         height: 8px;
       }
       ::-webkit-scrollbar-track {
-        background: #2b2d30;        /* JetBrains editor bg */
+        background: #23252d;        /* Canvas background */
       }
       ::-webkit-scrollbar-thumb {
-        background: #4e5157;        /* Visible scrollbar */
+        background: #3d4352;        /* Cool slate scrollbar */
         border-radius: 4px;
       }
       ::-webkit-scrollbar-thumb:hover {
-        background: #5e6167;        /* Lighter on hover */
+        background: #4d5362;        /* Lighter on hover */
       }
     </style>
   <script type="importmap">
