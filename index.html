@@ -18,51 +18,51 @@
               // Semantic theme tokens - Balanced + Cyan/Teal identity
               theme: {
                 // Backgrounds - Between VSCode & JetBrains
-                background: '#1b1d23',    // Main app background (darker than JetBrains)
-                canvas: '#23252d',        // Canvas/workspace area (medium brightness)
-                sidebar: '#23252d',       // Sidebar background (matches canvas)
-                header: '#1d1f25',        // Header background (subtle distinction)
-                panel: '#23252d',         // Panel/card background
+                background: '#181a1f',    // Main app background (darker for contrast)
+                canvas: '#1f2228',        // Canvas/workspace area (darker)
+                sidebar: '#1f2228',       // Sidebar background (matches canvas)
+                header: '#1b1d23',        // Header background (subtle distinction)
+                panel: '#252830',         // Panel/card background (lighter for hierarchy)
 
-                // Borders - Cool toned
+                // Borders - More visible
                 border: {
-                  DEFAULT: '#2d3340',     // Default border (cool slate)
-                  subtle: '#262a35',      // Subtle border
-                  strong: '#3d4352',      // Strong border
+                  DEFAULT: '#3b4048',     // Default border (more visible)
+                  subtle: '#2d3340',      // Subtle border
+                  strong: '#4d5362',      // Strong border
                 },
 
-                // Text - Good contrast
+                // Text - Higher contrast
                 text: {
-                  primary: '#bcbec4',     // Primary text
-                  secondary: '#868a91',   // Secondary text (dimmed)
-                  tertiary: '#6c6f77',    // Tertiary/muted text
+                  primary: '#d4d6dd',     // Primary text (brighter)
+                  secondary: '#9ba0aa',   // Secondary text (clearer)
+                  tertiary: '#7a7f8a',    // Tertiary/muted text (still readable)
                   accent: '#22d3ee',      // Cyan-400 accent (AI vibe)
                 },
 
                 // Interactive states
-                hover: 'rgba(255, 255, 255, 0.06)',   // Subtle hover
-                active: 'rgba(255, 255, 255, 0.10)',  // Active state
-                focus: 'rgba(255, 255, 255, 0.12)',   // Focus state
+                hover: 'rgba(255, 255, 255, 0.08)',   // More visible hover
+                active: 'rgba(255, 255, 255, 0.12)',  // Active state
+                focus: 'rgba(255, 255, 255, 0.15)',   // Focus state
 
-                // Status colors
-                success: '#59a869',       // Green
-                warning: '#c77c3b',       // Orange
-                error: '#c55661',         // Red
+                // Status colors - More vibrant
+                success: '#5fb76b',       // Green (brighter)
+                warning: '#d88a48',       // Orange (brighter)
+                error: '#d66169',         // Red (brighter)
                 info: '#06b6d4',          // Cyan-600 (teal, AI identity)
 
                 // Special
-                purple: '#9876aa',
-                amber: '#c77c3b',
-                emerald: '#59a869',
+                purple: '#a688bb',        // Brighter purple
+                amber: '#d88a48',         // Brighter amber
+                emerald: '#5fb76b',       // Brighter emerald
               },
 
               // Legacy tokens (for backward compatibility)
-              'vibe-dark': '#1b1d23',
-              'vibe-panel': '#23252d',
-              'vibe-border': '#2d3340',
+              'vibe-dark': '#181a1f',
+              'vibe-panel': '#252830',
+              'vibe-border': '#3b4048',
               'vibe-accent': '#22d3ee',
-              'vibe-success': '#59a869',
-              'vibe-purple': '#9876aa',
+              'vibe-success': '#5fb76b',
+              'vibe-purple': '#a688bb',
             }
           }
         }
@@ -70,8 +70,8 @@
     </script>
     <style>
       body {
-        background-color: #1b1d23;  /* Balanced dark (VSCode ↔ JetBrains) */
-        color: #bcbec4;             /* Primary text color */
+        background-color: #181a1f;  /* Balanced dark (VSCode ↔ JetBrains) */
+        color: #d4d6dd;             /* Primary text color (brighter) */
       }
 
       /* Custom Scrollbar */
@@ -80,14 +80,14 @@
         height: 8px;
       }
       ::-webkit-scrollbar-track {
-        background: #23252d;        /* Canvas background */
+        background: #1f2228;        /* Canvas background */
       }
       ::-webkit-scrollbar-thumb {
-        background: #3d4352;        /* Cool slate scrollbar */
+        background: #4d5362;        /* Visible scrollbar */
         border-radius: 4px;
       }
       ::-webkit-scrollbar-thumb:hover {
-        background: #4d5362;        /* Lighter on hover */
+        background: #5d6372;        /* Lighter on hover */
       }
     </style>
   <script type="importmap">
