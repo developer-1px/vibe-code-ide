@@ -9,21 +9,21 @@ export const defaultAppTheme: AppTheme = {
   name: 'default',
 
   colors: {
-    // Main backgrounds - 파란색 톤 제거, 검은색/회색으로
-    background: 'bg-[#0a0a0a]',       // 거의 검은색
-    canvas: 'bg-[#121212]',           // 약간 밝은 검은색 (캔버스 영역)
-    sidebar: 'bg-[#1a1a1a]',          // 사이드바 (약간 구분)
-    header: 'bg-[#0f0f0f]',           // 헤더 (미묘한 차이)
+    // Main backgrounds - 더 어두운 검은색/회색 톤
+    background: 'bg-[#070707]',       // 더 어두운 검은색
+    canvas: 'bg-[#0d0d0d]',           // 캔버스 영역 (더 어둡게)
+    sidebar: 'bg-[#121212]',          // 사이드바 (미묘한 구분)
+    header: 'bg-[#0a0a0a]',           // 헤더 (더 어둡게)
 
-    // Text colors
+    // Text colors - slate(파란기) → gray(중성)
     text: {
-      primary: 'text-slate-200',      // 주요 텍스트
-      secondary: 'text-slate-400',    // 보조 텍스트
-      accent: 'text-cyan-400',        // 강조 (vibe-accent)
+      primary: 'text-gray-200',       // 주요 텍스트
+      secondary: 'text-gray-400',     // 보조 텍스트
+      accent: 'text-gray-100',        // 강조 (파란색 제거, 밝은 회색)
     },
 
     // Interactive elements
-    border: 'border-slate-700',       // 테두리
+    border: 'border-gray-700',        // 테두리 (중성 회색)
     hover: 'hover:bg-white/5',        // 호버 상태
     active: 'bg-white/10',            // 활성/선택 상태
 
@@ -31,7 +31,7 @@ export const defaultAppTheme: AppTheme = {
     success: 'text-emerald-400',
     warning: 'text-amber-400',
     error: 'text-red-400',
-    info: 'text-sky-400',
+    info: 'text-gray-300',            // info도 파란색 제거
   },
 
   effects: {

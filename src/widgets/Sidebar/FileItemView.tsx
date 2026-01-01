@@ -26,14 +26,14 @@ const getFileIcon = (fileName: string) => {
       return { Icon: Component, color: 'text-emerald-400' };
     case 'tsx':
     case 'jsx':
-      return { Icon: Component, color: 'text-blue-400' };
+      return { Icon: Component, color: 'text-purple-400' };
     case 'ts':
     case 'js':
       return { Icon: FileCode, color: 'text-yellow-400' };
     case 'json':
       return { Icon: FileJson, color: 'text-orange-400' };
     default:
-      return { Icon: FileCode, color: 'text-slate-400' };
+      return { Icon: FileCode, color: 'text-gray-400' };
   }
 };
 
@@ -62,13 +62,13 @@ const FileItemView: React.FC<FileItemViewProps> = ({ node, depth, isFocused, onF
       onDoubleClick={handleDoubleClick}
       className={`flex items-center gap-1.5 py-0.5 px-2 text-[11px] cursor-pointer transition-colors border-l-2 ${
         isFocused
-          ? 'text-slate-200 border-blue-500 bg-blue-900/20'
-          : 'text-slate-400 border-transparent'
+          ? 'text-gray-200 border-gray-500 bg-white/10'
+          : 'text-gray-400 border-transparent'
       }`}
       style={{ paddingLeft: `${paddingLeft}px` }}
     >
-      <FileIcon className={`w-2.5 h-2.5 flex-shrink-0 opacity-40 ${isFocused ? 'text-blue-400 opacity-70' : iconColor}`} />
-      <span className={`font-medium truncate ${isFocused ? 'text-slate-200' : 'text-slate-400'}`}>
+      <FileIcon className={`w-2.5 h-2.5 flex-shrink-0 opacity-40 ${isFocused ? 'text-gray-300 opacity-70' : iconColor}`} />
+      <span className={`font-medium truncate ${isFocused ? 'text-gray-200' : 'text-gray-400'}`}>
         {node.name}
       </span>
     </div>

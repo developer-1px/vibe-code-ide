@@ -48,7 +48,7 @@ export const Sidebar: React.FC = () => {
     >
       {/* Compact Header */}
       <div className="px-2 py-1 border-b border-vibe-border/50 flex items-center justify-between flex-shrink-0 bg-black/10">
-        <div className="flex items-center gap-1.5 text-[10px] text-slate-500 font-medium uppercase tracking-wide">
+        <div className="flex items-center gap-1.5 text-[10px] text-gray-500 font-medium uppercase tracking-wide">
           <FolderTree className="w-2.5 h-2.5" />
           <span>Project</span>
         </div>
@@ -59,8 +59,8 @@ export const Sidebar: React.FC = () => {
       <FolderView files={files} />
 
       {/* Footer */}
-      <div className="p-3 border-t border-vibe-border bg-[#162032] flex justify-between items-center flex-shrink-0">
-        <div className="flex items-center gap-2 text-xs text-slate-500">
+      <div className="p-3 border-t border-vibe-border bg-[#0d0d0d] flex justify-between items-center flex-shrink-0">
+        <div className="flex items-center gap-2 text-xs text-gray-500">
           <IconFileCode className="w-3 h-3" />
           <span>TypeScript Project</span>
         </div>
