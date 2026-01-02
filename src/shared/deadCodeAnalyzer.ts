@@ -82,10 +82,13 @@ export function analyzeDeadCode(graphData: GraphData | null): DeadCodeResults {
   // ✅ 2. 캐싱된 데이터로 분석 (AST 순회 없음)
 
   // 2-1. Unused Exports 분석
-  fileMetadataList.forEach(({ node, exports }) => {
+  fileMetadataList.forEach(({ node, exports, usedIdentifiers }) => {
     exports.forEach(exp => {
-      // 다른 파일에서 import하는지 체크
-      const isUsed = fileMetadataList.some(other => {
+      // 1. 같은 파일 내에서 사용되는지 체크
+      const isUsedInSameFile = usedIdentifiers.has(exp.name);
+
+      // 2. 다른 파일에서 import하는지 체크
+      const isImportedByOtherFile = fileMetadataList.some(other => {
         if (other.node.filePath === node.filePath) return false; // Skip self
 
         return other.imports.some(imp => {
@@ -99,7 +102,8 @@ export function analyzeDeadCode(graphData: GraphData | null): DeadCodeResults {
         });
       });
 
-      if (!isUsed) {
+      // 같은 파일에서도 사용 안 하고, 다른 파일에서도 import 안 하면 unused
+      if (!isUsedInSameFile && !isImportedByOtherFile) {
         results.unusedExports.push({
           filePath: node.filePath,
           symbolName: exp.name,

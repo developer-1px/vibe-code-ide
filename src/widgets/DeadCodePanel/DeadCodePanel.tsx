@@ -99,8 +99,7 @@ export function DeadCodePanel({ className }: DeadCodePanelProps) {
     // Don't close panel, just switch to IDE view
   };
 
-  const toggleItemSelection = (item: DeadCodeItem, e: React.MouseEvent) => {
-    e.stopPropagation();
+  const toggleItemSelection = (item: DeadCodeItem) => {
     const key = getItemKey(item);
     const newSelected = new Set(selectedItems);
     if (newSelected.has(key)) {
@@ -218,7 +217,7 @@ export function DeadCodePanel({ className }: DeadCodePanelProps) {
                 >
                   <Checkbox
                     checked={isSelected}
-                    onCheckedChange={(e) => toggleItemSelection(item, e as any)}
+                    onCheckedChange={() => toggleItemSelection(item)}
                     className="shrink-0"
                     onClick={(e) => e.stopPropagation()}
                   />

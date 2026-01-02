@@ -321,10 +321,12 @@ function extractUsedIdentifiersFromAST(sourceFile: ts.SourceFile): Set<string> {
       return true;
     }
 
-    // Declaration 이름
+    // Declaration 이름 (interface, type 포함)
     if (ts.isFunctionDeclaration(parent) ||
         ts.isVariableDeclaration(parent) ||
         ts.isClassDeclaration(parent) ||
+        ts.isInterfaceDeclaration(parent) ||
+        ts.isTypeAliasDeclaration(parent) ||
         ts.isParameter(parent)) {
       return parent.name === node;
     }
@@ -345,7 +347,8 @@ function extractUsedIdentifiersFromAST(sourceFile: ts.SourceFile): Set<string> {
       }
     }
 
-    ts.forEachChild(astNode, visit);
+    // getChildren()으로 type annotation 포함 모든 child 순회
+    astNode.getChildren(sourceFile).forEach(visit);
   }
 
   visit(sourceFile);
