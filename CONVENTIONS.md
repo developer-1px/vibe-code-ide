@@ -326,7 +326,7 @@ function App() {
 **2단계: 각 컴포넌트마다 고유한 scope 지정**
 
 ```typescript
-// widgets/Sidebar/FolderView.tsx - 'sidebar' scope
+// widgets/AppSidebar/FolderView.tsx - 'sidebar' scope
 import { useHotkeys } from 'react-hotkeys-hook';
 
 const FolderView = () => {

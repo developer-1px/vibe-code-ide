@@ -36,8 +36,8 @@ export const getTokenStyle = (isActive: boolean, isComponent: boolean = false) =
     
     // Inactive State
     return isComponent
-        ? 'bg-slate-800/50 border-slate-700 text-emerald-300 hover:bg-white/10 hover:border-emerald-500/50' // Component Inactive
-        : 'bg-slate-800/50 border-slate-700 text-blue-300 hover:bg-white/10 hover:border-vibe-accent/50'; // Variable Inactive
+        ? 'bg-slate-800/50 text-emerald-300 hover:bg-white/10 hover:border-emerald-500/50' // Component Inactive
+        : 'bg-slate-800/50 text-blue-300'; // Variable Inactive
 };
 
 export const getSlotColor = (type: SourceFileNode['type']): string => {

@@ -21,6 +21,8 @@ import {
   Phone,
   CornerDownRight,
   Component,
+  Type,
+  BookA,
 } from 'lucide-react'
 import type { OutlineNode, OutlineNodeKind } from '../../shared/outlineExtractor'
 
@@ -36,12 +38,12 @@ interface OutlinePanelItemProps {
 
 // Get icon for outline node kind
 function getNodeIcon(kind: OutlineNodeKind) {
-  const iconProps = { size: 13 }
+  const iconProps = { size: 10 }
 
   switch (kind) {
     // Comments
     case 'comment':
-      return <MessageSquare {...iconProps} className="text-slate-400/70" size={11} />
+      return <MessageSquare {...iconProps} className="text-slate-400/70" />
 
     // Control flow
     case 'if':
@@ -53,7 +55,7 @@ function getNodeIcon(kind: OutlineNodeKind) {
     case 'switch':
       return <Shuffle {...iconProps} className="text-purple-400" />
     case 'case':
-      return <CornerDownRight {...iconProps} className="text-purple-300" size={11} />
+      return <CornerDownRight {...iconProps} className="text-purple-300" />
 
     // Error handling
     case 'try':
@@ -65,32 +67,32 @@ function getNodeIcon(kind: OutlineNodeKind) {
     case 'import':
       return <PackageOpen {...iconProps} className="text-purple-400" />
     case 'type':
-      return <FileType {...iconProps} className="text-blue-400" />
+      return <Type {...iconProps} className="text-blue-400" />
     case 'interface':
-      return <Braces {...iconProps} className="text-cyan-400" />
+      return <Type {...iconProps} className="text-cyan-400" />
     case 'enum':
-      return <Hash {...iconProps} className="text-orange-400" />
+      return <BookA {...iconProps} className="text-orange-400" />
     case 'const':
     case 'let':
     case 'var':
-      return <Variable {...iconProps} className="text-yellow-400" size={9} />
+      return <BookA {...iconProps} className="text-yellow-400" />
     case 'function':
     case 'arrow-function':
-      return <FunctionSquare {...iconProps} className="text-pink-400" />
+      return <BookA {...iconProps} className="text-pink-400" />
     case 'class':
-      return <SquareStack {...iconProps} className="text-status-success" />
+      return <BookA {...iconProps} className="text-status-success" />
     case 'method':
-      return <Dot {...iconProps} className="text-warm-300" fill="currentColor" size={8} />
+      return <Dot {...iconProps} className="text-warm-300" fill="currentColor" />
     case 'property':
-      return <Dot {...iconProps} className="text-text-tertiary/60" size={6} fill="currentColor" />
+      return <Dot {...iconProps} className="text-text-tertiary/60" fill="currentColor" />
 
     // Expressions
     case 'call':
-      return <Phone {...iconProps} className="text-blue-300" size={11} />
+      return <Phone {...iconProps} className="text-blue-300" />
     case 'return':
       return <CornerDownRight {...iconProps} className="text-green-400" />
     case 'block':
-      return <Blocks {...iconProps} className="text-slate-500" size={11} />
+      return <Blocks {...iconProps} className="text-slate-500" />
 
     // JSX
     case 'jsx-element':
@@ -171,27 +173,10 @@ export function OutlinePanelItem({
   // Calculate gap based on line difference (empty lines in code)
   const hasGapBefore = prevNode ? (node.line - (prevNode.endLine || prevNode.line)) >= 2 : false
 
-  // Format comment text: remove line breaks and truncate if too long
-  const formatCommentText = (text: string | undefined): string => {
-    if (!text) return node.name
-
-    // Remove // or /* */ markers
-    let cleanText = text.replace(/^\/\/\s*/, '').replace(/^\/\*\s*/, '').replace(/\s*\*\/$/, '')
-
-    // Replace line breaks with spaces
-    cleanText = cleanText.replace(/\n/g, ' ').replace(/\s+/g, ' ').trim()
-
-    // Truncate if too long
-    const maxLength = 50
-    if (cleanText.length > maxLength) {
-      return cleanText.slice(0, maxLength) + '...'
-    }
-
-    return cleanText
-  }
-
-  // Display name based on node kind
-  const displayName = node.kind === 'comment' ? formatCommentText(node.text) : node.name
+  // Display actual code line (remove line breaks, let CSS handle truncation)
+  const displayName = node.text
+    ? node.text.replace(/\n/g, ' ').replace(/\s+/g, ' ').trim()
+    : node.name
 
   return (
     <div className={hasGapBefore ? 'mb-0.5 mt-3' : 'mb-0.5'}>
@@ -224,21 +209,14 @@ export function OutlinePanelItem({
           {getNodeIcon(node.kind)}
         </div>
 
-        {/* Node Name (comments can truncate with ellipsis, others never truncate) */}
+        {/* Node Name (actual code line, truncates with ellipsis) */}
         <span
-          className={`${getNodeColor(node.kind)} cursor-pointer font-medium ${node.kind === 'comment' ? 'truncate overflow-hidden min-w-0' : 'flex-shrink-0 whitespace-nowrap'}`}
+          className={`${getNodeColor(node.kind)} cursor-pointer font-medium truncate overflow-hidden min-w-0`}
           onClick={() => onNodeClick(node.line)}
           title={`${node.text || ''}\nLine ${node.line}${node.endLine ? ` - ${node.endLine}` : ''}`}
         >
           {displayName}
         </span>
-
-        {/* Identifiers */}
-        {node.identifiers && node.identifiers.length > 0 && (
-          <span className="text-text-tertiary/50 text-2xs truncate overflow-hidden min-w-0">
-            [{node.identifiers.slice(0, 5).join(', ')}{node.identifiers.length > 5 ? ', ...' : ''}]
-          </span>
-        )}
 
         {/* End line indicator (for blocks) */}
         {node.endLine && node.endLine !== node.line && (

@@ -16,7 +16,8 @@
       "Bash(npm run dev:*)",
       "Bash(gh pr edit:*)",
       "Bash(find:*)",
-      "Bash(cat:*)"
+      "Bash(cat:*)",
+      "WebFetch(domain:react-hotkeys-hook.vercel.app)"
     ],
     "deny": [],
     "ask": []

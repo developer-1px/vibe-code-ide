@@ -5,7 +5,6 @@
 
 import React, { useEffect, useMemo, useCallback } from 'react';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
-import { useHotkeysContext } from 'react-hotkeys-hook';
 import {
   searchModalOpenAtom,
   searchQueryAtom,
@@ -37,20 +36,6 @@ export const UnifiedSearchModal: React.FC = () => {
   const symbolMetadata = useAtomValue(symbolMetadataAtom);
 
   const { openFile } = useOpenFile();
-
-  // Hotkeys scope management
-  const { enableScope, disableScope } = useHotkeysContext();
-
-  // Activate 'search' scope when modal opens, deactivate when closes
-  useEffect(() => {
-    if (isOpen) {
-      enableScope('search');
-      console.log('[UnifiedSearchModal] Enabled search scope');
-    } else {
-      disableScope('search');
-      console.log('[UnifiedSearchModal] Disabled search scope');
-    }
-  }, [isOpen, enableScope, disableScope]);
 
   // Extract all searchable items (files + folders + symbols + usages) from single source
   const allSearchableItems = useMemo(() => {

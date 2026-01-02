@@ -7,7 +7,7 @@ import React, { useMemo, useEffect, useRef } from 'react';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import { useHotkeys } from 'react-hotkeys-hook';
 import { FileText } from 'lucide-react';
-import { openedTabsAtom, activeTabAtom, viewModeAtom, fullNodeMapAtom, filesAtom, outlinePanelOpenAtom } from '../../store/atoms';
+import { openedTabsAtom, activeTabAtom, viewModeAtom, fullNodeMapAtom, filesAtom, outlinePanelOpenAtom, targetLineAtom } from '../../store/atoms';
 import { renderCodeLinesDirect } from '../CodeViewer/core/renderer/renderCodeLinesDirect';
 import { renderVueFile } from '../CodeViewer/core/renderer/renderVueFile';
 import CodeViewer from '../CodeViewer/CodeViewer';
@@ -15,6 +15,14 @@ import { getFileName } from '../../shared/pathUtils';
 import { TabBar, Tab } from '@/components/ide/TabBar';
 import { OutlinePanel } from '@/components/ide/OutlinePanel';
 import { extractOutlineStructure } from '../../shared/outlineExtractor';
+import { useTabNavigation } from '../../features/File/useTabNavigation';
+
+const IDE_HOTKEYS = {
+  ESC: 'esc',
+  TOGGLE_OUTLINE: 'backquote',
+  PREV_TAB: 'mod+bracketleft',
+  NEXT_TAB: 'mod+bracketright',
+} as const;
 
 const IDEView = () => {
   const [openedTabs, setOpenedTabs] = useAtom(openedTabsAtom);
@@ -22,7 +30,9 @@ const IDEView = () => {
   const fullNodeMap = useAtomValue(fullNodeMapAtom);
   const files = useAtomValue(filesAtom);
   const setViewMode = useSetAtom(viewModeAtom);
-  const outlinePanelOpen = useAtomValue(outlinePanelOpenAtom);
+  const [outlinePanelOpen, setOutlinePanelOpen] = useAtom(outlinePanelOpenAtom);
+  const setTargetLine = useSetAtom(targetLineAtom);
+  const { goToPreviousTab, goToNextTab } = useTabNavigation();
 
   // Ref for scroll container
   const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -37,13 +47,28 @@ const IDEView = () => {
     }
   }, [activeTab, openedTabs, setActiveTab]);
 
-  // Go back to canvas view
-  const handleBackToCanvas = () => {
-    setViewMode('canvas');
-  };
+  // IDE hotkeys (ref-based scoping - only work when IDE view has focus)
+  const ideRef = useHotkeys(Object.values(IDE_HOTKEYS), (e, { hotkey }) => {
+    console.log('[IDEView] Hotkey pressed:', hotkey);
+    e.preventDefault();
 
-  // ESC key to go back to canvas
-  useHotkeys('esc', handleBackToCanvas, { enableOnFormTags: true });
+    switch (hotkey) {
+      // case IDE_HOTKEYS.ESC:
+      //   setViewMode('canvas');
+      //   break;
+      case IDE_HOTKEYS.TOGGLE_OUTLINE:
+        setOutlinePanelOpen(prev => !prev);
+        break;
+      case IDE_HOTKEYS.PREV_TAB:
+        goToPreviousTab();
+        break;
+      case IDE_HOTKEYS.NEXT_TAB:
+        goToNextTab();
+        break;
+    }
+  }, {
+    preventDefault: true
+  }, [setViewMode, setOutlinePanelOpen, goToPreviousTab, goToNextTab]);
 
   // Close tab
   const handleCloseTab = (tabPath: string) => {
@@ -82,17 +107,27 @@ const IDEView = () => {
 
   // Scroll to line handler for OutlinePanel
   const handleScrollToLine = (line: number) => {
-    if (!scrollContainerRef.current) return;
+    if (!activeNode) return;
 
-    // Find the code line element by data-line-num attribute
-    const lineElement = scrollContainerRef.current.querySelector(`[data-line-num="${line}"]`);
+    // Close outline panel and switch to code view
+    setOutlinePanelOpen(false);
 
-    if (lineElement) {
-      lineElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      console.log('[IDEView] Scrolled to line:', line);
-    } else {
-      console.warn('[IDEView] Line element not found:', line);
-    }
+    // Set target line for Focus Mode
+    setTargetLine({ nodeId: activeNode.id, lineNum: line });
+
+    // Scroll to line after a short delay (to allow render)
+    setTimeout(() => {
+      if (!scrollContainerRef.current) return;
+
+      const lineElement = scrollContainerRef.current.querySelector(`[data-line-num="${line}"]`);
+
+      if (lineElement) {
+        lineElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        console.log('[IDEView] Scrolled to line:', line);
+      } else {
+        console.warn('[IDEView] Line element not found:', line);
+      }
+    }, 100);
   };
 
   if (!activeNode && openedTabs.length === 0) {
@@ -104,7 +139,11 @@ const IDEView = () => {
   }
 
   return (
-    <div className="flex-1 h-full flex flex-col bg-bg-elevated overflow-hidden">
+    <div
+      ref={ideRef}
+      tabIndex={-1}
+      className="flex-1 h-full flex flex-col bg-bg-elevated overflow-hidden focus:outline-none"
+    >
       {/* LIMN TabBar */}
       <TabBar>
         {openedTabs.map((tabPath) => {
@@ -128,26 +167,31 @@ const IDEView = () => {
         })}
       </TabBar>
 
-      {/* Main content area with editor and outline panel */}
+      {/* Main content area - toggle between Outline and Code */}
       <div className="flex-1 flex overflow-hidden">
-        {/* Scrollable code content */}
-        <div ref={scrollContainerRef} className="flex-1 overflow-y-auto">
-          {activeNode && (
-            <CodeViewer
-              processedLines={processedLines}
-              node={activeNode}
+        {outlinePanelOpen ? (
+          /* Outline Panel (full width) */
+          activeNode && (
+            <OutlinePanel
+              key={activeNode.filePath}
+              defaultOpen={true}
+              nodes={outlineNodes}
+              onNodeClick={handleScrollToLine}
             />
-          )}
-        </div>
-
-        {/* Outline Panel (right side) */}
-        {outlinePanelOpen && activeNode && (
-          <OutlinePanel
-            key={activeNode.filePath}
-            defaultOpen={true}
-            nodes={outlineNodes}
-            onNodeClick={handleScrollToLine}
-          />
+          )
+        ) : (
+          /* Scrollable code content (full width) */
+          <div
+            ref={scrollContainerRef}
+            className="flex-1 overflow-y-auto"
+          >
+            {activeNode && (
+              <CodeViewer
+                processedLines={processedLines}
+                node={activeNode}
+              />
+            )}
+          </div>
         )}
       </div>
     </div>

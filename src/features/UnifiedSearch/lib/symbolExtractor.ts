@@ -9,6 +9,27 @@ import type { CodeSymbolMetadata } from '../../../entities/CodeSymbol/model/type
 import { getFileName } from '../../../shared/pathUtils';
 
 /**
+ * Get display name for file
+ * For files starting with "index", include parent folder name
+ * @example
+ * getFileDisplayName('src/shared/tsParser/index.ts') → 'tsParser/index.ts'
+ * getFileDisplayName('src/components/Button.tsx') → 'Button.tsx'
+ */
+function getFileDisplayName(filePath: string): string {
+  const fileName = getFileName(filePath);
+
+  // index로 시작하는 파일명은 상위 폴더명 포함
+  if (fileName.startsWith('index')) {
+    const parts = filePath.split('/');
+    if (parts.length >= 2) {
+      return `${parts[parts.length - 2]}/${fileName}`;
+    }
+  }
+
+  return fileName;
+}
+
+/**
  * Extract all identifiers (usages) from a parsed source file
  */
 function extractIdentifiers(
@@ -124,7 +145,7 @@ export function extractAllSearchableItems(
       : undefined;
 
     const uniqueId = isFile ? `file-${node.id}` : `symbol-${node.id}`;
-    const name = isFile ? getFileName(node.filePath) : node.label;
+    const name = isFile ? getFileDisplayName(node.filePath) : node.label;
 
     // Collect declared symbol names for usage extraction
     if (!isFile) {
@@ -160,7 +181,7 @@ export function extractAllSearchableItems(
   // Add files not in dependency graph
   Object.keys(files).forEach(filePath => {
     if (!filesInNodeMap.has(filePath)) {
-      const fileName = getFileName(filePath);
+      const fileName = getFileDisplayName(filePath);
       results.push({
         id: `file-${filePath}`,
         type: 'file',

@@ -85,5 +85,5 @@ export const openedTabsAtom = atom<string[]>([]); // 열린 탭들 (파일 경�
 export const activeTabAtom = atom<string | null>(null); // 현재 활성 탭 (파일 경로)
 
 // IDE Outline Panel
-export const outlinePanelOpenAtom = atom(true); // Outline Panel 열림/닫힘 상태
+export const outlinePanelOpenAtom = atom(false); // Outline Panel 열림/닫힘 상태 (기본: 코드 보기)
 
