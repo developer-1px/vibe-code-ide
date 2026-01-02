@@ -16,7 +16,13 @@ export const parseErrorAtom = atom(null as string | null);
 // Canvas layout atoms (write-only from PipelineCanvas)
 export const layoutNodesAtom = atom([] as CanvasNode[]);
 export const layoutLinksAtom = atom([] as {source: string, target: string}[]);
-export const fullNodeMapAtom = atom(new Map<string, SourceFileNode>());
+
+// Full node map - derived from graphDataAtom (auto-computed)
+export const fullNodeMapAtom = atom((get) => {
+  const graphData = get(graphDataAtom);
+  if (!graphData) return new Map<string, SourceFileNode>();
+  return new Map<string, SourceFileNode>(graphData.nodes.map(n => [n.id, n]));
+});
 
 // Canvas transform atom (from useD3Zoom)
 export const transformAtom = atom({ k: 1, x: 0, y: 0 });
@@ -71,6 +77,10 @@ export const currentThemeAtom = atom<ThemeName>('default');
 
 // View Mode - Canvas vs IDE view
 export type ViewMode = 'canvas' | 'ide';
-export const viewModeAtom = atom<ViewMode>('canvas');
+export const viewModeAtom = atom<ViewMode>('ide'); // Default to IDE mode
 export const focusedNodeIdAtom = atom<string | null>(null); // IDE 모드에서 보여줄 노드 ID
+
+// IDE Tab Management
+export const openedTabsAtom = atom<string[]>([]); // 열린 탭들 (파일 경로)
+export const activeTabAtom = atom<string | null>(null); // 현재 활성 탭 (파일 경로)
 

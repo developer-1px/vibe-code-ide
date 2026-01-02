@@ -12,6 +12,7 @@ import { renderCodeLinesDirect } from '../../CodeViewer/core/renderer/renderCode
 import { renderVueFile } from '../../CodeViewer/core/renderer/renderVueFile';
 import { pruneDetachedNodes } from '../../PipelineCanvas/utils';
 import { getFoldableLinesByMaxDepth, getFoldableLinesExcludingDepth } from '../../../features/CodeFold/lib/foldUtils';
+import { getFileName } from '../../../shared/pathUtils';
 
 const CodeCardHeader = ({ node }: { node: CanvasNode }) => {
   const [visibleNodeIds, setVisibleNodeIds] = useAtom(visibleNodeIdsAtom);
@@ -224,7 +225,7 @@ const CodeCardHeader = ({ node }: { node: CanvasNode }) => {
   // Get display label with extension for file nodes
   const displayLabel = useMemo(() => {
     if (node.type === 'module' && node.filePath) {
-      const fileName = node.filePath.split('/').pop() || node.label;
+      const fileName = getFileName(node.filePath) || node.label;
       return fileName;
     }
     return node.label;

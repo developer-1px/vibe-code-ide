@@ -4,6 +4,7 @@
  */
 
 import Fuse, { IFuseOptions } from 'fuse.js';
+import { getFileName } from '../../../shared/pathUtils';
 
 // Worker용 경량 검색 아이템 (검색에 필요한 최소한의 정보만)
 export interface SearchItem {
@@ -73,7 +74,7 @@ self.onmessage = (event: MessageEvent<FuzzySearchRequest>) => {
     const lowerFileFilter = fileFilter.toLowerCase();
     filteredItems = filteredItems.filter(item => {
       // Extract filename from path and check
-      const fileName = item.filePath.split('/').pop()?.toLowerCase() || '';
+      const fileName = getFileName(item.filePath).toLowerCase();
       return fileName.includes(lowerFileFilter);
     });
   }

@@ -1,10 +1,11 @@
 /**
- * Unified Search Modal - JetBrains-style search UI
+ * Unified Search Modal - LIMN Design System
  * Triggered by Shift+Shift
  */
 
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useCallback } from 'react';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
+import { useHotkeysContext } from 'react-hotkeys-hook';
 import {
   searchModalOpenAtom,
   searchQueryAtom,
@@ -14,21 +15,42 @@ import {
   filesAtom,
   fullNodeMapAtom,
   symbolMetadataAtom,
+  collapsedFoldersAtom,
+  focusedPaneAtom,
 } from '../../../store/atoms';
 import { extractAllSearchableItems } from '../lib/symbolExtractor';
 import { searchResultsFuzzy } from '../lib/searchService';
-import { SearchInput } from './SearchInput';
-import { SearchResults } from './SearchResults';
+import { useOpenFile } from '../../Files/lib/useOpenFile';
+import { CommandPalette } from '@/components/ui/CommandPalette';
+import type { SearchResult } from '../model/types';
 
 export const UnifiedSearchModal: React.FC = () => {
   const [isOpen, setIsOpen] = useAtom(searchModalOpenAtom);
   const [query, setQuery] = useAtom(searchQueryAtom);
   const [results, setResults] = useAtom(searchResultsAtom);
   const [focusedIndex, setFocusedIndex] = useAtom(searchFocusedIndexAtom);
+  const [collapsedFolders, setCollapsedFolders] = useAtom(collapsedFoldersAtom);
+  const setFocusedPane = useSetAtom(focusedPaneAtom);
 
   const files = useAtomValue(filesAtom);
   const fullNodeMap = useAtomValue(fullNodeMapAtom);
   const symbolMetadata = useAtomValue(symbolMetadataAtom);
+
+  const { openFile } = useOpenFile();
+
+  // Hotkeys scope management
+  const { enableScope, disableScope } = useHotkeysContext();
+
+  // Activate 'search' scope when modal opens, deactivate when closes
+  useEffect(() => {
+    if (isOpen) {
+      enableScope('search');
+      console.log('[UnifiedSearchModal] Enabled search scope');
+    } else {
+      disableScope('search');
+      console.log('[UnifiedSearchModal] Disabled search scope');
+    }
+  }, [isOpen, enableScope, disableScope]);
 
   // Extract all searchable items (files + folders + symbols + usages) from single source
   const allSearchableItems = useMemo(() => {
@@ -57,66 +79,81 @@ export const UnifiedSearchModal: React.FC = () => {
     });
   }, [query, allSearchableItems, isOpen, setResults, setFocusedIndex]);
 
-  // Keyboard shortcuts
-  useEffect(() => {
-    if (!isOpen) return;
+  // Handle result selection
+  const handleSelectResult = useCallback((result: SearchResult) => {
+    if (result.type === 'file') {
+      // Open file
+      openFile(result.filePath);
+    } else if (result.type === 'folder') {
+      // Open folder in FolderView (expand recursively)
+      const folderPath = result.filePath;
 
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        e.preventDefault();
-        handleClose();
-      } else if (e.key === 'ArrowDown') {
-        e.preventDefault();
-        setFocusedIndex((prev) => Math.min(prev + 1, results.length - 1));
-      } else if (e.key === 'ArrowUp') {
-        e.preventDefault();
-        setFocusedIndex((prev) => Math.max(prev - 1, 0));
+      // Get all parent folders (recursively)
+      const parts = folderPath.split('/');
+      const foldersToOpen: string[] = [];
+      for (let i = 1; i <= parts.length; i++) {
+        const parentFolder = parts.slice(0, i).join('/');
+        if (parentFolder) {
+          foldersToOpen.push(parentFolder);
+        }
       }
-    };
 
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen, results.length, setFocusedIndex]);
+      // Remove all parent folders from collapsed set
+      setCollapsedFolders(prev => {
+        const next = new Set(prev);
+        foldersToOpen.forEach(folder => next.delete(folder));
+        return next;
+      });
 
-  const handleClose = () => {
+      // Focus sidebar
+      setFocusedPane('sidebar');
+    } else if (result.type === 'symbol') {
+      console.log('[SearchResults] CodeSymbol selected:', {
+        name: result.name,
+        nodeId: result.nodeId,
+        filePath: result.filePath,
+        lineNumber: result.lineNumber,
+        nodeType: result.nodeType,
+      });
+
+      // For Usage: just open file and scroll to line
+      if (result.nodeType === 'usage') {
+        openFile(result.filePath, {
+          lineNumber: result.lineNumber
+        });
+      } else {
+        // For Declaration: open file, scroll to symbol, and activate focus mode
+        openFile(result.filePath, {
+          lineNumber: result.lineNumber || 0,
+          focusSymbol: result.name,
+          focusPane: 'canvas'
+        });
+
+        console.log('[SearchResults] Activated focus mode for:', result.name, 'in file:', result.filePath);
+      }
+    }
+
+    // Close modal
+    handleClose();
+  }, [openFile, setCollapsedFolders, setFocusedPane]);
+
+  const handleClose = useCallback(() => {
     setIsOpen(false);
     // Keep query - don't clear it
     setResults([]);
     setFocusedIndex(0);
-  };
-
-  const handleBackdropClick = (e: React.MouseEvent) => {
-    if (e.target === e.currentTarget) {
-      handleClose();
-    }
-  };
-
-  if (!isOpen) return null;
+  }, [setIsOpen, setResults, setFocusedIndex]);
 
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-start justify-center pt-[15vh]"
-      onClick={handleBackdropClick}
-    >
-      <div className="w-full max-w-2xl bg-theme-background border border-theme-border rounded shadow-2xl overflow-hidden">
-        {/* Search Input */}
-        <SearchInput />
-
-        {/* Search Results */}
-        <SearchResults onSelect={handleClose} />
-
-        {/* Footer */}
-        <div className="px-2.5 py-1.5 bg-theme-background/20 border-t border-theme-border/50 flex items-center justify-between text-[9px] text-theme-text-tertiary font-mono">
-          <div className="flex gap-3">
-            <span>↑↓ Navigate</span>
-            <span>↵ Select</span>
-            <span>ESC Close</span>
-            <span className="text-theme-border">|</span>
-            <span className="text-theme-text-accent/70">symbol/file or symbol file</span>
-          </div>
-          <div>Shift+Shift to open</div>
-        </div>
-      </div>
-    </div>
+    <CommandPalette
+      open={isOpen}
+      onOpenChange={setIsOpen}
+      query={query}
+      onQueryChange={setQuery}
+      results={results}
+      selectedIndex={focusedIndex}
+      onSelectedIndexChange={setFocusedIndex}
+      onSelectResult={handleSelectResult}
+    />
   );
 };

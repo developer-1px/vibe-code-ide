@@ -1,24 +1,35 @@
 /**
- * IDEView - IDE-style full-screen code viewer
- * Shows a single file with vertical scrolling, triggered by double-clicking CodeCardHeader
+ * IDEView - IDE-style full-screen code viewer with tab system
+ * Shows files in tabs like a traditional IDE
  */
 
-import React, { useMemo } from 'react';
-import { useAtomValue, useSetAtom } from 'jotai';
+import React, { useMemo, useEffect } from 'react';
+import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import { useHotkeys } from 'react-hotkeys-hook';
-import { ArrowLeft, FileText } from 'lucide-react';
-import { focusedNodeIdAtom, viewModeAtom, fullNodeMapAtom, filesAtom } from '../../store/atoms';
+import { FileText } from 'lucide-react';
+import { openedTabsAtom, activeTabAtom, viewModeAtom, fullNodeMapAtom, filesAtom } from '../../store/atoms';
 import { renderCodeLinesDirect } from '../CodeViewer/core/renderer/renderCodeLinesDirect';
 import { renderVueFile } from '../CodeViewer/core/renderer/renderVueFile';
 import CodeViewer from '../CodeViewer/CodeViewer';
+import { getFileName } from '../../shared/pathUtils';
+import { TabBar, Tab } from '@/components/ide/TabBar';
 
 const IDEView = () => {
-  const focusedNodeId = useAtomValue(focusedNodeIdAtom);
+  const [openedTabs, setOpenedTabs] = useAtom(openedTabsAtom);
+  const [activeTab, setActiveTab] = useAtom(activeTabAtom);
   const fullNodeMap = useAtomValue(fullNodeMapAtom);
   const files = useAtomValue(filesAtom);
   const setViewMode = useSetAtom(viewModeAtom);
 
-  const focusedNode = focusedNodeId ? fullNodeMap.get(focusedNodeId) : null;
+  // Sync activeTab when it changes
+  const activeNode = activeTab ? fullNodeMap.get(activeTab) : null;
+
+  // If no active tab but tabs exist, activate the first one
+  useEffect(() => {
+    if (!activeTab && openedTabs.length > 0) {
+      setActiveTab(openedTabs[0]);
+    }
+  }, [activeTab, openedTabs, setActiveTab]);
 
   // Go back to canvas view
   const handleBackToCanvas = () => {
@@ -28,59 +39,76 @@ const IDEView = () => {
   // ESC key to go back to canvas
   useHotkeys('esc', handleBackToCanvas, { enableOnFormTags: true });
 
+  // Close tab
+  const handleCloseTab = (tabPath: string) => {
+    const tabIndex = openedTabs.indexOf(tabPath);
+    const newTabs = openedTabs.filter(t => t !== tabPath);
+
+    setOpenedTabs(newTabs);
+
+    // If closing active tab, switch to adjacent tab
+    if (tabPath === activeTab) {
+      if (newTabs.length > 0) {
+        // Switch to the tab on the right, or left if it was the last tab
+        const newActiveIndex = Math.min(tabIndex, newTabs.length - 1);
+        setActiveTab(newTabs[newActiveIndex]);
+      } else {
+        setActiveTab(null);
+      }
+    }
+  };
+
   // Process code lines
   const processedLines = useMemo(() => {
-    if (!focusedNode) return [];
+    if (!activeNode) return [];
 
-    if (focusedNode.filePath.endsWith('.vue')) {
-      return renderVueFile(focusedNode, files);
+    if (activeNode.filePath.endsWith('.vue')) {
+      return renderVueFile(activeNode, files);
     }
-    return renderCodeLinesDirect(focusedNode, files);
-  }, [focusedNode, files]);
+    return renderCodeLinesDirect(activeNode, files);
+  }, [activeNode, files]);
 
-  if (!focusedNode) {
+  if (!activeNode && openedTabs.length === 0) {
     return (
-      <div className="w-full h-full flex items-center justify-center bg-vibe-panel text-slate-400">
-        <p>No node selected</p>
+      <div className="w-full h-full flex items-center justify-center bg-bg-elevated text-text-tertiary">
+        <p>No files open. Use search (Shift+Shift) or click a file in the sidebar to open.</p>
       </div>
     );
   }
 
-  // Get file name from path
-  const fileName = focusedNode.filePath?.split('/').pop() || focusedNode.label;
-
   return (
-    <div className="flex-1 h-full flex flex-col bg-vibe-panel overflow-hidden">
-      {/* Header with back button */}
-      <div className="flex-none border-b border-white/10 bg-black/20">
-        <div className="flex items-center gap-2 px-2 py-1.5">
-          <button
-            onClick={handleBackToCanvas}
-            className="p-1 rounded transition-colors text-slate-400 hover:bg-white/10 hover:text-slate-200"
-            title="캔버스 뷰로 돌아가기 (ESC)"
-          >
-            <ArrowLeft className="w-3.5 h-3.5" />
-          </button>
+    <div className="flex-1 h-full flex flex-col bg-bg-elevated overflow-hidden">
+      {/* LIMN TabBar */}
+      <TabBar>
+        {openedTabs.map((tabPath) => {
+          const tabNode = fullNodeMap.get(tabPath);
+          if (!tabNode) return null;
 
-          <FileText className="w-3.5 h-3.5 text-slate-400" />
+          const fileName = getFileName(tabNode.filePath);
+          const isActive = tabPath === activeTab;
 
-          <div className="flex items-baseline gap-2">
-            <span className="font-semibold text-xs text-slate-100">{fileName}</span>
-            <span className="text-[9px] text-slate-500 font-mono">{focusedNode.filePath}</span>
-          </div>
-
-          <span className="ml-auto text-[8px] uppercase tracking-wider bg-white/5 border border-white/10 px-1.5 py-0.5 rounded text-slate-400 font-mono">
-            IDE
-          </span>
-        </div>
-      </div>
+          return (
+            <Tab
+              key={tabPath}
+              icon={FileText}
+              label={fileName}
+              active={isActive}
+              dirty={false}
+              onClick={() => setActiveTab(tabPath)}
+              onClose={() => handleCloseTab(tabPath)}
+            />
+          );
+        })}
+      </TabBar>
 
       {/* Scrollable code content */}
       <div className="flex-1 overflow-y-auto">
-        <CodeViewer
-          processedLines={processedLines}
-          node={focusedNode}
-        />
+        {activeNode && (
+          <CodeViewer
+            processedLines={processedLines}
+            node={activeNode}
+          />
+        )}
       </div>
     </div>
   );

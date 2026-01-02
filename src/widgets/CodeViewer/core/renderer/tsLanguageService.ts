@@ -23,8 +23,9 @@ function getOrCreateLanguageService(code: string, filePath: string, isTsx: boole
   }
 
   // Create new source file
+  // Use actual filePath instead of temp.tsx so that Go to Definition works correctly
   const sourceFile = ts.createSourceFile(
-    isTsx ? 'temp.tsx' : 'temp.ts',
+    filePath || (isTsx ? 'temp.tsx' : 'temp.ts'),
     code,
     ts.ScriptTarget.Latest,
     true,

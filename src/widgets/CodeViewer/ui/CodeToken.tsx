@@ -4,6 +4,7 @@ import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import { getTokenStyle } from '../../../entities/SourceFileNode/lib/styleUtils';
 import { visibleNodeIdsAtom, fullNodeMapAtom, lastExpandedIdAtom, activeLocalVariablesAtom, cardPositionsAtom, transformAtom } from '../../../store/atoms';
 import { pruneDetachedNodes } from '../../PipelineCanvas/utils';
+import { useGotoDefinition } from '../../../features/GotoDefinition/lib/useGotoDefinition';
 
 const CodeToken = ({text, tokenId, nodeId, lineHasFocusedVariable }: {
   text: string;
@@ -18,6 +19,7 @@ const CodeToken = ({text, tokenId, nodeId, lineHasFocusedVariable }: {
   const setCardPositions = useSetAtom(cardPositionsAtom);
   const cardPositions = useAtomValue(cardPositionsAtom);
   const transform = useAtomValue(transformAtom);
+  const { handleGotoDefinition } = useGotoDefinition();
 
   const isActive = visibleNodeIds.has(tokenId);
 
@@ -35,9 +37,16 @@ const CodeToken = ({text, tokenId, nodeId, lineHasFocusedVariable }: {
   const isLinkable = fullNodeMap.has(tokenId);
 
   const handleTokenClick = (e: React.MouseEvent) => {
-    e.stopPropagation();
-
     if (!isLinkable) return;
+
+    // Cmd+Click (Mac) 또는 Ctrl+Click (Win): Go to Definition
+    const handled = handleGotoDefinition(e, tokenId);
+    if (handled) {
+      return; // Cmd+Click으로 처리됨, 기본 토글 동작 스킵
+    }
+
+    // 일반 클릭: 카드 열기/닫기 토글
+    e.stopPropagation();
 
     const isOpening = !visibleNodeIds.has(tokenId);
 
