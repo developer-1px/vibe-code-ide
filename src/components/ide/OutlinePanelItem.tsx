@@ -192,7 +192,7 @@ export function OutlinePanelItem({
     <div className="mb-0.5">
       {/* Node Header */}
       <div
-        className="flex flex-nowrap items-center gap-1 rounded px-1.5 py-0.5 text-xs hover:bg-white/5 transition-colors group overflow-hidden"
+        className="flex flex-nowrap items-center gap-1 rounded px-1.5 py-0.5 hover:bg-white/5 transition-colors group overflow-hidden"
         style={{ paddingLeft: `calc(${indent}px + var(--limn-indent) / 2)` }}
       >
         {/* Expand/Collapse */}
