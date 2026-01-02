@@ -143,6 +143,7 @@ const IDEView = () => {
         {/* Outline Panel (right side) */}
         {outlinePanelOpen && activeNode && (
           <OutlinePanel
+            key={activeNode.filePath}
             defaultOpen={true}
             nodes={outlineNodes}
             onNodeClick={handleScrollToLine}
