@@ -11,7 +11,7 @@ const LeftSideToolbar = () => {
 
   return (
     <div className="w-[40px] h-full bg-theme-panel border-r border-theme-border flex flex-col items-center py-1.5 gap-0.5 flex-shrink-0">
-      {/* Toggle Sidebar Button */}
+      {/* Toggle AppSidebar Button */}
       <button
         onClick={() => setIsSidebarOpen(prev => !prev)}
         className="w-8 h-8 rounded-md flex items-center justify-center text-theme-text-secondary hover:text-theme-text-primary hover:bg-theme-hover transition-all"

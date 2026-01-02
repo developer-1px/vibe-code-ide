@@ -9,15 +9,25 @@ import { useHotkeys } from 'react-hotkeys-hook';
 import { useSetAtom } from 'jotai';
 import { isSidebarOpenAtom, searchModalOpenAtom } from '../../store/atoms';
 
+const GLOBAL_HOTKEYS = {
+  TOGGLE_SIDEBAR: 'mod+\\',
+} as const;
+
 export const KeyboardShortcuts = () => {
   const setIsSidebarOpen = useSetAtom(isSidebarOpenAtom);
   const setSearchModalOpen = useSetAtom(searchModalOpenAtom);
 
-  // Cmd+\ (또는 Ctrl+\) - 사이드바 토글
-  useHotkeys('mod+\\', (e) => {
+  // Global hotkeys (no ref needed - always active)
+  useHotkeys(Object.values(GLOBAL_HOTKEYS), (e, { hotkey }) => {
+    console.log('[KeyboardShortcuts] Hotkey pressed:', hotkey);
     e.preventDefault();
-    setIsSidebarOpen(prev => !prev);
-  }, { enableOnFormTags: true });
+
+    switch (hotkey) {
+      case GLOBAL_HOTKEYS.TOGGLE_SIDEBAR:
+        setIsSidebarOpen(prev => !prev);
+        break;
+    }
+  }, { enableOnFormTags: true }, [setIsSidebarOpen]);
 
   // Shift+Shift (더블탭) - 검색 모달 열기
   const lastShiftPressRef = useRef<number>(0);

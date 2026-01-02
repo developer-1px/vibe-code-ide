@@ -3,16 +3,27 @@
  * Shows files in tabs like a traditional IDE
  */
 
-import React, { useMemo, useEffect } from 'react';
+import React, { useMemo, useEffect, useRef } from 'react';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import { useHotkeys } from 'react-hotkeys-hook';
 import { FileText } from 'lucide-react';
-import { openedTabsAtom, activeTabAtom, viewModeAtom, fullNodeMapAtom, filesAtom } from '../../store/atoms';
+import { openedTabsAtom, activeTabAtom, viewModeAtom, fullNodeMapAtom, filesAtom, outlinePanelOpenAtom, targetLineAtom } from '../../store/atoms';
 import { renderCodeLinesDirect } from '../CodeViewer/core/renderer/renderCodeLinesDirect';
 import { renderVueFile } from '../CodeViewer/core/renderer/renderVueFile';
 import CodeViewer from '../CodeViewer/CodeViewer';
 import { getFileName } from '../../shared/pathUtils';
 import { TabBar, Tab } from '@/components/ide/TabBar';
+import { OutlinePanel } from '@/components/ide/OutlinePanel';
+import { extractOutlineStructure } from '../../shared/outlineExtractor';
+import { extractDefinitions } from '../../shared/definitionExtractor';
+import { useTabNavigation } from '../../features/File/useTabNavigation';
+
+const IDE_HOTKEYS = {
+  ESC: 'esc',
+  TOGGLE_OUTLINE: 'backquote',
+  PREV_TAB: 'mod+bracketleft',
+  NEXT_TAB: 'mod+bracketright',
+} as const;
 
 const IDEView = () => {
   const [openedTabs, setOpenedTabs] = useAtom(openedTabsAtom);
@@ -20,6 +31,12 @@ const IDEView = () => {
   const fullNodeMap = useAtomValue(fullNodeMapAtom);
   const files = useAtomValue(filesAtom);
   const setViewMode = useSetAtom(viewModeAtom);
+  const [outlinePanelOpen, setOutlinePanelOpen] = useAtom(outlinePanelOpenAtom);
+  const setTargetLine = useSetAtom(targetLineAtom);
+  const { goToPreviousTab, goToNextTab } = useTabNavigation();
+
+  // Ref for scroll container
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   // Sync activeTab when it changes
   const activeNode = activeTab ? fullNodeMap.get(activeTab) : null;
@@ -31,13 +48,28 @@ const IDEView = () => {
     }
   }, [activeTab, openedTabs, setActiveTab]);
 
-  // Go back to canvas view
-  const handleBackToCanvas = () => {
-    setViewMode('canvas');
-  };
+  // IDE hotkeys (ref-based scoping - only work when IDE view has focus)
+  const ideRef = useHotkeys(Object.values(IDE_HOTKEYS), (e, { hotkey }) => {
+    console.log('[IDEView] Hotkey pressed:', hotkey);
+    e.preventDefault();
 
-  // ESC key to go back to canvas
-  useHotkeys('esc', handleBackToCanvas, { enableOnFormTags: true });
+    switch (hotkey) {
+      // case IDE_HOTKEYS.ESC:
+      //   setViewMode('canvas');
+      //   break;
+      case IDE_HOTKEYS.TOGGLE_OUTLINE:
+        setOutlinePanelOpen(prev => !prev);
+        break;
+      case IDE_HOTKEYS.PREV_TAB:
+        goToPreviousTab();
+        break;
+      case IDE_HOTKEYS.NEXT_TAB:
+        goToNextTab();
+        break;
+    }
+  }, {
+    preventDefault: true
+  }, [setViewMode, setOutlinePanelOpen, goToPreviousTab, goToNextTab]);
 
   // Close tab
   const handleCloseTab = (tabPath: string) => {
@@ -68,6 +100,43 @@ const IDEView = () => {
     return renderCodeLinesDirect(activeNode, files);
   }, [activeNode, files]);
 
+  // Extract outline structure from active node
+  const outlineNodes = useMemo(() => {
+    if (!activeNode) return [];
+    return extractOutlineStructure(activeNode);
+  }, [activeNode]);
+
+  // Extract definitions from active node (already hierarchical by block scope)
+  const definitions = useMemo(() => {
+    if (!activeNode) return [];
+    return extractDefinitions(activeNode, files);
+  }, [activeNode, files]);
+
+  // Scroll to line handler for OutlinePanel
+  const handleScrollToLine = (line: number) => {
+    if (!activeNode) return;
+
+    // Close outline panel and switch to code view
+    setOutlinePanelOpen(false);
+
+    // Set target line for Focus Mode
+    setTargetLine({ nodeId: activeNode.id, lineNum: line });
+
+    // Scroll to line after a short delay (to allow render)
+    setTimeout(() => {
+      if (!scrollContainerRef.current) return;
+
+      const lineElement = scrollContainerRef.current.querySelector(`[data-line-num="${line}"]`);
+
+      if (lineElement) {
+        lineElement.scrollIntoView({ behavior: 'auto', block: 'center' });
+        console.log('[IDEView] Scrolled to line:', line);
+      } else {
+        console.warn('[IDEView] Line element not found:', line);
+      }
+    }, 100);
+  };
+
   if (!activeNode && openedTabs.length === 0) {
     return (
       <div className="w-full h-full flex items-center justify-center bg-bg-elevated text-text-tertiary">
@@ -77,7 +146,11 @@ const IDEView = () => {
   }
 
   return (
-    <div className="flex-1 h-full flex flex-col bg-bg-elevated overflow-hidden">
+    <div
+      ref={ideRef}
+      tabIndex={-1}
+      className="flex-1 h-full flex flex-col bg-bg-elevated overflow-hidden focus:outline-none"
+    >
       {/* LIMN TabBar */}
       <TabBar>
         {openedTabs.map((tabPath) => {
@@ -101,13 +174,32 @@ const IDEView = () => {
         })}
       </TabBar>
 
-      {/* Scrollable code content */}
-      <div className="flex-1 overflow-y-auto">
-        {activeNode && (
-          <CodeViewer
-            processedLines={processedLines}
-            node={activeNode}
-          />
+      {/* Main content area - toggle between Outline and Code */}
+      <div className="flex-1 flex overflow-hidden">
+        {outlinePanelOpen ? (
+          /* Outline Panel (full width) */
+          activeNode && (
+            <OutlinePanel
+              key={activeNode.filePath}
+              defaultOpen={true}
+              nodes={outlineNodes}
+              definitions={definitions}
+              onNodeClick={handleScrollToLine}
+            />
+          )
+        ) : (
+          /* Scrollable code content (full width) */
+          <div
+            ref={scrollContainerRef}
+            className="flex-1 overflow-y-auto"
+          >
+            {activeNode && (
+              <CodeViewer
+                processedLines={processedLines}
+                node={activeNode}
+              />
+            )}
+          </div>
         )}
       </div>
     </div>

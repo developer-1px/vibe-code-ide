@@ -12,7 +12,7 @@ export const defaultAppTheme: AppTheme = {
     // Main backgrounds - Figma Dark style
     background: '#0e0e0e',    // Very dark background
     canvas: '#1e1e1e',        // Canvas/workspace
-    sidebar: '#1e1e1e',       // Sidebar
+    sidebar: '#1e1e1e',       // AppSidebar
     header: '#181818',        // Header (slightly darker)
     panel: '#2c2c2c',         // Panel/card (lighter for hierarchy)
 

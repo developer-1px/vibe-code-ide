@@ -12,7 +12,7 @@ export const jetbrainsAppTheme: AppTheme = {
     // JetBrains New UI / Islands Dark backgrounds
     background: '#191a1c',         // Main background
     canvas: '#1e1f22',             // Editor/canvas area
-    sidebar: '#1e1f22',            // Sidebar background
+    sidebar: '#1e1f22',            // AppSidebar background
     header: '#191a1c',             // Header bar
     panel: '#25262b',              // Panel background
 

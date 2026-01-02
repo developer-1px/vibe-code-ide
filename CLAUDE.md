@@ -194,7 +194,7 @@ function App() {
 
 **Static component (always active)**:
 ```typescript
-// widgets/Sidebar/FolderView.tsx
+// widgets/AppSidebar/FolderView.tsx
 import { useHotkeys } from 'react-hotkeys-hook';
 
 const FolderView = () => {

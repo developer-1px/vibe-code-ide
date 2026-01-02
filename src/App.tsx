@@ -3,7 +3,7 @@ import React, { useEffect } from 'react';
 import { Provider, useAtomValue, useSetAtom } from 'jotai';
 import { HotkeysProvider } from 'react-hotkeys-hook';
 import { ThemeProvider } from './app/theme/ThemeProvider';
-import Sidebar from './widgets/Sidebar/Sidebar';
+import AppSidebar from '@/widgets/AppSidebar/AppSidebar';
 import PipelineCanvas from './widgets/PipelineCanvas.tsx';
 import IDEView from './widgets/IDEView/IDEView';
 import JotaiDevTools from './widgets/JotaiDevTools/JotaiDevTools';
@@ -58,14 +58,14 @@ const AppContent: React.FC = () => {
               <PipelineCanvas />
             </div>
 
-            {/* Floating Sidebar */}
-            <Sidebar />
+            {/* Floating AppSidebar */}
+            <AppSidebar />
           </>
         ) : (
           /* IDE Mode */
           <>
-            {/* Sidebar */}
-            <Sidebar />
+            {/* AppSidebar */}
+            <AppSidebar />
 
             {/* Main Content Area */}
             <IDEView />
@@ -77,7 +77,7 @@ const AppContent: React.FC = () => {
       <AppStatusBar />
 
       {/* Jotai DevTools */}
-      {/*<JotaiDevTools />*/}
+      <JotaiDevTools />
 
       {/* Unified Search Modal (Shift+Shift) */}
       <UnifiedSearchModal />
@@ -89,7 +89,7 @@ const App: React.FC = () => {
   return (
     <Provider store={store}>
       <ThemeProvider initialTheme="default">
-        <HotkeysProvider initiallyActiveScopes={['sidebar']}>
+        <HotkeysProvider>
           <AppContent />
         </HotkeysProvider>
       </ThemeProvider>
