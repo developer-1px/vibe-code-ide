@@ -208,6 +208,12 @@ function getStatementName(stmt: ts.Node, sourceFile: ts.SourceFile): string {
     return `constructor${params}`;
   }
 
+  // Arrow Function
+  if (ts.isArrowFunction(stmt)) {
+    const params = formatParameters(stmt.parameters, sourceFile);
+    return `${params} =>`;
+  }
+
   // Regular statements
   if (ts.isImportDeclaration(stmt)) {
     const from = ts.isStringLiteral(stmt.moduleSpecifier) ? stmt.moduleSpecifier.text : '';
@@ -296,6 +302,13 @@ function getChildStatements(node: ts.Node, sourceFile: ts.SourceFile): ts.Node[]
     }
   }
 
+  // Arrow Function: process body statements
+  else if (ts.isArrowFunction(node)) {
+    if (ts.isBlock(node.body)) {
+      children.push(...node.body.statements);
+    }
+  }
+
   // Method: process body statements
   else if (ts.isMethodDeclaration(node)) {
     if (node.body && ts.isBlock(node.body)) {
@@ -308,6 +321,21 @@ function getChildStatements(node: ts.Node, sourceFile: ts.SourceFile): ts.Node[]
     if (node.body && ts.isBlock(node.body)) {
       children.push(...node.body.statements);
     }
+  }
+
+  // Variable Statement: check if initializer is arrow function
+  else if (ts.isVariableStatement(node)) {
+    node.declarationList.declarations.forEach(decl => {
+      if (decl.initializer) {
+        if (ts.isArrowFunction(decl.initializer)) {
+          // Treat arrow function as child for recursion
+          children.push(decl.initializer as any);
+        } else if (ts.isFunctionExpression(decl.initializer)) {
+          // Function expression
+          children.push(decl.initializer as any);
+        }
+      }
+    });
   }
 
   // Class: process members
