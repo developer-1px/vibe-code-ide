@@ -228,6 +228,13 @@ export function OutlinePanelItem({
           {displayName}
         </span>
 
+        {/* Identifiers */}
+        {node.identifiers && node.identifiers.length > 0 && (
+          <span className="text-text-tertiary/50 text-2xs truncate overflow-hidden min-w-0">
+            [{node.identifiers.slice(0, 5).join(', ')}{node.identifiers.length > 5 ? ', ...' : ''}]
+          </span>
+        )}
+
         {/* End line indicator (for blocks) */}
         {node.endLine && node.endLine !== node.line && (
           <span className="text-text-tertiary/30 text-2xs truncate overflow-hidden min-w-0">
