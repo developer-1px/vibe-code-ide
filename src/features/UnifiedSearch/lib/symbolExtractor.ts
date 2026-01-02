@@ -73,30 +73,29 @@ function extractIdentifiers(
 
 /**
  * Extract export information from source file using TypeScript AST
+ * ✅ 개선: fullNodeMap의 sourceFile 재사용 (재파싱 제거)
  */
-function extractExportMap(files: Record<string, string>): Map<string, boolean> {
+function extractExportMap(fullNodeMap: Map<string, SourceFileNode>): Map<string, boolean> {
   const exportMap = new Map<string, boolean>();
 
-  Object.entries(files).forEach(([filePath, content]) => {
-    try {
-      const sourceFile = ts.createSourceFile(
-        filePath,
-        content,
-        ts.ScriptTarget.Latest,
-        true
-      );
+  // ✅ type === 'file' 노드만 사용 (이미 파싱된 sourceFile 재사용)
+  fullNodeMap.forEach((node) => {
+    if (node.type !== 'file' || !node.sourceFile) return;
 
-      function visitNode(node: ts.Node) {
-        const isExported = !!(ts.getCombinedModifierFlags(node as ts.Declaration) & ts.ModifierFlags.Export);
+    try {
+      const { sourceFile, filePath } = node;
+
+      function visitNode(astNode: ts.Node) {
+        const isExported = !!(ts.getCombinedModifierFlags(astNode as ts.Declaration) & ts.ModifierFlags.Export);
 
         if (isExported) {
-          const { line } = sourceFile.getLineAndCharacterOfPosition(node.getStart(sourceFile));
+          const { line } = sourceFile.getLineAndCharacterOfPosition(astNode.getStart(sourceFile));
           const lineNumber = line + 1;
           const key = `${filePath}:${lineNumber}`;
           exportMap.set(key, true);
         }
 
-        ts.forEachChild(node, visitNode);
+        ts.forEachChild(astNode, visitNode);
       }
 
       visitNode(sourceFile);
@@ -121,7 +120,8 @@ export function extractAllSearchableItems(
   const declaredSymbols = new Set<string>();
 
   // Extract export information from all files using TypeScript AST
-  const exportMap = extractExportMap(files);
+  // ✅ fullNodeMap의 sourceFile 재사용 (재파싱 제거)
+  const exportMap = extractExportMap(fullNodeMap);
 
   // 1. Extract declarations from fullNodeMap and collect symbol names
   fullNodeMap.forEach((node) => {
@@ -215,21 +215,19 @@ export function extractAllSearchableItems(
     });
   });
 
-  // 3. Parse each file once and extract all usages
-  Object.entries(files).forEach(([filePath, content]) => {
+  // 3. Extract all usages from parsed files
+  // ✅ fullNodeMap의 sourceFile 재사용 (재파싱 제거)
+  fullNodeMap.forEach((node) => {
+    if (node.type !== 'file' || !node.sourceFile) return;
+
     try {
-      const sourceFile = ts.createSourceFile(
-        filePath,
-        content,
-        ts.ScriptTarget.Latest,
-        true
-      );
-      const lines = content.split('\n');
+      const { sourceFile, filePath, codeSnippet } = node;
+      const lines = codeSnippet.split('\n');
 
       const usages = extractIdentifiers(filePath, sourceFile, lines, declaredSymbols);
       results.push(...usages);
     } catch (e) {
-      console.warn(`[symbolExtractor] Failed to parse ${filePath}:`, e);
+      console.warn(`[symbolExtractor] Failed to extract usages from ${node.filePath}:`, e);
     }
   });
 

@@ -14,6 +14,10 @@ import { resolvePath } from './utils/pathResolver';
 
 /**
  * Extract function and variable declarations from a source file
+ *
+ * ✅ 개선: snippet 재파싱 제거
+ * - 전체 파일 sourceFile 공유
+ * - codeSnippet은 display용으로만 사용
  */
 function extractDeclarations(
   sourceFile: ts.SourceFile,
@@ -30,23 +34,15 @@ function extractDeclarations(
       const snippet = content.substring(start, end);
       const lineAndChar = sourceFile.getLineAndCharacterOfPosition(start);
 
-      // Create a new sourceFile for this snippet to avoid offset issues
-      const snippetSourceFile = ts.createSourceFile(
-        `${filePath}::${name}`,
-        snippet,
-        ts.ScriptTarget.Latest,
-        true,
-        sourceFile.scriptKind
-      );
-
+      // ✅ snippet 재파싱 제거 - 전체 sourceFile 공유
       nodes.push({
         id: `${filePath}::${name}`,
         label: name,
         filePath,
         type: 'function',
-        codeSnippet: snippet,
+        codeSnippet: snippet,  // display용
         startLine: lineAndChar.line + 1,
-        sourceFile: snippetSourceFile,
+        sourceFile,  // ← 전체 파일 sourceFile 공유
         dependencies: []
       });
     }
@@ -69,23 +65,15 @@ function extractDeclarations(
             }
           }
 
-          // Create a new sourceFile for this snippet to avoid offset issues
-          const snippetSourceFile = ts.createSourceFile(
-            `${filePath}::${name}`,
-            snippet,
-            ts.ScriptTarget.Latest,
-            true,
-            sourceFile.scriptKind
-          );
-
+          // ✅ snippet 재파싱 제거 - 전체 sourceFile 공유
           nodes.push({
             id: `${filePath}::${name}`,
             label: name,
             filePath,
             type,
-            codeSnippet: snippet,
+            codeSnippet: snippet,  // display용
             startLine: lineAndChar.line + 1,
-            sourceFile: snippetSourceFile,
+            sourceFile,  // ← 전체 파일 sourceFile 공유
             dependencies: []
           });
         }
@@ -101,23 +89,15 @@ function extractDeclarations(
       const snippet = content.substring(start, end);
       const lineAndChar = sourceFile.getLineAndCharacterOfPosition(start);
 
-      // Create a new sourceFile for this snippet to avoid offset issues
-      const snippetSourceFile = ts.createSourceFile(
-        `${filePath}::${name}`,
-        snippet,
-        ts.ScriptTarget.Latest,
-        true,
-        sourceFile.scriptKind
-      );
-
+      // ✅ snippet 재파싱 제거 - 전체 sourceFile 공유
       nodes.push({
         id: `${filePath}::${name}`,
         label: name,
         filePath,
         type: 'function', // Treat classes as functions for now
-        codeSnippet: snippet,
+        codeSnippet: snippet,  // display용
         startLine: lineAndChar.line + 1,
-        sourceFile: snippetSourceFile,
+        sourceFile,  // ← 전체 파일 sourceFile 공유
         dependencies: []
       });
     }
