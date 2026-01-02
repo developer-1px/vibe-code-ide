@@ -87,3 +87,11 @@ export const activeTabAtom = atom<string | null>(null); // 현재 활성 탭 (�
 // IDE Outline Panel
 export const outlinePanelOpenAtom = atom(false); // Outline Panel 열림/닫힘 상태 (기본: 코드 보기)
 
+// Dead Code Analyzer atoms
+import type { DeadCodeResults } from '../shared/deadCodeAnalyzer';
+export type { DeadCodeResults };
+
+export const deadCodePanelOpenAtom = atom(false); // Dead Code Panel 열림/닫힘 상태
+export const deadCodeResultsAtom = atom<DeadCodeResults | null>(null); // 분석 결과
+export const selectedDeadCodeItemsAtom = atom(new Set<string>()); // 선택된 dead code items (filePath:line:symbolName)
+

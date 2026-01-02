@@ -5,15 +5,16 @@
 
 import React, { useState } from 'react';
 import { useAtom, useSetAtom } from 'jotai';
-import { Files, Search, GitBranch, Sparkles, Settings } from 'lucide-react';
+import { Files, Search, GitBranch, Sparkles, Settings, Trash2 } from 'lucide-react';
 import { ActivityBar, ActivityBarItem } from '@/components/ide/ActivityBar';
-import { viewModeAtom, searchModalOpenAtom } from '../../store/atoms';
+import { viewModeAtom, searchModalOpenAtom, deadCodePanelOpenAtom } from '../../store/atoms';
 
 export function AppActivityBar() {
   const [viewMode, setViewMode] = useAtom(viewModeAtom);
   const setSearchModalOpen = useSetAtom(searchModalOpenAtom);
+  const setDeadCodePanelOpen = useSetAtom(deadCodePanelOpenAtom);
 
-  // Active view for ActivityBar (0: Explorer, 1: Search, 2: Canvas, 3: AI)
+  // Active view for ActivityBar (0: Explorer, 1: Search, 2: Dead Code, 3: Canvas, 4: AI)
   const [activeView, setActiveView] = useState(0);
 
   return (
@@ -34,6 +35,16 @@ export function AppActivityBar() {
         onClick={() => {
           setActiveView(1);
           setSearchModalOpen(true);
+        }}
+      />
+      <ActivityBarItem
+        icon={Trash2}
+        label="Dead Code"
+        active={activeView === 2}
+        onClick={() => {
+          setActiveView(2);
+          setDeadCodePanelOpen(true);
+          setViewMode('ide');
         }}
       />
       <ActivityBarItem

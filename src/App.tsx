@@ -13,8 +13,9 @@ import { WorkspacePersistence } from './features/WorkspacePersistence/WorkspaceP
 import { AppTitleBar } from './widgets/AppTitleBar/AppTitleBar';
 import { AppActivityBar } from './widgets/AppActivityBar/AppActivityBar';
 import { AppStatusBar } from './widgets/AppStatusBar/AppStatusBar';
+import { DeadCodePanel } from './widgets/DeadCodePanel/DeadCodePanel';
 import { store } from './store/store';
-import { filesAtom, graphDataAtom, parseErrorAtom, viewModeAtom } from './store/atoms';
+import { filesAtom, graphDataAtom, parseErrorAtom, viewModeAtom, deadCodePanelOpenAtom } from './store/atoms';
 import { parseProject } from '@/shared/codeParser';
 
 const AppContent: React.FC = () => {
@@ -23,6 +24,7 @@ const AppContent: React.FC = () => {
   const setGraphData = useSetAtom(graphDataAtom);
   const setParseError = useSetAtom(parseErrorAtom);
   const viewMode = useAtomValue(viewModeAtom);
+  const deadCodePanelOpen = useAtomValue(deadCodePanelOpenAtom);
 
   useEffect(() => {
     try {
@@ -64,8 +66,8 @@ const AppContent: React.FC = () => {
         ) : (
           /* IDE Mode */
           <>
-            {/* AppSidebar */}
-            <AppSidebar />
+            {/* AppSidebar or DeadCodePanel */}
+            {deadCodePanelOpen ? <DeadCodePanel /> : <AppSidebar />}
 
             {/* Main Content Area */}
             <IDEView />
