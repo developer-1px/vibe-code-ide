@@ -26,6 +26,7 @@ import type { OutlineNode, OutlineNodeKind } from '../../shared/outlineExtractor
 
 interface OutlinePanelItemProps {
   node: OutlineNode
+  prevNode?: OutlineNode | null
   depth: number
   isExpanded: boolean
   expandedNodes: Set<string>
@@ -154,6 +155,7 @@ function getNodeColor(kind: OutlineNodeKind): string {
 
 export function OutlinePanelItem({
   node,
+  prevNode,
   depth,
   isExpanded,
   expandedNodes,
@@ -165,6 +167,9 @@ export function OutlinePanelItem({
 
   // Create unique key for this node (line + name)
   const nodeKey = `${node.line}-${node.name}`
+
+  // Calculate gap based on line difference (empty lines in code)
+  const hasGapBefore = prevNode ? (node.line - (prevNode.endLine || prevNode.line)) >= 2 : false
 
   // Format comment text: remove line breaks and truncate if too long
   const formatCommentText = (text: string | undefined): string => {
@@ -189,7 +194,7 @@ export function OutlinePanelItem({
   const displayName = node.kind === 'comment' ? formatCommentText(node.text) : node.name
 
   return (
-    <div className="mb-0.5">
+    <div className={hasGapBefore ? 'mb-0.5 mt-3' : 'mb-0.5'}>
       {/* Node Header */}
       <div
         className="flex flex-nowrap items-center gap-1 rounded px-1.5 py-0.5 hover:bg-white/5 transition-colors group overflow-hidden"
@@ -246,17 +251,21 @@ export function OutlinePanelItem({
       {/* Children */}
       {isExpanded && hasChildren && (
         <div className="mt-0.5">
-          {node.children!.map((child, idx) => (
-            <OutlinePanelItem
-              key={`${child.line}-${child.name}-${idx}`}
-              node={child}
-              depth={depth + 1}
-              isExpanded={expandedNodes.has(`${child.line}-${child.name}`)}
-              expandedNodes={expandedNodes}
-              onToggle={onToggle}
-              onNodeClick={onNodeClick}
-            />
-          ))}
+          {node.children!.map((child, idx) => {
+            const prevChild = idx > 0 ? node.children![idx - 1] : null
+            return (
+              <OutlinePanelItem
+                key={`${child.line}-${child.name}-${idx}`}
+                node={child}
+                prevNode={prevChild}
+                depth={depth + 1}
+                isExpanded={expandedNodes.has(`${child.line}-${child.name}`)}
+                expandedNodes={expandedNodes}
+                onToggle={onToggle}
+                onNodeClick={onNodeClick}
+              />
+            )
+          })}
         </div>
       )}
     </div>

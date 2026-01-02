@@ -166,17 +166,21 @@ export function OutlinePanel({ defaultOpen = true, onNodeClick, nodes = [] }: Ou
             No structure found
           </div>
         ) : (
-          nodes.map((node, idx) => (
-            <OutlinePanelItem
-              key={`${node.line}-${node.name}-${idx}`}
-              node={node}
-              depth={0}
-              isExpanded={expandedNodes.has(`${node.line}-${node.name}`)}
-              expandedNodes={expandedNodes}
-              onToggle={toggleNode}
-              onNodeClick={handleNodeClick}
-            />
-          ))
+          nodes.map((node, idx) => {
+            const prevNode = idx > 0 ? nodes[idx - 1] : null
+            return (
+              <OutlinePanelItem
+                key={`${node.line}-${node.name}-${idx}`}
+                node={node}
+                prevNode={prevNode}
+                depth={0}
+                isExpanded={expandedNodes.has(`${node.line}-${node.name}`)}
+                expandedNodes={expandedNodes}
+                onToggle={toggleNode}
+                onNodeClick={handleNodeClick}
+              />
+            )
+          })
         )}
       </div>
     </div>
