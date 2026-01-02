@@ -58,6 +58,169 @@ When analyzing JavaScript/TypeScript/Vue/React code:
 
 ---
 
+## ⚠️ CRITICAL RULES - GETTER LAYER PATTERN
+
+**파싱은 파일당 1번만! AST와 사용처 사이에 Getter Layer를 두어라.**
+
+### 문제: 매번 AST 순회
+
+```typescript
+// ❌ WRONG - 매번 AST 순회
+function analyzeDeadCode(nodes) {
+  nodes.forEach(node => {
+    // AST 순회 1
+    const exports = extractExports(node.sourceFile);
+    // AST 순회 2
+    const imports = extractImports(node.sourceFile);
+    // AST 순회 3
+    const usedIds = extractUsedIdentifiers(node.sourceFile);
+  });
+}
+```
+
+**문제점**:
+- AST 순회 로직이 여러 곳에 흩어짐
+- 매번 순회해서 느림
+- 나중에 DB로 전환 시 모든 코드 수정 필요
+
+### 해결: Getter Layer 패턴
+
+**Step 1: Getter 인터페이스 정의** (`entities/SourceFileNode/lib/metadata.ts`)
+
+```typescript
+// ✅ Public 인터페이스 (구현 방식 숨김)
+export interface ExportInfo {
+  name: string;
+  line: number;
+  kind: 'function' | 'variable' | 'type' | 'class';
+}
+
+export interface ImportInfo {
+  name: string;
+  line: number;
+  from: string;
+}
+
+// ✅ Getter 함수 (현재: AST 순회, 미래: DB 조회)
+export function getExports(node: SourceFileNode): ExportInfo[] {
+  // 구현 방식은 private 함수에 숨김
+  return extractExportsFromAST(node.sourceFile);
+}
+
+export function getImports(node: SourceFileNode): ImportInfo[] {
+  return extractImportsFromAST(node.sourceFile);
+}
+
+export function getUsedIdentifiers(node: SourceFileNode): Set<string> {
+  return extractUsedIdentifiersFromAST(node.sourceFile);
+}
+
+// ❌ Private 구현 (외부에서 직접 호출 금지)
+function extractExportsFromAST(sourceFile: ts.SourceFile): ExportInfo[] {
+  // AST 순회 로직
+}
+```
+
+**Step 2: 사용처 - 로컬 캐싱**
+
+```typescript
+// ✅ CORRECT - Getter + 로컬 캐싱
+import { getExports, getImports, getUsedIdentifiers } from '@/entities/SourceFileNode/lib/metadata';
+
+function analyzeDeadCode(graphData: GraphData) {
+  const fileNodes = graphData.nodes.filter(n => n.type === 'file');
+
+  // 1️⃣ Getter로 한 번만 추출 (로컬 캐싱)
+  const fileMetadataList = fileNodes.map(node => ({
+    node,
+    exports: getExports(node),      // ← getter 인터페이스만 사용
+    imports: getImports(node),
+    usedIds: getUsedIdentifiers(node)
+  }));
+
+  // 2️⃣ 캐싱된 데이터로 분석 (AST 순회 없음)
+  fileMetadataList.forEach(({ exports, imports, usedIds }) => {
+    // 분석 로직
+  });
+}
+```
+
+### 장점
+
+1. **관심사 분리**
+   - Node 정보 (`SourceFileNode`) ≠ 메타데이터 (getter로 분리)
+   - `SourceFileNode` 타입에 metadata 필드 추가 안 함
+
+2. **인터페이스 안정성**
+   - 사용처는 getter 인터페이스만 봄
+   - 구현 방식(AST vs DB) 변경 시 사용처 코드 수정 불필요
+
+3. **미래 확장성**
+   ```typescript
+   // 나중에 DB로 교체
+   export function getExports(node: SourceFileNode): ExportInfo[] {
+     // AST 순회 제거
+     return db.query('SELECT * FROM exports WHERE fileId = ?', node.id);
+   }
+   // ← 사용하는 쪽 코드는 변경 없음!
+   ```
+
+4. **성능 제어**
+   - 사용처에서 로컬 캐싱으로 성능 관리
+   - Dead Code Panel 열 때 1번만 추출
+
+### 금지 사항
+
+❌ **SourceFileNode에 metadata 필드 추가 금지**
+```typescript
+// ❌ WRONG - node 정보와 meta 정보 섞임
+interface SourceFileNode {
+  sourceFile: ts.SourceFile;
+  metadata?: { exports: ..., imports: ... };  // ← 복잡도 증가!
+}
+```
+
+❌ **Private 함수 직접 호출 금지**
+```typescript
+// ❌ WRONG - 구현 세부사항에 의존
+import { extractExportsFromAST } from '...';  // ← private 함수
+const exports = extractExportsFromAST(sourceFile);
+```
+
+✅ **Getter 인터페이스만 사용**
+```typescript
+// ✅ CORRECT - public getter만 사용
+import { getExports } from '@/entities/SourceFileNode/lib/metadata';
+const exports = getExports(node);
+```
+
+### Getter Layer 파일 구조
+
+```
+entities/SourceFileNode/
+├── model/
+│   └── types.ts          # SourceFileNode 타입 (metadata 필드 없음!)
+└── lib/
+    ├── metadata.ts       # ✅ Getter Layer
+    │   ├── getExports()
+    │   ├── getImports()
+    │   ├── getLocalFunctions()
+    │   └── getUsedIdentifiers()
+    ├── getters.ts        # 기존 getter (getDependencies 등)
+    └── tokenUtils.ts
+```
+
+### 체크리스트
+
+메타데이터 관련 기능 추가 시:
+- [ ] Getter 함수를 `metadata.ts`에 추가했는가?
+- [ ] Public 인터페이스(타입)를 정의했는가?
+- [ ] Private 구현 함수는 export하지 않았는가?
+- [ ] 사용처에서 로컬 캐싱 패턴을 사용하는가?
+- [ ] `SourceFileNode`에 필드를 추가하지 않았는가?
+
+---
+
 ## 🚫 CRITICAL RULES - LEGACY CODE
 
 **VariableNode is DEPRECATED and MUST NOT be used.**

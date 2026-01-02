@@ -9,10 +9,10 @@ import * as ts from 'typescript';
  */
 export interface SourceFileNode {
   // 기본 식별자
-  id: string;           // filePath
-  label: string;        // 파일명 (확장자 제외)
+  id: string;           // filePath or filePath::symbolName
+  label: string;        // 파일명 (확장자 제외) or 심볼명
   filePath: string;     // 파일 경로
-  type: 'module';       // 모듈 타입
+  type: 'file' | 'function' | 'variable';  // 노드 타입
 
   // 원본 데이터
   codeSnippet: string;  // 원본 코드
