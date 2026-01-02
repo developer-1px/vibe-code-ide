@@ -52,27 +52,13 @@ const AppContent: React.FC = () => {
         {/* Activity Bar */}
         <AppActivityBar />
 
-        {viewMode === 'canvas' ? (
-          /* Canvas Mode */
-          <>
-            {/* Canvas Area */}
-            <div className="flex-1 relative overflow-hidden">
-              <PipelineCanvas />
-            </div>
+        {/* Left Sidebar Area: DeadCodePanel or AppSidebar (File Explorer) */}
+        {deadCodePanelOpen ? <DeadCodePanel /> : <AppSidebar />}
 
-            {/* Floating AppSidebar */}
-            <AppSidebar />
-          </>
-        ) : (
-          /* IDE Mode */
-          <>
-            {/* AppSidebar or DeadCodePanel */}
-            {deadCodePanelOpen ? <DeadCodePanel /> : <AppSidebar />}
-
-            {/* Main Content Area */}
-            <IDEView />
-          </>
-        )}
+        {/* Main Content Area: Canvas or IDE View */}
+        <div className="flex-1 relative overflow-hidden">
+          {viewMode === 'canvas' ? <PipelineCanvas /> : <IDEView />}
+        </div>
       </div>
 
       {/* Status Bar */}
