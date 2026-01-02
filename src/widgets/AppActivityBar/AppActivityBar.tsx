@@ -26,6 +26,7 @@ export function AppActivityBar() {
         onClick={() => {
           setActiveView(0);
           setViewMode('ide');
+          setDeadCodePanelOpen(false);  // ✅ Dead Code Panel 닫기
         }}
       />
       <ActivityBarItem
