@@ -7,6 +7,8 @@ export interface CategoryState {
   unusedImports: boolean;
   deadFunctions: boolean;
   unusedVariables: boolean;
+  unusedProps: boolean;
+  unusedArguments: boolean;
 }
 
 export type CategoryKey = keyof CategoryState;

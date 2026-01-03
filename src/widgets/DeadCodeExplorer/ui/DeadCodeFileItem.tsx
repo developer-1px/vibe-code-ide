@@ -1,30 +1,26 @@
 /**
  * DeadCodeFileItem - Dead code items rendering for a file
  */
+import React from 'react';
 import { Checkbox } from '@/components/ui/Checkbox';
 import { FileTreeItem } from '@/components/ide/FileTreeItem';
-import { useAtom, useSetAtom } from 'jotai';
+import { useSetAtom } from 'jotai';
 import { targetLineAtom, viewModeAtom } from '../../../store/atoms';
-import { focusedIndexAtom } from '../../../features/DeadCodeAnalyzer/model/atoms';
 import { useDeadCodeSelection } from '../../../features/DeadCodeSelection/lib/useDeadCodeSelection';
 import { useOpenFile } from '../../../features/Files/lib/useOpenFile';
 import { getFileIcon } from '../../FileExplorer/lib/getFileIcon';
 import type { DeadCodeItem } from '../../../shared/deadCodeAnalyzer';
 
-export function DeadCodeFileItem({
-  items,
-  fileName,
-  depth,
-  globalItemIndex,
-  itemRefs,
-}: {
+export const DeadCodeFileItem = React.forwardRef<HTMLDivElement, {
   items: DeadCodeItem[];
   fileName: string;
   depth: number;
+  focused?: boolean;
   globalItemIndex: number;
   itemRefs: React.MutableRefObject<Map<number, HTMLDivElement>>;
-}) {
-  const [focusedIndex, setFocusedIndex] = useAtom(focusedIndexAtom);
+  onFocus?: () => void;
+}>((props, ref) => {
+  const { items, fileName, depth, focused, globalItemIndex, itemRefs, onFocus } = props;
   const setTargetLine = useSetAtom(targetLineAtom);
   const setViewMode = useSetAtom(viewModeAtom);
   const { openFile } = useOpenFile();
@@ -45,14 +41,22 @@ export function DeadCodeFileItem({
     <div>
       {items.map((item, idx) => {
         const deadCodeGlobalIndex = globalItemIndex + idx;
-        const itemFocused = focusedIndex === deadCodeGlobalIndex;
+        const itemFocused = idx === 0 ? focused : false; // Only first item gets TreeView focus
         const isSelected = isItemSelected(item);
 
         return (
-          <div key={idx} className="flex items-center gap-2">
+          <div key={idx} className="flex items-center gap-1">
             <div className="flex-1 min-w-0">
               <FileTreeItem
                 ref={(el) => {
+                  // Only attach TreeView ref to first item
+                  if (idx === 0) {
+                    if (typeof ref === 'function') {
+                      ref(el);
+                    } else if (ref) {
+                      ref.current = el;
+                    }
+                  }
                   if (el) {
                     itemRefs.current.set(deadCodeGlobalIndex, el);
                   }
@@ -62,7 +66,7 @@ export function DeadCodeFileItem({
                 focused={itemFocused}
                 indent={depth}
                 fileExtension={fileExtension}
-                onFocus={() => setFocusedIndex(deadCodeGlobalIndex)}
+                onFocus={idx === 0 ? onFocus : undefined}
                 onDoubleClick={() => handleItemClick(item)}
               />
             </div>
@@ -82,4 +86,4 @@ export function DeadCodeFileItem({
       })}
     </div>
   );
-}
+});

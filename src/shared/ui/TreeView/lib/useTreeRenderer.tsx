@@ -66,10 +66,14 @@ export function useTreeRenderer<TNode>({
     // Render node using children render prop
     const nodeElement = children(context);
 
-    // If folder and open, render children
+    // If folder/category and open, render children
     const isFolder = nodeType === 'folder';
+    const isCategory = nodeType === 'category';
     const hasChildren = nodeChildren && nodeChildren.length > 0;
-    const shouldRenderChildren = isFolder && !isCollapsed && hasChildren;
+    const shouldRenderChildren = hasChildren && (
+      (isFolder && !isCollapsed) || // Folder: check collapsed state
+      isCategory // Category: always render (children already filtered by expanded state)
+    );
 
     if (shouldRenderChildren) {
       return (

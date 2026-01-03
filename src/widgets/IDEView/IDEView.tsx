@@ -5,7 +5,7 @@
 
 import React, { useMemo, useEffect, useRef } from 'react';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
-import { useHotkeys } from 'react-hotkeys-hook';
+import { useHotkeys, useHotkeysContext } from 'react-hotkeys-hook';
 import { FileText } from 'lucide-react';
 import { openedTabsAtom, activeTabAtom, viewModeAtom, fullNodeMapAtom, filesAtom, outlinePanelOpenAtom, targetLineAtom, deadCodeResultsAtom } from '../../store/atoms';
 import { renderCodeLinesDirect } from '../CodeViewer/core/renderer/renderCodeLinesDirect';
@@ -39,6 +39,20 @@ const IDEView = () => {
   // Ref for scroll container
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
+  // Get scope control functions
+  const { enableScope, disableScope } = useHotkeysContext();
+
+  // Enable 'ide' scope when IDEView is mounted
+  useEffect(() => {
+    enableScope('ide');
+    console.log('[IDEView] Enabled ide scope');
+
+    return () => {
+      disableScope('ide');
+      console.log('[IDEView] Disabled ide scope');
+    };
+  }, [enableScope, disableScope]);
+
   // Sync activeTab when it changes
   const activeNode = activeTab ? fullNodeMap.get(activeTab) : null;
 
@@ -49,7 +63,7 @@ const IDEView = () => {
     }
   }, [activeTab, openedTabs, setActiveTab]);
 
-  // IDE hotkeys (ref-based scoping - only work when IDE view has focus)
+  // IDE hotkeys with 'ide' scope
   const ideRef = useHotkeys(Object.values(IDE_HOTKEYS), (e, { hotkey }) => {
     console.log('[IDEView] Hotkey pressed:', hotkey);
     e.preventDefault();
@@ -66,6 +80,7 @@ const IDEView = () => {
         break;
     }
   }, {
+    scopes: ['ide'],
     preventDefault: true
   }, [setViewMode, setOutlinePanelOpen, goToPreviousTab, goToNextTab]);
 

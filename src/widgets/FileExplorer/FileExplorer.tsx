@@ -76,6 +76,7 @@ export function FileExplorer({ containerRef }: { containerRef: React.RefObject<H
 
   return (
     <TreeView
+      className="flex-1 overflow-y-auto py-1"
       data={fileTree}
       getNodeType={(node) => node.type}
       getNodePath={(node) => node.path}

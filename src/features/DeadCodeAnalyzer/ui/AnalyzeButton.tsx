@@ -15,20 +15,15 @@ export function AnalyzeButton() {
     <Button
       variant="ghost"
       size="sm"
-      className="h-8 flex-1 justify-center text-xs gap-2"
+      className="h-5 w-5 p-0"
       onClick={reanalyze}
       disabled={isAnalyzing || !graphData}
+      title={isAnalyzing ? "Analyzing..." : "Re-analyze"}
     >
       {isAnalyzing ? (
-        <>
-          <Loader2 size={14} className="animate-spin" />
-          Analyzing...
-        </>
+        <Loader2 size={12} className="animate-spin" />
       ) : (
-        <>
-          <AlertTriangle size={14} />
-          Re-analyze
-        </>
+        <AlertTriangle size={12} />
       )}
     </Button>
   );

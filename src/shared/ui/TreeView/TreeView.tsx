@@ -7,10 +7,12 @@
  * - Automatic index tracking for keyboard navigation
  * - Collapse/expand state management
  * - Focus state management
+ * - Auto-scroll with margin on keyboard navigation
  * - Zero-opinion styling (completely customizable)
  *
  * @example
  * <TreeView
+ *   className="flex-1 overflow-y-auto p-2"
  *   data={fileTree}
  *   getNodeType={(node) => node.type}
  *   getNodePath={(node) => node.path}
@@ -28,7 +30,7 @@
  *   )}
  * </TreeView>
  */
-import React from 'react';
+import React, { useRef } from 'react';
 import { useTreeState } from './lib/useTreeState';
 import { useTreeRenderer } from './lib/useTreeRenderer';
 import type { TreeViewProps } from './model/types';
@@ -46,6 +48,9 @@ export function TreeView<TNode>({
   children,
   className,
 }: TreeViewProps<TNode>) {
+  // ScrollContainer ref - TreeView itself is the scroll container
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+
   // State management (supports both internal and external state)
   const {
     collapsedPaths,
@@ -59,6 +64,7 @@ export function TreeView<TNode>({
     focusedIndex: externalFocused,
     onFocusChange: externalFocusChange,
     itemRefs: externalRefs,
+    scrollContainerRef,
   });
 
   // Rendering logic
@@ -74,5 +80,5 @@ export function TreeView<TNode>({
     children,
   });
 
-  return <div className={className}>{renderTree(data)}</div>;
+  return <div ref={scrollContainerRef} className={className}>{renderTree(data)}</div>;
 }

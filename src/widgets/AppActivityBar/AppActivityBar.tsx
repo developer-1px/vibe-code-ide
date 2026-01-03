@@ -5,7 +5,7 @@
 
 import React, { useState } from 'react';
 import { useAtom, useSetAtom } from 'jotai';
-import { Files, Search, GitBranch, Sparkles, Settings, Trash2Icon, LucideMap } from 'lucide-react';
+import { Files, SearchAlertIcon, Search, GitBranch, Sparkles, Settings, Trash2Icon, LucideMap } from 'lucide-react';
 import { ActivityBar, ActivityBarItem } from '@/components/ide/ActivityBar';
 import { viewModeAtom, searchModalOpenAtom, deadCodePanelOpenAtom } from '../../store/atoms';
 
@@ -38,22 +38,13 @@ export function AppActivityBar() {
         }}
       />
       <ActivityBarItem
-        icon={Trash2Icon}
+        icon={SearchAlertIcon}
         label="Dead Code"
         active={activeView === 2}
         onClick={() => {
           setActiveView(2);
           setDeadCodePanelOpen(true);
           setViewMode('ide');
-        }}
-      />
-      <ActivityBarItem
-        icon={Search}
-        label="Search"
-        active={activeView === 1}
-        onClick={() => {
-          setActiveView(1);
-          setSearchModalOpen(true);
         }}
       />
       <ActivityBarItem

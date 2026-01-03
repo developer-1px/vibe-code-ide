@@ -12,7 +12,12 @@ export function getFlatItemList(
   // Match FileTreeRenderer's exact recursion order
   const traverseNode = (node: FolderNode) => {
     if (node.type === 'folder') {
-      items.push({ type: 'folder', path: node.path });
+      items.push({
+        id: node.id,              // 고유 ID
+        parentId: node.parentId,  // 부모 ID
+        type: 'folder',
+        path: node.path
+      });
 
       // If folder is open and has children, recursively traverse them
       const isCollapsed = collapsedFolders.has(node.path);
@@ -20,7 +25,13 @@ export function getFlatItemList(
         node.children.forEach(child => traverseNode(child));
       }
     } else if (node.type === 'file' && node.filePath) {
-      items.push({ type: 'file', path: node.path, filePath: node.filePath });
+      items.push({
+        id: node.id,              // 고유 ID
+        parentId: node.parentId,  // 부모 ID
+        type: 'file',
+        path: node.path,
+        filePath: node.filePath
+      });
     }
   };
 

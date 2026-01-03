@@ -6,6 +6,8 @@ import type { FolderNode } from '../../AppSidebar/model/types';
 import type { DeadCodeItem } from '../../../shared/deadCodeAnalyzer';
 
 export interface DeadCodeFlatItem {
+  id: string; // 고유 ID
+  parentId: string | null; // 부모 ID
   type: 'folder' | 'file' | 'dead-code-item';
   path: string;
   filePath?: string;
@@ -32,6 +34,8 @@ export function getDeadCodeFlatList(
     // Process folder
     if (node.type === 'folder') {
       result.push({
+        id: node.id,              // 고유 ID
+        parentId: node.parentId,  // 부모 ID
         type: 'folder',
         path: node.path,
       });
@@ -43,18 +47,15 @@ export function getDeadCodeFlatList(
       }
     }
 
-    // Process file and its dead code items
-    if (node.type === 'file' && node.filePath) {
-      const items = itemsByFile.get(node.filePath) || [];
-
-      // Add each dead code item in order
-      items.forEach(item => {
-        result.push({
-          type: 'dead-code-item',
-          path: `${item.filePath}:${item.line}:${item.symbolName}`,
-          filePath: item.filePath,
-          deadCodeItem: item,
-        });
+    // Process dead-code-item nodes
+    if (node.type === 'dead-code-item' && node.deadCodeItem) {
+      result.push({
+        id: node.id,              // 고유 ID
+        parentId: node.parentId,  // 부모 ID
+        type: 'dead-code-item',
+        path: node.path,
+        filePath: node.filePath,
+        deadCodeItem: node.deadCodeItem,
       });
     }
   }

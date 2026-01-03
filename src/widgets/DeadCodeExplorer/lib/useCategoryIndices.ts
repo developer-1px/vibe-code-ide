@@ -30,6 +30,8 @@ export function useCategoryIndices(): CategoryInfo[] {
       { title: 'Unused Imports', items: deadCodeResults.unusedImports, key: 'unusedImports', startIndex: 0 },
       { title: 'Unused Variables', items: deadCodeResults.unusedVariables, key: 'unusedVariables', startIndex: 0 },
       { title: 'Dead Functions', items: deadCodeResults.deadFunctions, key: 'deadFunctions', startIndex: 0 },
+      { title: 'Unused Arguments', items: deadCodeResults.unusedArguments, key: 'unusedArguments', startIndex: 0 },
+      { title: 'Unused Props', items: deadCodeResults.unusedProps, key: 'unusedProps', startIndex: 0 },
       { title: 'Unused Exports', items: deadCodeResults.unusedExports, key: 'unusedExports', startIndex: 0 },
     ];
 

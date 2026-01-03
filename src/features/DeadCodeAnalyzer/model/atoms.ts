@@ -7,12 +7,14 @@ import type { CategoryState } from './types';
 // 분석 중 상태
 export const isAnalyzingAtom = atom(false);
 
-// 카테고리 펼침/접힘 상태
+// 카테고리 펼침/접힘 상태 (기본: 모두 접힘)
 export const expandedCategoriesAtom = atom<CategoryState>({
-  unusedExports: true,
-  unusedImports: true,
-  deadFunctions: true,
-  unusedVariables: true,
+  unusedExports: false,
+  unusedImports: false,
+  deadFunctions: false,
+  unusedVariables: false,
+  unusedProps: false,
+  unusedArguments: false,
 });
 
 // 폴더 접힘 상태

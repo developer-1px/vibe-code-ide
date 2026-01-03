@@ -1,33 +1,32 @@
 /**
  * DeadCodeFolderItem - Folder rendering in category tree
  */
+import React from 'react';
 import { Folder, FolderOpen } from 'lucide-react';
 import { FileTreeItem } from '@/components/ide/FileTreeItem';
-import { useAtom } from 'jotai';
-import { focusedIndexAtom } from '../../../features/DeadCodeAnalyzer/model/atoms';
 
-export function DeadCodeFolderItem({
-  name,
-  depth,
-  isCollapsed,
-  globalItemIndex,
-  itemRefs,
-  onDoubleClick,
-}: {
+export const DeadCodeFolderItem = React.forwardRef<HTMLDivElement, {
   name: string;
   depth: number;
   isCollapsed: boolean;
+  focused?: boolean;
   globalItemIndex: number;
   itemRefs: React.MutableRefObject<Map<number, HTMLDivElement>>;
+  onFocus?: () => void;
   onDoubleClick: () => void;
-}) {
-  const [focusedIndex, setFocusedIndex] = useAtom(focusedIndexAtom);
-  const isFocused = focusedIndex === globalItemIndex;
+}>((props, ref) => {
+  const { name, depth, isCollapsed, focused, globalItemIndex, itemRefs, onFocus, onDoubleClick } = props;
   const icon = isCollapsed ? Folder : FolderOpen;
 
   return (
     <FileTreeItem
       ref={(el) => {
+        // Combine TreeView ref with itemRefs map
+        if (typeof ref === 'function') {
+          ref(el);
+        } else if (ref) {
+          ref.current = el;
+        }
         if (el) {
           itemRefs.current.set(globalItemIndex, el);
         }
@@ -36,10 +35,10 @@ export function DeadCodeFolderItem({
       label={name}
       isFolder
       isOpen={!isCollapsed}
-      focused={isFocused}
+      focused={focused}
       indent={depth}
-      onFocus={() => setFocusedIndex(globalItemIndex)}
+      onFocus={onFocus}
       onDoubleClick={onDoubleClick}
     />
   );
-}
+});

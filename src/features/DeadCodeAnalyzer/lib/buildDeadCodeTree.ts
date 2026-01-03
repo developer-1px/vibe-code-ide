@@ -1,54 +1,35 @@
 /**
  * Build nested folder tree from flat dead code items
- * Compatible with FolderNode structure used in FileTreeRenderer
+ * Each DeadCodeItem becomes an independent node for keyboard navigation
  */
-import type { FolderNode } from '../../../widgets/AppSidebar/model/types';
+import type { FolderNode } from '../../../widgets/FileExplorer/model/types';
 import type { DeadCodeItem } from '../../../shared/deadCodeAnalyzer';
 
 export function buildDeadCodeTree(items: DeadCodeItem[]): FolderNode[] {
   const rootChildren: FolderNode[] = [];
   const folderMap = new Map<string, FolderNode>();
 
-  // Group items by file path
-  const fileMap = new Map<string, DeadCodeItem[]>();
+  // Each DeadCodeItem becomes an independent node
   items.forEach(item => {
-    const existing = fileMap.get(item.filePath) || [];
-    existing.push(item);
-    fileMap.set(item.filePath, existing);
-  });
-
-  // Build nested tree
-  fileMap.forEach((fileItems, filePath) => {
-    const parts = filePath.split('/');
+    const parts = item.filePath.split('/');
     const fileName = parts[parts.length - 1];
 
-    // Create file node
-    const fileNode: FolderNode = {
-      type: 'file',
-      name: fileName,
-      path: filePath,
-      filePath: filePath
-    };
-
-    // If no folders (root file), add to root
-    if (parts.length === 1) {
-      rootChildren.push(fileNode);
-      return;
-    }
-
-    // Build folder hierarchy
+    // Build folder hierarchy first to get parentId
     let currentParent: FolderNode[] = rootChildren;
     let currentPath = '';
+    let parentId: string | null = null;
 
     for (let i = 0; i < parts.length - 1; i++) {
       const folderName = parts[i];
       currentPath = currentPath ? `${currentPath}/${folderName}` : folderName;
 
       // Find or create folder at current level
-      let folder = currentParent.find(n => n.type === 'folder' && n.name === folderName);
+      let folder = currentParent.find(n => n.id === currentPath);
 
       if (!folder) {
         folder = {
+          id: currentPath,              // 고유 ID
+          parentId: parentId,           // 부모 ID
           type: 'folder',
           name: folderName,
           path: currentPath,
@@ -58,18 +39,48 @@ export function buildDeadCodeTree(items: DeadCodeItem[]): FolderNode[] {
         folderMap.set(currentPath, folder);
       }
 
-      // Move to next level
+      parentId = currentPath;
       currentParent = folder.children!;
     }
 
-    // Add file to deepest folder
-    currentParent.push(fileNode);
+    // Create dead-code-item node
+    const itemNode: FolderNode = {
+      id: `${item.filePath}:${item.line}:${item.symbolName}`,  // 고유 ID
+      parentId: parentId,           // 부모 ID
+      type: 'dead-code-item',
+      name: `${fileName}:${item.line} - ${item.symbolName}`,
+      path: `${item.filePath}:${item.line}:${item.symbolName}`,
+      filePath: item.filePath,
+      deadCodeItem: item
+    };
+
+    // If no folders (root file), add to root
+    if (parts.length === 1) {
+      rootChildren.push(itemNode);
+      return;
+    }
+
+    // Add dead-code-item node to deepest folder
+    currentParent.push(itemNode);
   });
 
-  // Sort: folders first, then alphabetically
+  // Sort: folders first, then by line number
   const sortNodes = (nodes: FolderNode[]): FolderNode[] => {
     nodes.sort((a, b) => {
-      if (a.type !== b.type) return a.type === 'folder' ? -1 : 1;
+      // Folders first
+      if (a.type !== b.type) {
+        if (a.type === 'folder') return -1;
+        if (b.type === 'folder') return 1;
+      }
+
+      // For dead-code-items, sort by line number
+      if (a.type === 'dead-code-item' && b.type === 'dead-code-item') {
+        const lineA = a.deadCodeItem?.line || 0;
+        const lineB = b.deadCodeItem?.line || 0;
+        return lineA - lineB;
+      }
+
+      // Default: alphabetically
       return a.name.localeCompare(b.name);
     });
 

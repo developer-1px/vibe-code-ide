@@ -12,28 +12,27 @@ export function DeadCodePanelHeader() {
   const setDeadCodePanelOpen = useSetAtom(deadCodePanelOpenAtom);
 
   return (
-    <div className="p-3 space-y-2 border-b border-border-DEFAULT">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <AlertTriangle size={14} className="text-warm-300" />
-          <span className="text-xs font-medium text-text-primary uppercase tracking-wide">
-            Dead Code Analyzer
-          </span>
-        </div>
+    <div className="flex items-center justify-between px-2 py-1.5 border-b border-border-DEFAULT">
+      {/* Left: Icon + Title */}
+      <div className="flex items-center gap-1.5">
+        <AlertTriangle size={12} className="text-warm-300" />
+        <span className="text-2xs font-medium text-text-primary uppercase tracking-wide">
+          Dead Code
+        </span>
+      </div>
+
+      {/* Right: Buttons */}
+      <div className="flex items-center gap-1">
+        <AnalyzeButton />
+        <CopyAllButton />
         <Button
           variant="ghost"
           size="sm"
-          className="h-6 w-6 p-0"
+          className="h-5 w-5 p-0"
           onClick={() => setDeadCodePanelOpen(false)}
         >
-          <X size={14} />
+          <X size={12} />
         </Button>
-      </div>
-
-      {/* Action Buttons */}
-      <div className="flex gap-2">
-        <AnalyzeButton />
-        <CopyAllButton />
       </div>
     </div>
   );
