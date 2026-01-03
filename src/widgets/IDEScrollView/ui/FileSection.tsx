@@ -5,7 +5,6 @@
 
 import React, { useMemo, forwardRef, useEffect, useState, useTransition } from 'react';
 import { useAtomValue } from 'jotai';
-import { FileText } from 'lucide-react';
 import type { SourceFileNode } from '../../../entities/SourceFileNode/model/types';
 import type { CodeLine } from '../../CodeViewer/core/types';
 import { deadCodeResultsAtom } from '@/features/Code/CodeAnalyzer/DeadCodeAnalyzer/model/atoms';
@@ -15,6 +14,7 @@ import { renderPlaintext } from '../../CodeViewer/core/renderer/renderPlaintext'
 import { getWorkerPool } from '../../../shared/workerPool';
 import CodeViewer from '../../CodeViewer/CodeViewer';
 import { getFileName } from '../../../shared/pathUtils';
+import { getFileIcon } from '../../FileExplorer/lib/getFileIcon';
 
 // Module-level cache for processedLines (Phase 1 performance optimization)
 // Key: `${filePath}|${deadCodeResultsVersion}`
@@ -34,6 +34,7 @@ const FileSection = forwardRef<HTMLDivElement, {
 }>(({ node, files, highlightedLines }, ref) => {
   const deadCodeResults = useAtomValue(deadCodeResultsAtom);
   const fileName = getFileName(node.filePath);
+  const FileIconComponent = getFileIcon(fileName);
   const [isPending, startTransition] = useTransition();
 
   // Invalidate cache when deadCodeResults changes
@@ -112,9 +113,8 @@ const FileSection = forwardRef<HTMLDivElement, {
     >
       {/* 파일 헤더 */}
       <div className="sticky top-0 z-10 bg-bg-elevated border-b border-border-hover px-4 py-2 flex items-center gap-2 shadow-sm">
-        <FileText size={14} className="text-text-secondary" />
-        <span className="text-sm font-medium text-text-primary">{fileName}</span>
-        <span className="text-xs text-text-tertiary ml-auto">{node.filePath}</span>
+        <FileIconComponent size={14} className="text-text-secondary" />
+        <span className="text-sm font-medium text-text-primary">{node.filePath}</span>
       </div>
 
       {/* 코드 뷰어 */}
