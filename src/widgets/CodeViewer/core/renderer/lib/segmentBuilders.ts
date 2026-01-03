@@ -178,16 +178,31 @@ export const addSegmentToLines = (
 
 /**
  * 라인의 segments를 정렬하고 빈 공간을 'text'로 채우기
+ * Phase 2-A: Insertion sort optimization (O(n) for nearly-sorted data)
  */
 export const fillLineGaps = (
   line: CodeLine,
   lineText: string,
   sourceFile: ts.SourceFile
 ): CodeLine => {
-  // Segments를 position 기준으로 정렬
-  const sortedSegments = [...line.segments].sort(
-    (a, b) => (a.position || 0) - (b.position || 0)
-  );
+  // Segments는 AST 순회 중 순서대로 추가되므로 대부분 이미 정렬됨
+  // Insertion sort: O(n) for nearly-sorted, O(n²) worst case (rare)
+  // Array.sort: O(n log n) always
+  const sortedSegments = [...line.segments];
+
+  for (let i = 1; i < sortedSegments.length; i++) {
+    const current = sortedSegments[i];
+    const currentPos = current.position || 0;
+    let j = i - 1;
+
+    // Find insertion position (shift larger elements right)
+    while (j >= 0 && (sortedSegments[j].position || 0) > currentPos) {
+      sortedSegments[j + 1] = sortedSegments[j];
+      j--;
+    }
+
+    sortedSegments[j + 1] = current;
+  }
 
   // 빈 공간을 'text' segment로 채우기
   const filledSegments: CodeSegment[] = [];

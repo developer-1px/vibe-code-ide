@@ -4,6 +4,7 @@
 
 import * as ts from 'typescript';
 import type { CodeLine, SegmentKind } from '../types/codeLine';
+import type { RenderContext } from './lib/types';
 import { isDeclarationNode, getDeclarationName } from './segmentUtils';
 
 export type AddKindFunction = (
@@ -177,20 +178,12 @@ export function processTemplateLiteral(
 
 /**
  * Hook 2: Identifier 분류 및 처리
+ * Phase 2-B: Refactored to use RenderContext (13 params → 4 params)
  */
 export function processIdentifier(
   node: ts.Identifier,
   sourceFile: ts.SourceFile,
-  nodeShortId: string,
-  nodeId: string,
-  filePath: string,
-  parameters: Set<string>,
-  localVars: Set<string>,
-  localIdentifiers: Set<string>,
-  dependencyMap: Map<string, string>,
-  files: Record<string, string>,
-  getImportSource: (node: any, name: string, files: Record<string, string>, resolvePath: any) => string | null,
-  resolvePath: (from: string, to: string, files: Record<string, string>) => string | null,
+  ctx: RenderContext,
   addKind: AddKindFunction
 ): void {
   const start = node.getStart(sourceFile);
@@ -198,30 +191,30 @@ export function processIdentifier(
   const name = node.text;
 
   // Self reference (사용처)
-  if (name === nodeShortId) {
-    addKind(start, end, 'local-variable', nodeId, undefined, node); // 사용처는 local-variable로
+  if (name === ctx.nodeShortId) {
+    addKind(start, end, 'local-variable', ctx.nodeId, undefined, node); // 사용처는 local-variable로
     addKind(start, end, 'identifier', undefined, undefined, node);
   }
 
   // Parameter detection (includes destructured parameters)
-  const isParameter = parameters.has(name) || isDestructuredParameter(node);
+  const isParameter = ctx.parameters.has(name) || isDestructuredParameter(node);
   if (isParameter) {
     addKind(start, end, 'parameter', undefined, undefined, node);
     addKind(start, end, 'identifier', undefined, undefined, node);
   }
 
   // Local variable (다른 local variable 사용처)
-  if (localVars.has(name)) {
+  if (ctx.localVars.has(name)) {
     addKind(start, end, 'local-variable', undefined, undefined, node);
     addKind(start, end, 'identifier', undefined, undefined, node);
   }
 
   // External reference 처리 (getter 함수 사용)
-  const importSource = getImportSource(
-    { id: nodeId, filePath, sourceFile } as any,
+  const importSource = ctx.getImportSource(
+    { id: ctx.nodeId, filePath: ctx.filePath, sourceFile } as any,
     name,
-    files,
-    resolvePath
+    ctx.files,
+    ctx.resolvePath
   );
 
   if (importSource) {
@@ -229,12 +222,12 @@ export function processIdentifier(
     const kind: SegmentKind = isNpm ? 'identifier' : 'external-import';
     addKind(start, end, kind, undefined, importSource, node);
     addKind(start, end, 'identifier', importSource, undefined, node);
-  } else if (dependencyMap.has(name)) {
+  } else if (ctx.dependencyMap.has(name)) {
     // Fallback: dependency 기반
-    const depId = dependencyMap.get(name)!;
+    const depId = ctx.dependencyMap.get(name)!;
     addKind(start, end, 'external-import', undefined, depId, node);
     addKind(start, end, 'identifier', depId, undefined, node);
-  } else if (localIdentifiers.has(name)) {
+  } else if (ctx.localIdentifiers.has(name)) {
     addKind(start, end, 'identifier', undefined, undefined, node);
   }
 }

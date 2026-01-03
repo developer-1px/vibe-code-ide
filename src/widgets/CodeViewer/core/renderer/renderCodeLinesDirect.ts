@@ -30,6 +30,7 @@ import { createInitialLines, addSegmentToLines, finalizeAllLines } from './lib/s
 import { getSegmentKind, addComments } from './lib/astAnalyzers';
 import { enrichWithLanguageService } from './lib/languageServiceEnrichers';
 import { extractDeadIdentifiers } from './lib/deadCodeHelpers';
+import type { RenderContext } from './lib/types';
 
 // Development mode flag (Vite injects this at build time)
 const __DEV__ = import.meta.env.DEV;
@@ -88,6 +89,20 @@ export function renderCodeLinesDirect(
 
     // Phase 1-2: Reuse empty Set instead of creating new Set() for each identifier
     const emptyLocalVars = new Set<string>();
+
+    // Phase 2-B: Create render context to reduce parameter passing
+    const renderContext: RenderContext = {
+      nodeShortId,
+      nodeId,
+      filePath,
+      parameters,
+      localVars: emptyLocalVars,
+      localIdentifiers,
+      dependencyMap,
+      files,
+      getImportSource,
+      resolvePath
+    };
 
     // Helper: segment 추가 함수 (Phase 1-3: No assignment needed, mutates in-place)
     const addKind = (
@@ -150,21 +165,8 @@ export function renderCodeLinesDirect(
           return;
         }
 
-        processIdentifier(
-          node,
-          sourceFile,
-          nodeShortId,
-          nodeId,
-          filePath,
-          parameters,
-          emptyLocalVars,  // Phase 1-2: Reuse instead of new Set()
-          localIdentifiers,
-          dependencyMap,
-          files,
-          getImportSource,
-          resolvePath,
-          addKind
-        );
+        // Phase 2-B: Use context object (13 params → 4 params)
+        processIdentifier(node, sourceFile, renderContext, addKind);
       }
 
       // 자식 노드 순회
