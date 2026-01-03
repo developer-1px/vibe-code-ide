@@ -32,9 +32,6 @@ export function buildSegmentStyle(
   const hasFocusMode = options.focusedVariables && options.focusedVariables.size > 0;
   const isFocused = hasFocusMode && options.segmentText && options.focusedVariables?.has(options.segmentText);
 
-  // ✅ Dead identifier: VSCode처럼 muted 처리 (opacity + grayscale)
-  const deadStyle = options.isDead ? 'opacity-50 text-slate-500' : '';
-
   // 기본 텍스트
   if (primaryKind === 'text') {
     const textColor = hasFocusMode && !isFocused ? 'text-editor-focus-gray' : 'text-editor-text';
@@ -85,7 +82,7 @@ export function buildSegmentStyle(
     // Focus mode일 때는 주석을 더 밝게 표시
     const textColor = hasFocusMode ? 'text-editor-comment-focus' : 'text-editor-comment';
     return {
-      className: `${textColor} italic select-text`,
+      className: `${textColor} select-text`,
       clickable: false
     };
   }

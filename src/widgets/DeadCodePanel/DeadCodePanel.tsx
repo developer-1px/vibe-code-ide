@@ -10,6 +10,8 @@ import {
   ChevronDown,
   ChevronRight,
   FileCode,
+  Folder,
+  FolderOpen,
   Package,
   FunctionSquare,
   Box,
@@ -46,6 +48,71 @@ interface CategoryState {
   unusedVariables: boolean;
 }
 
+interface DeadCodeTreeNode {
+  type: 'file' | 'folder';
+  name: string;
+  path: string;
+  items?: DeadCodeItem[];       // for files
+  children?: DeadCodeTreeNode[]; // for folders
+}
+
+/**
+ * Build tree structure from flat dead code items
+ */
+function buildDeadCodeTree(items: DeadCodeItem[]): DeadCodeTreeNode[] {
+  const tree: DeadCodeTreeNode[] = [];
+  const folderMap = new Map<string, DeadCodeTreeNode>();
+
+  // Group items by file path
+  const fileMap = new Map<string, DeadCodeItem[]>();
+  items.forEach(item => {
+    const existing = fileMap.get(item.filePath) || [];
+    existing.push(item);
+    fileMap.set(item.filePath, existing);
+  });
+
+  // Build tree
+  fileMap.forEach((fileItems, filePath) => {
+    const parts = filePath.split('/');
+    const fileName = parts[parts.length - 1];
+    const folderPath = parts.slice(0, -1).join('/');
+
+    // If no folder, add file to root
+    if (folderPath === '' || parts.length === 1) {
+      tree.push({
+        type: 'file',
+        name: fileName,
+        path: filePath,
+        items: fileItems
+      });
+      return;
+    }
+
+    // Ensure folder exists
+    if (!folderMap.has(folderPath)) {
+      const folderNode: DeadCodeTreeNode = {
+        type: 'folder',
+        name: folderPath,
+        path: folderPath,
+        children: []
+      };
+      folderMap.set(folderPath, folderNode);
+      tree.push(folderNode);
+    }
+
+    // Add file to folder
+    const folder = folderMap.get(folderPath)!;
+    folder.children!.push({
+      type: 'file',
+      name: fileName,
+      path: filePath,
+      items: fileItems
+    });
+  });
+
+  return tree;
+}
+
 /**
  * DeadCodePanel - Dead code 분석 결과 표시 패널
  */
@@ -63,6 +130,7 @@ export function DeadCodePanel({ className }: DeadCodePanelProps) {
     deadFunctions: true,
     unusedVariables: true,
   });
+  const [collapsedFolders, setCollapsedFolders] = React.useState<Set<string>>(new Set());
   const [showPromptDialog, setShowPromptDialog] = React.useState(false);
   const [copiedAll, setCopiedAll] = React.useState(false);
   const { openFile } = useOpenFile();
@@ -85,6 +153,18 @@ export function DeadCodePanel({ className }: DeadCodePanelProps) {
       ...prev,
       [category]: !prev[category],
     }));
+  };
+
+  const toggleFolder = (folderPath: string) => {
+    setCollapsedFolders(prev => {
+      const next = new Set(prev);
+      if (next.has(folderPath)) {
+        next.delete(folderPath);
+      } else {
+        next.add(folderPath);
+      }
+      return next;
+    });
   };
 
   const getItemKey = (item: DeadCodeItem): string => {
@@ -166,6 +246,95 @@ export function DeadCodePanel({ className }: DeadCodePanelProps) {
     }
   };
 
+  const renderTreeNode = (node: DeadCodeTreeNode, depth: number = 0): React.ReactNode => {
+    if (node.type === 'folder') {
+      const isCollapsed = collapsedFolders.has(node.path);
+      const allItems = node.children?.flatMap(child => child.items || []) || [];
+      const allSelected = allItems.length > 0 && allItems.every(item => selectedItems.has(getItemKey(item)));
+
+      return (
+        <div key={node.path}>
+          {/* Folder Header */}
+          <div className="flex items-center gap-2 px-2 py-1 hover:bg-white/5 transition-colors rounded">
+            <button
+              onClick={() => toggleFolder(node.path)}
+              className="flex items-center gap-1.5 flex-1"
+              style={{ paddingLeft: `${depth * 12}px` }}
+            >
+              {isCollapsed ? (
+                <ChevronRight size={14} className="text-text-muted shrink-0" />
+              ) : (
+                <ChevronDown size={14} className="text-text-muted shrink-0" />
+              )}
+              {isCollapsed ? (
+                <Folder size={14} className="text-text-muted shrink-0" />
+              ) : (
+                <FolderOpen size={14} className="text-text-muted shrink-0" />
+              )}
+              <span className="text-xs text-text-secondary truncate">{node.name}</span>
+              <span className="text-xs text-text-muted">({allItems.length})</span>
+            </button>
+
+            {allItems.length > 0 && (
+              <Checkbox
+                checked={allSelected}
+                onCheckedChange={() => toggleCategorySelection(allItems)}
+                onClick={(e) => e.stopPropagation()}
+              />
+            )}
+          </div>
+
+          {/* Folder Children */}
+          {!isCollapsed && node.children && (
+            <div className="ml-2">
+              {node.children.map(child => renderTreeNode(child, depth + 1))}
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    // File node
+    const fileItems = node.items || [];
+    const fileName = node.name;
+
+    return (
+      <div key={node.path}>
+        {fileItems.map((item, idx) => {
+          const isSelected = selectedItems.has(getItemKey(item));
+
+          return (
+            <div
+              key={idx}
+              className="w-full flex items-center gap-2 px-2 py-1 hover:bg-white/5 transition-colors text-left rounded group cursor-pointer"
+              onClick={() => handleItemClick(item)}
+              style={{ paddingLeft: `${depth * 12}px` }}
+            >
+              <Checkbox
+                checked={isSelected}
+                onCheckedChange={() => toggleItemSelection(item)}
+                className="shrink-0"
+                onClick={(e) => e.stopPropagation()}
+              />
+
+              <FileCode size={12} className="text-text-muted shrink-0" />
+              <span className="text-xs text-text-secondary truncate max-w-[120px]">{fileName}</span>
+              <span className="text-xs text-text-muted shrink-0">:{item.line}</span>
+              <span className="font-mono text-xs text-warm-300 truncate flex-1">
+                {item.symbolName}
+              </span>
+              {item.from && (
+                <span className="text-2xs text-text-tertiary truncate max-w-[150px]">
+                  from "{item.from}"
+                </span>
+              )}
+            </div>
+          );
+        })}
+      </div>
+    );
+  };
+
   const renderCategory = (
     title: string,
     items: DeadCodeItem[],
@@ -174,6 +343,9 @@ export function DeadCodePanel({ className }: DeadCodePanelProps) {
     const isExpanded = expandedCategories[categoryKey];
     const allSelected = items.length > 0 && items.every(item => selectedItems.has(getItemKey(item)));
     const someSelected = items.some(item => selectedItems.has(getItemKey(item))) && !allSelected;
+
+    // Build tree structure from items
+    const tree = buildDeadCodeTree(items);
 
     return (
       <div className="rounded overflow-hidden">
@@ -202,40 +374,10 @@ export function DeadCodePanel({ className }: DeadCodePanelProps) {
           )}
         </div>
 
-        {/* Category Items */}
+        {/* Category Items - Tree View */}
         {isExpanded && items.length > 0 && (
           <div className="space-y-0.5 mt-0.5 ml-2">
-            {items.map((item, idx) => {
-              const isSelected = selectedItems.has(getItemKey(item));
-              const fileName = item.filePath.split('/').pop() || item.filePath;
-
-              return (
-                <div
-                  key={idx}
-                  className="w-full flex items-center gap-2 px-2 py-1 hover:bg-white/5 transition-colors text-left rounded group cursor-pointer"
-                  onClick={() => handleItemClick(item)}
-                >
-                  <Checkbox
-                    checked={isSelected}
-                    onCheckedChange={() => toggleItemSelection(item)}
-                    className="shrink-0"
-                    onClick={(e) => e.stopPropagation()}
-                  />
-
-                  <FileCode size={12} className="text-text-muted shrink-0" />
-                  <span className="text-xs text-text-secondary truncate max-w-[120px]">{fileName}</span>
-                  <span className="text-xs text-text-muted shrink-0">:{item.line}</span>
-                  <span className="font-mono text-xs text-warm-300 truncate flex-1">
-                    {item.symbolName}
-                  </span>
-                  {item.from && (
-                    <span className="text-2xs text-text-tertiary truncate max-w-[150px]">
-                      from "{item.from}"
-                    </span>
-                  )}
-                </div>
-              );
-            })}
+            {tree.map(node => renderTreeNode(node))}
           </div>
         )}
 
