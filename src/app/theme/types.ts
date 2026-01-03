@@ -96,33 +96,6 @@ export interface EditorTheme {
         hoverBorder: string;
       };
     };
-
-    tokens: {
-      // Syntax highlighting
-      text: string;
-      keyword: string;
-      punctuation: string;
-      string: string;
-      comment: string;
-      commentFocus: string;
-
-      // Special identifiers
-      self: string;
-      identifier: string;
-      identifierWithDef: string;
-
-      // External dependencies
-      externalImport: string;
-      externalClosure: string;
-      externalFunction: string;
-
-      // Local scope
-      parameter: string;
-      localVariable: string;
-
-      // Focus mode
-      focusGrayscale: string;
-    };
   };
 
   spacing: {

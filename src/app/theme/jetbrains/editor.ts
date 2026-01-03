@@ -35,32 +35,6 @@ export const jetbrainsEditorTheme: EditorTheme = {
         hoverBg: 'hover:bg-[#56a8f5]/30',
         hoverBorder: 'hover:border-[#56a8f5]/80'
       }
-    },
-    tokens: {
-      // Syntax highlighting (Islands Dark colors)
-      text: 'text-[#bcbec4]',           // Default text
-      keyword: 'text-[#cf8e6d]',        // Warm orange keywords
-      punctuation: 'text-[#bcbec4]',    // Same as text
-      string: 'text-[#6aab73]',         // Fresh green strings
-      comment: 'text-[#7a7e85]',        // Muted gray comments
-      commentFocus: 'text-[#868a91]',
-
-      // Special identifiers
-      self: 'text-[#cf8e6d]',           // Orange for definitions
-      identifier: 'text-[#bcbec4]',
-      identifierWithDef: 'text-[#9a7ecc]', // Purple for definitions
-
-      // External dependencies
-      externalImport: 'text-[#6aab73]', // Green imports
-      externalClosure: 'text-[#cf8e6d]', // Orange closure
-      externalFunction: 'text-[#56a8f5]', // Blue functions
-
-      // Local scope
-      parameter: 'text-[#cf8e6d]',      // Orange parameters
-      localVariable: 'text-[#9a7ecc]',  // Purple local vars
-
-      // Focus mode
-      focusGrayscale: 'text-[#6c6e75]', // Muted gray
     }
   },
   spacing: {

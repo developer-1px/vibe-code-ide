@@ -30,14 +30,22 @@
     --code-attribute: #cbd5e1;
     --code-punctuation: rgb(255 250 245 / 0.6);
 
-    /* Focus Mode & Interactive Colors - LIMN Warm Palette */
-    --focus-self: var(--color-warm-300);          /* Definition (warm orange) */
-    --focus-import: #4ade80;                      /* External import (green) */
-    --focus-closure: var(--color-status-warning); /* Closure (yellow) */
-    --focus-function: #a78bfa;                    /* External function (purple) */
-    --focus-parameter: #fb923c;                   /* Parameter (orange) */
-    --focus-local: var(--color-warm-400);         /* Local variable (warm) */
-    --focus-gray: rgb(51 65 85);                  /* Unfocused grayscale - darker for strong tone down */
+    /* Interactive Elements - Can be overridden by ThemeAdapter */
+    --code-self: var(--color-warm-300);           /* Definition (self reference) */
+    --code-self-bg: var(--color-warm-500);        /* Definition background */
+    --code-external-import: #4ade80;              /* External import */
+    --code-external-import-bg: #4ade80;           /* External import background */
+    --code-external-closure: var(--color-status-warning); /* Closure variable */
+    --code-external-closure-bg: var(--color-status-warning); /* Closure background */
+    --code-external-function: #a78bfa;            /* External function */
+    --code-external-function-bg: #a78bfa;         /* External function background */
+    --code-parameter: #fb923c;                    /* Function parameter */
+    --code-parameter-bg: var(--color-warm-300);   /* Parameter background */
+    --code-local-variable: var(--color-warm-400); /* Local variable */
+    --code-local-variable-bg: var(--color-warm-500); /* Local variable background */
+
+    /* Focus Mode Colors */
+    --focus-gray: rgb(51 65 85);                  /* Unfocused grayscale */
   }
 
   /* VSCode Theme - Code Editor Syntax Only */
@@ -53,6 +61,20 @@
     --code-tag: #569CD6;
     --code-attribute: #9CDCFE;
     --code-punctuation: #cccccc;
+
+    /* Interactive Elements */
+    --code-self: #DCDCAA;
+    --code-self-bg: #DCDCAA;
+    --code-external-import: #4EC9B0;
+    --code-external-import-bg: #4EC9B0;
+    --code-external-closure: #CE9178;
+    --code-external-closure-bg: #CE9178;
+    --code-external-function: #C586C0;
+    --code-external-function-bg: #C586C0;
+    --code-parameter: #9CDCFE;
+    --code-parameter-bg: #569CD6;
+    --code-local-variable: #9CDCFE;
+    --code-local-variable-bg: #4EC9B0;
   }
 
   /* JetBrains Theme - Code Editor Syntax Only */
@@ -68,6 +90,20 @@
     --code-tag: #cf8e6d;
     --code-attribute: #bcbec4;
     --code-punctuation: #bcbec4;
+
+    /* Interactive Elements */
+    --code-self: #56a8f5;
+    --code-self-bg: #56a8f5;
+    --code-external-import: #6aab73;
+    --code-external-import-bg: #6aab73;
+    --code-external-closure: #cf8e6d;
+    --code-external-closure-bg: #cf8e6d;
+    --code-external-function: #9a7ecc;
+    --code-external-function-bg: #9a7ecc;
+    --code-parameter: #bcbec4;
+    --code-parameter-bg: #56a8f5;
+    --code-local-variable: #bcbec4;
+    --code-local-variable-bg: #6aab73;
   }
 }
 
@@ -105,6 +141,25 @@
     padding: 0 2px;
     border-radius: 2px;
   }
+
+  /* Interactive Elements - Text and Background */
+  .text-code-self { color: var(--code-self); }
+  .bg-code-self { background-color: var(--code-self-bg); }
+
+  .text-code-external-import { color: var(--code-external-import); }
+  .bg-code-external-import { background-color: var(--code-external-import-bg); }
+
+  .text-code-external-closure { color: var(--code-external-closure); }
+  .bg-code-external-closure { background-color: var(--code-external-closure-bg); }
+
+  .text-code-external-function { color: var(--code-external-function); }
+  .bg-code-external-function { background-color: var(--code-external-function-bg); }
+
+  .text-code-parameter { color: var(--code-parameter); }
+  .bg-code-parameter { background-color: var(--code-parameter-bg); }
+
+  .text-code-local-variable { color: var(--code-local-variable); }
+  .bg-code-local-variable { background-color: var(--code-local-variable-bg); }
 
   /* Focus mode grayscale */
   .text-editor-focus-gray { color: var(--focus-gray); }

@@ -35,32 +35,6 @@ export const vscodeEditorTheme: EditorTheme = {
         hoverBg: 'hover:bg-[#4ec9b0]/30',
         hoverBorder: 'hover:border-[#4ec9b0]/80'
       }
-    },
-    tokens: {
-      // Syntax highlighting (Dark+ colors)
-      text: 'text-[#cccccc]',           // Default text
-      keyword: 'text-[#569CD6]',        // Blue keywords
-      punctuation: 'text-[#cccccc]',    // Same as text
-      string: 'text-[#CE9178]',         // Orange strings
-      comment: 'text-[#6A9955]',        // Green comments
-      commentFocus: 'text-[#7FB070]',
-
-      // Special identifiers
-      self: 'text-[#4FC1FF]',           // Light blue for definitions
-      identifier: 'text-[#cccccc]',
-      identifierWithDef: 'text-[#4EC9B0]', // Cyan for definitions
-
-      // External dependencies
-      externalImport: 'text-[#4EC9B0]', // Cyan imports (like types)
-      externalClosure: 'text-[#DCDCAA]', // Yellow closure vars
-      externalFunction: 'text-[#DCDCAA]', // Yellow functions
-
-      // Local scope
-      parameter: 'text-[#9CDCFE]',      // Light blue parameters
-      localVariable: 'text-[#9CDCFE]',  // Light blue local vars
-
-      // Focus mode
-      focusGrayscale: 'text-[#858585]', // Line number gray
     }
   },
   spacing: {
