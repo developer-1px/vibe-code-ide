@@ -117,71 +117,20 @@ export class ThemeAdapter {
 }
 
 /**
- * VSCodeThemeAdapter - VS Code 테마 JSON을 변환
+ * 향후 확장 가능성:
  *
- * VS Code의 .json 테마 파일을 ThemeJSON 포맷으로 변환합니다.
+ * 외부 테마 파일 지원이 필요할 경우 아래와 같은 Adapter 클래스를 추가할 수 있습니다:
  *
- * @example
+ * - VSCodeThemeAdapter: VS Code .json 테마 파일 변환
+ * - JetBrainsThemeAdapter: JetBrains .icls 테마 파일 변환
+ *
+ * 구현 예시:
  * ```typescript
- * fetch('vscode-theme.json')
- *   .then(res => res.json())
- *   .then(vscodeTheme => {
- *     const converted = VSCodeThemeAdapter.fromVSCodeJSON(vscodeTheme);
- *     ThemeAdapter.apply(converted);
- *   });
+ * export class VSCodeThemeAdapter extends ThemeAdapter {
+ *   static fromVSCodeJSON(vscodeTheme: any): ThemeJSON {
+ *     // vscodeTheme.tokenColors에서 색상 추출
+ *     return { name: '...', colors: { ... } };
+ *   }
+ * }
  * ```
- *
- * @note 현재는 스켈레톤입니다. 실제 구현은 VS Code 테마 포맷 분석 후 추가해야 합니다.
  */
-export class VSCodeThemeAdapter extends ThemeAdapter {
-  /**
-   * VS Code 테마 JSON을 ThemeJSON으로 변환
-   *
-   * @param vscodeTheme - VS Code 테마 객체
-   * @returns ThemeJSON 포맷으로 변환된 테마
-   */
-  static fromVSCodeJSON(vscodeTheme: any): ThemeJSON {
-    // TODO: VS Code 테마 포맷 분석 및 변환 로직 구현
-    // vscodeTheme.tokenColors 배열에서 scope 기반으로 색상 추출
-
-    return {
-      name: vscodeTheme.name || 'vscode-custom',
-      colors: {
-        // 예시: scope 기반 매핑 (실제 구현 필요)
-        keyword: this.findColorByScope(vscodeTheme, 'keyword'),
-        variable: this.findColorByScope(vscodeTheme, 'variable'),
-        comment: this.findColorByScope(vscodeTheme, 'comment'),
-        string: this.findColorByScope(vscodeTheme, 'string'),
-      }
-    };
-  }
-
-  private static findColorByScope(theme: any, scope: string): string | undefined {
-    // TODO: tokenColors 배열에서 scope 찾아서 foreground 색상 반환
-    return undefined;
-  }
-}
-
-/**
- * JetBrainsThemeAdapter - JetBrains 테마 XML을 변환
- *
- * IntelliJ IDEA 등의 .icls 테마 파일을 ThemeJSON 포맷으로 변환합니다.
- *
- * @note 현재는 스켈레톤입니다. 실제 구현은 JetBrains 테마 포맷 분석 후 추가해야 합니다.
- */
-export class JetBrainsThemeAdapter extends ThemeAdapter {
-  /**
-   * JetBrains 테마 XML을 ThemeJSON으로 변환
-   *
-   * @param themeXml - JetBrains 테마 XML 문자열
-   * @returns ThemeJSON 포맷으로 변환된 테마
-   */
-  static fromXML(themeXml: string): ThemeJSON {
-    // TODO: XML 파싱 및 색상 추출 로직 구현
-
-    return {
-      name: 'jetbrains-custom',
-      colors: {}
-    };
-  }
-}

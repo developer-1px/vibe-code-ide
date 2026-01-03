@@ -56,14 +56,6 @@ export const useTheme = () => {
 };
 
 /**
- * Hook to access app theme only
- */
-export const useAppTheme = () => {
-  const { appTheme } = useTheme();
-  return appTheme;
-};
-
-/**
  * Unified Theme Provider
  * Wraps both App and Editor theme providers
  * Injects CSS variables for Tailwind to use
