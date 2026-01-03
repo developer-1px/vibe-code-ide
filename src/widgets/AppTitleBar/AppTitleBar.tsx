@@ -6,7 +6,7 @@
 import React from 'react';
 import { useAtomValue } from 'jotai';
 import { TitleBar } from '@/components/ide/TitleBar';
-import { activeTabAtom } from '../../store/atoms';
+import { activeTabAtom } from '@/features/File/OpenFiles/model/atoms';
 
 export function AppTitleBar() {
   const activeTab = useAtomValue(activeTabAtom);

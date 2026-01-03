@@ -9,12 +9,13 @@ import { useAtomValue } from 'jotai';
 import type { CodeSegment, SegmentKind, CodeLine } from '../core/types/codeLine';
 import type { CanvasNode } from '../../../entities/CanvasNode/model/types';
 import { buildSegmentStyle } from '../core/styler/styleBuilder';
-import { visibleNodeIdsAtom, activeLocalVariablesAtom } from '../../../store/atoms';
+import { visibleNodeIdsAtom } from '../../PipelineCanvas/model/atoms';
+import { activeLocalVariablesAtom } from '@/features/Code/FocusMode/model/atoms';
 import { useEditorTheme } from '../../../app/theme/EditorThemeProvider';
 import { StaticSegment } from './segments/StaticSegment';
 import { ExpandSegment } from './segments/ExpandSegment';
 import { ExternalSegment } from './segments/ExternalSegment';
-import { LocalVariableSegment } from '../../../features/FocusMode/ui/LocalVariableSegment';
+import { LocalVariableSegment } from '@/features/Code/FocusMode/ui/LocalVariableSegment';
 import { DependencyTokenSegment } from './segments/DependencyTokenSegment';
 
 // Helper: Identifier 종류인지 체크

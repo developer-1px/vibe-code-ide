@@ -7,26 +7,29 @@ import type { CodeLine } from '../core/types';
 import CodeLineSlots from './CodeLineSlots';
 import CodeLineExportSlots from './CodeLineExportSlots';
 import CodeLineSegment from './CodeLineSegment';
-import FoldButton from '../../../features/CodeFold/ui/FoldButton';
-import FoldBadge from '../../../features/CodeFold/ui/FoldBadge';
-import { isLineInsideFold, isLineFolded, getFoldedCount } from '../../../features/CodeFold/lib/foldUtils';
-import { targetLineAtom, foldedLinesAtom, layoutNodesAtom, visibleNodeIdsAtom } from '../../../store/atoms';
+import FoldButton from '@/features/Code/CodeFold/ui/FoldButton';
+import FoldBadge from '@/features/Code/CodeFold/ui/FoldBadge';
+import { isLineInsideFold, isLineFolded, getFoldedCount } from '@/features/Code/CodeFold/lib/foldUtils';
+import { targetLineAtom } from '@/features/File/Navigation/model/atoms';
+import { foldedLinesAtom } from '@/features/Code/CodeFold/model/atoms';
+import { layoutNodesAtom } from '../../PipelineCanvas/model/atoms';
 import { useEditorTheme } from '../../../app/theme/EditorThemeProvider';
 
 const CodeLineView = ({
   line,
   node,
-  foldRanges
+  foldRanges,
+  isHighlighted = false,
 }: {
   line: CodeLine;
   node: CanvasNode;
   foldRanges: Array<{ start: number; end: number }>;
+  isHighlighted?: boolean;
 }) => {
   const theme = useEditorTheme();
   const targetLine = useAtomValue(targetLineAtom);
   const foldedLinesMap = useAtomValue(foldedLinesAtom);
   const layoutNodes = useAtomValue(layoutNodesAtom);
-  const visibleNodeIds = useAtomValue(visibleNodeIdsAtom);
   const lineRef = useRef<HTMLDivElement>(null);
 
   // Calculate definition line status (lines with export declarations)
@@ -115,6 +118,7 @@ const CodeLineView = ({
         flex w-full group/line relative transition-colors
         ${isDefinitionLine ? 'bg-vibe-accent/5' : ''}
         ${isTargetLine ? 'bg-yellow-400/20 ring-2 ring-yellow-400/50' : ''}
+        ${isHighlighted ? 'bg-warm-500/10' : ''}
       `}
       data-line-num={line.num}
     >

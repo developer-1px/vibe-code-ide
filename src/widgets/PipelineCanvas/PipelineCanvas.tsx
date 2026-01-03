@@ -12,7 +12,9 @@ import CopyAllCodeButton from '../../features/CopyAllCodeButton.tsx';
 import ResetViewButton from '../../features/ResetViewButton.tsx';
 
 // Atoms & Hooks
-import { visibleNodeIdsAtom, selectedNodeIdsAtom, openedFilesAtom, fullNodeMapAtom, symbolMetadataAtom, filesAtom, focusedPaneAtom, graphDataAtom } from '../../store/atoms.ts';
+import { fullNodeMapAtom, filesAtom, focusedPaneAtom, graphDataAtom } from '../../app/model/atoms';
+import { symbolMetadataAtom } from '@/features/Search/UnifiedSearch/model/atoms';
+import { visibleNodeIdsAtom, selectedNodeIdsAtom, openedFilesAtom } from './model/atoms';
 import { extractSymbolMetadata } from '@/shared/symbolMetadataExtractor.ts';
 
 const PipelineCanvas: React.FC = () => {
@@ -138,7 +140,7 @@ const PipelineCanvas: React.FC = () => {
       }
     });
 
-    console.log('[PipelineCanvas] Files to close:', Array.from(filesToClose));
+    console.log('[PipelineCanvas] OpenFiles to close:', Array.from(filesToClose));
     console.log('[PipelineCanvas] Node IDs to remove:', Array.from(nodeIdsToRemove));
 
     // Remove files from openedFiles AND nodes from visibleNodeIds

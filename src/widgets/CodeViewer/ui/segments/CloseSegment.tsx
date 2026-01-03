@@ -6,7 +6,8 @@ import React from 'react';
 import { useSetAtom, useAtomValue } from 'jotai';
 import type { CodeSegment, SegmentStyle } from '../../core/types';
 import type { CanvasNode } from '../../../../entities/CanvasNode/model/types';
-import { visibleNodeIdsAtom, fullNodeMapAtom } from '../../../../store/atoms';
+import { visibleNodeIdsAtom } from '../../../PipelineCanvas/model/atoms';
+import { fullNodeMapAtom } from '../../../../app/model/atoms';
 import { pruneDetachedNodes } from '../../../PipelineCanvas/utils';
 
 interface CloseSegmentProps {

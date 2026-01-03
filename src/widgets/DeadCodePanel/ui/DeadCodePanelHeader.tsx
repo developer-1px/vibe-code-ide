@@ -4,9 +4,9 @@
 import { AlertTriangle, X } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { useSetAtom } from 'jotai';
-import { deadCodePanelOpenAtom } from '../../../store/atoms';
-import { AnalyzeButton } from '../../../features/DeadCodeAnalyzer/ui/AnalyzeButton';
-import { CopyAllButton } from '../../../features/DeadCodePromptCopy/ui/CopyAllButton';
+import { deadCodePanelOpenAtom } from '../model/atoms';
+import { AnalyzeButton } from '@/features/Code/CodeAnalyzer/DeadCodeAnalyzer/ui/AnalyzeButton';
+import { CopyAllButton } from '@/features/Code/CodeAnalyzer/DeadCodePromptCopy/ui/CopyAllButton';
 
 export function DeadCodePanelHeader() {
   const setDeadCodePanelOpen = useSetAtom(deadCodePanelOpenAtom);

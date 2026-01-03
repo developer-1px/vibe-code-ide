@@ -2,7 +2,9 @@
 import React, { useMemo, useState } from 'react';
 import { Box as IconBox, AlertCircle as IconAlertCircle, FileCode, X, Settings } from 'lucide-react';
 import { useAtomValue, useSetAtom } from 'jotai';
-import { openedFilesAtom, selectedNodeIdsAtom, layoutNodesAtom, parseErrorAtom } from '../../store/atoms';
+import { selectedNodeIdsAtom, layoutNodesAtom } from '../PipelineCanvas/model/atoms';
+import { parseErrorAtom } from '../../app/model/atoms';
+import { openedFilesAtom } from '../PipelineCanvas/model/atoms';
 import { useTheme, type ThemeName } from '../../app/theme/ThemeProvider';
 import { getFileName } from '../../shared/pathUtils';
 
@@ -49,7 +51,7 @@ const Header: React.FC = () => {
         <span className="text-xs text-theme-text-secondary">Project Logic Visualization</span>
       </div>
 
-      {/* Center - Opened Files */}
+      {/* Center - Opened OpenFiles */}
       {fileItems.length > 0 && (
         <div className="absolute left-1/2 -translate-x-1/2 flex items-center gap-1.5">
           <FileCode className="w-3.5 h-3.5 text-theme-text-accent flex-shrink-0" />

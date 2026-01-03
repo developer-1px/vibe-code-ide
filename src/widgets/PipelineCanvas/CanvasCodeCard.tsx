@@ -8,7 +8,8 @@ import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import { useDrag } from '@use-gesture/react';
 import type { CanvasNode } from '../../entities/CanvasNode/model/types';
 import CodeCard from '../CodeCard/CodeCard';
-import { cardPositionsAtom, selectedNodeIdsAtom, transformAtom, focusedPaneAtom } from '../../store/atoms';
+import { cardPositionsAtom, selectedNodeIdsAtom, transformAtom } from './model/atoms';
+import { focusedPaneAtom } from '../../app/model/atoms';
 
 interface CanvasCodeCardProps {
   node: CanvasNode;

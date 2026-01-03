@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, RefObject } from 'react';
 import { useSetAtom } from 'jotai';
 import * as d3 from 'd3';
-import { transformAtom } from '../../store/atoms';
+import { transformAtom } from './model/atoms';
 
 export const useD3Zoom = (containerRef: RefObject<HTMLDivElement>) => {
     const [transform, setTransform] = useState({ k: 0.9, x: 0, y: 0 });

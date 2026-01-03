@@ -7,16 +7,17 @@ import AppSidebar from '@/widgets/AppSidebar/AppSidebar';
 import PipelineCanvas from './widgets/PipelineCanvas/PipelineCanvas.tsx';
 import IDEView from './widgets/IDEView/IDEView';
 import JotaiDevTools from './widgets/JotaiDevTools/JotaiDevTools';
-import { UnifiedSearchModal } from './features/UnifiedSearch/ui/UnifiedSearchModal';
+import { UnifiedSearchModal } from '@/features/Search/UnifiedSearch/ui/UnifiedSearchModal';
 import { KeyboardShortcuts } from './features/KeyboardShortcuts/KeyboardShortcuts';
 import { WorkspacePersistence } from './features/WorkspacePersistence/WorkspacePersistence';
 import { AppTitleBar } from './widgets/AppTitleBar/AppTitleBar';
 import { AppActivityBar } from './widgets/AppActivityBar/AppActivityBar';
 import { AppStatusBar } from './widgets/AppStatusBar/AppStatusBar';
 import { DeadCodePanel } from './widgets/DeadCodePanel/DeadCodePanel';
-import { store } from './store/store';
-import { filesAtom, graphDataAtom, parseErrorAtom, viewModeAtom, deadCodePanelOpenAtom } from './store/atoms';
-import { parseProject } from '@/shared/codeParser';
+import { store } from './app/model/store';
+import { filesAtom, graphDataAtom, parseErrorAtom, viewModeAtom } from './app/model/atoms';
+import { deadCodePanelOpenAtom } from './widgets/DeadCodePanel/model/atoms';
+import { parseProject } from '@/shared/tsParser/parseProject';
 
 const AppContent: React.FC = () => {
   // Parse project when files change

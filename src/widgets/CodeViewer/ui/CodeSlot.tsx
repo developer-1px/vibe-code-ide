@@ -3,7 +3,9 @@ import React, { useMemo } from 'react';
 import { useSetAtom, useAtomValue } from 'jotai';
 import { SourceFileNode } from '../../../entities/SourceFileNode/model/types';
 import { getSlotColor } from '../../../entities/SourceFileNode/lib/styleUtils';
-import { targetLineAtom, visibleNodeIdsAtom, lastExpandedIdAtom, layoutLinksAtom } from '../../../store/atoms';
+import { targetLineAtom } from '@/features/File/Navigation/model/atoms';
+import { visibleNodeIdsAtom, layoutLinksAtom } from '../../PipelineCanvas/model/atoms';
+import { lastExpandedIdAtom } from '../../PipelineCanvas/model/atoms';
 import { useEditorTheme } from '../../../app/theme/EditorThemeProvider';
 
 const CodeSlot = ({tokenId, lineNum, slotIdx, depNode, definitionLine, symbolName, isOutputSlot = false, isDead = false }: {

@@ -46,7 +46,7 @@ export function QuickActionsDialog({ open, onOpenChange }: QuickActionsDialogPro
       <CommandList>
         <CommandEmpty>No results found.</CommandEmpty>
 
-        {/* Recent Files */}
+        {/* Recent OpenFiles */}
         <CommandGroup heading="Recent Files">
           <CommandItem>
             <FileCode className="mr-2 h-4 w-4" />

@@ -4,19 +4,20 @@
  */
 import { ChevronDown, ChevronRight } from 'lucide-react';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
-import { collapsedFoldersAtom, expandedCategoriesAtom } from '../../../features/DeadCodeAnalyzer/model/atoms';
-import { targetLineAtom, viewModeAtom, filesAtom } from '../../../store/atoms';
-import { buildDeadCodeTree } from '../../../features/DeadCodeAnalyzer/lib/buildDeadCodeTree';
-import { renderCategoryIcon } from '../../../features/DeadCodeAnalyzer/lib/categoryUtils';
-import { CategoryCheckbox } from '../../../features/DeadCodeSelection/ui/CategoryCheckbox';
+import { collapsedFoldersAtom, expandedCategoriesAtom } from '@/features/Code/CodeAnalyzer/DeadCodeAnalyzer/model/atoms';
+import { targetLineAtom } from '@/features/File/Navigation/model/atoms';
+import { viewModeAtom, filesAtom } from '../../../app/model/atoms';
+import { buildDeadCodeTree } from '@/features/Code/CodeAnalyzer/DeadCodeAnalyzer/lib/buildDeadCodeTree';
+import { renderCategoryIcon } from '@/features/Code/CodeAnalyzer/DeadCodeAnalyzer/lib/categoryUtils';
+import { CategoryCheckbox } from '@/features/Code/CodeAnalyzer/DeadCodeSelection/ui/CategoryCheckbox';
 import { TreeView } from '../../../shared/ui/TreeView/TreeView';
 import { DeadCodeFolderItem } from './DeadCodeFolderItem';
 import { FileTreeItem } from '@/components/ide/FileTreeItem';
 import { Checkbox } from '@/components/ui/Checkbox';
 import { getFileIcon } from '../../FileExplorer/lib/getFileIcon';
-import { useDeadCodeSelection } from '../../../features/DeadCodeSelection/lib/useDeadCodeSelection';
-import { useOpenFile } from '../../../features/Files/lib/useOpenFile';
-import type { CategoryKey } from '../../../features/DeadCodeAnalyzer/model/types';
+import { useDeadCodeSelection } from '@/features/Code/CodeAnalyzer/DeadCodeSelection/lib/useDeadCodeSelection';
+import { useOpenFile } from '@/features/File/OpenFiles/lib/useOpenFile';
+import type { CategoryKey } from '@/features/Code/CodeAnalyzer/DeadCodeAnalyzer/model/types';
 import type { DeadCodeItem } from '../../../shared/deadCodeAnalyzer';
 import { useMemo } from 'react';
 

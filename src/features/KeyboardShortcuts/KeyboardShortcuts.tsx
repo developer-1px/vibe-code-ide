@@ -7,7 +7,8 @@
 import { useEffect, useRef } from 'react';
 import { useHotkeys } from 'react-hotkeys-hook';
 import { useSetAtom } from 'jotai';
-import { isSidebarOpenAtom, searchModalOpenAtom } from '../../store/atoms';
+import { isSidebarOpenAtom } from '../../widgets/AppSidebar/model/atoms';
+import { searchModalOpenAtom } from '@/features/Search/UnifiedSearch/model/atoms';
 
 const GLOBAL_HOTKEYS = {
   TOGGLE_SIDEBAR: 'mod+\\',

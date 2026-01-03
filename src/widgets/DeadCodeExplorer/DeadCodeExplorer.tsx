@@ -4,8 +4,8 @@
  */
 import React, { useMemo } from 'react';
 import { useAtomValue, useAtom } from 'jotai';
-import { deadCodeResultsAtom } from '../../store/atoms';
-import { isAnalyzingAtom, expandedCategoriesAtom } from '../../features/DeadCodeAnalyzer/model/atoms';
+import { deadCodeResultsAtom } from '@/features/Code/CodeAnalyzer/DeadCodeAnalyzer/model/atoms';
+import { isAnalyzingAtom, expandedCategoriesAtom } from '@/features/Code/CodeAnalyzer/DeadCodeAnalyzer/model/atoms';
 import { useCategoryIndices } from './lib/useCategoryIndices';
 import { TreeView } from '../../shared/ui/TreeView/TreeView';
 import { useTreeKeyboardNavigation } from '../../shared/hooks/useTreeKeyboardNavigation';
@@ -124,7 +124,8 @@ function buildDeadCodeTreeWithCategory(items: DeadCodeItem[], categoryKey: strin
   return items.map((item, idx) => ({
     id: `${categoryKey}-item-${idx}`,
     type: 'dead-code-item',
-    path: `${categoryKey}/${item.filePath}:${item.line}`,
+    // Include symbolName in path to ensure uniqueness (same file/line can have multiple items)
+    path: `${categoryKey}/${item.filePath}:${item.line}:${item.symbolName}`,
     deadCodeItem: item,
   }));
 }

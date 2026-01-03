@@ -141,19 +141,6 @@ export function NotificationCenter({ className }: NotificationCenterProps) {
     }
   }
 
-  const getNotificationStyle = (type: NotificationType) => {
-    switch (type) {
-      case 'success':
-        return 'border-status-success/20 bg-status-success/5'
-      case 'warning':
-        return 'border-status-warning/20 bg-status-warning/5'
-      case 'error':
-        return 'border-status-error/20 bg-status-error/5'
-      case 'info':
-        return 'border-warm-300/20 bg-warm-300/5'
-    }
-  }
-
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>

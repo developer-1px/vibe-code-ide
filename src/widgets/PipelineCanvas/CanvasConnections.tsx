@@ -2,7 +2,7 @@
 import React, { useCallback, useEffect, useState, useRef } from 'react';
 import { useAtomValue } from 'jotai';
 import { getEdgeColor } from '../../entities/SourceFileNode/lib/styleUtils.ts';
-import { layoutLinksAtom, layoutNodesAtom, transformAtom, cardPositionsAtom } from '../../store/atoms';
+import { layoutLinksAtom, layoutNodesAtom, transformAtom, cardPositionsAtom } from './model/atoms';
 
 /**
  * Convert absolute rect to relative coordinates based on container and zoom

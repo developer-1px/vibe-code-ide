@@ -7,7 +7,9 @@
 
 import React, { useMemo } from 'react';
 import { useSetAtom } from 'jotai';
-import { visibleNodeIdsAtom, fullNodeMapAtom, lastExpandedIdAtom, filesAtom } from '../../../store/atoms';
+import { visibleNodeIdsAtom } from '../../PipelineCanvas/model/atoms';
+import { fullNodeMapAtom, filesAtom } from '../../../app/model/atoms';
+import { lastExpandedIdAtom } from '../../PipelineCanvas/model/atoms';
 import { useAtomValue } from 'jotai';
 import type { CanvasNode } from '../../../entities/CanvasNode/model/types';
 import { extractTemplateComponents, extractTemplateVariables } from '@/shared/tsParser/utils/vueTemplateParser';

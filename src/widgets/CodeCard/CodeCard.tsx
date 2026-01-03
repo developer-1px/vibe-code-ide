@@ -7,7 +7,7 @@ import { renderCodeLinesDirect } from '../CodeViewer/core/renderer/renderCodeLin
 import { renderVueFile } from '../CodeViewer/core/renderer/renderVueFile';
 import type { CodeLine } from '../CodeViewer/core/types/codeLine';
 import { getNodeBorderColor } from '../../entities/SourceFileNode/lib/styleUtils';
-import { getFoldableLinesByMaxDepth } from '../../features/CodeFold/lib/foldUtils';
+import { getFoldableLinesByMaxDepth } from '@/features/Code/CodeFold/lib/foldUtils';
 
 // UI Components
 import CodeCardHeader from './ui/CodeCardHeader';
@@ -16,7 +16,10 @@ import CodeViewer from '../CodeViewer/CodeViewer';
 import VueTemplateSection from '../CodeViewer/ui/VueTemplateSection';
 
 // Atoms
-import { foldedLinesAtom, cardPositionsAtom, filesAtom, deadCodeResultsAtom } from '../../store/atoms';
+import { foldedLinesAtom } from '@/features/Code/CodeFold/model/atoms';
+import { cardPositionsAtom } from '../PipelineCanvas/model/atoms';
+import { filesAtom } from '../../app/model/atoms';
+import { deadCodeResultsAtom } from '@/features/Code/CodeAnalyzer/DeadCodeAnalyzer/model/atoms';
 
 const CodeCard = ({ node }: { node: CanvasNode }) => {
   const files = useAtomValue(filesAtom);

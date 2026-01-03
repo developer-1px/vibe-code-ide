@@ -3,14 +3,13 @@
  * 선택된 dead code items를 기반으로 AI 리팩토링 프롬프트를 생성하고 복사/전송하는 다이얼로그
  */
 
-import * as React from 'react';
-import { Copy, Check, Sparkles, X } from 'lucide-react';
-import { Button } from '@/components/ui/Button';
-import { Dialog } from '@/components/ui/Dialog';
-import { ScrollArea } from '@/components/ui/ScrollArea';
-import { generateRefactoringPrompt, type RefactoringPrompt } from './lib/promptGenerator';
-import type { DeadCodeResults } from '../../shared/deadCodeAnalyzer';
-import { cn } from '@/lib/utils';
+import * as React from 'react'
+import {Check, Copy, Sparkles, X} from 'lucide-react'
+import {Button} from '@/components/ui/Button'
+import {Dialog} from '@/components/ui/Dialog'
+import {ScrollArea} from '@/components/ui/ScrollArea'
+import {generateRefactoringPrompt, type RefactoringPrompt} from './lib/promptGenerator'
+import type {DeadCodeResults} from '../../shared/deadCodeAnalyzer'
 
 export interface RefactoringPromptDialogProps {
   open: boolean;

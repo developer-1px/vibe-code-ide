@@ -6,9 +6,10 @@ import React from 'react';
 import { useSetAtom } from 'jotai';
 import { Import, Variable, FunctionSquare, FileBox, Component, Code2 } from 'lucide-react';
 import { Checkbox } from '@/components/ui/Checkbox';
-import { targetLineAtom, viewModeAtom } from '../../../store/atoms';
-import { useDeadCodeSelection } from '../../../features/DeadCodeSelection/lib/useDeadCodeSelection';
-import { useOpenFile } from '../../../features/Files/lib/useOpenFile';
+import { targetLineAtom } from '@/features/File/Navigation/model/atoms';
+import { viewModeAtom } from '../../../app/model/atoms';
+import { useDeadCodeSelection } from '@/features/Code/CodeAnalyzer/DeadCodeSelection/lib/useDeadCodeSelection';
+import { useOpenFile } from '@/features/File/OpenFiles/lib/useOpenFile';
 import type { DeadCodeItem } from '../../../shared/deadCodeAnalyzer';
 
 // Get icon for dead code kind
