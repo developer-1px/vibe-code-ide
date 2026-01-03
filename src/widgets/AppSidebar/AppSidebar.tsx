@@ -3,9 +3,8 @@
  * Coordinates file tree display and keyboard navigation
  */
 
-import React, { useMemo, useState, useCallback, useEffect } from 'react';
+import React, { useMemo, useState, useCallback } from 'react';
 import { useAtomValue } from 'jotai';
-import { useHotkeys } from 'react-hotkeys-hook';
 import { Sidebar } from '@/components/ide/Sidebar';
 import { filesAtom, isSidebarOpenAtom, activeTabAtom } from '../../store/atoms';
 import { useOpenFile } from '../../features/Files/lib/useOpenFile';
@@ -14,24 +13,13 @@ import { getInitialCollapsedFolders } from './lib/getInitialCollapsedFolders';
 import { buildFileTree } from './lib/buildFileTree';
 import { getFlatItemList } from './lib/getFlatItemList';
 import { FileTreeRenderer } from './ui/FileTreeRenderer';
-
-const SIDEBAR_HOTKEYS = {
-  ARROW_DOWN: 'arrowdown',
-  ARROW_UP: 'arrowup',
-  ENTER: 'enter',
-  ARROW_RIGHT: 'arrowright',
-  ARROW_LEFT: 'arrowleft',
-} as const;
+import { useTreeKeyboardNavigation } from '../../shared/hooks/useTreeKeyboardNavigation';
 
 export const AppSidebar: React.FC = () => {
   const files = useAtomValue(filesAtom);
   const isSidebarOpen = useAtomValue(isSidebarOpenAtom);
   const activeTab = useAtomValue(activeTabAtom);
-  const [focusedIndex, setFocusedIndex] = useState(0);
   const { openFile } = useOpenFile();
-
-  // Refs for auto-scrolling to focused item
-  const itemRefs = React.useRef<Map<number, HTMLDivElement>>(new Map());
 
   // Collapsed folders state - initial: root level open, others collapsed
   const [collapsedFolders, setCollapsedFolders] = useState<Set<string>>(() =>
@@ -66,64 +54,25 @@ export const AppSidebar: React.FC = () => {
     [openFile]
   );
 
-  // Auto-scroll to focused item when focusedIndex changes
-  useEffect(() => {
-    const focusedElement = itemRefs.current.get(focusedIndex);
-    if (focusedElement) {
-      focusedElement.scrollIntoView({
-        block: 'nearest',
-        behavior: 'auto',
-      });
-    }
-  }, [focusedIndex]);
-
-  // Keyboard navigation - ref-based scoping
-  const sidebarRef = useHotkeys(
-    Object.values(SIDEBAR_HOTKEYS),
-    (e, { hotkey }) => {
-      if (flatItemList.length === 0) return;
-
-      console.log('[AppSidebar] Hotkey pressed:', hotkey);
-      e.preventDefault();
-
-      const item = flatItemList[focusedIndex];
-
-      switch (hotkey) {
-        case SIDEBAR_HOTKEYS.ARROW_DOWN:
-          setFocusedIndex((prev) => Math.min(prev + 1, flatItemList.length - 1));
-          break;
-        case SIDEBAR_HOTKEYS.ARROW_UP:
-          setFocusedIndex((prev) => Math.max(prev - 1, 0));
-          break;
-        case SIDEBAR_HOTKEYS.ENTER:
-          if (item.type === 'file' && item.filePath) {
-            handleFileClick(item.filePath);
-          } else if (item.type === 'folder') {
-            toggleFolder(item.path);
-          }
-          break;
-        case SIDEBAR_HOTKEYS.ARROW_RIGHT:
-          if (item.type === 'folder' && collapsedFolders.has(item.path)) {
-            toggleFolder(item.path);
-          }
-          break;
-        case SIDEBAR_HOTKEYS.ARROW_LEFT:
-          if (item.type === 'folder' && !collapsedFolders.has(item.path)) {
-            toggleFolder(item.path);
-          }
-          break;
-      }
-    },
-    {},
-    [flatItemList, focusedIndex, handleFileClick, collapsedFolders, toggleFolder]
-  );
+  // Keyboard navigation with custom hook
+  const { focusedIndex, setFocusedIndex, itemRefs, containerRef } =
+    useTreeKeyboardNavigation({
+      flatItemList,
+      collapsedFolders,
+      onToggleFolder: toggleFolder,
+      onItemAction: (item) => {
+        if (item.filePath) {
+          handleFileClick(item.filePath);
+        }
+      },
+    });
 
   if (!isSidebarOpen) {
     return null;
   }
 
   return (
-    <div ref={sidebarRef} tabIndex={-1} className="relative focus:outline-none">
+    <div ref={containerRef} tabIndex={-1} className="relative focus:outline-none">
       <Sidebar
         resizable
         defaultWidth={300}

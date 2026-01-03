@@ -35,6 +35,8 @@ import { RefactoringPromptDialog } from '../../features/RefactoringPrompt/Refact
 import { useOpenFile } from '../../features/Files/lib/useOpenFile';
 import type { FolderNode } from '../AppSidebar/model/types';
 import { DeadCodeTreeRenderer } from './ui/DeadCodeTreeRenderer';
+import { useTreeKeyboardNavigation } from '../../shared/hooks/useTreeKeyboardNavigation';
+import { getDeadCodeFlatList } from './lib/getDeadCodeFlatList';
 
 export interface DeadCodePanelProps {
   className?: string;
@@ -264,6 +266,42 @@ export function DeadCodePanel({ className }: DeadCodePanelProps) {
     }
   };
 
+  // Build combined flat list for all categories
+  const allCategoryItems = React.useMemo(() => {
+    if (!deadCodeResults) return [];
+    return [
+      ...deadCodeResults.unusedImports,
+      ...deadCodeResults.unusedVariables,
+      ...deadCodeResults.deadFunctions,
+      ...deadCodeResults.unusedExports,
+    ];
+  }, [deadCodeResults]);
+
+  const allCategoryTree = React.useMemo(
+    () => buildDeadCodeTree(allCategoryItems),
+    [allCategoryItems]
+  );
+
+  const flatItemList = React.useMemo(
+    () => getDeadCodeFlatList(allCategoryTree, collapsedFolders),
+    [allCategoryTree, collapsedFolders]
+  );
+
+  // Keyboard navigation
+  const { focusedIndex, setFocusedIndex, itemRefs, containerRef } =
+    useTreeKeyboardNavigation({
+      flatItemList,
+      collapsedFolders,
+      onToggleFolder: toggleFolder,
+      onItemAction: (item) => {
+        // Find the dead code item that matches this file
+        const deadItem = allCategoryItems.find(i => i.filePath === item.filePath);
+        if (deadItem) {
+          handleItemClick(deadItem);
+        }
+      },
+    });
+
   const renderCategory = (
     title: string,
     items: DeadCodeItem[],
@@ -311,10 +349,14 @@ export function DeadCodePanel({ className }: DeadCodePanelProps) {
               collapsedFolders={collapsedFolders}
               deadCodeItems={items}
               selectedItems={selectedItems}
+              flatItemList={flatItemList}
+              focusedIndex={focusedIndex}
+              itemRefs={itemRefs}
               onFileClick={(filePath, line) => {
                 const item = items.find(i => i.filePath === filePath && i.line === line);
                 if (item) handleItemClick(item);
               }}
+              onFocusChange={setFocusedIndex}
               onToggleFolder={toggleFolder}
               onToggleSelection={toggleItemSelection}
               getItemKey={getItemKey}
@@ -332,7 +374,7 @@ export function DeadCodePanel({ className }: DeadCodePanelProps) {
   };
 
   return (
-    <div className={cn('flex h-full flex-col bg-bg-surface border-r border-border-DEFAULT', className)}>
+    <div ref={containerRef} tabIndex={-1} className={cn('flex h-full flex-col bg-bg-surface border-r border-border-DEFAULT focus:outline-none', className)}>
       {/* Header */}
       <div className="p-3 space-y-2 border-b border-border-DEFAULT">
         <div className="flex items-center justify-between">

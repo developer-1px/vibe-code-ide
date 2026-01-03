@@ -14,7 +14,11 @@ interface DeadCodeTreeRendererProps {
   collapsedFolders: Set<string>;
   deadCodeItems: DeadCodeItem[];
   selectedItems: Set<string>;
+  flatItemList: any[];
+  focusedIndex: number;
+  itemRefs: React.MutableRefObject<Map<number, HTMLDivElement>>;
   onFileClick: (filePath: string, line: number) => void;
+  onFocusChange: (index: number) => void;
   onToggleFolder: (path: string) => void;
   onToggleSelection: (item: DeadCodeItem) => void;
   getItemKey: (item: DeadCodeItem) => string;
@@ -25,7 +29,11 @@ export const DeadCodeTreeRenderer: React.FC<DeadCodeTreeRendererProps> = ({
   collapsedFolders,
   deadCodeItems,
   selectedItems,
+  flatItemList,
+  focusedIndex,
+  itemRefs,
   onFileClick,
+  onFocusChange,
   onToggleFolder,
   onToggleSelection,
   getItemKey,
@@ -97,15 +105,29 @@ export const DeadCodeTreeRenderer: React.FC<DeadCodeTreeRendererProps> = ({
       const isOpen = !isCollapsed;
       const FolderIconComponent = isOpen ? FolderOpen : Folder;
 
+      // Find index in flat list
+      const itemIndex = flatItemList.findIndex(
+        (item) => item.type === 'folder' && item.path === node.path
+      );
+      const isFocused = focusedIndex === itemIndex;
+
       return (
         <React.Fragment key={node.path}>
           <FileTreeItem
+            ref={(el) => {
+              if (el && itemIndex >= 0) {
+                itemRefs.current.set(itemIndex, el);
+              }
+            }}
             icon={FolderIconComponent}
             label={node.name}
             isFolder
             isOpen={isOpen}
-            focused={false}
+            focused={isFocused}
             indent={depth}
+            onFocus={() => {
+              if (itemIndex >= 0) onFocusChange(itemIndex);
+            }}
             onDoubleClick={() => onToggleFolder(node.path)}
           />
           {isOpen && node.children && (
