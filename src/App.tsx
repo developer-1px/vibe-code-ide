@@ -17,7 +17,7 @@ import { DeadCodePanel } from './widgets/DeadCodePanel/DeadCodePanel';
 import { store } from './app/model/store';
 import { filesAtom, graphDataAtom, parseErrorAtom, viewModeAtom } from './app/model/atoms';
 import { deadCodePanelOpenAtom } from './widgets/DeadCodePanel/model/atoms';
-import { parseProject } from '@/shared/codeParser';
+import { parseProject } from '@/shared/tsParser/parseProject';
 
 const AppContent: React.FC = () => {
   // Parse project when files change

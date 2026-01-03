@@ -30,7 +30,6 @@ export const ExternalSegment: React.FC<ExternalSegmentProps> = ({ segment, node,
   const transform = useAtomValue(transformAtom);
   const setTransform = useSetAtom(transformAtom);
   const viewMode = useAtomValue(viewModeAtom);
-  const setViewMode = useSetAtom(viewModeAtom);
   const setFocusedNodeId = useSetAtom(focusedNodeIdAtom);
   const { openFile } = useOpenFile();
 

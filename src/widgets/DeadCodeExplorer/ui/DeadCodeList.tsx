@@ -6,7 +6,6 @@ import { useAtomValue } from 'jotai';
 import { deadCodeResultsAtom } from '@/features/Code/CodeAnalyzer/DeadCodeAnalyzer/model/atoms';
 import { isAnalyzingAtom, collapsedFoldersAtom } from '@/features/Code/CodeAnalyzer/DeadCodeAnalyzer/model/atoms';
 import { buildDeadCodeTree } from '@/features/Code/CodeAnalyzer/DeadCodeAnalyzer/lib/buildDeadCodeTree';
-import { getDeadCodeFlatList } from '../lib/getDeadCodeFlatList';
 import { DeadCodeCategory } from './DeadCodeCategory';
 import { useCategoryIndices } from '../lib/useCategoryIndices';
 import { useMemo } from 'react';
@@ -31,11 +30,6 @@ export function DeadCodeList({ itemRefs }: { itemRefs: React.MutableRefObject<Ma
   const allCategoryTree = useMemo(
     () => buildDeadCodeTree(allCategoryItems),
     [allCategoryItems]
-  );
-
-  const flatItemList = useMemo(
-    () => getDeadCodeFlatList(allCategoryTree, collapsedFolders, allCategoryItems),
-    [allCategoryTree, collapsedFolders, allCategoryItems]
   );
 
   return (

@@ -8,12 +8,10 @@ import { useAtom, useSetAtom } from 'jotai';
 import { Files, SearchAlertIcon, Search, GitBranch, Sparkles, Settings, Trash2Icon, LucideMap } from 'lucide-react';
 import { ActivityBar, ActivityBarItem } from '@/components/ide/ActivityBar';
 import { viewModeAtom } from '../../app/model/atoms';
-import { searchModalOpenAtom } from '@/features/Search/UnifiedSearch/model/atoms';
 import { deadCodePanelOpenAtom } from '../DeadCodePanel/model/atoms';
 
 export function AppActivityBar() {
   const [viewMode, setViewMode] = useAtom(viewModeAtom);
-  const setSearchModalOpen = useSetAtom(searchModalOpenAtom);
   const setDeadCodePanelOpen = useSetAtom(deadCodePanelOpenAtom);
 
   // Active view for ActivityBar (0: Explorer, 1: Search, 2: Dead Code, 3: Canvas, 4: AI)

@@ -186,8 +186,3 @@ export function parseProject(
   console.log(`[parseProject] Parsed ${nodes.length} nodes from ${Object.keys(files).length} files`);
   return { nodes };
 }
-
-// Re-export utilities
-export { resolvePath } from './utils/pathResolver';
-export { extractVueScript, extractVueTemplate, isVueFile } from './utils/vueExtractor';
-export { createLanguageService } from './utils/languageService';

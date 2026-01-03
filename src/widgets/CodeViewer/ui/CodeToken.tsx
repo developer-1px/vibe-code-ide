@@ -5,7 +5,6 @@ import { getTokenStyle } from '../../../entities/SourceFileNode/lib/styleUtils';
 import { visibleNodeIdsAtom, cardPositionsAtom, transformAtom } from '../../PipelineCanvas/model/atoms';
 import { fullNodeMapAtom } from '../../../app/model/atoms';
 import { activeLocalVariablesAtom } from '@/features/Code/FocusMode/model/atoms';
-import { lastExpandedIdAtom } from '../../PipelineCanvas/model/atoms';
 import { pruneDetachedNodes } from '../../PipelineCanvas/utils';
 import { useGotoDefinition } from '@/features/File/GotoDefinition/lib/useGotoDefinition';
 
@@ -17,7 +16,6 @@ const CodeToken = ({text, tokenId, nodeId, lineHasFocusedVariable }: {
 }) => {
   const [visibleNodeIds, setVisibleNodeIds] = useAtom(visibleNodeIdsAtom);
   const fullNodeMap = useAtomValue(fullNodeMapAtom);
-  const setLastExpandedId = useSetAtom(lastExpandedIdAtom);
   const activeLocalVariables = useAtomValue(activeLocalVariablesAtom);
   const setCardPositions = useSetAtom(cardPositionsAtom);
   const cardPositions = useAtomValue(cardPositionsAtom);

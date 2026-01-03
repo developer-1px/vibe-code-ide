@@ -23,7 +23,6 @@ export const DependencyTokenSegment: React.FC<DependencyTokenSegmentProps> = ({ 
   const fullNodeMap = useAtomValue(fullNodeMapAtom);
   const { handleGotoDefinitionByLocation } = useGotoDefinition();
 
-  const isLinkable = fullNodeMap.has(segment.nodeId!);
   const isComponent = /^[A-Z]/.test(segment.text);
 
   const handleClick = (e: React.MouseEvent) => {
