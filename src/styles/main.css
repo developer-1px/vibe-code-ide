@@ -21,10 +21,10 @@
     --code-keyword: #ffcc99;
     --code-function: #ffd699;
     --code-class: #e5c07b;
-    --code-variable: #e2e8f0;
+    --code-variable: #ffffff;
     --code-string: #d4a574;
     --code-number: #cbd5e1;
-    --code-comment: rgb(255 250 245 / 0.35);
+    --code-comment: rgb(255 250 245 / 0.5);
     --code-property: #d4d4d8;
     --code-tag: #ffb366;
     --code-attribute: #cbd5e1;
@@ -92,8 +92,19 @@
   .text-editor-text { color: var(--code-variable); }
 
   /* Identifier colors */
-  .text-editor-identifier { color: var(--code-variable); }
-  .text-editor-identifier-def { color: var(--code-function); text-decoration-color: var(--code-function); }
+  .text-editor-identifier {
+    color: var(--code-variable);
+    background-color: rgba(255, 255, 255, 0.08);
+    padding: 0 2px;
+    border-radius: 2px;
+  }
+  .text-editor-identifier-def {
+    color: var(--code-function);
+    text-decoration-color: var(--code-function);
+    background-color: rgba(255, 255, 255, 0.08);
+    padding: 0 2px;
+    border-radius: 2px;
+  }
 
   /* Focus mode grayscale */
   .text-editor-focus-gray { color: var(--focus-gray); }
