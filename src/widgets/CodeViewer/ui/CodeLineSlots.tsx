@@ -17,7 +17,7 @@ export const CodeLineSlots: React.FC<CodeLineSlotsProps> = ({ line }) => {
   const fullNodeMap = useAtomValue(fullNodeMapAtom);
 
   const slots = line.segments
-    .filter(seg => seg.kinds.includes('identifier') && seg.nodeId)
+    .filter(seg => seg.kinds?.includes('identifier') && seg.nodeId)  // ✅ Bug fix: Optional chaining for kinds
     .map((seg, slotIdx) => {
       const depNode = fullNodeMap.get(seg.nodeId!);
 

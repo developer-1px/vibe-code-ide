@@ -34,7 +34,7 @@ export const ExternalSegment: React.FC<ExternalSegmentProps> = ({ segment, node,
   const { openFile } = useOpenFile();
 
   // Check if active
-  const isActive = segment.kinds.includes('external-import') &&
+  const isActive = segment.kinds?.includes('external-import') &&
     segment.definedIn &&
     (visibleNodeIds.has(segment.definedIn) || visibleNodeIds.has(segment.definedIn.split('::')[0]));
 

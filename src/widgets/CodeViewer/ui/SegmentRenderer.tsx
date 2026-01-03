@@ -67,12 +67,12 @@ export const SegmentRenderer = ({
   const isInReturnStatement = useMemo(() => {
     if (!line.hasTopLevelReturn) return false;
 
-    const startIdx = line.segments.findIndex(seg => seg.kinds.includes('keyword') && seg.text === 'return');
+    const startIdx = line.segments.findIndex(seg => seg.kinds?.includes('keyword') && seg.text === 'return');
     if (startIdx === -1) return false;
 
     // return 이후 세미콜론 찾기
     let endIdx = line.segments.findIndex((seg, idx) =>
-      idx > startIdx && seg.kinds.includes('punctuation') && seg.text === ';'
+      idx > startIdx && seg.kinds?.includes('punctuation') && seg.text === ';'
     );
 
     // 세미콜론이 없으면 라인 끝까지
@@ -107,12 +107,12 @@ export const SegmentRenderer = ({
   }
 
   // external-import의 active 상태 체크 (해당 노드가 열려있는지)
-  const isExternalActive = segment.kinds.includes('external-import') &&
+  const isExternalActive = segment.kinds?.includes('external-import') &&
     segment.definedIn &&
     (visibleNodeIds.has(segment.definedIn) || visibleNodeIds.has(segment.definedIn.split('::')[0]));
 
   // local-variable 또는 parameter의 active 상태 체크 (사용자가 활성화했는지)
-  const isLocalActive = (segment.kinds.includes('local-variable') || segment.kinds.includes('parameter')) &&
+  const isLocalActive = (segment.kinds?.includes('local-variable') || segment.kinds?.includes('parameter')) &&
     activeLocalVariables.get(node.id)?.has(segment.text) || false;
 
   // Check if this segment is focused
@@ -136,11 +136,11 @@ export const SegmentRenderer = ({
   // Special case: identifier with nodeId → DependencyTokenSegment
   // 단, external-* 종류는 제외 (이들은 definedIn을 사용하고 클릭 핸들러가 별도로 있음)
   if (
-    segment.kinds.includes('identifier') &&
+    segment.kinds?.includes('identifier') &&
     segment.nodeId &&
-    !segment.kinds.includes('external-import') &&
-    !segment.kinds.includes('external-closure') &&
-    !segment.kinds.includes('external-function')
+    !segment.kinds?.includes('external-import') &&
+    !segment.kinds?.includes('external-closure') &&
+    !segment.kinds?.includes('external-function')
   ) {
     return <DependencyTokenSegment key={segIdx} segment={segment} node={node} style={style} lineHasFocusedVariable={lineHasFocusedVariable} isFocused={isFocused} />;
   }
