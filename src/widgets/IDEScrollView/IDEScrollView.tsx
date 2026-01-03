@@ -1,11 +1,15 @@
 /**
- * IDEScrollView - 선택된 파일들을 세로 스크롤로 한번에 볼 수 있는 뷰
- * Dead Code Panel에서 체크한 파일들을 나열해서 보여줌
+ * IDEScrollView - 파일들을 세로 스크롤로 한번에 볼 수 있는 통합 뷰
+ *
+ * 두 가지 모드 지원:
+ * 1. Dead Code 모드: Dead Code Panel에서 선택한 파일들 표시
+ * 2. Tabs 모드: 열린 탭들의 파일 표시 (IDEView 대체)
  */
 
-import React, { useMemo, useCallback } from 'react';
+import React, { useMemo } from 'react';
 import { useAtomValue } from 'jotai';
 import { selectedDeadCodeItemsAtom, deadCodeResultsAtom } from '@/features/Code/CodeAnalyzer/DeadCodeAnalyzer/model/atoms';
+import { openedTabsAtom } from '@/features/File/OpenFiles/model/atoms';
 import { fullNodeMapAtom, filesAtom } from '../../app/model/atoms';
 import { getItemKey } from '@/features/Code/CodeAnalyzer/DeadCodeAnalyzer/lib/categoryUtils';
 import FileSection from './ui/FileSection';
@@ -16,55 +20,57 @@ import type { DeadCodeItem } from '../../shared/deadCodeAnalyzer';
 const IDEScrollView = () => {
   const selectedItems = useAtomValue(selectedDeadCodeItemsAtom);
   const deadCodeResults = useAtomValue(deadCodeResultsAtom);
+  const openedTabs = useAtomValue(openedTabsAtom);
   const fullNodeMap = useAtomValue(fullNodeMapAtom);
   const files = useAtomValue(filesAtom);
 
-  // 스크롤 네비게이션 훅
+  // 모드 결정: Dead Code 선택이 있으면 Dead Code 모드, 없으면 Tabs 모드
+  const isDeadCodeMode = selectedItems.size > 0 && deadCodeResults;
 
-  // 선택된 항목들에서 파일 경로 추출 및 정렬
-  const selectedFilePaths = useMemo(() => {
-    if (!deadCodeResults || selectedItems.size === 0) {
-      return [];
+  // 표시할 파일 경로 결정 (Dead Code 모드 또는 Tabs 모드)
+  const displayFilePaths = useMemo(() => {
+    if (isDeadCodeMode) {
+      // Dead Code 모드: 선택된 항목들에서 파일 경로 추출
+      const allItems: DeadCodeItem[] = [
+        ...deadCodeResults!.unusedExports,
+        ...deadCodeResults!.unusedImports,
+        ...deadCodeResults!.deadFunctions,
+        ...deadCodeResults!.unusedVariables,
+        ...deadCodeResults!.unusedProps,
+        ...deadCodeResults!.unusedArguments,
+      ];
+
+      const selectedDeadCodeItems = allItems.filter(item =>
+        selectedItems.has(getItemKey(item))
+      );
+
+      const filePathsSet = new Set<string>();
+      selectedDeadCodeItems.forEach(item => {
+        filePathsSet.add(item.filePath);
+      });
+
+      return Array.from(filePathsSet).sort();
+    } else {
+      // Tabs 모드: 열린 탭들의 파일 경로 (IDEView 대체)
+      return openedTabs;
     }
+  }, [isDeadCodeMode, selectedItems, deadCodeResults, openedTabs]);
 
-    // 모든 카테고리의 아이템을 하나의 배열로 합치기
-    const allItems: DeadCodeItem[] = [
-      ...deadCodeResults.unusedExports,
-      ...deadCodeResults.unusedImports,
-      ...deadCodeResults.deadFunctions,
-      ...deadCodeResults.unusedVariables,
-      ...deadCodeResults.unusedProps,
-      ...deadCodeResults.unusedArguments,
-    ];
-
-    // 선택된 항목들만 필터링
-    const selectedDeadCodeItems = allItems.filter(item =>
-      selectedItems.has(getItemKey(item))
-    );
-
-    // 파일 경로 추출 및 중복 제거
-    const filePathsSet = new Set<string>();
-    selectedDeadCodeItems.forEach(item => {
-      filePathsSet.add(item.filePath);
-    });
-
-    // 알파벳순 정렬
-    return Array.from(filePathsSet).sort();
-  }, [selectedItems, deadCodeResults]);
-
-  // 각 파일에 대한 선택된 라인 번호 추출
-  const selectedLinesByFile = useMemo(() => {
-    if (!deadCodeResults || selectedItems.size === 0) {
+  // 각 파일에 대한 하이라이트할 라인 번호 추출 (Dead Code 모드에서만)
+  const highlightedLinesByFile = useMemo(() => {
+    if (!isDeadCodeMode) {
+      // Tabs 모드: 하이라이트 없음
       return new Map<string, Set<number>>();
     }
 
+    // Dead Code 모드: 선택된 항목의 라인 번호
     const allItems: DeadCodeItem[] = [
-      ...deadCodeResults.unusedExports,
-      ...deadCodeResults.unusedImports,
-      ...deadCodeResults.deadFunctions,
-      ...deadCodeResults.unusedVariables,
-      ...deadCodeResults.unusedProps,
-      ...deadCodeResults.unusedArguments,
+      ...deadCodeResults!.unusedExports,
+      ...deadCodeResults!.unusedImports,
+      ...deadCodeResults!.deadFunctions,
+      ...deadCodeResults!.unusedVariables,
+      ...deadCodeResults!.unusedProps,
+      ...deadCodeResults!.unusedArguments,
     ];
 
     const linesByFile = new Map<string, Set<number>>();
@@ -79,16 +85,20 @@ const IDEScrollView = () => {
       });
 
     return linesByFile;
-  }, [selectedItems, deadCodeResults]);
+  }, [isDeadCodeMode, selectedItems, deadCodeResults]);
 
   // useScrollNavigation 훅 사용
-  const { currentFilePath, registerSection, scrollToFile } = useScrollNavigation(selectedFilePaths);
+  const { currentFilePath, registerSection, scrollToFile } = useScrollNavigation(displayFilePaths);
 
-  // 선택된 항목이 없을 때
-  if (selectedFilePaths.length === 0) {
+  // 표시할 파일이 없을 때
+  if (displayFilePaths.length === 0) {
     return (
       <div className="flex-1 h-full flex items-center justify-center bg-bg-elevated text-text-tertiary">
-        <p className="text-sm">Select dead code items to view files here</p>
+        <p className="text-sm">
+          {isDeadCodeMode
+            ? 'Select dead code items to view files here'
+            : 'No files open. Use search (Shift+Shift) or click a file in the sidebar to open.'}
+        </p>
       </div>
     );
   }
@@ -97,11 +107,11 @@ const IDEScrollView = () => {
     <div className="flex-1 h-full flex overflow-hidden bg-bg-elevated">
       {/* 좌측: 스크롤 가능한 파일 뷰 */}
       <div id="scroll-view-container" className="flex-1 overflow-y-auto">
-        {selectedFilePaths.map((filePath) => {
+        {displayFilePaths.map((filePath) => {
           const node = fullNodeMap.get(filePath);
           if (!node) return null;
 
-          const highlightedLines = selectedLinesByFile.get(filePath) || new Set<number>();
+          const highlightedLines = highlightedLinesByFile.get(filePath) || new Set<number>();
 
           return (
             <FileSection
@@ -117,7 +127,7 @@ const IDEScrollView = () => {
 
       {/* 우측: 파일 네비게이션 패널 */}
       <FileNavPanel
-        filePaths={selectedFilePaths}
+        filePaths={displayFilePaths}
         currentFilePath={currentFilePath}
         onFileClick={scrollToFile}
       />
