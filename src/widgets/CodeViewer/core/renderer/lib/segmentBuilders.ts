@@ -38,6 +38,10 @@ export const addSegmentToLine = (
 
   if (existing) {
     // kinds 병합 (in-place)
+    // ✅ Bug fix: existing.kinds가 undefined인 경우 초기화
+    if (!existing.kinds) {
+      existing.kinds = [];
+    }
     segment.kinds.forEach(kind => {
       if (!existing.kinds.includes(kind)) {
         existing.kinds.push(kind);
@@ -209,6 +213,14 @@ export const fillLineGaps = (
   let cursor = 0;
 
   sortedSegments.forEach(seg => {
+    // ✅ Bug fix: kinds가 undefined인 segment 방어
+    if (!seg.kinds) {
+      if (__DEV__) {
+        console.warn('[fillLineGaps] Segment without kinds detected, initializing to ["text"]:', seg);
+      }
+      seg.kinds = ['text'];
+    }
+
     const segPos = getLinePosition(seg.position || 0, sourceFile);
     const segOffset = segPos.character;
 
