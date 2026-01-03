@@ -3,7 +3,7 @@
  * Cmd+Click 시 정의 위치로 스크롤 이동
  */
 
-import type { SourceFileNode } from '../../../entities/SourceFileNode/model/types';
+import type { SourceFileNode } from '../../../../entities/SourceFileNode/model/types.ts';
 
 export interface DefinitionLocation {
   nodeId: string;

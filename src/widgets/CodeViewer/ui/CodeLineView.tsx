@@ -7,10 +7,12 @@ import type { CodeLine } from '../core/types';
 import CodeLineSlots from './CodeLineSlots';
 import CodeLineExportSlots from './CodeLineExportSlots';
 import CodeLineSegment from './CodeLineSegment';
-import FoldButton from '../../../features/CodeFold/ui/FoldButton';
-import FoldBadge from '../../../features/CodeFold/ui/FoldBadge';
-import { isLineInsideFold, isLineFolded, getFoldedCount } from '../../../features/CodeFold/lib/foldUtils';
-import { targetLineAtom, foldedLinesAtom, layoutNodesAtom, visibleNodeIdsAtom } from '../../../store/atoms';
+import FoldButton from '@/features/Code/CodeFold/ui/FoldButton';
+import FoldBadge from '@/features/Code/CodeFold/ui/FoldBadge';
+import { isLineInsideFold, isLineFolded, getFoldedCount } from '@/features/Code/CodeFold/lib/foldUtils';
+import { targetLineAtom } from '@/features/File/Navigation/model/atoms';
+import { foldedLinesAtom } from '@/features/Code/CodeFold/model/atoms';
+import { layoutNodesAtom, visibleNodeIdsAtom } from '../../PipelineCanvas/model/atoms';
 import { useEditorTheme } from '../../../app/theme/EditorThemeProvider';
 
 const CodeLineView = ({

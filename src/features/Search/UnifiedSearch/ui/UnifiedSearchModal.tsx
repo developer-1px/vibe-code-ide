@@ -5,13 +5,13 @@
 
 import React, { useEffect, useMemo, useCallback } from 'react';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
-import { searchModalOpenAtom, searchQueryAtom, searchResultsAtom, searchFocusedIndexAtom, symbolMetadataAtom, collapsedFoldersAtom } from '../model/atoms';
-import { filesAtom, fullNodeMapAtom, focusedPaneAtom } from '../../../app/model/atoms';
-import { getAllSearchableItems } from '../lib/symbolExtractor';
-import { searchResultsFuzzy } from '../lib/searchService';
-import { useOpenFile } from '../../Files/lib/useOpenFile';
-import { CommandPalette } from '@/components/ui/CommandPalette';
-import type { SearchResult } from '../model/types';
+import { searchModalOpenAtom, searchQueryAtom, searchResultsAtom, searchFocusedIndexAtom, symbolMetadataAtom, collapsedFoldersAtom } from '../model/atoms.ts';
+import { filesAtom, fullNodeMapAtom, focusedPaneAtom } from '../../../../app/model/atoms.ts';
+import { getAllSearchableItems } from '../lib/symbolExtractor.ts';
+import { searchResultsFuzzy } from '../lib/searchService.ts';
+import { useOpenFile } from '@/features/File/OpenFiles/lib/useOpenFile.ts';
+import { CommandPalette } from '@/components/ui/CommandPalette.tsx';
+import type { SearchResult } from '../model/types.ts';
 
 export const UnifiedSearchModal: React.FC = () => {
   const [isOpen, setIsOpen] = useAtom(searchModalOpenAtom);

@@ -7,8 +7,8 @@ import React from 'react';
 import { useAtomValue } from 'jotai';
 import type { CodeSegment, SegmentStyle } from '../../core/types';
 import type { CanvasNode } from '../../../../entities/CanvasNode/model/types';
-import { fullNodeMapAtom } from '../../../../store/atoms';
-import { useGotoDefinition } from '../../../../features/GotoDefinition/lib/useGotoDefinition';
+import { fullNodeMapAtom } from '../../../../app/model/atoms';
+import { useGotoDefinition } from '@/features/File/GotoDefinition/lib/useGotoDefinition';
 import { getTokenStyle } from '../../../../entities/SourceFileNode/lib/styleUtils';
 
 interface DependencyTokenSegmentProps {

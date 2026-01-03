@@ -3,11 +3,8 @@ import { useEffect, useState, useMemo } from 'react';
 import { useSetAtom, useAtomValue } from 'jotai';
 import { GraphData, SourceFileNode } from '../../entities/SourceFileNode/model/types';
 import { CanvasNode } from '../../entities/CanvasNode/model/types';
-import {
-  layoutNodesAtom,
-  layoutLinksAtom,
-  fullNodeMapAtom,
-} from '../../store/atoms';
+import { layoutNodesAtom, layoutLinksAtom } from './model/atoms';
+import { fullNodeMapAtom } from '../../app/model/atoms';
 
 export const useCanvasLayout = (
     initialData: GraphData | null,

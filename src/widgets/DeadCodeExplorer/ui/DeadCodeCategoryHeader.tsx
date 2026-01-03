@@ -4,10 +4,10 @@
 import React from 'react';
 import { ChevronDown, ChevronRight } from 'lucide-react';
 import { useAtom } from 'jotai';
-import { expandedCategoriesAtom } from '../../../features/DeadCodeAnalyzer/model/atoms';
-import { renderCategoryIcon } from '../../../features/DeadCodeAnalyzer/lib/categoryUtils';
-import { CategoryCheckbox } from '../../../features/DeadCodeSelection/ui/CategoryCheckbox';
-import type { CategoryKey } from '../../../features/DeadCodeAnalyzer/model/types';
+import { expandedCategoriesAtom } from '@/features/Code/CodeAnalyzer/DeadCodeAnalyzer/model/atoms';
+import { renderCategoryIcon } from '@/features/Code/CodeAnalyzer/DeadCodeAnalyzer/lib/categoryUtils';
+import { CategoryCheckbox } from '@/features/Code/CodeAnalyzer/DeadCodeSelection/ui/CategoryCheckbox';
+import type { CategoryKey } from '@/features/Code/CodeAnalyzer/DeadCodeAnalyzer/model/types';
 import type { DeadCodeItem } from '../../../shared/deadCodeAnalyzer';
 
 export const DeadCodeCategoryHeader = React.forwardRef<HTMLDivElement, {

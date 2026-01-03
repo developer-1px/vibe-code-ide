@@ -3,10 +3,10 @@
  */
 
 import * as ts from 'typescript';
-import type { SourceFileNode } from '../../../entities/SourceFileNode/model/types';
-import type { SearchResult } from '../model/types';
-import type { CodeSymbolMetadata } from '../../../entities/CodeSymbol/model/types';
-import { getFileName } from '../../../shared/pathUtils';
+import type { SourceFileNode } from '../../../../entities/SourceFileNode/model/types.ts';
+import type { SearchResult } from '../model/types.ts';
+import type { CodeSymbolMetadata } from '../../../../entities/CodeSymbol/model/types.ts';
+import { getFileName } from '../../../../shared/pathUtils.ts';
 
 /**
  * Get display name for file

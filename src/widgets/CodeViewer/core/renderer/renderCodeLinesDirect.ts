@@ -24,7 +24,7 @@ import {
   processExportDeclaration,
   processExportDefault
 } from './astHooks'
-import { collectFoldMetadata } from '../../../../features/CodeFold/lib/collectFoldMetadata'
+import { collectFoldMetadata } from '@/features/Code/CodeFold/lib/collectFoldMetadata'
 
 // ===== 타입 정의 =====
 

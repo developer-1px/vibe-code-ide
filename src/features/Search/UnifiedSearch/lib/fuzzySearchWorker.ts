@@ -4,7 +4,7 @@
  */
 
 import Fuse, { IFuseOptions } from 'fuse.js';
-import { getFileName } from '../../../shared/pathUtils';
+import { getFileName } from '../../../../shared/pathUtils.ts';
 
 // Worker용 경량 검색 아이템 (검색에 필요한 최소한의 정보만)
 export interface SearchItem {

@@ -8,9 +8,11 @@ import React from 'react';
 import { useSetAtom, useAtomValue } from 'jotai';
 import type { CodeSegment, SegmentStyle } from '../../core/types';
 import type { CanvasNode } from '../../../../entities/CanvasNode/model/types';
-import { visibleNodeIdsAtom, fullNodeMapAtom, cardPositionsAtom, transformAtom, viewModeAtom, focusedNodeIdAtom } from '../../../../store/atoms';
+import { visibleNodeIdsAtom, cardPositionsAtom, transformAtom } from '../../../PipelineCanvas/model/atoms';
+import { fullNodeMapAtom, viewModeAtom } from '../../../../app/model/atoms';
+import { focusedNodeIdAtom } from '../../../IDEView/model/atoms';
 import { pruneDetachedNodes } from '../../../PipelineCanvas/utils';
-import { useOpenFile } from '../../../../features/Files/lib/useOpenFile';
+import { useOpenFile } from '@/features/File/OpenFiles/lib/useOpenFile';
 
 interface ExternalSegmentProps {
   segment: CodeSegment;

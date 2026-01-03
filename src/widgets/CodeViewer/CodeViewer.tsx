@@ -12,8 +12,9 @@ import { defaultEditorTheme } from '../../app/theme/default/editor';
 import { jetbrainsEditorTheme } from '../../app/theme/jetbrains/editor';
 import { vscodeEditorTheme } from '../../app/theme/vscode/editor';
 import { EditorThemeProvider } from '../../app/theme/EditorThemeProvider';
-import { currentThemeAtom, foldedLinesAtom } from '../../store/atoms';
-import { calculateFoldRanges } from '../../features/CodeFold/lib/foldUtils';
+import { currentThemeAtom } from '../../app/theme/atoms';
+import { foldedLinesAtom } from '@/features/Code/CodeFold/model/atoms';
+import { calculateFoldRanges } from '@/features/Code/CodeFold/lib/foldUtils';
 
 interface CodeViewerProps {
   processedLines: CodeLine[];

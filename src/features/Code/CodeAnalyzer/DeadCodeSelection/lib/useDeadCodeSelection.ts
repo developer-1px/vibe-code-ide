@@ -2,9 +2,9 @@
  * Dead Code Selection Hook
  */
 import { useAtom } from 'jotai';
-import { selectedDeadCodeItemsAtom } from '../../DeadCodeAnalyzer/model/atoms';
-import type { DeadCodeItem } from '../../../shared/deadCodeAnalyzer';
-import { getItemKey } from '../../DeadCodeAnalyzer/lib/categoryUtils';
+import { selectedDeadCodeItemsAtom } from '../../DeadCodeAnalyzer/model/atoms.ts';
+import type { DeadCodeItem } from '../../../../../shared/deadCodeAnalyzer.ts';
+import { getItemKey } from '../../DeadCodeAnalyzer/lib/categoryUtils.tsx';
 
 export function useDeadCodeSelection() {
   const [selectedItems, setSelectedItems] = useAtom(selectedDeadCodeItemsAtom);

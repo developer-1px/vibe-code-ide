@@ -4,11 +4,11 @@
  */
 import { useMemo } from 'react';
 import { useAtomValue } from 'jotai';
-import { deadCodeResultsAtom } from '../../../store/atoms';
-import { collapsedFoldersAtom } from '../../../features/DeadCodeAnalyzer/model/atoms';
-import { buildDeadCodeTree } from '../../../features/DeadCodeAnalyzer/lib/buildDeadCodeTree';
+import { deadCodeResultsAtom } from '@/features/Code/CodeAnalyzer/DeadCodeAnalyzer/model/atoms';
+import { collapsedFoldersAtom } from '@/features/Code/CodeAnalyzer/DeadCodeAnalyzer/model/atoms';
+import { buildDeadCodeTree } from '@/features/Code/CodeAnalyzer/DeadCodeAnalyzer/lib/buildDeadCodeTree';
 import { getDeadCodeFlatList } from './getDeadCodeFlatList';
-import type { CategoryKey } from '../../../features/DeadCodeAnalyzer/model/types';
+import type { CategoryKey } from '@/features/Code/CodeAnalyzer/DeadCodeAnalyzer/model/types';
 import type { DeadCodeItem } from '../../../shared/deadCodeAnalyzer';
 
 interface CategoryInfo {

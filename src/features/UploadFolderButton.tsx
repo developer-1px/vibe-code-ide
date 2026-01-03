@@ -1,11 +1,13 @@
 import React, { useRef } from 'react';
 import { useSetAtom } from 'jotai';
 import { Upload as IconUpload } from 'lucide-react';
-import { filesAtom, activeFileAtom } from '../store/atoms';
+import { filesAtom } from '../app/model/atoms';
+import { openedTabsAtom, activeTabAtom } from '@/features/File/OpenFiles/model/atoms';
 
 const UploadFolderButton: React.FC = () => {
   const setFiles = useSetAtom(filesAtom);
-  const setActiveFile = useSetAtom(activeFileAtom);
+  const setOpenedTabs = useSetAtom(openedTabsAtom);
+  const setActiveTab = useSetAtom(activeTabAtom);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFolderSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -32,13 +34,14 @@ const UploadFolderButton: React.FC = () => {
     if (Object.keys(uploadedFiles).length > 0) {
       setFiles(uploadedFiles);
 
-      // Set the first file as active
+      // Open the first file in IDE mode
       const allFiles = Object.keys(uploadedFiles);
       if (allFiles.length > 0) {
         const entry = allFiles.find(f => f.includes('Index') || f.includes('index') || f.includes('App') || f.includes('main')) ||
                       allFiles.find(f => f.endsWith('.vue') || f.endsWith('.tsx') || f.endsWith('.jsx')) ||
                       allFiles[0];
-        setActiveFile(entry);
+        setOpenedTabs([entry]);
+        setActiveTab(entry);
       }
     } else {
       alert('No .vue, .ts, .js, .jsx, or .tsx files found in the selected folder.');

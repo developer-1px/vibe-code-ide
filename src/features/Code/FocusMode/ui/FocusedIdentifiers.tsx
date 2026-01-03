@@ -5,13 +5,13 @@
 
 import React, { useMemo } from 'react';
 import { useAtomValue } from 'jotai';
-import { CanvasNode } from '../../../entities/CanvasNode/model/types';
-import { activeLocalVariablesAtom } from '../model/atoms';
-import { filesAtom } from '../../../app/model/atoms';
-import { deadCodeResultsAtom } from '../../DeadCodeAnalyzer/model/atoms';
-import { FocusedIdentifierItem } from './FocusedIdentifierItem';
-import { renderCodeLinesDirect } from '../../../widgets/CodeViewer/core/renderer/renderCodeLinesDirect';
-import { renderVueFile } from '../../../widgets/CodeViewer/core/renderer/renderVueFile';
+import { CanvasNode } from '../../../../entities/CanvasNode/model/types.ts';
+import { activeLocalVariablesAtom } from '../model/atoms.ts';
+import { filesAtom } from '../../../../app/model/atoms.ts';
+import { deadCodeResultsAtom } from '@/features/Code/CodeAnalyzer/DeadCodeAnalyzer/model/atoms.ts';
+import { FocusedIdentifierItem } from './FocusedIdentifierItem.tsx';
+import { renderCodeLinesDirect } from '../../../../widgets/CodeViewer/core/renderer/renderCodeLinesDirect.ts';
+import { renderVueFile } from '../../../../widgets/CodeViewer/core/renderer/renderVueFile.ts';
 
 interface FocusedIdentifiersProps {
   node: CanvasNode;

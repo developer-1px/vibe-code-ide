@@ -4,8 +4,9 @@
  */
 import React, { useMemo, useState, useCallback } from 'react';
 import { useAtomValue } from 'jotai';
-import { filesAtom, activeTabAtom } from '../../store/atoms';
-import { useOpenFile } from '../../features/Files/lib/useOpenFile';
+import { filesAtom } from '../../app/model/atoms';
+import { activeTabAtom } from '@/features/File/OpenFiles/model/atoms';
+import { useOpenFile } from '@/features/File/OpenFiles/lib/useOpenFile';
 import { getInitialCollapsedFolders } from './lib/getInitialCollapsedFolders';
 import { buildFileTree } from './lib/buildFileTree';
 import { getFlatItemList } from './lib/getFlatItemList';

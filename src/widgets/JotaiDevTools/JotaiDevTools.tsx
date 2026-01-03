@@ -4,9 +4,36 @@
 
 import React, { useState, useEffect } from 'react';
 import { Atom } from 'jotai';
-import { store } from '../../store/store';
-import * as atoms from '../../store/atoms';
+import { store } from '../../app/model/store';
+import * as appAtoms from '../../app/model/atoms';
+import * as themeAtoms from '../../app/theme/atoms';
+import * as searchAtoms from '@/features/Search/UnifiedSearch/model/atoms';
+import * as navigationAtoms from '@/features/File/Navigation/model/atoms';
+import * as codeFoldAtoms from '@/features/Code/CodeFold/model/atoms';
+import * as focusModeAtoms from '@/features/Code/FocusMode/model/atoms';
+import * as deadCodeAtoms from '@/features/Code/CodeAnalyzer/DeadCodeAnalyzer/model/atoms';
+import * as filesAtoms from '@/features/File/OpenFiles/model/atoms';
+import * as canvasAtoms from '../PipelineCanvas/model/atoms';
+import * as ideViewAtoms from '../IDEView/model/atoms';
+import * as sidebarAtoms from '../AppSidebar/model/atoms';
+import * as deadCodePanelAtoms from '../DeadCodePanel/model/atoms';
 import { ChevronDown, ChevronRight } from 'lucide-react';
+
+// Combine all atoms for DevTools tracking
+const atoms = {
+  ...appAtoms,
+  ...themeAtoms,
+  ...searchAtoms,
+  ...navigationAtoms,
+  ...codeFoldAtoms,
+  ...focusModeAtoms,
+  ...deadCodeAtoms,
+  ...filesAtoms,
+  ...canvasAtoms,
+  ...ideViewAtoms,
+  ...sidebarAtoms,
+  ...deadCodePanelAtoms,
+};
 
 interface AtomUpdate {
   name: string;

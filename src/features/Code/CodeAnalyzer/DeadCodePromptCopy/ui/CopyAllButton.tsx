@@ -2,10 +2,10 @@
  * Copy All Prompt Button Component
  */
 import { Copy, Check } from 'lucide-react';
-import { Button } from '@/components/ui/Button';
+import { Button } from '@/components/ui/Button.tsx';
 import { useAtomValue } from 'jotai';
-import { deadCodeResultsAtom } from '../../DeadCodeAnalyzer/model/atoms';
-import { useCopyAllPrompt } from '../lib/useCopyAllPrompt';
+import { deadCodeResultsAtom } from '../../DeadCodeAnalyzer/model/atoms.ts';
+import { useCopyAllPrompt } from '../lib/useCopyAllPrompt.ts';
 
 export function CopyAllButton() {
   const deadCodeResults = useAtomValue(deadCodeResultsAtom);

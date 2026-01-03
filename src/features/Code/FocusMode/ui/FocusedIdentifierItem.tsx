@@ -5,11 +5,11 @@
 import React, { useRef } from 'react';
 import { useSetAtom, useAtomValue } from 'jotai';
 import { useHotkeys } from 'react-hotkeys-hook';
-import { activeLocalVariablesAtom } from '../model/atoms';
-import { visibleNodeIdsAtom } from '../../../widgets/PipelineCanvas/model/atoms';
-import { fullNodeMapAtom } from '../../../app/model/atoms';
-import { pruneDetachedNodes } from '../../../widgets/PipelineCanvas/utils';
-import type { IdentifierMetadata } from './FocusedIdentifiers';
+import { activeLocalVariablesAtom } from '../model/atoms.ts';
+import { visibleNodeIdsAtom } from '../../../../widgets/PipelineCanvas/model/atoms.ts';
+import { fullNodeMapAtom } from '../../../../app/model/atoms.ts';
+import { pruneDetachedNodes } from '../../../../widgets/PipelineCanvas/utils.ts';
+import type { IdentifierMetadata } from './FocusedIdentifiers.tsx';
 
 interface FocusedIdentifierItemProps {
   metadata: IdentifierMetadata;

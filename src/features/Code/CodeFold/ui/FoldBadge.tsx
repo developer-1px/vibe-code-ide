@@ -5,9 +5,9 @@
 
 import React from 'react';
 import { useSetAtom } from 'jotai';
-import { foldedLinesAtom } from '../model/atoms';
-import type { CodeLine } from '../../../widgets/CodeViewer/core/types/codeLine';
-import type { CanvasNode } from '../../../entities/CanvasNode/model/types';
+import { foldedLinesAtom } from '../model/atoms.ts';
+import type { CodeLine } from '../../../../widgets/CodeViewer/core/types/codeLine.ts';
+import type { CanvasNode } from '../../../../entities/CanvasNode/model/types.ts';
 
 interface FoldBadgeProps {
   line: CodeLine;

@@ -5,9 +5,10 @@ import React from 'react';
 import { Checkbox } from '@/components/ui/Checkbox';
 import { FileTreeItem } from '@/components/ide/FileTreeItem';
 import { useSetAtom } from 'jotai';
-import { targetLineAtom, viewModeAtom } from '../../../store/atoms';
-import { useDeadCodeSelection } from '../../../features/DeadCodeSelection/lib/useDeadCodeSelection';
-import { useOpenFile } from '../../../features/Files/lib/useOpenFile';
+import { targetLineAtom } from '@/features/File/Navigation/model/atoms';
+import { viewModeAtom } from '../../../app/model/atoms';
+import { useDeadCodeSelection } from '@/features/Code/CodeAnalyzer/DeadCodeSelection/lib/useDeadCodeSelection';
+import { useOpenFile } from '@/features/File/OpenFiles/lib/useOpenFile';
 import { getFileIcon } from '../../FileExplorer/lib/getFileIcon';
 import type { DeadCodeItem } from '../../../shared/deadCodeAnalyzer';
 

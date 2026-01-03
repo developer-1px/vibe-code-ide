@@ -3,10 +3,10 @@
  */
 import { useEffect } from 'react';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
-import { graphDataAtom } from '../../../app/model/atoms';
-import { deadCodeResultsAtom, selectedDeadCodeItemsAtom } from '../model/atoms';
-import { isAnalyzingAtom } from '../model/atoms';
-import { analyzeDeadCode } from '../../../shared/deadCodeAnalyzer';
+import { graphDataAtom } from '../../../../../app/model/atoms.ts';
+import { deadCodeResultsAtom, selectedDeadCodeItemsAtom } from '../model/atoms.ts';
+import { isAnalyzingAtom } from '../model/atoms.ts';
+import { analyzeDeadCode } from '../../../../../shared/deadCodeAnalyzer.ts';
 
 export function useDeadCodeAnalysis() {
   const graphData = useAtomValue(graphDataAtom);

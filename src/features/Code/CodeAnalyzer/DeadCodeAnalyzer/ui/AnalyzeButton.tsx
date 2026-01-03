@@ -2,10 +2,10 @@
  * Re-analyze Button Component
  */
 import { AlertTriangle, Loader2 } from 'lucide-react';
-import { Button } from '@/components/ui/Button';
+import { Button } from '@/components/ui/Button.tsx';
 import { useAtomValue } from 'jotai';
-import { graphDataAtom } from '../../../app/model/atoms';
-import { useDeadCodeAnalysis } from '../lib/useDeadCodeAnalysis';
+import { graphDataAtom } from '../../../../../app/model/atoms.ts';
+import { useDeadCodeAnalysis } from '../lib/useDeadCodeAnalysis.ts';
 
 export function AnalyzeButton() {
   const graphData = useAtomValue(graphDataAtom);

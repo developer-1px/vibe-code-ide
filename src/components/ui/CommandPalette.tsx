@@ -18,7 +18,7 @@ import {
   SquareFunction
 } from 'lucide-react';
 import { cn } from '@/components/lib/utils';
-import type { SearchResult } from '../../features/UnifiedSearch/model/types';
+import type { SearchResult } from '@/features/Search/UnifiedSearch/model/types';
 import { getFileName } from '../../shared/pathUtils';
 
 export interface CommandPaletteProps {

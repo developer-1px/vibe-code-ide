@@ -5,7 +5,7 @@
 import React, { useRef } from 'react';
 import { useAtomValue } from 'jotai';
 import { Sidebar } from '@/components/ide/Sidebar';
-import { isSidebarOpenAtom } from '../../store/atoms';
+import { isSidebarOpenAtom } from './model/atoms';
 import UploadFolderButton from '../../features/UploadFolderButton';
 import { FileExplorer } from '../FileExplorer/FileExplorer';
 

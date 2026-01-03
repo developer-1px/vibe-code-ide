@@ -6,10 +6,10 @@
 
 import React from 'react';
 import { useSetAtom } from 'jotai';
-import type { CodeSegment, SegmentStyle } from '../../../widgets/CodeViewer/core/types/codeLine';
-import type { CanvasNode } from '../../../entities/CanvasNode/model/types';
-import { activeLocalVariablesAtom } from '../model/atoms';
-import { useGotoDefinition } from '@/features/File/GotoDefinition/lib/useGotoDefinition';
+import type { CodeSegment, SegmentStyle } from '../../../../widgets/CodeViewer/core/types/codeLine.ts';
+import type { CanvasNode } from '../../../../entities/CanvasNode/model/types.ts';
+import { activeLocalVariablesAtom } from '../model/atoms.ts';
+import { useGotoDefinition } from '@/features/File/GotoDefinition/lib/useGotoDefinition.ts';
 
 interface LocalVariableSegmentProps {
   segment: CodeSegment;

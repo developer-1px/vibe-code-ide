@@ -5,9 +5,9 @@
  */
 
 import { useAtomValue } from 'jotai';
-import { fullNodeMapAtom } from '../../../app/model/atoms';
-import { findDefinitionLocation, isModifierKeyPressed, type DefinitionLocation } from './gotoDefinitionUtils';
-import { useOpenFile } from '../../Files/lib/useOpenFile';
+import { fullNodeMapAtom } from '../../../../app/model/atoms.ts';
+import { findDefinitionLocation, isModifierKeyPressed, type DefinitionLocation } from './gotoDefinitionUtils.ts';
+import { useOpenFile } from '@/features/File/OpenFiles/lib/useOpenFile.ts';
 
 export function useGotoDefinition() {
   const fullNodeMap = useAtomValue(fullNodeMapAtom);

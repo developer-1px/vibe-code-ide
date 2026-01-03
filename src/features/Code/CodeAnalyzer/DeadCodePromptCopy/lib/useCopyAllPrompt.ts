@@ -3,8 +3,8 @@
  */
 import { useState } from 'react';
 import { useAtomValue } from 'jotai';
-import { deadCodeResultsAtom } from '../../DeadCodeAnalyzer/model/atoms';
-import { getItemKey } from '../../DeadCodeAnalyzer/lib/categoryUtils';
+import { deadCodeResultsAtom } from '../../DeadCodeAnalyzer/model/atoms.ts';
+import { getItemKey } from '../../DeadCodeAnalyzer/lib/categoryUtils.tsx';
 
 export function useCopyAllPrompt() {
   const deadCodeResults = useAtomValue(deadCodeResultsAtom);
@@ -14,7 +14,7 @@ export function useCopyAllPrompt() {
     if (!deadCodeResults) return;
 
     // Generate prompt from all items
-    const { generateRefactoringPrompt } = await import('../../RefactoringPrompt/lib/promptGenerator');
+    const { generateRefactoringPrompt } = await import('../../../../RefactoringPrompt/lib/promptGenerator.ts');
 
     // Select all items
     const allItems = [

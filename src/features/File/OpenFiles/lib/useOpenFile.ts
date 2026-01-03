@@ -5,11 +5,11 @@
  */
 
 import { useSetAtom, useAtomValue } from 'jotai';
-import { viewModeAtom, focusedPaneAtom } from '../../../app/model/atoms';
-import { targetLineAtom } from '../../Navigation/model/atoms';
-import { activeLocalVariablesAtom } from '../../FocusMode/model/atoms';
-import { openedTabsAtom, activeTabAtom } from '../model/atoms';
-import { openedFilesAtom } from '../../../widgets/PipelineCanvas/model/atoms';
+import { viewModeAtom, focusedPaneAtom } from '../../../../app/model/atoms.ts';
+import { targetLineAtom } from '@/features/File/Navigation/model/atoms.ts';
+import { activeLocalVariablesAtom } from '@/features/Code/FocusMode/model/atoms.ts';
+import { openedTabsAtom, activeTabAtom } from '../model/atoms.ts';
+import { openedFilesAtom } from '../../../../widgets/PipelineCanvas/model/atoms.ts';
 
 export interface OpenFileOptions {
   /** 스크롤할 라인 번호 */

@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import { useAtomValue } from 'jotai';
 import { Layers as IconLayers } from 'lucide-react';
 import { ComponentGroup, CanvasNode } from '../../entities/CanvasNode/model/types';
-import { layoutNodesAtom } from '../../store/atoms';
+import { layoutNodesAtom } from './model/atoms';
 import { estimateNodeHeight } from './utils';
 
 const CanvasBackground: React.FC = () => {

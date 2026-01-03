@@ -2,8 +2,8 @@
  * Build nested folder tree from flat dead code items
  * Each DeadCodeItem becomes an independent node for keyboard navigation
  */
-import type { FolderNode } from '../../../widgets/FileExplorer/model/types';
-import type { DeadCodeItem } from '../../../shared/deadCodeAnalyzer';
+import type { FolderNode } from '../../../../../widgets/FileExplorer/model/types.ts';
+import type { DeadCodeItem } from '../../../../../shared/deadCodeAnalyzer.ts';
 
 export function buildDeadCodeTree(items: DeadCodeItem[]): FolderNode[] {
   const rootChildren: FolderNode[] = [];

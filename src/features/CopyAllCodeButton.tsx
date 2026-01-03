@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { useAtomValue } from 'jotai';
 import { Copy as IconCopy, Check as IconCheck } from 'lucide-react';
-import { layoutNodesAtom, fullNodeMapAtom } from '../store/atoms.ts';
+import { layoutNodesAtom } from '../widgets/PipelineCanvas/model/atoms';
+import { fullNodeMapAtom } from '../app/model/atoms';
 
 const CopyAllCodeButton: React.FC = () => {
   const layoutNodes = useAtomValue(layoutNodesAtom);

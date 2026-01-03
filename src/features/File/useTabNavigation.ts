@@ -4,7 +4,7 @@
  */
 
 import { useAtomValue, useSetAtom } from 'jotai';
-import { openedTabsAtom, activeTabAtom } from '../../store/atoms';
+import { openedTabsAtom, activeTabAtom } from '@/features/File/OpenFiles/model/atoms';
 
 export function useTabNavigation() {
   const openedTabs = useAtomValue(openedTabsAtom);

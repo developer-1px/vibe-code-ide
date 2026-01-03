@@ -5,7 +5,7 @@
 import React, { useState } from 'react';
 import type { CodeSegment, SegmentStyle } from '../../core/types';
 import type { CanvasNode } from '../../../../entities/CanvasNode/model/types';
-import { useGotoDefinition } from '../../../../features/GotoDefinition/lib/useGotoDefinition';
+import { useGotoDefinition } from '@/features/File/GotoDefinition/lib/useGotoDefinition';
 
 interface DefinitionSegmentProps {
   segment: CodeSegment;

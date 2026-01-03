@@ -3,8 +3,8 @@
  * Performs fuzzy matching in background thread for performance
  */
 
-import type { SearchResult } from '../model/types';
-import type { FuzzySearchRequest, FuzzySearchResponse } from './fuzzySearchWorker';
+import type { SearchResult } from '../model/types.ts';
+import type { FuzzySearchRequest, FuzzySearchResponse } from './fuzzySearchWorker.ts';
 
 // Lazy-load Web Worker
 let fuzzyWorker: Worker | null = null;
