@@ -64,11 +64,17 @@ export const DeadCodeTreeRenderer: React.FC<DeadCodeTreeRendererProps> = ({
           {items.map((item, idx) => {
             const isSelected = selectedItems.has(getItemKey(item));
 
+            // Find index in flat list for this dead code item
+            const itemKey = `${item.filePath}:${item.line}:${item.symbolName}`;
+            const itemIndex = flatItemList.findIndex(
+              (flatItem) => flatItem.type === 'dead-code-item' && flatItem.path === itemKey
+            );
+            const isFocused = focusedIndex === itemIndex;
+
             return (
               <div
                 key={idx}
-                className="flex items-center gap-2 hover:bg-white/5 transition-colors rounded group cursor-pointer"
-                onClick={() => onFileClick(item.filePath, item.line)}
+                className="flex items-center gap-2"
               >
                 <Checkbox
                   checked={isSelected}
@@ -79,12 +85,20 @@ export const DeadCodeTreeRenderer: React.FC<DeadCodeTreeRendererProps> = ({
 
                 <div className="flex-1 min-w-0">
                   <FileTreeItem
+                    ref={(el) => {
+                      if (el && itemIndex >= 0) {
+                        itemRefs.current.set(itemIndex, el);
+                      }
+                    }}
                     icon={FileIconComponent}
                     label={`${node.name}:${item.line} - ${item.symbolName}`}
                     active={false}
-                    focused={false}
+                    focused={isFocused}
                     indent={depth}
                     fileExtension={fileExtension}
+                    onFocus={() => {
+                      if (itemIndex >= 0) onFocusChange(itemIndex);
+                    }}
                     onDoubleClick={() => onFileClick(item.filePath, item.line)}
                   />
                 </div>

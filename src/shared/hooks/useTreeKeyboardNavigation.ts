@@ -14,7 +14,7 @@ const TREE_HOTKEYS = {
 } as const;
 
 export interface TreeNavigationItem {
-  type: 'folder' | 'file';
+  type: 'folder' | 'file' | 'dead-code-item' | string;
   path: string;
   filePath?: string;
 }
@@ -63,10 +63,11 @@ export function useTreeKeyboardNavigation<T extends TreeNavigationItem>({
           setFocusedIndex((prev) => Math.max(prev - 1, 0));
           break;
         case TREE_HOTKEYS.ENTER:
-          if (item.type === 'file') {
-            onItemAction(item);
-          } else if (item.type === 'folder') {
+          if (item.type === 'folder') {
             onToggleFolder(item.path);
+          } else {
+            // Handle file or any other item type
+            onItemAction(item);
           }
           break;
         case TREE_HOTKEYS.ARROW_RIGHT:

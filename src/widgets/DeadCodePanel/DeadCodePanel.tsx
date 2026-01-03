@@ -36,7 +36,7 @@ import { useOpenFile } from '../../features/Files/lib/useOpenFile';
 import type { FolderNode } from '../AppSidebar/model/types';
 import { DeadCodeTreeRenderer } from './ui/DeadCodeTreeRenderer';
 import { useTreeKeyboardNavigation } from '../../shared/hooks/useTreeKeyboardNavigation';
-import { getDeadCodeFlatList } from './lib/getDeadCodeFlatList';
+import { getDeadCodeFlatList, type DeadCodeFlatItem } from './lib/getDeadCodeFlatList';
 
 export interface DeadCodePanelProps {
   className?: string;
@@ -283,21 +283,20 @@ export function DeadCodePanel({ className }: DeadCodePanelProps) {
   );
 
   const flatItemList = React.useMemo(
-    () => getDeadCodeFlatList(allCategoryTree, collapsedFolders),
-    [allCategoryTree, collapsedFolders]
+    () => getDeadCodeFlatList(allCategoryTree, collapsedFolders, allCategoryItems),
+    [allCategoryTree, collapsedFolders, allCategoryItems]
   );
 
   // Keyboard navigation
   const { focusedIndex, setFocusedIndex, itemRefs, containerRef } =
-    useTreeKeyboardNavigation({
+    useTreeKeyboardNavigation<DeadCodeFlatItem>({
       flatItemList,
       collapsedFolders,
       onToggleFolder: toggleFolder,
       onItemAction: (item) => {
-        // Find the dead code item that matches this file
-        const deadItem = allCategoryItems.find(i => i.filePath === item.filePath);
-        if (deadItem) {
-          handleItemClick(deadItem);
+        // Handle dead code item action
+        if (item.type === 'dead-code-item' && item.deadCodeItem) {
+          handleItemClick(item.deadCodeItem);
         }
       },
     });
