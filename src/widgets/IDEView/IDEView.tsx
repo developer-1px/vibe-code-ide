@@ -55,9 +55,6 @@ const IDEView = () => {
     e.preventDefault();
 
     switch (hotkey) {
-      // case IDE_HOTKEYS.ESC:
-      //   setViewMode('canvas');
-      //   break;
       case IDE_HOTKEYS.TOGGLE_OUTLINE:
         setOutlinePanelOpen(prev => !prev);
         break;
