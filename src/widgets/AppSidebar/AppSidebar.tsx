@@ -12,7 +12,7 @@ import UploadFolderButton from '../../features/UploadFolderButton';
 import { getInitialCollapsedFolders } from './lib/getInitialCollapsedFolders';
 import { buildFileTree } from './lib/buildFileTree';
 import { getFlatItemList } from './lib/getFlatItemList';
-import { FileTreeRenderer } from './ui/FileTreeRenderer';
+import { TreeView } from '../../shared/ui/TreeView/TreeView';
 import { useTreeKeyboardNavigation } from '../../shared/hooks/useTreeKeyboardNavigation';
 import { Folder, FolderOpen } from 'lucide-react';
 import { FileTreeItem } from '@/components/ide/FileTreeItem';
@@ -89,18 +89,17 @@ export const AppSidebar: React.FC = () => {
         </Sidebar.Header>
 
         {fileTree.length > 0 ? (
-          <FileTreeRenderer
-            fileTree={fileTree}
-            collapsedFolders={collapsedFolders}
-            flatItemList={flatItemList}
-            focusedIndex={focusedIndex}
-            itemRefs={itemRefs}
-            onFocusChange={setFocusedIndex}
-            onToggleFolder={toggleFolder}
+          <TreeView
+            data={fileTree}
             getNodeType={(node) => node.type}
             getNodePath={(node) => node.path}
+            collapsedPaths={collapsedFolders}
+            onToggleCollapse={toggleFolder}
+            focusedIndex={focusedIndex}
+            onFocusChange={setFocusedIndex}
+            itemRefs={itemRefs}
           >
-            {({ node, depth, isFocused, isCollapsed, itemRef, handleFocus, handleDoubleClick }) => {
+            {({ node, depth, isFocused, isCollapsed, itemRef, handleFocus, handleToggle }) => {
               const isActive = activeTab === node.filePath;
               const fileExtension = node.name.includes('.')
                 ? '.' + node.name.split('.').pop()
@@ -125,13 +124,13 @@ export const AppSidebar: React.FC = () => {
                     if (node.type === 'file' && node.filePath) {
                       handleFileClick(node.filePath);
                     } else {
-                      handleDoubleClick();
+                      handleToggle();
                     }
                   }}
                 />
               );
             }}
-          </FileTreeRenderer>
+          </TreeView>
         ) : (
           <div className="px-3 py-6 text-xs text-text-secondary text-center">No files</div>
         )}

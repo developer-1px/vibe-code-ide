@@ -48,7 +48,6 @@ export function DeadCodeList({ itemRefs }: { itemRefs: React.MutableRefObject<Ma
             items={items}
             categoryKey={key}
             startIndex={startIndex}
-            flatItemList={flatItemList}
             itemRefs={itemRefs}
           />
         ))}

@@ -7,10 +7,9 @@ import { collapsedFoldersAtom, expandedCategoriesAtom } from '../../../features/
 import { buildDeadCodeTree } from '../../../features/DeadCodeAnalyzer/lib/buildDeadCodeTree';
 import { renderCategoryIcon } from '../../../features/DeadCodeAnalyzer/lib/categoryUtils';
 import { CategoryCheckbox } from '../../../features/DeadCodeSelection/ui/CategoryCheckbox';
-import { FileTreeRenderer } from '../../AppSidebar/ui/FileTreeRenderer';
+import { TreeView } from '../../../shared/ui/TreeView/TreeView';
 import { DeadCodeFolderItem } from './DeadCodeFolderItem';
 import { DeadCodeFileItem } from './DeadCodeFileItem';
-import { getDeadCodeFlatList } from '../lib/getDeadCodeFlatList';
 import type { CategoryKey } from '../../../features/DeadCodeAnalyzer/model/types';
 import type { DeadCodeItem } from '../../../shared/deadCodeAnalyzer';
 import { useMemo } from 'react';
@@ -20,14 +19,12 @@ export function DeadCodeCategory({
   items,
   categoryKey,
   startIndex,
-  flatItemList,
   itemRefs,
 }: {
   title: string;
   items: DeadCodeItem[];
   categoryKey: CategoryKey;
   startIndex: number;
-  flatItemList: any[];
   itemRefs: React.MutableRefObject<Map<number, HTMLDivElement>>;
 }) {
   const [expandedCategories, setExpandedCategories] = useAtom(expandedCategoriesAtom);
@@ -80,18 +77,14 @@ export function DeadCodeCategory({
       {/* Category Items - Tree View */}
       {isExpanded && items.length > 0 && (
         <div className="mt-0.5">
-          <FileTreeRenderer
-            fileTree={tree}
-            collapsedFolders={collapsedFolders}
-            flatItemList={flatItemList}
-            focusedIndex={0}
-            itemRefs={itemRefs}
-            onFocusChange={() => {}}
-            onToggleFolder={toggleFolder}
+          <TreeView
+            data={tree}
             getNodeType={(node) => node.type}
             getNodePath={(node) => node.path}
+            collapsedPaths={collapsedFolders}
+            onToggleCollapse={toggleFolder}
           >
-            {({ node, depth, isCollapsed, itemIndex, handleDoubleClick }) => {
+            {({ node, depth, isCollapsed, itemIndex, handleToggle }) => {
               const globalItemIndex = startIndex + itemIndex;
 
               // Folder rendering
@@ -103,7 +96,7 @@ export function DeadCodeCategory({
                     isCollapsed={isCollapsed}
                     globalItemIndex={globalItemIndex}
                     itemRefs={itemRefs}
-                    onDoubleClick={handleDoubleClick}
+                    onDoubleClick={handleToggle}
                   />
                 );
               }
@@ -121,7 +114,7 @@ export function DeadCodeCategory({
                 />
               );
             }}
-          </FileTreeRenderer>
+          </TreeView>
         </div>
       )}
 
