@@ -20,16 +20,20 @@ import {
   getImports,
   getLocalFunctions,
   getLocalVariables,
-  getUsedIdentifiers
+  getUsedIdentifiers,
+  getComponentProps,
+  getFunctionArguments
 } from '../entities/SourceFileNode/lib/metadata';
 
 export interface DeadCodeItem {
   filePath: string;
   symbolName: string;
   line: number;
-  kind: 'export' | 'import' | 'function' | 'variable';
-  category: 'unusedExport' | 'unusedImport' | 'deadFunction' | 'unusedVariable';
+  kind: 'export' | 'import' | 'function' | 'variable' | 'prop' | 'argument';
+  category: 'unusedExport' | 'unusedImport' | 'deadFunction' | 'unusedVariable' | 'unusedProp' | 'unusedArgument';
   from?: string; // import의 경우 from 경로
+  componentName?: string; // prop의 경우 컴포넌트 이름
+  functionName?: string; // argument의 경우 함수 이름
 }
 
 export interface DeadCodeResults {
@@ -37,6 +41,8 @@ export interface DeadCodeResults {
   unusedImports: DeadCodeItem[];
   deadFunctions: DeadCodeItem[];
   unusedVariables: DeadCodeItem[];
+  unusedProps: DeadCodeItem[];
+  unusedArguments: DeadCodeItem[];
   totalCount: number;
 }
 
@@ -54,6 +60,8 @@ export function analyzeDeadCode(graphData: GraphData | null): DeadCodeResults {
     unusedImports: [],
     deadFunctions: [],
     unusedVariables: [],
+    unusedProps: [],
+    unusedArguments: [],
     totalCount: 0,
   };
 
@@ -76,16 +84,21 @@ export function analyzeDeadCode(graphData: GraphData | null): DeadCodeResults {
     imports: getImports(node),
     localFunctions: getLocalFunctions(node),
     localVariables: getLocalVariables(node),
-    usedIdentifiers: getUsedIdentifiers(node)
+    usedIdentifiers: getUsedIdentifiers(node),
+    componentProps: getComponentProps(node),
+    functionArguments: getFunctionArguments(node)
   }));
 
   // ✅ 2. 캐싱된 데이터로 분석 (AST 순회 없음)
 
   // 2-1. Unused Exports 분석
-  fileMetadataList.forEach(({ node, exports }) => {
+  fileMetadataList.forEach(({ node, exports, usedIdentifiers }) => {
     exports.forEach(exp => {
-      // 다른 파일에서 import하는지 체크
-      const isUsed = fileMetadataList.some(other => {
+      // 1. 같은 파일 내에서 사용되는지 체크
+      const isUsedInSameFile = usedIdentifiers.has(exp.name);
+
+      // 2. 다른 파일에서 import하는지 체크
+      const isImportedByOtherFile = fileMetadataList.some(other => {
         if (other.node.filePath === node.filePath) return false; // Skip self
 
         return other.imports.some(imp => {
@@ -99,7 +112,8 @@ export function analyzeDeadCode(graphData: GraphData | null): DeadCodeResults {
         });
       });
 
-      if (!isUsed) {
+      // 같은 파일에서도 사용 안 하고, 다른 파일에서도 import 안 하면 unused
+      if (!isUsedInSameFile && !isImportedByOtherFile) {
         results.unusedExports.push({
           filePath: node.filePath,
           symbolName: exp.name,
@@ -157,18 +171,60 @@ export function analyzeDeadCode(graphData: GraphData | null): DeadCodeResults {
     });
   });
 
+  // 2-5. Unused Props 분석
+  fileMetadataList.forEach(({ node, componentProps }) => {
+    componentProps.forEach(componentInfo => {
+      componentInfo.props.forEach(prop => {
+        // isDeclared: true이지만 isUsed: false인 props만
+        if (prop.isDeclared && !prop.isUsed) {
+          results.unusedProps.push({
+            filePath: node.filePath,
+            symbolName: prop.name,
+            line: prop.line,
+            kind: 'prop',
+            category: 'unusedProp',
+            componentName: componentInfo.componentName
+          });
+        }
+      });
+    });
+  });
+
+  // 2-6. Unused Arguments 분석
+  fileMetadataList.forEach(({ node, functionArguments }) => {
+    functionArguments.forEach(functionInfo => {
+      functionInfo.arguments.forEach(arg => {
+        // isDeclared: true이지만 isUsed: false인 arguments만
+        if (arg.isDeclared && !arg.isUsed) {
+          results.unusedArguments.push({
+            filePath: node.filePath,
+            symbolName: arg.name,
+            line: arg.line,
+            kind: 'argument',
+            category: 'unusedArgument',
+            functionName: functionInfo.functionName
+          });
+        }
+      });
+    });
+  });
+
   // Calculate total count
   results.totalCount =
     results.unusedExports.length +
     results.unusedImports.length +
     results.deadFunctions.length +
-    results.unusedVariables.length;
+    results.unusedVariables.length +
+    results.unusedProps.length +
+    results.unusedArguments.length;
 
   console.log('[deadCodeAnalyzer] Analysis complete:', {
     unusedExports: results.unusedExports.length,
     unusedImports: results.unusedImports.length,
     deadFunctions: results.deadFunctions.length,
     unusedVariables: results.unusedVariables.length,
+    unusedProps: results.unusedProps.length,
+    unusedArguments: results.unusedArguments.length,
     total: results.totalCount,
   });
 

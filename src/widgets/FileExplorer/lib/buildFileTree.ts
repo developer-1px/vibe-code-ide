@@ -29,7 +29,14 @@ function sortTree(node: FolderNode) {
  * Build hierarchical file tree from flat file list
  */
 export function buildFileTree(files: Record<string, string>): FolderNode[] {
-  const root: FolderNode = { name: 'root', path: '', type: 'folder', children: [] };
+  const root: FolderNode = {
+    id: '__root__',
+    parentId: null,
+    name: 'root',
+    path: '',
+    type: 'folder',
+    children: []
+  };
 
   Object.keys(files)
     .sort()
@@ -45,10 +52,12 @@ export function buildFileTree(files: Record<string, string>): FolderNode[] {
           currentNode.children = [];
         }
 
-        let childNode = currentNode.children.find((child) => child.name === part);
+        let childNode = currentNode.children.find((child) => child.id === currentPath);
 
         if (!childNode) {
           childNode = {
+            id: currentPath,                    // 고유 ID
+            parentId: currentNode.id,           // 부모 ID
             name: part,
             path: currentPath,
             type: isFile ? 'file' : 'folder',

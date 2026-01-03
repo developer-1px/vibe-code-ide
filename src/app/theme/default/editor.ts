@@ -8,12 +8,12 @@ import type { EditorTheme } from '../types';
 export const defaultEditorTheme: EditorTheme = {
   name: 'default',
   typography: {
-    fontSize: 'text-[10px]',
+    fontSize: 'text-[11px]',
     fontFamily: 'font-mono',
     lineHeight: 'leading-[1rem]'
   },
   colors: {
-    background: 'bg-[#080a0f]',         // 파란색 → 검은색에 가깝게 (약간의 파란 힌트만)
+    background: '', // @TODO
     lineNumber: {
       text: 'text-slate-600',
       background: 'bg-[#0a0c10]/50',    // 배경과 조화롭게

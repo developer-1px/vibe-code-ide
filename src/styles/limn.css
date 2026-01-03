@@ -47,13 +47,8 @@
   --color-border-active: rgb(255 200 150 / 0.3);
 
   /* Font Sizes */
-  /*--text-xs: 9px;*/
-  /*--text-sm: 10px;*/
-  /*--text-base: 12px;*/
-  /*--text-md: 14px;*/
-  /*--text-lg: 15px;*/
-  /*--text-xl: 18px;*/
-  /*--text-2xl: 20px;*/
+  --font-size-2xs: 10px;
+  --line-height-2xs: 14px;
 
   /* Font Families */
   --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', 'Helvetica Neue', sans-serif;

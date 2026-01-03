@@ -4,7 +4,7 @@ import { Provider, useAtomValue, useSetAtom } from 'jotai';
 import { HotkeysProvider } from 'react-hotkeys-hook';
 import { ThemeProvider } from './app/theme/ThemeProvider';
 import AppSidebar from '@/widgets/AppSidebar/AppSidebar';
-import PipelineCanvas from './widgets/PipelineCanvas.tsx';
+import PipelineCanvas from './widgets/PipelineCanvas/PipelineCanvas.tsx';
 import IDEView from './widgets/IDEView/IDEView';
 import JotaiDevTools from './widgets/JotaiDevTools/JotaiDevTools';
 import { UnifiedSearchModal } from './features/UnifiedSearch/ui/UnifiedSearchModal';
@@ -38,7 +38,7 @@ const AppContent: React.FC = () => {
   }, [files, setGraphData, setParseError]);
 
   return (
-    <div className="flex h-screen flex-col overflow-hidden bg-bg-deep text-text-primary">
+    <div className="flex h-screen flex-col overflow-hidden bg-bg-deep text-text-primary select-none">
       {/* Workspace persistence (save/restore state) */}
       {/*<WorkspacePersistence />*/}
 
@@ -52,27 +52,13 @@ const AppContent: React.FC = () => {
         {/* Activity Bar */}
         <AppActivityBar />
 
-        {viewMode === 'canvas' ? (
-          /* Canvas Mode */
-          <>
-            {/* Canvas Area */}
-            <div className="flex-1 relative overflow-hidden">
-              <PipelineCanvas />
-            </div>
+        {/* Left Sidebar Area: DeadCodePanel or AppSidebar (File Explorer) */}
+        {deadCodePanelOpen ? <DeadCodePanel /> : <AppSidebar />}
 
-            {/* Floating AppSidebar */}
-            <AppSidebar />
-          </>
-        ) : (
-          /* IDE Mode */
-          <>
-            {/* AppSidebar or DeadCodePanel */}
-            {deadCodePanelOpen ? <DeadCodePanel /> : <AppSidebar />}
-
-            {/* Main Content Area */}
-            <IDEView />
-          </>
-        )}
+        {/* Main Content Area: Canvas or IDE View */}
+        <div className="flex-1 relative overflow-hidden">
+          {viewMode === 'canvas' ? <PipelineCanvas /> : <IDEView />}
+        </div>
       </div>
 
       {/* Status Bar */}

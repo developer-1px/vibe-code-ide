@@ -32,9 +32,6 @@ export function buildSegmentStyle(
   const hasFocusMode = options.focusedVariables && options.focusedVariables.size > 0;
   const isFocused = hasFocusMode && options.segmentText && options.focusedVariables?.has(options.segmentText);
 
-  // ✅ Dead identifier: VSCode처럼 muted 처리 (opacity + grayscale)
-  const deadStyle = options.isDead ? 'opacity-50 text-slate-500' : '';
-
   // 기본 텍스트
   if (primaryKind === 'text') {
     const textColor = hasFocusMode && !isFocused ? 'text-editor-focus-gray' : 'text-editor-text';
@@ -85,7 +82,7 @@ export function buildSegmentStyle(
     // Focus mode일 때는 주석을 더 밝게 표시
     const textColor = hasFocusMode ? 'text-editor-comment-focus' : 'text-editor-comment';
     return {
-      className: `${textColor} italic select-text`,
+      className: `${textColor} select-text`,
       clickable: false
     };
   }
@@ -134,6 +131,16 @@ export function buildSegmentStyle(
   // External Import (active 상태에서만 강조, 크기는 동일)
   if (primaryKind === 'external-import') {
     const isActive = options.isActive;
+
+    // ✅ Dead code: VSCode-like muted style
+    if (options.isDead) {
+      return {
+        className: `inline-block px-1 rounded bg-slate-500/8 text-slate-400/60 border border-slate-500/15 line-through decoration-slate-500/40 select-text cursor-default`,
+        clickable: false,
+        clickType: 'none',
+        title: 'Unused import (Dead code)'
+      };
+    }
 
     // Focus mode && Focused: 최대 강조 (Green - success)
     if (hasFocusMode && isFocused) {

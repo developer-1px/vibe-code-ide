@@ -37,6 +37,14 @@ export const FileTreeItem = React.forwardRef<HTMLDivElement, FileTreeItemProps>(
       }
     }
 
+    const handleChevronClick = (e: React.MouseEvent) => {
+      e.stopPropagation()
+      // Chevron click - immediately toggle folder
+      if (isFolder && onDoubleClick) {
+        onDoubleClick()
+      }
+    }
+
     // File icon color based on extension
     const getFileIconColor = (ext?: string) => {
       if (!ext) return 'text-text-muted'
@@ -83,13 +91,13 @@ export const FileTreeItem = React.forwardRef<HTMLDivElement, FileTreeItemProps>(
         onDoubleClick={handleDoubleClick}
       >
         {isFolder && (
-          <>
+          <div onClick={handleChevronClick} className="shrink-0 cursor-pointer">
             {isOpen ? (
-              <ChevronDown size={11} className="text-text-secondary shrink-0" />
+              <ChevronDown size={11} className="text-text-secondary" />
             ) : (
-              <ChevronRight size={11} className="text-text-secondary shrink-0" />
+              <ChevronRight size={11} className="text-text-secondary" />
             )}
-          </>
+          </div>
         )}
         {typeof Icon === 'function' && Icon.prototype === undefined ? (
           // React component (Lineicons)

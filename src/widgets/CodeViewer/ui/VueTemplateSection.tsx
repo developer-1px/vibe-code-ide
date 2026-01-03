@@ -164,12 +164,12 @@ const VueTemplateSection = ({template, node, scriptEndLine }: {
           className="flex items-start"
         >
           {/* Line Number */}
-          <div className={`flex-shrink-0 ${theme.dimensions.lineNumberWidth} ${theme.spacing.lineNumberX} ${theme.spacing.lineY} text-right ${theme.typography.fontSize} ${theme.colors.lineNumber.text} select-none ${theme.typography.fontFamily}`}>
+          <div className={`flex-shrink-0 ${theme.dimensions.lineNumberWidth} ${theme.spacing.lineNumberX} ${theme.spacing.lineY} text-right ${theme.typography.fontSize} ${theme.colors.lineNumber.text} ${theme.typography.fontFamily}`}>
             {line.lineNum}
           </div>
 
           {/* Template Code with Clickable Tokens */}
-          <div className={`flex-1 ${theme.spacing.lineX} ${theme.spacing.lineY} ${theme.typography.fontFamily} ${theme.typography.fontSize} ${theme.typography.lineHeight} overflow-x-auto whitespace-pre-wrap break-words`}>
+          <div className={`flex-1 ${theme.spacing.lineX} ${theme.spacing.lineY} ${theme.typography.fontFamily} ${theme.typography.fontSize} ${theme.typography.lineHeight} overflow-x-auto whitespace-pre-wrap break-words select-text`}>
             {line.segments.map((seg, segIdx) => {
               if (seg.isClickable && seg.nodeId) {
                 return (

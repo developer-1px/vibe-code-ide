@@ -94,9 +94,7 @@ const SidebarRoot = React.forwardRef<HTMLDivElement, SidebarProps>(
         {...props}
       >
         {header}
-        <div className="flex-1 overflow-y-auto py-1">
-          {content}
-        </div>
+        {content}
         {resizable && (
           <div
             className="absolute top-0 right-0 w-1 h-full cursor-col-resize hover:bg-warm-300/50 active:bg-warm-300 transition-colors"

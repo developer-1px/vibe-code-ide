@@ -5,7 +5,7 @@
 
 import React, { useState } from 'react';
 import { useAtom, useSetAtom } from 'jotai';
-import { Files, Search, GitBranch, Sparkles, Settings, Trash2 } from 'lucide-react';
+import { Files, SearchAlertIcon, Search, GitBranch, Sparkles, Settings, Trash2Icon, LucideMap } from 'lucide-react';
 import { ActivityBar, ActivityBarItem } from '@/components/ide/ActivityBar';
 import { viewModeAtom, searchModalOpenAtom, deadCodePanelOpenAtom } from '../../store/atoms';
 
@@ -26,10 +26,19 @@ export function AppActivityBar() {
         onClick={() => {
           setActiveView(0);
           setViewMode('ide');
+          setDeadCodePanelOpen(false);  // ✅ Dead Code Panel 닫기
         }}
       />
       <ActivityBarItem
-        icon={Trash2}
+        icon={LucideMap}
+        label="Canvas View"
+        active={viewMode === 'canvas'}
+        onClick={() => {
+          setViewMode('canvas');
+        }}
+      />
+      <ActivityBarItem
+        icon={SearchAlertIcon}
         label="Dead Code"
         active={activeView === 2}
         onClick={() => {
@@ -39,27 +48,14 @@ export function AppActivityBar() {
         }}
       />
       <ActivityBarItem
-        icon={Search}
-        label="Search"
-        active={activeView === 1}
-        onClick={() => {
-          setActiveView(1);
-          setSearchModalOpen(true);
-        }}
-      />
-      <ActivityBarItem
-        icon={GitBranch}
-        label="Canvas View"
-        active={viewMode === 'canvas'}
-        onClick={() => {
-          setViewMode('canvas');
-        }}
-      />
-      <ActivityBarItem
         icon={Sparkles}
         label="AI Assistant"
         active={activeView === 3}
         onClick={() => setActiveView(3)}
+      />
+      <ActivityBarItem
+        icon={GitBranch}
+        label="Git"
       />
       <div className="flex-1" />
       <ActivityBarItem icon={Settings} label="Settings" onClick={() => {}} />
