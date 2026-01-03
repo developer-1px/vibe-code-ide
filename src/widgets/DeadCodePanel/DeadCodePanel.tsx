@@ -34,7 +34,10 @@ import { analyzeDeadCode, type DeadCodeItem } from '../../shared/deadCodeAnalyze
 import { RefactoringPromptDialog } from '../../features/RefactoringPrompt/RefactoringPromptDialog';
 import { useOpenFile } from '../../features/Files/lib/useOpenFile';
 import type { FolderNode } from '../AppSidebar/model/types';
-import { DeadCodeTreeRenderer } from './ui/DeadCodeTreeRenderer';
+import { FileTreeRenderer } from '../AppSidebar/ui/FileTreeRenderer';
+import { FileTreeItem } from '@/components/ide/FileTreeItem';
+import { Folder, FolderOpen } from 'lucide-react';
+import { getFileIcon } from '../AppSidebar/lib/getFileIcon';
 import { useTreeKeyboardNavigation } from '../../shared/hooks/useTreeKeyboardNavigation';
 import { getDeadCodeFlatList, type DeadCodeFlatItem } from './lib/getDeadCodeFlatList';
 
@@ -343,23 +346,91 @@ export function DeadCodePanel({ className }: DeadCodePanelProps) {
         {/* Category Items - Tree View */}
         {isExpanded && items.length > 0 && (
           <div className="mt-0.5">
-            <DeadCodeTreeRenderer
+            <FileTreeRenderer
               fileTree={tree}
               collapsedFolders={collapsedFolders}
-              deadCodeItems={items}
-              selectedItems={selectedItems}
               flatItemList={flatItemList}
               focusedIndex={focusedIndex}
               itemRefs={itemRefs}
-              onFileClick={(filePath, line) => {
-                const item = items.find(i => i.filePath === filePath && i.line === line);
-                if (item) handleItemClick(item);
-              }}
               onFocusChange={setFocusedIndex}
               onToggleFolder={toggleFolder}
-              onToggleSelection={toggleItemSelection}
-              getItemKey={getItemKey}
-            />
+              getNodeType={(node) => node.type}
+              getNodePath={(node) => node.path}
+            >
+              {({ node, depth, isFocused, isCollapsed, itemRef, handleFocus, handleDoubleClick }) => {
+                // Folder rendering
+                if (node.type === 'folder') {
+                  const icon = isCollapsed ? Folder : FolderOpen;
+                  return (
+                    <FileTreeItem
+                      ref={itemRef}
+                      icon={icon}
+                      label={node.name}
+                      isFolder
+                      isOpen={!isCollapsed}
+                      focused={isFocused}
+                      indent={depth}
+                      onFocus={handleFocus}
+                      onDoubleClick={handleDoubleClick}
+                    />
+                  );
+                }
+
+                // File (dead code item) rendering
+                const itemsByFile = items.filter(i => i.filePath === node.filePath);
+                const fileExtension = node.name.includes('.')
+                  ? '.' + node.name.split('.').pop()
+                  : undefined;
+                const fileIcon = getFileIcon(node.name);
+
+                return (
+                  <div>
+                    {itemsByFile.map((item, idx) => {
+                      const isSelected = selectedItems.has(getItemKey(item));
+                      const itemKey = `${item.filePath}:${item.line}:${item.symbolName}`;
+                      const itemIndex = flatItemList.findIndex(
+                        (flatItem) => flatItem.type === 'dead-code-item' && flatItem.path === itemKey
+                      );
+                      const itemFocused = focusedIndex === itemIndex;
+
+                      return (
+                        <div key={idx} className="flex items-center gap-2">
+                          <Checkbox
+                            checked={isSelected}
+                            onCheckedChange={() => toggleItemSelection(item)}
+                            className="shrink-0 ml-2"
+                            onClick={(e) => e.stopPropagation()}
+                          />
+                          <div className="flex-1 min-w-0">
+                            <FileTreeItem
+                              ref={(el) => {
+                                if (el && itemIndex >= 0) {
+                                  itemRefs.current.set(itemIndex, el);
+                                }
+                              }}
+                              icon={fileIcon}
+                              label={`${node.name}:${item.line} - ${item.symbolName}`}
+                              focused={itemFocused}
+                              indent={depth}
+                              fileExtension={fileExtension}
+                              onFocus={() => {
+                                if (itemIndex >= 0) setFocusedIndex(itemIndex);
+                              }}
+                              onDoubleClick={() => handleItemClick(item)}
+                            />
+                          </div>
+                          {item.from && (
+                            <span className="text-2xs text-text-tertiary truncate max-w-[150px] mr-2">
+                              from "{item.from}"
+                            </span>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                );
+              }}
+            </FileTreeRenderer>
           </div>
         )}
 

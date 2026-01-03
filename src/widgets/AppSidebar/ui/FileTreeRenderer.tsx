@@ -1,114 +1,108 @@
 /**
  * File Tree Renderer - Recursive rendering logic for file tree
+ * Generic component with children render prop pattern
  */
 import React from 'react';
-import { Folder, FolderOpen } from 'lucide-react';
-import { FileTreeItem } from '@/components/ide/FileTreeItem';
-import type { FolderNode, FlatItem } from '../model/types';
-import { getFileIcon } from '../lib/getFileIcon';
 
-interface FileTreeRendererProps {
-  fileTree: FolderNode[];
-  collapsedFolders: Set<string>;
-  flatItemList: FlatItem[];
-  focusedIndex: number;
-  activeTab: string | null;
-  itemRefs: React.MutableRefObject<Map<number, HTMLDivElement>>;
-  onFocusChange: (index: number) => void;
-  onFileClick: (filePath: string) => void;
-  onToggleFolder: (path: string) => void;
+export interface RenderNodeContext<TNode> {
+  node: TNode;
+  depth: number;
+  isFocused: boolean;
+  isCollapsed: boolean;
+  itemIndex: number;
+  itemRef: (el: HTMLDivElement | null) => void;
+  handleFocus: () => void;
+  handleDoubleClick: () => void;
 }
 
-export const FileTreeRenderer: React.FC<FileTreeRendererProps> = ({
+interface FileTreeRendererProps<TNode, TFlatItem> {
+  fileTree: TNode[];
+  collapsedFolders: Set<string>;
+  flatItemList: TFlatItem[];
+  focusedIndex: number;
+  itemRefs: React.MutableRefObject<Map<number, HTMLDivElement>>;
+  onFocusChange: (index: number) => void;
+  onToggleFolder: (path: string) => void;
+
+  // Helper functions to extract node properties
+  getNodeType: (node: TNode) => 'folder' | 'file' | string;
+  getNodePath: (node: TNode) => string;
+  getNodeChildren?: (node: TNode) => TNode[] | undefined;
+  getFlatItemPath?: (item: TFlatItem) => string;
+  getFlatItemType?: (item: TFlatItem) => string;
+
+  // Render prop
+  children: (context: RenderNodeContext<TNode>) => React.ReactNode;
+}
+
+export function FileTreeRenderer<TNode, TFlatItem>({
   fileTree,
   collapsedFolders,
   flatItemList,
   focusedIndex,
-  activeTab,
   itemRefs,
   onFocusChange,
-  onFileClick,
   onToggleFolder,
-}) => {
-  const renderNode = (node: FolderNode, depth: number = 0): React.ReactNode => {
-    const isCollapsed = collapsedFolders.has(node.path);
+  getNodeType,
+  getNodePath,
+  getNodeChildren = (node: any) => node.children,
+  getFlatItemPath = (item: any) => item.path,
+  getFlatItemType = (item: any) => item.type,
+  children,
+}: FileTreeRendererProps<TNode, TFlatItem>) {
+  const renderNode = (node: TNode, depth: number = 0): React.ReactNode => {
+    const nodeType = getNodeType(node);
+    const nodePath = getNodePath(node);
+    const isCollapsed = collapsedFolders.has(nodePath);
+    const nodeChildren = getNodeChildren(node);
 
-    if (node.type === 'file' && node.filePath) {
-      const itemIndex = flatItemList.findIndex(
-        (item) => item.type === 'file' && item.filePath === node.filePath
-      );
-      const isFocused = focusedIndex === itemIndex;
-      const isActive = activeTab === node.filePath;
+    // Find index in flat list
+    const itemIndex = flatItemList.findIndex(
+      (item) => getFlatItemType(item) === nodeType && getFlatItemPath(item) === nodePath
+    );
+    const isFocused = focusedIndex === itemIndex;
 
-      // Extract file extension
-      const fileExtension = node.name.includes('.')
-        ? '.' + node.name.split('.').pop()
-        : undefined;
+    // Shared handlers
+    const itemRef = (el: HTMLDivElement | null) => {
+      if (el && itemIndex >= 0) {
+        itemRefs.current.set(itemIndex, el);
+      }
+    };
 
-      const FileIconComponent = getFileIcon(node.name);
+    const handleFocus = () => {
+      if (itemIndex >= 0) onFocusChange(itemIndex);
+    };
 
+    const handleDoubleClick = () => {
+      if (nodeType === 'folder') {
+        onToggleFolder(nodePath);
+      }
+    };
+
+    // Render using children prop
+    const nodeElement = children({
+      node,
+      depth,
+      isFocused,
+      isCollapsed,
+      itemIndex,
+      itemRef,
+      handleFocus,
+      handleDoubleClick,
+    });
+
+    // If folder and open, render children
+    if (nodeType === 'folder' && !isCollapsed && nodeChildren && nodeChildren.length > 0) {
       return (
-        <FileTreeItem
-          key={node.path}
-          ref={(el) => {
-            if (el && itemIndex >= 0) {
-              itemRefs.current.set(itemIndex, el);
-            }
-          }}
-          icon={FileIconComponent}
-          label={node.name}
-          active={isActive}
-          focused={isFocused}
-          indent={depth}
-          fileExtension={fileExtension}
-          onFocus={() => {
-            if (itemIndex >= 0) onFocusChange(itemIndex);
-          }}
-          onDoubleClick={() => {
-            if (node.filePath) onFileClick(node.filePath);
-          }}
-        />
-      );
-    }
-
-    if (node.type === 'folder') {
-      const itemIndex = flatItemList.findIndex(
-        (item) => item.type === 'folder' && item.path === node.path
-      );
-      const isFocused = focusedIndex === itemIndex;
-      const isOpen = !isCollapsed;
-      const FolderIconComponent = isOpen ? FolderOpen : Folder;
-
-      return (
-        <React.Fragment key={node.path}>
-          <FileTreeItem
-            ref={(el) => {
-              if (el && itemIndex >= 0) {
-                itemRefs.current.set(itemIndex, el);
-              }
-            }}
-            icon={FolderIconComponent}
-            label={node.name}
-            isFolder
-            isOpen={isOpen}
-            focused={isFocused}
-            indent={depth}
-            onFocus={() => {
-              if (itemIndex >= 0) onFocusChange(itemIndex);
-            }}
-            onDoubleClick={() => {
-              onToggleFolder(node.path);
-            }}
-          />
-          {isOpen && node.children && (
-            <div>{node.children.map((child) => renderNode(child, depth + 1))}</div>
-          )}
+        <React.Fragment key={nodePath}>
+          {nodeElement}
+          <div>{nodeChildren.map((child) => renderNode(child, depth + 1))}</div>
         </React.Fragment>
       );
     }
 
-    return null;
+    return <React.Fragment key={nodePath}>{nodeElement}</React.Fragment>;
   };
 
   return <div>{fileTree.map((node) => renderNode(node, 0))}</div>;
-};
+}

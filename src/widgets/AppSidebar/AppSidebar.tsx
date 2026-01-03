@@ -14,6 +14,9 @@ import { buildFileTree } from './lib/buildFileTree';
 import { getFlatItemList } from './lib/getFlatItemList';
 import { FileTreeRenderer } from './ui/FileTreeRenderer';
 import { useTreeKeyboardNavigation } from '../../shared/hooks/useTreeKeyboardNavigation';
+import { Folder, FolderOpen } from 'lucide-react';
+import { FileTreeItem } from '@/components/ide/FileTreeItem';
+import { getFileIcon } from './lib/getFileIcon';
 
 export const AppSidebar: React.FC = () => {
   const files = useAtomValue(filesAtom);
@@ -91,12 +94,44 @@ export const AppSidebar: React.FC = () => {
             collapsedFolders={collapsedFolders}
             flatItemList={flatItemList}
             focusedIndex={focusedIndex}
-            activeTab={activeTab}
             itemRefs={itemRefs}
             onFocusChange={setFocusedIndex}
-            onFileClick={handleFileClick}
             onToggleFolder={toggleFolder}
-          />
+            getNodeType={(node) => node.type}
+            getNodePath={(node) => node.path}
+          >
+            {({ node, depth, isFocused, isCollapsed, itemRef, handleFocus, handleDoubleClick }) => {
+              const isActive = activeTab === node.filePath;
+              const fileExtension = node.name.includes('.')
+                ? '.' + node.name.split('.').pop()
+                : undefined;
+              const icon = node.type === 'folder'
+                ? (isCollapsed ? Folder : FolderOpen)
+                : getFileIcon(node.name);
+
+              return (
+                <FileTreeItem
+                  ref={itemRef}
+                  icon={icon}
+                  label={node.name}
+                  active={isActive}
+                  focused={isFocused}
+                  isFolder={node.type === 'folder'}
+                  isOpen={!isCollapsed}
+                  indent={depth}
+                  fileExtension={fileExtension}
+                  onFocus={handleFocus}
+                  onDoubleClick={() => {
+                    if (node.type === 'file' && node.filePath) {
+                      handleFileClick(node.filePath);
+                    } else {
+                      handleDoubleClick();
+                    }
+                  }}
+                />
+              );
+            }}
+          </FileTreeRenderer>
         ) : (
           <div className="px-3 py-6 text-xs text-text-secondary text-center">No files</div>
         )}
