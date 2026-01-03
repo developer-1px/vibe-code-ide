@@ -400,12 +400,6 @@ export function DeadCodePanel({ className }: DeadCodePanelProps) {
 
                       return (
                         <div key={idx} className="flex items-center gap-2">
-                          <Checkbox
-                            checked={isSelected}
-                            onCheckedChange={() => toggleItemSelection(item)}
-                            className="shrink-0 ml-2"
-                            onClick={(e) => e.stopPropagation()}
-                          />
                           <div className="flex-1 min-w-0">
                             <FileTreeItem
                               ref={(el) => {
@@ -427,6 +421,12 @@ export function DeadCodePanel({ className }: DeadCodePanelProps) {
                               from "{item.from}"
                             </span>
                           )}
+                          <Checkbox
+                            checked={isSelected}
+                            onCheckedChange={() => toggleItemSelection(item)}
+                            className="shrink-0 mr-2 border-border-hover"
+                            onClick={(e) => e.stopPropagation()}
+                          />
                         </div>
                       );
                     })}
