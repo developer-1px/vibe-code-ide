@@ -1,0 +1,55 @@
+/**
+ * Category Indices Hook
+ * Calculates start index for each category in the global flatItemList
+ */
+import { useMemo } from 'react';
+import { useAtomValue } from 'jotai';
+import { deadCodeResultsAtom } from '../../../store/atoms';
+import { collapsedFoldersAtom } from '../../../features/DeadCodeAnalyzer/model/atoms';
+import { buildDeadCodeTree } from '../../../features/DeadCodeAnalyzer/lib/buildDeadCodeTree';
+import { getDeadCodeFlatList } from './getDeadCodeFlatList';
+import type { CategoryKey } from '../../../features/DeadCodeAnalyzer/model/types';
+import type { DeadCodeItem } from '../../../shared/deadCodeAnalyzer';
+
+interface CategoryInfo {
+  title: string;
+  items: DeadCodeItem[];
+  key: CategoryKey;
+  startIndex: number;
+}
+
+export function useCategoryIndices(): CategoryInfo[] {
+  const deadCodeResults = useAtomValue(deadCodeResultsAtom);
+  const collapsedFolders = useAtomValue(collapsedFoldersAtom);
+
+  return useMemo(() => {
+    if (!deadCodeResults) return [];
+
+    let currentStartIndex = 0;
+    const categories: CategoryInfo[] = [
+      { title: 'Unused Imports', items: deadCodeResults.unusedImports, key: 'unusedImports', startIndex: 0 },
+      { title: 'Unused Variables', items: deadCodeResults.unusedVariables, key: 'unusedVariables', startIndex: 0 },
+      { title: 'Dead Functions', items: deadCodeResults.deadFunctions, key: 'deadFunctions', startIndex: 0 },
+      { title: 'Unused Exports', items: deadCodeResults.unusedExports, key: 'unusedExports', startIndex: 0 },
+    ];
+
+    return categories.map(({ title, items, key }) => {
+      const categoryStartIndex = currentStartIndex;
+
+      // Count how many items this category contributes to flatItemList
+      const tree = buildDeadCodeTree(items);
+      const categoryFlatItems = getDeadCodeFlatList(tree, collapsedFolders, items);
+      const categoryItemCount = categoryFlatItems.length;
+
+      // Advance start index for next category
+      currentStartIndex += categoryItemCount;
+
+      return {
+        title,
+        items,
+        key,
+        startIndex: categoryStartIndex,
+      };
+    });
+  }, [deadCodeResults, collapsedFolders]);
+}
