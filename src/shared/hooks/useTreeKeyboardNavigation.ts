@@ -55,6 +55,11 @@ export function useTreeKeyboardNavigation<T extends TreeNavigationItem>({
       e.preventDefault();
       const item = flatItemList[focusedIndex];
 
+      if (!item) {
+        console.warn('[useTreeKeyboardNavigation] No item at focusedIndex:', focusedIndex);
+        return;
+      }
+
       switch (hotkey) {
         case TREE_HOTKEYS.ARROW_DOWN:
           setFocusedIndex((prev) => Math.min(prev + 1, flatItemList.length - 1));
@@ -72,11 +77,13 @@ export function useTreeKeyboardNavigation<T extends TreeNavigationItem>({
           break;
         case TREE_HOTKEYS.ARROW_RIGHT:
           if (item.type === 'folder' && collapsedFolders.has(item.path)) {
+            console.log('[useTreeKeyboardNavigation] Arrow Right - Expanding folder:', item.path);
             onToggleFolder(item.path);
           }
           break;
         case TREE_HOTKEYS.ARROW_LEFT:
           if (item.type === 'folder' && !collapsedFolders.has(item.path)) {
+            console.log('[useTreeKeyboardNavigation] Arrow Left - Collapsing folder:', item.path);
             onToggleFolder(item.path);
           }
           break;

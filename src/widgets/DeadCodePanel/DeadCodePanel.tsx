@@ -307,8 +307,7 @@ export function DeadCodePanel({ className }: DeadCodePanelProps) {
   const renderCategory = (
     title: string,
     items: DeadCodeItem[],
-    categoryKey: keyof CategoryState,
-    renderIndexRef: { current: number } // Shared across all categories
+    categoryKey: keyof CategoryState
   ) => {
     const isExpanded = expandedCategories[categoryKey];
     const allSelected = items.length > 0 && items.every(item => selectedItems.has(getItemKey(item)));
@@ -359,26 +358,20 @@ export function DeadCodePanel({ className }: DeadCodePanelProps) {
               getNodePath={(node) => node.path}
             >
               {({ node, depth, isFocused, isCollapsed, itemIndex, itemRef, handleFocus, handleDoubleClick }) => {
-                // Folder rendering
+                // Folder rendering - use itemIndex from FileTreeRenderer
                 if (node.type === 'folder') {
                   const icon = isCollapsed ? Folder : FolderOpen;
-                  const folderIndex = renderIndexRef.current++;
-                  const folderFocused = focusedIndex === folderIndex;
 
                   return (
                     <FileTreeItem
-                      ref={(el) => {
-                        if (el) {
-                          itemRefs.current.set(folderIndex, el);
-                        }
-                      }}
+                      ref={itemRef}
                       icon={icon}
                       label={node.name}
                       isFolder
                       isOpen={!isCollapsed}
-                      focused={folderFocused}
+                      focused={isFocused}
                       indent={depth}
-                      onFocus={() => setFocusedIndex(folderIndex)}
+                      onFocus={handleFocus}
                       onDoubleClick={handleDoubleClick}
                     />
                   );
@@ -395,7 +388,8 @@ export function DeadCodePanel({ className }: DeadCodePanelProps) {
                   <div>
                     {itemsByFile.map((item, idx) => {
                       const isSelected = selectedItems.has(getItemKey(item));
-                      const deadCodeItemIndex = renderIndexRef.current++;
+                      // Use FileTreeRenderer's itemIndex + offset for each DeadCodeItem
+                      const deadCodeItemIndex = itemIndex + idx;
                       const itemFocused = focusedIndex === deadCodeItemIndex;
 
                       return (
@@ -543,21 +537,15 @@ export function DeadCodePanel({ className }: DeadCodePanelProps) {
       {/* Results List */}
       <ScrollArea className="flex-1">
         <div className="p-2 space-y-2">
-          {deadCodeResults && !isAnalyzing && (() => {
-            // Shared renderIndex across all categories
-            // This ensures continuous index numbering: category1 items, category2 items, etc.
-            const renderIndexRef = { current: 0 };
-
-            return (
-              <>
-                {/* 삭제해도 안전한 순서대로 정렬 */}
-                {renderCategory('Unused Imports', deadCodeResults.unusedImports, 'unusedImports', renderIndexRef)}
-                {renderCategory('Unused Variables', deadCodeResults.unusedVariables, 'unusedVariables', renderIndexRef)}
-                {renderCategory('Dead Functions', deadCodeResults.deadFunctions, 'deadFunctions', renderIndexRef)}
-                {renderCategory('Unused Exports', deadCodeResults.unusedExports, 'unusedExports', renderIndexRef)}
-              </>
-            );
-          })()}
+          {deadCodeResults && !isAnalyzing && (
+            <>
+              {/* 삭제해도 안전한 순서대로 정렬 */}
+              {renderCategory('Unused Imports', deadCodeResults.unusedImports, 'unusedImports')}
+              {renderCategory('Unused Variables', deadCodeResults.unusedVariables, 'unusedVariables')}
+              {renderCategory('Dead Functions', deadCodeResults.deadFunctions, 'deadFunctions')}
+              {renderCategory('Unused Exports', deadCodeResults.unusedExports, 'unusedExports')}
+            </>
+          )}
         </div>
       </ScrollArea>
 
