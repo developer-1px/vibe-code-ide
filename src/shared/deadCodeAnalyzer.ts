@@ -14,16 +14,16 @@
  * - 로컬 캐싱으로 성능 관리
  */
 
-import type { SourceFileNode, GraphData } from '../entities/SourceFileNode/model/types';
 import {
+  getComponentProps,
   getExports,
+  getFunctionArguments,
   getImports,
   getLocalFunctions,
   getLocalVariables,
   getUsedIdentifiers,
-  getComponentProps,
-  getFunctionArguments
 } from '../entities/SourceFileNode/lib/metadata';
+import type { GraphData, SourceFileNode } from '../entities/SourceFileNode/model/types';
 
 export interface DeadCodeItem {
   filePath: string;
@@ -70,7 +70,7 @@ export function analyzeDeadCode(graphData: GraphData | null): DeadCodeResults {
   }
 
   // ✅ type === 'file' 노드만 사용 (snippet 노드 제외)
-  const fileNodes = graphData.nodes.filter(node => node.type === 'file');
+  const fileNodes = graphData.nodes.filter((node) => node.type === 'file');
 
   if (fileNodes.length === 0) {
     console.warn('[deadCodeAnalyzer] No file nodes found');
@@ -78,7 +78,7 @@ export function analyzeDeadCode(graphData: GraphData | null): DeadCodeResults {
   }
 
   // ✅ 1. Getter로 한 번만 메타데이터 추출 (로컬 캐싱)
-  const fileMetadataList = fileNodes.map(node => ({
+  const fileMetadataList = fileNodes.map((node) => ({
     node,
     exports: getExports(node),
     imports: getImports(node),
@@ -86,28 +86,32 @@ export function analyzeDeadCode(graphData: GraphData | null): DeadCodeResults {
     localVariables: getLocalVariables(node),
     usedIdentifiers: getUsedIdentifiers(node),
     componentProps: getComponentProps(node),
-    functionArguments: getFunctionArguments(node)
+    functionArguments: getFunctionArguments(node),
   }));
 
   // ✅ 2. 캐싱된 데이터로 분석 (AST 순회 없음)
 
   // 2-1. Unused Exports 분석
   fileMetadataList.forEach(({ node, exports, usedIdentifiers }) => {
-    exports.forEach(exp => {
+    exports.forEach((exp) => {
       // 1. 같은 파일 내에서 사용되는지 체크
       const isUsedInSameFile = usedIdentifiers.has(exp.name);
 
       // 2. 다른 파일에서 import하는지 체크
-      const isImportedByOtherFile = fileMetadataList.some(other => {
+      const isImportedByOtherFile = fileMetadataList.some((other) => {
         if (other.node.filePath === node.filePath) return false; // Skip self
 
-        return other.imports.some(imp => {
+        return other.imports.some((imp) => {
           // Symbol 이름이 일치하고
           if (imp.name !== exp.name) return false;
 
           // Import 경로가 이 파일을 가리키는지 확인
           // 간단한 체크: 파일명이 from 경로에 포함되는지
-          const fileName = node.filePath.split('/').pop()?.replace(/\.(tsx?|jsx?|vue)$/, '') || '';
+          const fileName =
+            node.filePath
+              .split('/')
+              .pop()
+              ?.replace(/\.(tsx?|jsx?|vue)$/, '') || '';
           return imp.from.includes(fileName);
         });
       });
@@ -127,7 +131,7 @@ export function analyzeDeadCode(graphData: GraphData | null): DeadCodeResults {
 
   // 2-2. Unused Imports 분석
   fileMetadataList.forEach(({ node, imports, usedIdentifiers }) => {
-    imports.forEach(imp => {
+    imports.forEach((imp) => {
       if (!usedIdentifiers.has(imp.name)) {
         results.unusedImports.push({
           filePath: node.filePath,
@@ -143,7 +147,7 @@ export function analyzeDeadCode(graphData: GraphData | null): DeadCodeResults {
 
   // 2-3. Dead Functions 분석
   fileMetadataList.forEach(({ node, localFunctions, usedIdentifiers }) => {
-    localFunctions.forEach(func => {
+    localFunctions.forEach((func) => {
       if (!usedIdentifiers.has(func.name)) {
         results.deadFunctions.push({
           filePath: node.filePath,
@@ -158,7 +162,7 @@ export function analyzeDeadCode(graphData: GraphData | null): DeadCodeResults {
 
   // 2-4. Unused Variables 분석
   fileMetadataList.forEach(({ node, localVariables, usedIdentifiers }) => {
-    localVariables.forEach(variable => {
+    localVariables.forEach((variable) => {
       if (!usedIdentifiers.has(variable.name)) {
         results.unusedVariables.push({
           filePath: node.filePath,
@@ -173,8 +177,8 @@ export function analyzeDeadCode(graphData: GraphData | null): DeadCodeResults {
 
   // 2-5. Unused Props 분석
   fileMetadataList.forEach(({ node, componentProps }) => {
-    componentProps.forEach(componentInfo => {
-      componentInfo.props.forEach(prop => {
+    componentProps.forEach((componentInfo) => {
+      componentInfo.props.forEach((prop) => {
         // isDeclared: true이지만 isUsed: false인 props만
         if (prop.isDeclared && !prop.isUsed) {
           results.unusedProps.push({
@@ -183,7 +187,7 @@ export function analyzeDeadCode(graphData: GraphData | null): DeadCodeResults {
             line: prop.line,
             kind: 'prop',
             category: 'unusedProp',
-            componentName: componentInfo.componentName
+            componentName: componentInfo.componentName,
           });
         }
       });
@@ -192,8 +196,8 @@ export function analyzeDeadCode(graphData: GraphData | null): DeadCodeResults {
 
   // 2-6. Unused Arguments 분석
   fileMetadataList.forEach(({ node, functionArguments }) => {
-    functionArguments.forEach(functionInfo => {
-      functionInfo.arguments.forEach(arg => {
+    functionArguments.forEach((functionInfo) => {
+      functionInfo.arguments.forEach((arg) => {
         // isDeclared: true이지만 isUsed: false인 arguments만
         if (arg.isDeclared && !arg.isUsed) {
           results.unusedArguments.push({
@@ -202,7 +206,7 @@ export function analyzeDeadCode(graphData: GraphData | null): DeadCodeResults {
             line: arg.line,
             kind: 'argument',
             category: 'unusedArgument',
-            functionName: functionInfo.functionName
+            functionName: functionInfo.functionName,
           });
         }
       });

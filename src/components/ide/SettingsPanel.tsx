@@ -1,5 +1,7 @@
-import * as React from 'react'
-import { Settings, X, Palette, Keyboard, Code, Zap } from 'lucide-react'
+import { Code, Keyboard, Palette, Settings, X, Zap } from 'lucide-react';
+import * as React from 'react';
+import { Button } from '@/components/ui/Button';
+import { Checkbox } from '@/components/ui/Checkbox';
 import {
   Dialog,
   DialogContent,
@@ -7,19 +9,17 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/Dialog'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/Tabs'
-import { Label } from '@/components/ui/Label'
-import { Input } from '@/components/ui/Input'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/Select'
-import { Switch } from '@/components/ui/Switch'
-import { Checkbox } from '@/components/ui/Checkbox'
-import { Separator } from '@/components/ui/Separator'
-import { Button } from '@/components/ui/Button'
+} from '@/components/ui/Dialog';
+import { Input } from '@/components/ui/Input';
+import { Label } from '@/components/ui/Label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/Select';
+import { Separator } from '@/components/ui/Separator';
+import { Switch } from '@/components/ui/Switch';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/Tabs';
 
 export interface SettingsPanelProps {
-  open?: boolean
-  onOpenChange?: (open: boolean) => void
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
 }
 
 /**
@@ -32,14 +32,14 @@ export interface SettingsPanelProps {
  * - Features settings (AI, Git, terminal)
  */
 export function SettingsPanel({ open, onOpenChange }: SettingsPanelProps) {
-  const [fontSize, setFontSize] = React.useState('14')
-  const [tabSize, setTabSize] = React.useState('2')
-  const [theme, setTheme] = React.useState('limn-warm')
-  const [aiEnabled, setAiEnabled] = React.useState(true)
-  const [gitEnabled, setGitEnabled] = React.useState(true)
-  const [formatOnSave, setFormatOnSave] = React.useState(true)
-  const [lineNumbers, setLineNumbers] = React.useState(true)
-  const [minimap, setMinimap] = React.useState(false)
+  const [fontSize, setFontSize] = React.useState('14');
+  const [tabSize, setTabSize] = React.useState('2');
+  const [theme, setTheme] = React.useState('limn-warm');
+  const [aiEnabled, setAiEnabled] = React.useState(true);
+  const [gitEnabled, setGitEnabled] = React.useState(true);
+  const [formatOnSave, setFormatOnSave] = React.useState(true);
+  const [lineNumbers, setLineNumbers] = React.useState(true);
+  const [minimap, setMinimap] = React.useState(false);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -49,9 +49,7 @@ export function SettingsPanel({ open, onOpenChange }: SettingsPanelProps) {
             <Settings size={20} className="text-warm-300" />
             Settings
           </DialogTitle>
-          <DialogDescription>
-            Configure your IDE preferences and features
-          </DialogDescription>
+          <DialogDescription>Configure your IDE preferences and features</DialogDescription>
         </DialogHeader>
 
         <Tabs defaultValue="editor" className="flex-1 overflow-hidden flex flex-col">
@@ -137,11 +135,7 @@ export function SettingsPanel({ open, onOpenChange }: SettingsPanelProps) {
                     <span className="text-sm">Line Numbers</span>
                     <p className="text-xs text-text-muted">Show line numbers in the editor</p>
                   </Label>
-                  <Switch
-                    id="line-numbers"
-                    checked={lineNumbers}
-                    onCheckedChange={setLineNumbers}
-                  />
+                  <Switch id="line-numbers" checked={lineNumbers} onCheckedChange={setLineNumbers} />
                 </div>
 
                 <div className="flex items-center justify-between">
@@ -149,11 +143,7 @@ export function SettingsPanel({ open, onOpenChange }: SettingsPanelProps) {
                     <span className="text-sm">Minimap</span>
                     <p className="text-xs text-text-muted">Show code minimap on the right</p>
                   </Label>
-                  <Switch
-                    id="minimap"
-                    checked={minimap}
-                    onCheckedChange={setMinimap}
-                  />
+                  <Switch id="minimap" checked={minimap} onCheckedChange={setMinimap} />
                 </div>
 
                 <div className="flex items-center justify-between">
@@ -161,11 +151,7 @@ export function SettingsPanel({ open, onOpenChange }: SettingsPanelProps) {
                     <span className="text-sm">Format on Save</span>
                     <p className="text-xs text-text-muted">Automatically format code when saving</p>
                   </Label>
-                  <Switch
-                    id="format-on-save"
-                    checked={formatOnSave}
-                    onCheckedChange={setFormatOnSave}
-                  />
+                  <Switch id="format-on-save" checked={formatOnSave} onCheckedChange={setFormatOnSave} />
                 </div>
               </div>
             </div>
@@ -208,14 +194,7 @@ export function SettingsPanel({ open, onOpenChange }: SettingsPanelProps) {
 
                 <div className="grid gap-2">
                   <Label htmlFor="zoom">Zoom Level (%)</Label>
-                  <Input
-                    id="zoom"
-                    type="number"
-                    defaultValue="100"
-                    min="50"
-                    max="200"
-                    step="10"
-                  />
+                  <Input id="zoom" type="number" defaultValue="100" min="50" max="200" step="10" />
                 </div>
               </div>
             </div>
@@ -274,11 +253,7 @@ export function SettingsPanel({ open, onOpenChange }: SettingsPanelProps) {
                     <span className="text-sm">AI Assistant</span>
                     <p className="text-xs text-text-muted">Enable AI-powered code suggestions</p>
                   </Label>
-                  <Switch
-                    id="ai-enabled"
-                    checked={aiEnabled}
-                    onCheckedChange={setAiEnabled}
-                  />
+                  <Switch id="ai-enabled" checked={aiEnabled} onCheckedChange={setAiEnabled} />
                 </div>
 
                 <div className="flex items-center justify-between">
@@ -286,11 +261,7 @@ export function SettingsPanel({ open, onOpenChange }: SettingsPanelProps) {
                     <span className="text-sm">Git Integration</span>
                     <p className="text-xs text-text-muted">Enable Git source control</p>
                   </Label>
-                  <Switch
-                    id="git-enabled"
-                    checked={gitEnabled}
-                    onCheckedChange={setGitEnabled}
-                  />
+                  <Switch id="git-enabled" checked={gitEnabled} onCheckedChange={setGitEnabled} />
                 </div>
 
                 <div className="flex items-center space-x-2">
@@ -323,5 +294,5 @@ export function SettingsPanel({ open, onOpenChange }: SettingsPanelProps) {
         </Tabs>
       </DialogContent>
     </Dialog>
-  )
+  );
 }

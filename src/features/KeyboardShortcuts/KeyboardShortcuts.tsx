@@ -4,12 +4,12 @@
  * - 렌더링 없는 로직 전용 컴포넌트
  */
 
+import { useAtomValue, useSetAtom } from 'jotai';
 import { useEffect, useRef } from 'react';
 import { useHotkeys } from 'react-hotkeys-hook';
-import { useSetAtom, useAtomValue } from 'jotai';
-import { isSidebarOpenAtom } from '../../widgets/AppSidebar/model/atoms';
 import { searchModalOpenAtom } from '@/features/Search/UnifiedSearch/model/atoms';
 import { viewModeAtom } from '../../app/model/atoms';
+import { isSidebarOpenAtom } from '../../widgets/AppSidebar/model/atoms';
 
 const GLOBAL_HOTKEYS = {
   TOGGLE_SIDEBAR: 'mod+\\',
@@ -23,21 +23,26 @@ export const KeyboardShortcuts = () => {
   const setViewMode = useSetAtom(viewModeAtom);
 
   // Global hotkeys (no ref needed - always active)
-  useHotkeys(Object.values(GLOBAL_HOTKEYS), (e, { hotkey }) => {
-    console.log('[KeyboardShortcuts] Hotkey pressed:', hotkey);
-    e.preventDefault();
+  useHotkeys(
+    Object.values(GLOBAL_HOTKEYS),
+    (e, { hotkey }) => {
+      console.log('[KeyboardShortcuts] Hotkey pressed:', hotkey);
+      e.preventDefault();
 
-    switch (hotkey) {
-      case GLOBAL_HOTKEYS.TOGGLE_SIDEBAR:
-        setIsSidebarOpen(prev => !prev);
-        break;
-      case GLOBAL_HOTKEYS.TOGGLE_VIEW_MODE:
-        // IDE ↔ CodeDoc 모드 전환 (Canvas 모드는 제외)
-        setViewMode(prev => prev === 'ide' ? 'codeDoc' : 'ide');
-        console.log('[KeyboardShortcuts] View mode toggled:', viewMode === 'ide' ? 'codeDoc' : 'ide');
-        break;
-    }
-  }, { enableOnFormTags: true }, [setIsSidebarOpen, setViewMode, viewMode]);
+      switch (hotkey) {
+        case GLOBAL_HOTKEYS.TOGGLE_SIDEBAR:
+          setIsSidebarOpen((prev) => !prev);
+          break;
+        case GLOBAL_HOTKEYS.TOGGLE_VIEW_MODE:
+          // IDE ↔ CodeDoc 모드 전환 (Canvas 모드는 제외)
+          setViewMode((prev) => (prev === 'ide' ? 'codeDoc' : 'ide'));
+          console.log('[KeyboardShortcuts] View mode toggled:', viewMode === 'ide' ? 'codeDoc' : 'ide');
+          break;
+      }
+    },
+    { enableOnFormTags: true },
+    [setIsSidebarOpen, setViewMode, viewMode]
+  );
 
   // Shift+Shift (더블탭) - 검색 모달 열기
   const lastShiftPressRef = useRef<number>(0);

@@ -1,9 +1,9 @@
-import * as React from 'react'
-import { cn } from '@/components/lib/utils'
+import * as React from 'react';
+import { cn } from '@/components/lib/utils';
 
 export interface TitleBarProps extends React.HTMLAttributes<HTMLDivElement> {
-  filename?: string
-  projectName?: string
+  filename?: string;
+  projectName?: string;
 }
 
 const TitleBar = React.forwardRef<HTMLDivElement, TitleBarProps>(
@@ -24,7 +24,6 @@ const TitleBar = React.forwardRef<HTMLDivElement, TitleBarProps>(
           <div className="h-2.5 w-2.5 rounded-full bg-status-warning/70 hover:bg-status-warning" />
           <div className="h-2.5 w-2.5 rounded-full bg-status-success/70 hover:bg-status-success" />
         </div>
-
         {/* Title */}
         <div className="flex items-center gap-2 text-xs text-text-secondary">
           {filename && (
@@ -39,12 +38,11 @@ const TitleBar = React.forwardRef<HTMLDivElement, TitleBarProps>(
             </>
           )}
         </div>
-
         <div className="w-13" /> {/* Spacer for balance */}
       </div>
-    )
+    );
   }
-)
-TitleBar.displayName = 'TitleBar'
+);
+TitleBar.displayName = 'TitleBar';
 
-export { TitleBar }
+export { TitleBar };

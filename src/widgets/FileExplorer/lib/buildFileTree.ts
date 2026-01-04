@@ -1,7 +1,7 @@
 /**
  * Build file tree from flat file list
  */
-import { splitPath, joinPath } from '@/shared/pathUtils';
+import { joinPath, splitPath } from '@/shared/pathUtils';
 import type { FolderNode } from '../model/types';
 
 /**
@@ -37,7 +37,7 @@ export function buildFileTree(files: Record<string, string>, focusedFolder: stri
     name: 'root',
     path: '',
     type: 'folder',
-    children: []
+    children: [],
   };
 
   // Folder Focus Mode: 특정 폴더만 표시
@@ -73,8 +73,8 @@ export function buildFileTree(files: Record<string, string>, focusedFolder: stri
 
         if (!childNode) {
           childNode = {
-            id: currentPath,                    // 고유 ID
-            parentId: currentNode.id,           // 부모 ID
+            id: currentPath, // 고유 ID
+            parentId: currentNode.id, // 부모 ID
             name: part,
             path: currentPath,
             type: isFile ? 'file' : 'folder',

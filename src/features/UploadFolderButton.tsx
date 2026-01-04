@@ -1,8 +1,9 @@
-import React, { useRef } from 'react';
 import { useSetAtom } from 'jotai';
 import { Upload as IconUpload } from 'lucide-react';
+import type React from 'react';
+import { useRef } from 'react';
+import { activeTabAtom, openedTabsAtom } from '@/features/File/OpenFiles/model/atoms';
 import { filesAtom } from '../app/model/atoms';
-import { openedTabsAtom, activeTabAtom } from '@/features/File/OpenFiles/model/atoms';
 
 const UploadFolderButton: React.FC = () => {
   const setFiles = useSetAtom(filesAtom);
@@ -19,7 +20,13 @@ const UploadFolderButton: React.FC = () => {
     for (let i = 0; i < fileList.length; i++) {
       const file = fileList[i];
       // Only process .vue, .ts, .js files
-      if (file.name.endsWith('.vue') || file.name.endsWith('.tsx') || file.name.endsWith('.jsx') || file.name.endsWith('.ts') || file.name.endsWith('.js')) {
+      if (
+        file.name.endsWith('.vue') ||
+        file.name.endsWith('.tsx') ||
+        file.name.endsWith('.jsx') ||
+        file.name.endsWith('.ts') ||
+        file.name.endsWith('.js')
+      ) {
         try {
           const content = await file.text();
           // Use webkitRelativePath for folder structure
@@ -37,9 +44,10 @@ const UploadFolderButton: React.FC = () => {
       // Open the first file in IDE mode
       const allFiles = Object.keys(uploadedFiles);
       if (allFiles.length > 0) {
-        const entry = allFiles.find(f => f.includes('Index') || f.includes('index') || f.includes('App') || f.includes('main')) ||
-                      allFiles.find(f => f.endsWith('.vue') || f.endsWith('.tsx') || f.endsWith('.jsx')) ||
-                      allFiles[0];
+        const entry =
+          allFiles.find((f) => f.includes('Index') || f.includes('index') || f.includes('App') || f.includes('main')) ||
+          allFiles.find((f) => f.endsWith('.vue') || f.endsWith('.tsx') || f.endsWith('.jsx')) ||
+          allFiles[0];
         setOpenedTabs([entry]);
         setActiveTab(entry);
       }
@@ -61,7 +69,7 @@ const UploadFolderButton: React.FC = () => {
       <input
         ref={fileInputRef}
         type="file"
-        // @ts-ignore - webkitdirectory is not in standard HTML types
+        // @ts-expect-error - webkitdirectory is not in standard HTML types
         webkitdirectory=""
         multiple
         className="hidden"

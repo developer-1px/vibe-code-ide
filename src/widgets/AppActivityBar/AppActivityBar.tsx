@@ -3,13 +3,23 @@
  * Main navigation bar for the application
  */
 
-import React, { useState } from 'react';
 import { useAtom, useSetAtom } from 'jotai';
-import { Files, SearchAlertIcon, Search, GitBranch, Sparkles, Settings, Trash2Icon, LucideMap, BookOpenText } from 'lucide-react';
+import {
+  BookOpenText,
+  Files,
+  GitBranch,
+  LucideMap,
+  Search,
+  SearchAlertIcon,
+  Settings,
+  Sparkles,
+  Trash2Icon,
+} from 'lucide-react';
+import React, { useState } from 'react';
 import { ActivityBar, ActivityBarItem } from '@/components/ide/ActivityBar';
+import { DocumentModeToggle } from '@/features/DocumentMode/DocumentModeToggle';
 import { viewModeAtom } from '../../app/model/atoms';
 import { deadCodePanelOpenAtom } from '../DeadCodePanel/model/atoms';
-import { DocumentModeToggle } from '@/features/DocumentMode/DocumentModeToggle';
 
 export function AppActivityBar() {
   const [viewMode, setViewMode] = useAtom(viewModeAtom);
@@ -27,7 +37,7 @@ export function AppActivityBar() {
         onClick={() => {
           setActiveView(0);
           setViewMode('ide');
-          setDeadCodePanelOpen(false);  // ✅ Dead Code Panel 닫기
+          setDeadCodePanelOpen(false); // ✅ Dead Code Panel 닫기
         }}
       />
       <ActivityBarItem
@@ -63,10 +73,7 @@ export function AppActivityBar() {
         active={activeView === 3}
         onClick={() => setActiveView(3)}
       />
-      <ActivityBarItem
-        icon={GitBranch}
-        label="Git"
-      />
+      <ActivityBarItem icon={GitBranch} label="Git" />
       <div className="flex-1" />
       <div className="px-1">
         <DocumentModeToggle />

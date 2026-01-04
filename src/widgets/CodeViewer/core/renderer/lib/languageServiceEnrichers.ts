@@ -12,8 +12,8 @@ const __DEV__ = import.meta.env.DEV;
  * Phase 3-B: Performance threshold for Language Service enrichment
  * Skip enrichment for very large files to improve initial render performance
  */
-const MAX_LINES_FOR_ENRICHMENT = 500;  // ~500 lines threshold
-const MAX_IDENTIFIERS_FOR_ENRICHMENT = 1000;  // ~1000 identifiers threshold
+const MAX_LINES_FOR_ENRICHMENT = 500; // ~500 lines threshold
+const MAX_IDENTIFIERS_FOR_ENRICHMENT = 1000; // ~1000 identifiers threshold
 
 /**
  * Language Service로 정의 위치 및 hover 정보 추가
@@ -28,7 +28,9 @@ export const enrichWithLanguageService = (
   // Phase 3-B: Skip enrichment for large files to improve performance
   if (lines.length > MAX_LINES_FOR_ENRICHMENT) {
     if (__DEV__) {
-      console.log(`[enrichWithLanguageService] Skipping enrichment for large file: ${filePath} (${lines.length} lines)`);
+      console.log(
+        `[enrichWithLanguageService] Skipping enrichment for large file: ${filePath} (${lines.length} lines)`
+      );
     }
     return lines;
   }
@@ -40,11 +42,11 @@ export const enrichWithLanguageService = (
       if (
         segment.position !== undefined &&
         (segment.kinds?.includes('identifier') ||
-         segment.kinds?.includes('external-import') ||
-         segment.kinds?.includes('external-closure') ||
-         segment.kinds?.includes('external-function') ||
-         segment.kinds?.includes('local-variable') ||
-         segment.kinds?.includes('parameter'))
+          segment.kinds?.includes('external-import') ||
+          segment.kinds?.includes('external-closure') ||
+          segment.kinds?.includes('external-function') ||
+          segment.kinds?.includes('local-variable') ||
+          segment.kinds?.includes('parameter'))
       ) {
         identifierCount++;
       }
@@ -54,21 +56,23 @@ export const enrichWithLanguageService = (
   // Skip if too many identifiers
   if (identifierCount > MAX_IDENTIFIERS_FOR_ENRICHMENT) {
     if (__DEV__) {
-      console.log(`[enrichWithLanguageService] Skipping enrichment for file with too many identifiers: ${filePath} (${identifierCount} identifiers)`);
+      console.log(
+        `[enrichWithLanguageService] Skipping enrichment for file with too many identifiers: ${filePath} (${identifierCount} identifiers)`
+      );
     }
     return lines;
   }
-  return lines.map(line => ({
+  return lines.map((line) => ({
     ...line,
-    segments: line.segments.map(segment => {
+    segments: line.segments.map((segment) => {
       if (
         segment.position !== undefined &&
         (segment.kinds?.includes('identifier') ||
-         segment.kinds?.includes('external-import') ||
-         segment.kinds?.includes('external-closure') ||
-         segment.kinds?.includes('external-function') ||
-         segment.kinds?.includes('local-variable') ||
-         segment.kinds?.includes('parameter'))
+          segment.kinds?.includes('external-import') ||
+          segment.kinds?.includes('external-closure') ||
+          segment.kinds?.includes('external-function') ||
+          segment.kinds?.includes('local-variable') ||
+          segment.kinds?.includes('parameter'))
       ) {
         const defLocation = findDefinitionLocation(codeSnippet, filePath || '', segment.position, isTsx);
         const hoverInfo = !segment.nodeId
@@ -84,10 +88,10 @@ export const enrichWithLanguageService = (
                 character: defLocation.character,
               }
             : undefined,
-          hoverInfo
+          hoverInfo,
         };
       }
       return segment;
-    })
+    }),
   }));
 };

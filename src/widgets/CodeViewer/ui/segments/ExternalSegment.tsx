@@ -4,15 +4,15 @@
  * - Canvas 모드: 일반 클릭으로 파일 열기, Cmd+Click으로 시점 이동
  */
 
-import React from 'react';
-import { useSetAtom, useAtomValue } from 'jotai';
-import type { CodeSegment, SegmentStyle } from '../../core/types';
-import type { CanvasNode } from '../../../../entities/CanvasNode/model/types';
-import { visibleNodeIdsAtom, cardPositionsAtom, transformAtom } from '../../../PipelineCanvas/model/atoms';
-import { fullNodeMapAtom, viewModeAtom } from '../../../../app/model/atoms';
-import { focusedNodeIdAtom } from '../../../IDEView/model/atoms';
-import { pruneDetachedNodes } from '../../../PipelineCanvas/utils';
+import { useAtomValue, useSetAtom } from 'jotai';
+import type React from 'react';
 import { useOpenFile } from '@/features/File/OpenFiles/lib/useOpenFile';
+import { fullNodeMapAtom, viewModeAtom } from '../../../../app/model/atoms';
+import type { CanvasNode } from '../../../../entities/CanvasNode/model/types';
+import { focusedNodeIdAtom } from '../../../IDEView/model/atoms';
+import { cardPositionsAtom, transformAtom, visibleNodeIdsAtom } from '../../../PipelineCanvas/model/atoms';
+import { pruneDetachedNodes } from '../../../PipelineCanvas/utils';
+import type { CodeSegment, SegmentStyle } from '../../core/types';
 
 interface ExternalSegmentProps {
   segment: CodeSegment;
@@ -34,7 +34,8 @@ export const ExternalSegment: React.FC<ExternalSegmentProps> = ({ segment, node,
   const { openFile } = useOpenFile();
 
   // Check if active
-  const isActive = segment.kinds?.includes('external-import') &&
+  const isActive =
+    segment.kinds?.includes('external-import') &&
     segment.definedIn &&
     (visibleNodeIds.has(segment.definedIn) || visibleNodeIds.has(segment.definedIn.split('::')[0]));
 
@@ -43,7 +44,7 @@ export const ExternalSegment: React.FC<ExternalSegmentProps> = ({ segment, node,
       text: segment.text,
       definedIn: segment.definedIn,
       definitionLocation: segment.definitionLocation,
-      viewMode
+      viewMode,
     });
 
     e.stopPropagation();
@@ -58,7 +59,7 @@ export const ExternalSegment: React.FC<ExternalSegmentProps> = ({ segment, node,
       // definitionLocation이 있고 filePath가 definedIn과 일치하면 라인 번호도 전달
       if (segment.definitionLocation && segment.definitionLocation.filePath === filePath) {
         openFile(filePath, {
-          lineNumber: segment.definitionLocation.line
+          lineNumber: segment.definitionLocation.line,
         });
       } else {
         // 라인 번호 없이 파일만 열기
@@ -99,7 +100,7 @@ export const ExternalSegment: React.FC<ExternalSegmentProps> = ({ segment, node,
         setTransform({
           k: scale,
           x: -((targetX + cardOffset.x) * scale - viewportWidth / 2),
-          y: -((targetY + cardOffset.y) * scale - viewportHeight / 2)
+          y: -((targetY + cardOffset.y) * scale - viewportHeight / 2),
         });
       } else {
         // IDE 모드: 파일 전환
@@ -135,7 +136,7 @@ export const ExternalSegment: React.FC<ExternalSegmentProps> = ({ segment, node,
         const newX = node.x + currentOffset.x - HORIZONTAL_SPACING;
         const newY = node.y + currentOffset.y + relativeY - 100;
 
-        setCardPositions(prev => {
+        setCardPositions((prev) => {
           const next = new Map(prev);
           next.set(targetNode!.id, { x: newX, y: newY });
           return next;
@@ -144,9 +145,7 @@ export const ExternalSegment: React.FC<ExternalSegmentProps> = ({ segment, node,
     }
   };
 
-  const className = isFocused
-    ? `${style.className} bg-cyan-500/30 rounded`
-    : style.className;
+  const className = isFocused ? `${style.className} bg-cyan-500/30 rounded` : style.className;
 
   return (
     <span onClick={handleClick} className={className} title={style.title}>

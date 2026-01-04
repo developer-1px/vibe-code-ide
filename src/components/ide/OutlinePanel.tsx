@@ -1,19 +1,19 @@
-import { useState, useEffect } from 'react'
-import { ChevronRight, X } from 'lucide-react'
-import { OutlinePanelItem } from './OutlinePanelItem'
-import { DefinitionPanel } from './DefinitionPanel'
-import type { OutlineNode } from '../../shared/outlineExtractor'
-import type { DefinitionSymbol } from '../../shared/definitionExtractor'
+import { ChevronRight, X } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import type { DefinitionSymbol } from '../../shared/definitionExtractor';
+import type { OutlineNode } from '../../shared/outlineExtractor';
+import { DefinitionPanel } from './DefinitionPanel';
+import { OutlinePanelItem } from './OutlinePanelItem';
 
 export interface OutlinePanelProps {
   /** Whether the panel is initially open */
-  defaultOpen?: boolean
+  defaultOpen?: boolean;
   /** Callback when a node is clicked */
-  onNodeClick?: (line: number) => void
+  onNodeClick?: (line: number) => void;
   /** Outline nodes to display */
-  nodes?: OutlineNode[]
+  nodes?: OutlineNode[];
   /** Definition symbols to display */
-  definitions?: DefinitionSymbol[]
+  definitions?: DefinitionSymbol[];
 }
 
 /**
@@ -29,48 +29,48 @@ export interface OutlinePanelProps {
  * - Classes with methods and properties
  */
 export function OutlinePanel({ defaultOpen = true, onNodeClick, nodes = [], definitions = [] }: OutlinePanelProps) {
-  const [isOpen, setIsOpen] = useState(defaultOpen)
+  const [isOpen, setIsOpen] = useState(defaultOpen);
 
   // Initialize expandedNodes to expand all nodes with children by default
-  const [expandedNodes, setExpandedNodes] = useState<Set<string>>(new Set())
+  const [expandedNodes, setExpandedNodes] = useState<Set<string>>(new Set());
 
   // Expand all nodes when nodes change (except imports block)
   useEffect(() => {
-    const allExpandableNodes = new Set<string>()
+    const allExpandableNodes = new Set<string>();
 
     const collectExpandable = (nodeList: OutlineNode[]) => {
-      nodeList.forEach(node => {
+      nodeList.forEach((node) => {
         if (node.children && node.children.length > 0) {
-          const nodeKey = `${node.line}-${node.name}`
+          const nodeKey = `${node.line}-${node.name}`;
 
           // Skip imports block - keep it collapsed by default
           if (node.name.startsWith('Imports (')) {
-            return
+            return;
           }
 
-          allExpandableNodes.add(nodeKey)
-          collectExpandable(node.children)
+          allExpandableNodes.add(nodeKey);
+          collectExpandable(node.children);
         }
-      })
-    }
+      });
+    };
 
-    collectExpandable(nodes)
-    setExpandedNodes(allExpandableNodes)
-  }, [nodes])
+    collectExpandable(nodes);
+    setExpandedNodes(allExpandableNodes);
+  }, [nodes]);
 
   const toggleNode = (nodeKey: string) => {
-    const newExpanded = new Set(expandedNodes)
+    const newExpanded = new Set(expandedNodes);
     if (newExpanded.has(nodeKey)) {
-      newExpanded.delete(nodeKey)
+      newExpanded.delete(nodeKey);
     } else {
-      newExpanded.add(nodeKey)
+      newExpanded.add(nodeKey);
     }
-    setExpandedNodes(newExpanded)
-  }
+    setExpandedNodes(newExpanded);
+  };
 
   const handleNodeClick = (line: number) => {
-    onNodeClick?.(line)
-  }
+    onNodeClick?.(line);
+  };
 
   if (!isOpen) {
     return (
@@ -83,16 +83,13 @@ export function OutlinePanel({ defaultOpen = true, onNodeClick, nodes = [], defi
           <ChevronRight size={16} />
         </button>
       </div>
-    )
+    );
   }
 
   return (
     <div className="flex-1 bg-bg-elevated flex">
       {/* Left: Definition Panel */}
-      <DefinitionPanel
-        symbols={definitions}
-        onSymbolClick={handleNodeClick}
-      />
+      <DefinitionPanel symbols={definitions} onSymbolClick={handleNodeClick} />
 
       {/* Right: Outline Panel */}
       <div className="flex-1 flex flex-col">
@@ -111,12 +108,10 @@ export function OutlinePanel({ defaultOpen = true, onNodeClick, nodes = [], defi
         {/* Content */}
         <div className="flex-1 overflow-y-auto p-2 font-mono text-[10px] leading-[1rem]">
           {nodes.length === 0 ? (
-            <div className="flex items-center justify-center h-full text-text-tertiary">
-              No structure found
-            </div>
+            <div className="flex items-center justify-center h-full text-text-tertiary">No structure found</div>
           ) : (
             nodes.map((node, idx) => {
-              const prevNode = idx > 0 ? nodes[idx - 1] : null
+              const prevNode = idx > 0 ? nodes[idx - 1] : null;
               return (
                 <OutlinePanelItem
                   key={`${node.line}-${node.name}-${idx}`}
@@ -128,11 +123,11 @@ export function OutlinePanel({ defaultOpen = true, onNodeClick, nodes = [], defi
                   onToggle={toggleNode}
                   onNodeClick={handleNodeClick}
                 />
-              )
+              );
             })
           )}
         </div>
       </div>
     </div>
-  )
+  );
 }

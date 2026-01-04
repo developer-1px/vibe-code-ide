@@ -128,8 +128,5 @@ export function isUnderDirectory(path: string, directory: string): boolean {
  * normalizePath('//src/') // 'src'
  */
 export function normalizePath(path: string): string {
-  return path
-    .split('/')
-    .filter(Boolean)
-    .join('/');
+  return path.split('/').filter(Boolean).join('/');
 }

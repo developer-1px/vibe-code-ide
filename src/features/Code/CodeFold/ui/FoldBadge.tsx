@@ -3,11 +3,11 @@
  * Shows {...} for statement blocks or ... /> for JSX elements
  */
 
-import React from 'react';
 import { useSetAtom } from 'jotai';
-import { foldedLinesAtom } from '../model/atoms.ts';
-import type { CodeLine } from '../../../../widgets/CodeViewer/core/types/codeLine.ts';
+import type React from 'react';
 import type { CanvasNode } from '../../../../entities/CanvasNode/model/types.ts';
+import type { CodeLine } from '../../../../widgets/CodeViewer/core/types/codeLine.ts';
+import { foldedLinesAtom } from '../model/atoms.ts';
 
 interface FoldBadgeProps {
   line: CodeLine;

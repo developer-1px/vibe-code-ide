@@ -3,20 +3,20 @@
  * Adapted for vibe-code-viewer UnifiedSearch
  */
 
-import * as React from 'react';
 import {
-  Search,
+  Calculator,
+  Code2,
+  CodeXml,
+  CornerDownLeft,
+  Database,
+  Eye,
   File,
   Folder,
-  Code2,
-  Database,
-  Calculator,
-  Eye,
+  Search,
+  SquareFunction,
   Upload,
-  CornerDownLeft,
-  CodeXml,
-  SquareFunction
 } from 'lucide-react';
+import * as React from 'react';
 import { cn } from '@/components/lib/utils';
 import type { SearchResult } from '@/features/Search/UnifiedSearch/model/types';
 import { getFileName } from '../../shared/pathUtils';
@@ -259,10 +259,7 @@ export function CommandPalette({
   return (
     <>
       {/* Backdrop */}
-      <div
-        className="fixed inset-0 z-50 bg-bg-overlay backdrop-blur-sm"
-        onClick={() => onOpenChange(false)}
-      />
+      <div className="fixed inset-0 z-50 bg-bg-overlay backdrop-blur-sm" onClick={() => onOpenChange(false)} />
 
       {/* Command Palette */}
       <div className="fixed left-1/2 top-[15%] z-50 w-full max-w-3xl -translate-x-1/2">
@@ -286,9 +283,7 @@ export function CommandPalette({
           {/* Results */}
           <div className="max-h-[500px] overflow-y-auto p-1">
             {results.length === 0 ? (
-              <div className="px-4 py-8 text-center text-text-secondary text-xs">
-                No results found
-              </div>
+              <div className="px-4 py-8 text-center text-text-secondary text-xs">No results found</div>
             ) : (
               results.map((result, index) => {
                 const Icon = getIcon(result);
@@ -309,9 +304,7 @@ export function CommandPalette({
                     <div
                       className={cn(
                         'flex h-5 w-5 shrink-0 items-center justify-center rounded',
-                        isSelected
-                          ? 'bg-warm-glow/30'
-                          : 'bg-bg-surface group-hover:bg-bg-base'
+                        isSelected ? 'bg-warm-glow/30' : 'bg-bg-surface group-hover:bg-bg-base'
                       )}
                     >
                       <Icon size={11} strokeWidth={1.5} className={getIconColor(result, isSelected)} />
@@ -331,9 +324,7 @@ export function CommandPalette({
                             {highlightText(result.name, 'name', result, isSelected)}
                           </span>
                         </div>
-                        <span className="text-2xs text-text-muted truncate">
-                          {renderSubtitle(result, isSelected)}
-                        </span>
+                        <span className="text-2xs text-text-muted truncate">{renderSubtitle(result, isSelected)}</span>
                       </>
                     ) : (
                       // SYMBOL: Code snippet with symbol name highlighted
@@ -349,9 +340,7 @@ export function CommandPalette({
                       </>
                     )}
 
-                    {isSelected && (
-                      <CornerDownLeft size={12} className="shrink-0 text-text-muted" />
-                    )}
+                    {isSelected && <CornerDownLeft size={12} className="shrink-0 text-text-muted" />}
                   </div>
                 );
               })

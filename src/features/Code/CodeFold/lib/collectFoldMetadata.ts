@@ -12,10 +12,7 @@ interface CodeLineForFold {
   foldInfo?: FoldInfo;
 }
 
-export function collectFoldMetadata(
-  sourceFile: ts.SourceFile,
-  lines: CodeLineForFold[]
-): void {
+export function collectFoldMetadata(sourceFile: ts.SourceFile, lines: CodeLineForFold[]): void {
   // ===== Import 블록 감지 및 fold 메타데이터 추가 =====
   const importRanges: Array<{ start: number; end: number }> = [];
   let currentImportStart: number | null = null;
@@ -53,7 +50,7 @@ export function collectFoldMetadata(
   }
 
   // Import 블록에 fold 메타데이터 추가
-  importRanges.forEach(range => {
+  importRanges.forEach((range) => {
     const { start, end } = range;
     if (start >= 0 && start < lines.length && end >= 0 && end < lines.length) {
       const actualStartLineNum = lines[start].num;
@@ -65,7 +62,7 @@ export function collectFoldMetadata(
         foldStart: actualStartLineNum,
         foldEnd: actualEndLineNum,
         foldType: 'import-block',
-        depth: 1  // Import는 항상 depth 1
+        depth: 1, // Import는 항상 depth 1
       };
 
       // 중간 라인들에 "접힌 범위 내부" 표시
@@ -76,7 +73,7 @@ export function collectFoldMetadata(
             foldStart: actualStartLineNum,
             foldEnd: actualEndLineNum,
             foldType: 'import-block',
-            depth: 1
+            depth: 1,
           };
         }
       }
@@ -96,38 +93,31 @@ export function collectFoldMetadata(
       block = node.body;
       blockType = 'statement-block';
       nextDepth = currentDepth + 1;
-    }
-    else if (ts.isArrowFunction(node) && ts.isBlock(node.body)) {
+    } else if (ts.isArrowFunction(node) && ts.isBlock(node.body)) {
       block = node.body;
       blockType = 'statement-block';
       nextDepth = currentDepth + 1;
-    }
-    else if (ts.isFunctionExpression(node) && node.body) {
+    } else if (ts.isFunctionExpression(node) && node.body) {
       block = node.body;
       blockType = 'statement-block';
       nextDepth = currentDepth + 1;
-    }
-    else if (ts.isMethodDeclaration(node) && node.body) {
+    } else if (ts.isMethodDeclaration(node) && node.body) {
       block = node.body;
       blockType = 'statement-block';
       nextDepth = currentDepth + 1;
-    }
-    else if (ts.isIfStatement(node) && ts.isBlock(node.thenStatement)) {
+    } else if (ts.isIfStatement(node) && ts.isBlock(node.thenStatement)) {
       block = node.thenStatement;
       blockType = 'statement-block';
       nextDepth = currentDepth + 1;
-    }
-    else if (ts.isForStatement(node) && ts.isBlock(node.statement)) {
+    } else if (ts.isForStatement(node) && ts.isBlock(node.statement)) {
       block = node.statement;
       blockType = 'statement-block';
       nextDepth = currentDepth + 1;
-    }
-    else if (ts.isWhileStatement(node) && ts.isBlock(node.statement)) {
+    } else if (ts.isWhileStatement(node) && ts.isBlock(node.statement)) {
       block = node.statement;
       blockType = 'statement-block';
       nextDepth = currentDepth + 1;
-    }
-    else if (ts.isTryStatement(node)) {
+    } else if (ts.isTryStatement(node)) {
       block = node.tryBlock;
       blockType = 'statement-block';
       nextDepth = currentDepth + 1;
@@ -190,7 +180,7 @@ export function collectFoldMetadata(
           foldEnd: actualEndLineNum,
           foldType: blockType,
           tagName,
-          depth: currentDepth
+          depth: currentDepth,
         };
 
         // 중간 라인들에 "접힌 범위 내부" 표시
@@ -202,7 +192,7 @@ export function collectFoldMetadata(
               foldEnd: actualEndLineNum,
               foldType: blockType,
               tagName,
-              depth: currentDepth
+              depth: currentDepth,
             };
           }
         }
@@ -224,7 +214,7 @@ export function collectFoldMetadata(
           foldEnd: actualEndLineNum,
           foldType: blockType,
           tagName,
-          depth: currentDepth
+          depth: currentDepth,
         };
 
         // 중간 라인들에 "접힌 범위 내부" 표시
@@ -236,7 +226,7 @@ export function collectFoldMetadata(
               foldEnd: actualEndLineNum,
               foldType: blockType,
               tagName,
-              depth: currentDepth
+              depth: currentDepth,
             };
           }
         }

@@ -178,7 +178,7 @@ function getStatementKind(stmt: ts.Node): OutlineNodeKind {
 function formatParameters(params: ts.NodeArray<ts.ParameterDeclaration>, sourceFile: ts.SourceFile): string {
   if (params.length === 0) return '()';
 
-  const paramNames = params.map(p => {
+  const paramNames = params.map((p) => {
     const name = p.name.getText(sourceFile);
     // Optional parameter
     if (p.questionToken) return `${name}?`;
@@ -221,7 +221,7 @@ function getStatementName(stmt: ts.Node, sourceFile: ts.SourceFile): string {
   }
   if (ts.isVariableStatement(stmt)) {
     const names = stmt.declarationList.declarations
-      .map(d => ts.isIdentifier(d.name) ? d.name.text : '...')
+      .map((d) => (ts.isIdentifier(d.name) ? d.name.text : '...'))
       .join(', ');
     return names;
   }
@@ -325,7 +325,7 @@ function getChildStatements(node: ts.Node, sourceFile: ts.SourceFile): ts.Node[]
 
   // Variable Statement: check if initializer is arrow function
   else if (ts.isVariableStatement(node)) {
-    node.declarationList.declarations.forEach(decl => {
+    node.declarationList.declarations.forEach((decl) => {
       if (decl.initializer) {
         if (ts.isArrowFunction(decl.initializer)) {
           // Treat arrow function as child for recursion
@@ -340,7 +340,7 @@ function getChildStatements(node: ts.Node, sourceFile: ts.SourceFile): ts.Node[]
 
   // Class: process members
   else if (ts.isClassDeclaration(node)) {
-    node.members.forEach(member => {
+    node.members.forEach((member) => {
       if (ts.isMethodDeclaration(member) || ts.isPropertyDeclaration(member) || ts.isConstructorDeclaration(member)) {
         children.push(member);
       }
@@ -371,8 +371,7 @@ function getChildStatements(node: ts.Node, sourceFile: ts.SourceFile): ts.Node[]
     } else {
       children.push(node.statement);
     }
-  }
-  else if (ts.isWhileStatement(node) || ts.isDoStatement(node)) {
+  } else if (ts.isWhileStatement(node) || ts.isDoStatement(node)) {
     if (ts.isBlock(node.statement)) {
       children.push(...node.statement.statements);
     } else {
@@ -382,7 +381,7 @@ function getChildStatements(node: ts.Node, sourceFile: ts.SourceFile): ts.Node[]
 
   // Switch: process cases
   else if (ts.isSwitchStatement(node)) {
-    node.caseBlock.clauses.forEach(clause => {
+    node.caseBlock.clauses.forEach((clause) => {
       children.push(...clause.statements);
     });
   }
@@ -417,7 +416,7 @@ function visitStatement(stmt: ts.Node, sourceFile: ts.SourceFile, processedComme
 
   // Extract leading comments for this statement (add to result first)
   const comments = extractComments(sourceFile, stmt);
-  comments.forEach(comment => {
+  comments.forEach((comment) => {
     if (!processedComments.has(comment.line)) {
       processedComments.add(comment.line);
       result.push(comment);
@@ -449,7 +448,7 @@ function visitStatement(stmt: ts.Node, sourceFile: ts.SourceFile, processedComme
   const children: OutlineNode[] = [];
 
   // Process child statements recursively
-  childStatements.forEach(childStmt => {
+  childStatements.forEach((childStmt) => {
     const childNodes = visitStatement(childStmt, sourceFile, processedComments);
     children.push(...childNodes); // Spread to include comments and statement
   });
@@ -477,7 +476,7 @@ export function extractOutlineStructure(node: SourceFileNode): OutlineNode[] {
   const processedComments = new Set<number>();
 
   // Process top-level statements
-  sourceFile.statements.forEach(stmt => {
+  sourceFile.statements.forEach((stmt) => {
     // Collect imports separately
     if (ts.isImportDeclaration(stmt)) {
       const importNodes = visitStatement(stmt, sourceFile, processedComments);

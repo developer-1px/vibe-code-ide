@@ -112,10 +112,7 @@ function extractParameters(node: ts.FunctionLikeDeclaration): SymbolParam[] {
 /**
  * Extract type annotation from node (with type inference)
  */
-function extractType(
-  node: ts.Node,
-  typeChecker?: ts.TypeChecker
-): string | undefined {
+function extractType(node: ts.Node, typeChecker?: ts.TypeChecker): string | undefined {
   // 1. Explicit type annotation (명시적 타입)
   if (ts.isVariableDeclaration(node) && node.type) {
     return node.type.getText();
@@ -232,11 +229,10 @@ export function groupDefinitionsByPhysicalBlock(
   const result: DefinitionSymbol[] = blocks.map((block, idx) => {
     // Determine block type (majority kind in block)
     const kindCounts: Record<string, number> = {};
-    block.forEach(sym => {
+    block.forEach((sym) => {
       kindCounts[sym.kind] = (kindCounts[sym.kind] || 0) + 1;
     });
-    const dominantKind = Object.entries(kindCounts)
-      .sort((a, b) => b[1] - a[1])[0][0] as SymbolKind;
+    const dominantKind = Object.entries(kindCounts).sort((a, b) => b[1] - a[1])[0][0] as SymbolKind;
 
     // Create descriptive name
     const kindLabels: Record<SymbolKind, string> = {
@@ -252,9 +248,8 @@ export function groupDefinitionsByPhysicalBlock(
       property: 'Properties',
     };
 
-    const blockName = block.length === 1
-      ? block[0].name
-      : `${kindLabels[dominantKind]} Block ${idx + 1} (${block.length})`;
+    const blockName =
+      block.length === 1 ? block[0].name : `${kindLabels[dominantKind]} Block ${idx + 1} (${block.length})`;
 
     return {
       kind: dominantKind,
@@ -327,10 +322,7 @@ export function groupDefinitionsByKind(symbols: DefinitionSymbol[]): DefinitionS
 /**
  * Extract definitions (types, interfaces, functions, classes, exports) from SourceFileNode
  */
-export function extractDefinitions(
-  node: SourceFileNode,
-  files?: Record<string, string>
-): DefinitionSymbol[] {
+export function extractDefinitions(node: SourceFileNode, files?: Record<string, string>): DefinitionSymbol[] {
   if (!node.sourceFile) {
     console.warn('[definitionExtractor] No sourceFile available for:', node.filePath);
     return [];
@@ -370,7 +362,7 @@ export function extractDefinitions(
         // Named imports: import { useState } from 'react'
         else if (importClause.namedBindings) {
           if (ts.isNamedImports(importClause.namedBindings)) {
-            const names = importClause.namedBindings.elements.map(e => e.name.text);
+            const names = importClause.namedBindings.elements.map((e) => e.name.text);
             importName = `{ ${names.join(', ')} }`;
           }
           // Namespace import: import * as React from 'react'
@@ -468,7 +460,7 @@ export function extractDefinitions(
           const isConst = (astNode.declarationList.flags & ts.NodeFlags.Const) !== 0;
           const isLet = (astNode.declarationList.flags & ts.NodeFlags.Let) !== 0;
 
-          let children: DefinitionSymbol[] | undefined = undefined;
+          let children: DefinitionSymbol[] | undefined;
 
           // Check if it's an arrow function (React component)
           if (declaration.initializer && ts.isArrowFunction(declaration.initializer)) {
@@ -654,8 +646,8 @@ export function extractDefinitions(
   console.log('[definitionExtractor] Extracted definitions:', symbols.length, 'from', node.filePath);
 
   // Group imports into a single collapsible group
-  const imports = symbols.filter(s => s.kind === 'import');
-  const nonImports = symbols.filter(s => s.kind !== 'import');
+  const imports = symbols.filter((s) => s.kind === 'import');
+  const nonImports = symbols.filter((s) => s.kind !== 'import');
 
   if (imports.length === 0) {
     return symbols;

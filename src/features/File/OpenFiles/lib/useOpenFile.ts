@@ -4,12 +4,12 @@
  * View Mode (IDE/Canvas)에 따라 자동으로 분기 처리
  */
 
-import { useSetAtom, useAtomValue } from 'jotai';
-import { viewModeAtom, focusedPaneAtom } from '../../../../app/model/atoms.ts';
-import { targetLineAtom } from '@/features/File/Navigation/model/atoms.ts';
+import { useAtomValue, useSetAtom } from 'jotai';
 import { activeLocalVariablesAtom } from '@/features/Code/FocusMode/model/atoms.ts';
-import { openedTabsAtom, activeTabAtom } from '../model/atoms.ts';
+import { targetLineAtom } from '@/features/File/Navigation/model/atoms.ts';
+import { focusedPaneAtom, viewModeAtom } from '../../../../app/model/atoms.ts';
 import { openedFilesAtom } from '../../../../widgets/PipelineCanvas/model/atoms.ts';
+import { activeTabAtom, openedTabsAtom } from '../model/atoms.ts';
 
 export interface OpenFileOptions {
   /** 스크롤할 라인 번호 */
@@ -42,9 +42,7 @@ export function useOpenFile() {
     const { lineNumber, focusSymbol, focusPane } = options;
 
     // nodeId 형식 ("src/App.tsx::AppContent")이면 파일 경로만 추출
-    const actualFilePath = filePath.includes('::')
-      ? filePath.split('::')[0]
-      : filePath;
+    const actualFilePath = filePath.includes('::') ? filePath.split('::')[0] : filePath;
 
     // IDE/CodeDoc 모드: 탭으로 열기
     // 1. 이미 열려있는 파일이면 탭 추가하지 않음 (기존 탭 유지)
@@ -59,11 +57,7 @@ export function useOpenFile() {
         // 현재 활성 탭의 위치를 찾아서 그 다음에 삽입
         const activeIndex = activeTab ? prev.indexOf(activeTab) : -1;
         const insertIndex = activeIndex >= 0 ? activeIndex + 1 : prev.length;
-        return [
-          ...prev.slice(0, insertIndex),
-          actualFilePath,
-          ...prev.slice(insertIndex)
-        ];
+        return [...prev.slice(0, insertIndex), actualFilePath, ...prev.slice(insertIndex)];
       });
 
       // 활성 탭으로 설정 (이미 열려있든 새로 열든, 해당 탭으로 전환)

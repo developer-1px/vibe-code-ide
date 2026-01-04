@@ -3,11 +3,11 @@
  * 외부 파일의 변수/함수를 클릭하면 해당 파일을 열고 정의 위치로 이동
  */
 
-import React from 'react';
-import type { CodeSegment, SegmentStyle } from '../../core/types';
-import type { CanvasNode } from '../../../../entities/CanvasNode/model/types';
+import type React from 'react';
 import { useOpenFile } from '@/features/File/OpenFiles/lib/useOpenFile';
+import type { CanvasNode } from '../../../../entities/CanvasNode/model/types';
 import { getTokenStyle } from '../../../../entities/SourceFileNode/lib/styleUtils';
+import type { CodeSegment, SegmentStyle } from '../../core/types';
 
 interface DependencyTokenSegmentProps {
   segment: CodeSegment;
@@ -17,7 +17,13 @@ interface DependencyTokenSegmentProps {
   isFocused?: boolean;
 }
 
-export const DependencyTokenSegment: React.FC<DependencyTokenSegmentProps> = ({ segment, node, style, lineHasFocusedVariable, isFocused }) => {
+export const DependencyTokenSegment: React.FC<DependencyTokenSegmentProps> = ({
+  segment,
+  node,
+  style,
+  lineHasFocusedVariable,
+  isFocused,
+}) => {
   const { openFile } = useOpenFile();
 
   const isComponent = /^[A-Z]/.test(segment.text);
@@ -40,9 +46,7 @@ export const DependencyTokenSegment: React.FC<DependencyTokenSegmentProps> = ({ 
     // TODO: 여기에 기존 CodeToken의 토글 로직 추가 가능
   };
 
-  const className = isFocused
-    ? `${style.className} bg-cyan-500/30 rounded`
-    : style.className;
+  const className = isFocused ? `${style.className} bg-cyan-500/30 rounded` : style.className;
 
   return (
     <span

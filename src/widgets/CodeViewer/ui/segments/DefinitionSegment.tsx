@@ -2,10 +2,11 @@
  * DefinitionSegment - Go to Definition 핸들러 (with hover tooltip)
  */
 
-import React, { useState } from 'react';
-import type { CodeSegment, SegmentStyle } from '../../core/types';
-import type { CanvasNode } from '../../../../entities/CanvasNode/model/types';
+import type React from 'react';
+import { useState } from 'react';
 import { useGotoDefinition } from '@/features/File/GotoDefinition/lib/useGotoDefinition';
+import type { CanvasNode } from '../../../../entities/CanvasNode/model/types';
+import type { CodeSegment, SegmentStyle } from '../../core/types';
 
 interface DefinitionSegmentProps {
   segment: CodeSegment;
@@ -24,10 +25,7 @@ export const DefinitionSegment: React.FC<DefinitionSegmentProps> = ({ segment, n
 
     // 일반 클릭도 정의로 이동 (DefinitionSegment는 항상 이동)
     // Cmd 키 없이도 동작하도록 강제 실행
-    handleGotoDefinitionByLocation(
-      { ...e, metaKey: true } as React.MouseEvent,
-      segment.definitionLocation
-    );
+    handleGotoDefinitionByLocation({ ...e, metaKey: true } as React.MouseEvent, segment.definitionLocation);
   };
 
   return (

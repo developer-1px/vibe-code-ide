@@ -1,7 +1,10 @@
-import React, { useRef, ReactNode, RefObject } from 'react';
+import React, { type ReactNode, type RefObject, useRef } from 'react';
 import { useD3Zoom } from './useD3Zoom';
 
-const D3ZoomContainer = ({containerRef, children }: {
+const D3ZoomContainer = ({
+  containerRef,
+  children,
+}: {
   containerRef: RefObject<HTMLDivElement>;
   children: ReactNode;
 }) => {

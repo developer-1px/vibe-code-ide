@@ -5,9 +5,9 @@
 
 import * as ts from 'typescript';
 import type { SourceFileNode } from '../../../entities/SourceFileNode/model/types';
-import { parseCodeDoc } from './parseCodeDoc';
-import type { DocData, BlockType, SymbolDetail, DocBlock, ImportItem, Parameter } from '../model/types';
 import { getFileName } from '../../../shared/pathUtils';
+import type { BlockType, DocBlock, DocData, ImportItem, Parameter, SymbolDetail } from '../model/types';
+import { parseCodeDoc } from './parseCodeDoc';
 
 /**
  * JSDoc 파싱
@@ -76,7 +76,7 @@ function generateFlowchart(sourceFile: ts.SourceFile, body: ts.Block | ts.Node):
   let nodeIdCounter = 0;
 
   const getId = () => `N${nodeIdCounter++}`;
-  const escape = (str: string) => str.replace(/["()\[\]{}]/g, '').substring(0, 30);
+  const escape = (str: string) => str.replace(/["()[\]{}]/g, '').substring(0, 30);
 
   const startId = getId();
   nodes.push(`${startId}([Start])`);
@@ -146,7 +146,7 @@ function generateBlocks(sourceFile: ts.SourceFile, body: ts.Block | ts.Node): Do
     blocks.push({
       type: 'CODE' as any,
       content: body.getText(sourceFile),
-      lines: getLineRange(sourceFile, body)
+      lines: getLineRange(sourceFile, body),
     });
     return blocks;
   }
@@ -173,7 +173,12 @@ function generateBlocks(sourceFile: ts.SourceFile, body: ts.Block | ts.Node): Do
         if (tagMatch) {
           const [, label, content] = tagMatch;
           const type = label.toLowerCase() === 'branch' ? ('BRANCH' as any) : ('TAG' as any);
-          blocks.push({ type, label, content, lines: `L${sourceFile.getLineAndCharacterOfPosition(comment.pos).line + 1}` });
+          blocks.push({
+            type,
+            label,
+            content,
+            lines: `L${sourceFile.getLineAndCharacterOfPosition(comment.pos).line + 1}`,
+          });
         } else {
           blocks.push({ type: 'PROSE' as any, content: text });
         }
@@ -184,7 +189,7 @@ function generateBlocks(sourceFile: ts.SourceFile, body: ts.Block | ts.Node): Do
     blocks.push({
       type: 'CODE' as any,
       content: stmt.getText(sourceFile),
-      lines: getLineRange(sourceFile, stmt)
+      lines: getLineRange(sourceFile, stmt),
     });
   });
 
@@ -202,7 +207,7 @@ export function convertToDocData(node: SourceFileNode): DocData {
   // Imports 변환
   const imports: ImportItem[] = parsedImports.map((imp) => ({
     name: imp.name,
-    path: imp.fromPath
+    path: imp.fromPath,
   }));
 
   // Exports 수집
@@ -230,7 +235,7 @@ export function convertToDocData(node: SourceFileNode): DocData {
       const parameters: Parameter[] = child.parameters.map((p) => ({
         name: p.name.getText(sourceFile),
         type: p.type?.getText(sourceFile) || 'any',
-        description: tags[p.name.getText(sourceFile)] || ''
+        description: tags[p.name.getText(sourceFile)] || '',
       }));
 
       symbols.push({
@@ -243,10 +248,10 @@ export function convertToDocData(node: SourceFileNode): DocData {
         parameters,
         returns: child.type?.getText(sourceFile) || 'void',
         analysis: {
-          complexity: calculateComplexity(child)
+          complexity: calculateComplexity(child),
         },
         blocks: child.body ? generateBlocks(sourceFile, child.body) : [],
-        flowchart: child.body ? generateFlowchart(sourceFile, child.body) : undefined
+        flowchart: child.body ? generateFlowchart(sourceFile, child.body) : undefined,
       });
     }
 
@@ -266,7 +271,7 @@ export function convertToDocData(node: SourceFileNode): DocData {
           const parameters: Parameter[] = funcNode.parameters.map((p) => ({
             name: p.name.getText(sourceFile),
             type: p.type?.getText(sourceFile) || 'any',
-            description: ''
+            description: '',
           }));
 
           symbols.push({
@@ -278,7 +283,7 @@ export function convertToDocData(node: SourceFileNode): DocData {
             description: funcDesc,
             parameters,
             blocks: generateBlocks(sourceFile, funcNode.body),
-            flowchart: generateFlowchart(sourceFile, funcNode.body)
+            flowchart: generateFlowchart(sourceFile, funcNode.body),
           });
         } else {
           if (isExport) exports.push({ name, type: 'const' });
@@ -312,9 +317,9 @@ export function convertToDocData(node: SourceFileNode): DocData {
           {
             type: 'CODE' as any,
             content: child.getText(sourceFile),
-            lines: getLineRange(sourceFile, child)
-          }
-        ]
+            lines: getLineRange(sourceFile, child),
+          },
+        ],
       });
     }
 
@@ -337,10 +342,10 @@ export function convertToDocData(node: SourceFileNode): DocData {
         members: child.members.map((m) => ({
           name: m.name?.getText(sourceFile) || '',
           type: 'unknown',
-          description: parseJSDoc(m).description
+          description: parseJSDoc(m).description,
         })),
         analysis: { complexity: calculateComplexity(child) },
-        blocks: []
+        blocks: [],
       });
     }
   });
@@ -353,10 +358,10 @@ export function convertToDocData(node: SourceFileNode): DocData {
       lines: sourceFile.getLineAndCharacterOfPosition(sourceFile.end).line + 1,
       version: '1.0.0',
       lastModified: new Date().toISOString().split('T')[0],
-      author: 'Unknown'
+      author: 'Unknown',
     },
     imports,
     exports,
-    symbols
+    symbols,
   };
 }

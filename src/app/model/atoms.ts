@@ -3,8 +3,8 @@
  * 앱 전체에서 사용되는 글로벌 상태 atoms
  */
 import { atom } from 'jotai';
-import type { SourceFileNode, GraphData } from '../../entities/SourceFileNode/model/types';
 import { DEFAULT_FILES } from '../../constants';
+import type { GraphData, SourceFileNode } from '../../entities/SourceFileNode/model/types';
 
 // ============================================================================
 // File Management Atoms
@@ -32,7 +32,7 @@ export const parseErrorAtom = atom(null as string | null);
 export const fullNodeMapAtom = atom((get) => {
   const graphData = get(graphDataAtom);
   if (!graphData) return new Map<string, SourceFileNode>();
-  return new Map<string, SourceFileNode>(graphData.nodes.map(n => [n.id, n]));
+  return new Map<string, SourceFileNode>(graphData.nodes.map((n) => [n.id, n]));
 });
 
 // ============================================================================

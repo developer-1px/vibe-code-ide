@@ -3,8 +3,8 @@
  * Top title bar with window controls and file name
  */
 
-import React from 'react';
 import { useAtomValue } from 'jotai';
+import React from 'react';
 import { TitleBar } from '@/components/ide/TitleBar';
 import { activeTabAtom } from '@/features/File/OpenFiles/model/atoms';
 

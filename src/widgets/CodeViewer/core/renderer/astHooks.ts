@@ -5,7 +5,7 @@
 import * as ts from 'typescript';
 import type { CodeLine, SegmentKind } from '../types/codeLine';
 import type { RenderContext } from './lib/types';
-import { isDeclarationNode, getDeclarationName } from './segmentUtils';
+import { getDeclarationName, isDeclarationNode } from './segmentUtils';
 
 export type AddKindFunction = (
   start: number,
@@ -28,12 +28,12 @@ function forEachBindingIdentifier(
     callback(bindingName);
   } else if (ts.isObjectBindingPattern(bindingName)) {
     // const { a, b: c } = obj;
-    bindingName.elements.forEach(element => {
+    bindingName.elements.forEach((element) => {
       forEachBindingIdentifier(element.name, sourceFile, callback);
     });
   } else if (ts.isArrayBindingPattern(bindingName)) {
     // const [a, b] = arr;
-    bindingName.elements.forEach(element => {
+    bindingName.elements.forEach((element) => {
       if (ts.isBindingElement(element)) {
         forEachBindingIdentifier(element.name, sourceFile, callback);
       }
@@ -58,7 +58,7 @@ function isExportedNode(node: ts.Node): boolean {
   // Method 2: Use ts.canHaveModifiers and ts.getModifiers (newer TS versions)
   if (ts.canHaveModifiers && ts.canHaveModifiers(node)) {
     const mods = ts.getModifiers && ts.getModifiers(node);
-    if (mods && mods.some(mod => mod.kind === ts.SyntaxKind.ExportKeyword)) {
+    if (mods && mods.some((mod) => mod.kind === ts.SyntaxKind.ExportKeyword)) {
       return true;
     }
   }
@@ -104,8 +104,8 @@ export function processDeclarationNode(
   // 선언 이름 추출 및 glow 표시
   if (ts.isVariableStatement(node)) {
     // VariableStatement은 여러 declaration을 가질 수 있고, destructuring도 지원
-    node.declarationList.declarations.forEach(declaration => {
-      forEachBindingIdentifier(declaration.name, sourceFile, id => {
+    node.declarationList.declarations.forEach((declaration) => {
+      forEachBindingIdentifier(declaration.name, sourceFile, (id) => {
         const nameStart = id.getStart(sourceFile);
         const nameEnd = id.getEnd();
         addKind(nameStart, nameEnd, 'self', undefined, true, id); // isDeclarationName = true
@@ -134,11 +134,7 @@ export function processDeclarationNode(
  *
  * @returns true if processed, false otherwise
  */
-export function processTemplateLiteral(
-  node: ts.Node,
-  sourceFile: ts.SourceFile,
-  addKind: AddKindFunction
-): boolean {
+export function processTemplateLiteral(node: ts.Node, sourceFile: ts.SourceFile, addKind: AddKindFunction): boolean {
   const start = node.getStart(sourceFile);
   const end = node.getEnd();
 
@@ -149,7 +145,8 @@ export function processTemplateLiteral(
       // } 부분은 punctuation
       addKind(start, start + 1, 'punctuation');
       // 중간 텍스트는 string
-      if (text.length > 3) { // } + text + ${
+      if (text.length > 3) {
+        // } + text + ${
         addKind(start + 1, end - 2, 'string');
       }
       // ${ 부분은 punctuation
@@ -292,7 +289,7 @@ export function processExportDeclaration(
   }
 
   // Process each exported identifier: export { foo, bar as baz }
-  exportClause.elements.forEach(element => {
+  exportClause.elements.forEach((element) => {
     const name = element.name.text;
     const elementStart = element.name.getStart(sourceFile);
     const offset = sourceFile.getLineAndCharacterOfPosition(elementStart).character;

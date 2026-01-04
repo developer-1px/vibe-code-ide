@@ -1,12 +1,11 @@
-
-import React, { useMemo, useState } from 'react';
-import { Box as IconBox, AlertCircle as IconAlertCircle, FileCode, X, Settings } from 'lucide-react';
 import { useAtomValue, useSetAtom } from 'jotai';
-import { selectedNodeIdsAtom, layoutNodesAtom } from '../PipelineCanvas/model/atoms';
+import { FileCode, AlertCircle as IconAlertCircle, Box as IconBox, Settings, X } from 'lucide-react';
+import type React from 'react';
+import { useMemo, useState } from 'react';
 import { parseErrorAtom } from '../../app/model/atoms';
-import { openedFilesAtom } from '../PipelineCanvas/model/atoms';
-import { useTheme, type ThemeName } from '../../app/theme/ThemeProvider';
+import { type ThemeName, useTheme } from '../../app/theme/ThemeProvider';
 import { getFileName } from '../../shared/pathUtils';
+import { layoutNodesAtom, openedFilesAtom, selectedNodeIdsAtom } from '../PipelineCanvas/model/atoms';
 
 const Header: React.FC = () => {
   const parseError = useAtomValue(parseErrorAtom);
@@ -19,16 +18,16 @@ const Header: React.FC = () => {
 
   // Extract filenames from paths and pair with full paths
   const fileItems = useMemo(() => {
-    return Array.from(openedFiles).map(path => ({
+    return Array.from(openedFiles).map((path) => ({
       path,
-      name: getFileName(path)
+      name: getFileName(path),
     }));
   }, [openedFiles]);
 
   // Handle file chip click - select all nodes from this file
   const handleFileClick = (filePath: string) => {
-    const fileNodes = layoutNodes.filter(node => node.filePath === filePath);
-    const nodeIds = new Set(fileNodes.map(node => node.id));
+    const fileNodes = layoutNodes.filter((node) => node.filePath === filePath);
+    const nodeIds = new Set(fileNodes.map((node) => node.id));
     setSelectedNodeIds(nodeIds);
   };
 

@@ -35,7 +35,7 @@ export function buildSegmentStyle(
     const textColor = hasFocusMode && !isFocused ? 'text-editor-focus-gray' : 'text-editor-text';
     return {
       className: `${textColor} select-text ${returnBg}`,
-      clickable: false
+      clickable: false,
     };
   }
 
@@ -44,7 +44,7 @@ export function buildSegmentStyle(
     const textColor = hasFocusMode && !isFocused ? 'text-editor-focus-gray' : 'text-editor-keyword';
     return {
       className: `${textColor} font-semibold select-text ${returnBg}`,
-      clickable: false
+      clickable: false,
     };
   }
 
@@ -53,7 +53,7 @@ export function buildSegmentStyle(
     const textColor = hasFocusMode && !isFocused ? 'text-editor-focus-gray' : 'text-editor-punctuation';
     return {
       className: `${textColor} select-text ${returnBg}`,
-      clickable: false
+      clickable: false,
     };
   }
 
@@ -62,7 +62,7 @@ export function buildSegmentStyle(
     const textColor = hasFocusMode && !isFocused ? 'text-editor-focus-gray' : 'text-editor-string';
     return {
       className: `${textColor} select-text ${returnBg}`,
-      clickable: false
+      clickable: false,
     };
   }
 
@@ -71,7 +71,7 @@ export function buildSegmentStyle(
     const textColor = hasFocusMode && !isFocused ? 'text-editor-focus-gray' : 'text-editor-number';
     return {
       className: `${textColor} select-text ${returnBg}`,
-      clickable: false
+      clickable: false,
     };
   }
 
@@ -81,7 +81,7 @@ export function buildSegmentStyle(
     const textColor = hasFocusMode ? 'text-editor-comment-focus' : 'text-editor-comment';
     return {
       className: `${textColor} select-text`,
-      clickable: false
+      clickable: false,
     };
   }
 
@@ -93,36 +93,39 @@ export function buildSegmentStyle(
       return {
         className: 'inline-block px-0.5 rounded text-code-dead select-text',
         clickable: false,
-        title: 'Unused (Dead Code)'
+        title: 'Unused (Dead Code)',
       };
     }
 
     // Focus mode && Focused: 최대 강조
     if (hasFocusMode && isFocused) {
       return {
-        className: 'inline-block px-0.5 rounded bg-code-self/30 text-code-self font-bold cursor-pointer hover:bg-code-self/40 border border-code-self/60 transition-colors select-text',
+        className:
+          'inline-block px-0.5 rounded bg-code-self/30 text-code-self font-bold cursor-pointer hover:bg-code-self/40 border border-code-self/60 transition-colors select-text',
         clickable: true,
         clickType: 'definition',
-        title: 'Definition (Focused)'
+        title: 'Definition (Focused)',
       };
     }
 
     // Focus mode && Not focused: grayscale
     if (hasFocusMode && !isFocused) {
       return {
-        className: 'inline-block px-0.5 rounded text-editor-focus-gray cursor-pointer hover:bg-code-self/10 hover:text-code-self/60 transition-colors select-text',
+        className:
+          'inline-block px-0.5 rounded text-editor-focus-gray cursor-pointer hover:bg-code-self/10 hover:text-code-self/60 transition-colors select-text',
         clickable: true,
         clickType: 'definition',
-        title: 'Definition'
+        title: 'Definition',
       };
     }
 
     // Normal mode
     return {
-      className: `inline-block px-0.5 rounded bg-code-self/15 text-code-self font-bold cursor-pointer hover:bg-code-self/25 transition-colors select-text`,
+      className:
+        'inline-block px-0.5 rounded bg-code-self/15 text-code-self font-bold cursor-pointer hover:bg-code-self/25 transition-colors select-text',
       clickable: true,
       clickType: 'definition',
-      title: 'Definition'
+      title: 'Definition',
     };
   }
 
@@ -136,7 +139,7 @@ export function buildSegmentStyle(
         className: 'style-code-dead-import',
         clickable: false,
         clickType: 'none',
-        title: 'Unused import (Dead code)'
+        title: 'Unused import (Dead code)',
       };
     }
 
@@ -146,17 +149,18 @@ export function buildSegmentStyle(
         className: `inline-block px-1 rounded bg-code-external-import/30 text-code-external-import font-bold border border-code-external-import/60 hover:bg-code-external-import/40 transition-all select-text ${options.hasDefinedIn ? 'cursor-pointer' : 'cursor-default'}`,
         clickable: true,
         clickType: 'external',
-        title: 'Click to deactivate highlight (Focus mode)'
+        title: 'Click to deactivate highlight (Focus mode)',
       };
     }
 
     // Focus mode && Not focused: grayscale
     if (hasFocusMode && !isFocused) {
       return {
-        className: `inline-block px-1 rounded text-editor-focus-gray border border-border-medium hover:bg-code-external-import/10 hover:text-code-external-import transition-all select-text cursor-pointer`,
+        className:
+          'inline-block px-1 rounded text-editor-focus-gray border border-border-medium hover:bg-code-external-import/10 hover:text-code-external-import transition-all select-text cursor-pointer',
         clickable: true,
         clickType: 'external',
-        title: 'Click to activate highlight'
+        title: 'Click to activate highlight',
       };
     }
 
@@ -166,7 +170,7 @@ export function buildSegmentStyle(
         className: `inline-block px-1 rounded bg-code-external-import/20 text-code-external-import font-semibold border border-code-external-import/30 hover:bg-code-external-import/25 hover:border-code-external-import/50 transition-all select-text ${options.hasDefinedIn ? 'cursor-pointer' : 'cursor-default'}`,
         clickable: !!options.hasDefinedIn,
         clickType: 'external',
-        title: options.hasDefinedIn ? 'Cmd+Click to close' : 'External Import (Active)'
+        title: options.hasDefinedIn ? 'Cmd+Click to close' : 'External Import (Active)',
       };
     }
 
@@ -175,7 +179,7 @@ export function buildSegmentStyle(
       className: `inline-block px-1 rounded bg-code-external-import/12 text-code-external-import/90 border border-code-external-import/25 hover:bg-code-external-import/15 hover:text-code-external-import hover:border-code-external-import/30 transition-all select-text ${options.hasDefinedIn ? 'cursor-pointer' : 'cursor-default'}`,
       clickable: !!options.hasDefinedIn,
       clickType: 'external',
-      title: options.hasDefinedIn ? 'Cmd+Click to show import source' : 'External Import'
+      title: options.hasDefinedIn ? 'Cmd+Click to show import source' : 'External Import',
     };
   }
 
@@ -184,20 +188,22 @@ export function buildSegmentStyle(
     // Focus mode && Focused: 최대 강조
     if (hasFocusMode && isFocused) {
       return {
-        className: `inline-block px-1 py-0.5 rounded bg-code-external-closure/30 text-code-external-closure font-bold border border-code-external-closure/60 hover:bg-code-external-closure/40 transition-all select-text cursor-pointer`,
+        className:
+          'inline-block px-1 py-0.5 rounded bg-code-external-closure/30 text-code-external-closure font-bold border border-code-external-closure/60 hover:bg-code-external-closure/40 transition-all select-text cursor-pointer',
         clickable: true,
         clickType: 'external',
-        title: 'Click to deactivate highlight (Focus mode)'
+        title: 'Click to deactivate highlight (Focus mode)',
       };
     }
 
     // Focus mode && Not focused: grayscale
     if (hasFocusMode && !isFocused) {
       return {
-        className: `inline-block px-1 py-0.5 rounded text-editor-focus-gray border border-border-medium hover:bg-code-external-closure/10 hover:text-code-external-closure transition-all select-text cursor-pointer`,
+        className:
+          'inline-block px-1 py-0.5 rounded text-editor-focus-gray border border-border-medium hover:bg-code-external-closure/10 hover:text-code-external-closure transition-all select-text cursor-pointer',
         clickable: true,
         clickType: 'external',
-        title: 'Click to activate highlight'
+        title: 'Click to activate highlight',
       };
     }
 
@@ -205,7 +211,7 @@ export function buildSegmentStyle(
       className: `inline-block px-1 py-0.5 rounded bg-code-external-closure/15 text-code-external-closure font-semibold border border-code-external-closure/30 hover:bg-code-external-closure/25 hover:border-code-external-closure/50 transition-all select-text ${options.hasDefinedIn ? 'cursor-pointer' : 'cursor-default'}`,
       clickable: !!options.hasDefinedIn,
       clickType: 'external',
-      title: options.hasDefinedIn ? 'Cmd+Click to show closure variable' : 'Closure Variable'
+      title: options.hasDefinedIn ? 'Cmd+Click to show closure variable' : 'Closure Variable',
     };
   }
 
@@ -214,20 +220,22 @@ export function buildSegmentStyle(
     // Focus mode && Focused: 최대 강조
     if (hasFocusMode && isFocused) {
       return {
-        className: `inline-block px-1 py-0.5 rounded bg-code-external-function/30 text-code-external-function font-bold border border-code-external-function/60 hover:bg-code-external-function/40 transition-all select-text cursor-pointer`,
+        className:
+          'inline-block px-1 py-0.5 rounded bg-code-external-function/30 text-code-external-function font-bold border border-code-external-function/60 hover:bg-code-external-function/40 transition-all select-text cursor-pointer',
         clickable: true,
         clickType: 'external',
-        title: 'Click to deactivate highlight (Focus mode)'
+        title: 'Click to deactivate highlight (Focus mode)',
       };
     }
 
     // Focus mode && Not focused: grayscale
     if (hasFocusMode && !isFocused) {
       return {
-        className: `inline-block px-1 py-0.5 rounded text-editor-focus-gray border border-border-medium hover:bg-code-external-function/10 hover:text-code-external-function transition-all select-text cursor-pointer`,
+        className:
+          'inline-block px-1 py-0.5 rounded text-editor-focus-gray border border-border-medium hover:bg-code-external-function/10 hover:text-code-external-function transition-all select-text cursor-pointer',
         clickable: true,
         clickType: 'external',
-        title: 'Click to activate highlight'
+        title: 'Click to activate highlight',
       };
     }
 
@@ -235,7 +243,7 @@ export function buildSegmentStyle(
       className: `inline-block px-1 py-0.5 rounded bg-code-external-function/15 text-code-external-function font-semibold border border-code-external-function/30 hover:bg-code-external-function/25 hover:border-code-external-function/50 transition-all select-text ${options.hasDefinedIn ? 'cursor-pointer' : 'cursor-default'}`,
       clickable: !!options.hasDefinedIn,
       clickType: 'external',
-      title: options.hasDefinedIn ? 'Cmd+Click to show function' : 'Function Variable'
+      title: options.hasDefinedIn ? 'Cmd+Click to show function' : 'Function Variable',
     };
   }
 
@@ -246,39 +254,43 @@ export function buildSegmentStyle(
     // Active 상태 && Focus mode: 최대 강조
     if (isActive && isFocused) {
       return {
-        className: 'inline-block px-1 py-0.5 rounded bg-code-parameter/30 text-code-parameter font-bold border border-code-parameter/60 hover:bg-code-parameter/40 transition-all cursor-pointer select-text',
+        className:
+          'inline-block px-1 py-0.5 rounded bg-code-parameter/30 text-code-parameter font-bold border border-code-parameter/60 hover:bg-code-parameter/40 transition-all cursor-pointer select-text',
         clickable: true,
         clickType: 'local-variable',
-        title: 'Click to deactivate highlight (Focus mode) - Parameter'
+        title: 'Click to deactivate highlight (Focus mode) - Parameter',
       };
     }
 
     // Active 상태: 강조 하이라이트
     if (isActive) {
       return {
-        className: 'inline-block px-1 py-0.5 rounded bg-code-parameter/20 text-code-parameter font-semibold border border-code-parameter/40 hover:bg-code-parameter/30 hover:border-code-parameter/60 transition-all cursor-pointer select-text',
+        className:
+          'inline-block px-1 py-0.5 rounded bg-code-parameter/20 text-code-parameter font-semibold border border-code-parameter/40 hover:bg-code-parameter/30 hover:border-code-parameter/60 transition-all cursor-pointer select-text',
         clickable: true,
         clickType: 'local-variable',
-        title: 'Click to deactivate highlight - Parameter'
+        title: 'Click to deactivate highlight - Parameter',
       };
     }
 
     // Focus mode에서 다른 변수가 활성화된 경우: grayscale
     if (hasFocusMode) {
       return {
-        className: 'inline-block px-1 py-0.5 rounded text-editor-focus-gray border border-border-medium hover:text-code-parameter hover:border-code-parameter/60 transition-all cursor-pointer select-text',
+        className:
+          'inline-block px-1 py-0.5 rounded text-editor-focus-gray border border-border-medium hover:text-code-parameter hover:border-code-parameter/60 transition-all cursor-pointer select-text',
         clickable: true,
         clickType: 'local-variable',
-        title: 'Click to activate highlight - Parameter'
+        title: 'Click to activate highlight - Parameter',
       };
     }
 
     // 기본 상태: 클릭 가능
     return {
-      className: 'inline-block px-1 py-0.5 rounded bg-code-parameter/15 text-code-parameter font-semibold border border-code-parameter/30 hover:bg-code-parameter/25 hover:border-code-parameter/50 transition-all cursor-pointer select-text',
+      className:
+        'inline-block px-1 py-0.5 rounded bg-code-parameter/15 text-code-parameter font-semibold border border-code-parameter/30 hover:bg-code-parameter/25 hover:border-code-parameter/50 transition-all cursor-pointer select-text',
       clickable: true,
       clickType: 'local-variable',
-      title: 'Click to activate highlight - Parameter'
+      title: 'Click to activate highlight - Parameter',
     };
   }
 
@@ -289,54 +301,54 @@ export function buildSegmentStyle(
     // Active 상태 && Focus mode: 최대 강조
     if (isActive && isFocused) {
       return {
-        className: 'inline-block px-1 py-0.5 rounded bg-code-local-variable/30 text-code-local-variable font-bold border border-code-local-variable/60 hover:bg-code-local-variable/40 transition-all cursor-pointer select-text',
+        className:
+          'inline-block px-1 py-0.5 rounded bg-code-local-variable/30 text-code-local-variable font-bold border border-code-local-variable/60 hover:bg-code-local-variable/40 transition-all cursor-pointer select-text',
         clickable: true,
         clickType: 'local-variable',
-        title: 'Click to deactivate highlight (Focus mode)'
+        title: 'Click to deactivate highlight (Focus mode)',
       };
     }
 
     // Active 상태: 강조 하이라이트
     if (isActive) {
       return {
-        className: 'inline-block px-1 py-0.5 rounded bg-code-local-variable/20 text-code-local-variable font-semibold border border-code-local-variable/40 hover:bg-code-local-variable/30 hover:border-code-local-variable/60 transition-all cursor-pointer select-text',
+        className:
+          'inline-block px-1 py-0.5 rounded bg-code-local-variable/20 text-code-local-variable font-semibold border border-code-local-variable/40 hover:bg-code-local-variable/30 hover:border-code-local-variable/60 transition-all cursor-pointer select-text',
         clickable: true,
         clickType: 'local-variable',
-        title: 'Click to deactivate highlight'
+        title: 'Click to deactivate highlight',
       };
     }
 
     // Inactive 상태 + Focus mode: grayscale
     if (hasFocusMode && !isFocused) {
       return {
-        className: 'inline-block px-0.5 rounded text-editor-focus-gray hover:bg-code-local-variable/10 hover:text-code-local-variable transition-all cursor-pointer select-text',
+        className:
+          'inline-block px-0.5 rounded text-editor-focus-gray hover:bg-code-local-variable/10 hover:text-code-local-variable transition-all cursor-pointer select-text',
         clickable: true,
         clickType: 'local-variable',
-        title: 'Click to activate highlight'
+        title: 'Click to activate highlight',
       };
     }
 
     // Inactive 상태: 기본 스타일 (하이라이트 없음, 클릭 가능)
     return {
-      className: 'inline-block px-0.5 rounded text-text-secondary hover:bg-code-local-variable/10 hover:text-code-local-variable transition-all cursor-pointer select-text',
+      className:
+        'inline-block px-0.5 rounded text-text-secondary hover:bg-code-local-variable/10 hover:text-code-local-variable transition-all cursor-pointer select-text',
       clickable: true,
       clickType: 'local-variable',
-      title: 'Click to activate highlight'
+      title: 'Click to activate highlight',
     };
   }
 
   // Identifier with nodeId (dependency slot)
   if (primaryKind === 'identifier' && options.hasNodeId) {
     // ✅ Dead identifier: muted style
-    const textColor = options.isDead
-      ? 'text-code-dead'
-      : hasFocusMode && !isFocused
-        ? 'text-editor-focus-gray'
-        : '';
+    const textColor = options.isDead ? 'text-code-dead' : hasFocusMode && !isFocused ? 'text-editor-focus-gray' : '';
     return {
       className: `${textColor} select-text ${returnBg}`,
       clickable: true,
-      clickType: 'expand' // CodeCardToken에서 처리
+      clickType: 'expand', // CodeCardToken에서 처리
     };
   }
 
@@ -351,7 +363,10 @@ export function buildSegmentStyle(
           ? 'text-editor-identifier-def'
           : 'text-editor-identifier';
     const decoration = '';
-    const hover = options.hasDefinition && !(hasFocusMode && !isFocused) && !options.isDead ? 'cursor-pointer hover-code-identifier' : '';
+    const hover =
+      options.hasDefinition && !(hasFocusMode && !isFocused) && !options.isDead
+        ? 'cursor-pointer hover-code-identifier'
+        : '';
 
     const finalClassName = `relative inline-block px-0.5 rounded transition-colors select-text ${baseColor} ${decoration} ${hover} ${returnBg}`;
 
@@ -363,7 +378,7 @@ export function buildSegmentStyle(
       className: finalClassName,
       clickable: !!options.hasDefinition,
       clickType: 'definition',
-      hoverTooltip: !!options.hasHoverInfo
+      hoverTooltip: !!options.hasHoverInfo,
     };
   }
 
@@ -375,7 +390,7 @@ export function buildSegmentStyle(
       : 'text-editor-text';
   return {
     className: `${textColor} select-text ${returnBg}`,
-    clickable: false
+    clickable: false,
   };
 }
 
@@ -401,7 +416,7 @@ function getPrimaryKind(kinds: SegmentKind[]): SegmentKind {
     'identifier',
     'parameter',
     'local-variable',
-    'text'
+    'text',
   ];
 
   for (const kind of priority) {

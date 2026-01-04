@@ -3,20 +3,20 @@
  * 스크롤 뷰에서 하나의 파일을 표시하는 단위
  */
 
-import React, { useMemo, forwardRef, useEffect, useState, useTransition } from 'react';
 import { useAtomValue, useSetAtom } from 'jotai';
-import type { SourceFileNode } from '../../../entities/SourceFileNode/model/types';
-import type { CodeLine } from '../../CodeViewer/core/types';
+import React, { forwardRef, useEffect, useMemo, useState, useTransition } from 'react';
 import { deadCodeResultsAtom } from '@/features/Code/CodeAnalyzer/DeadCodeAnalyzer/model/atoms';
 import { activeTabAtom } from '@/features/File/OpenFiles/model/atoms';
-import { hoveredFilePathAtom } from '../model/atoms';
-import { renderCodeLinesDirect } from '../../CodeViewer/core/renderer/renderCodeLinesDirect';
-import { renderVueFile } from '../../CodeViewer/core/renderer/renderVueFile';
-import { renderPlaintext } from '../../CodeViewer/core/renderer/renderPlaintext';
+import type { SourceFileNode } from '../../../entities/SourceFileNode/model/types';
+import { getFileName } from '../../../shared/pathUtils';
 import { getWorkerPool } from '../../../shared/workerPool';
 import CodeViewer from '../../CodeViewer/CodeViewer';
-import { getFileName } from '../../../shared/pathUtils';
+import { renderCodeLinesDirect } from '../../CodeViewer/core/renderer/renderCodeLinesDirect';
+import { renderPlaintext } from '../../CodeViewer/core/renderer/renderPlaintext';
+import { renderVueFile } from '../../CodeViewer/core/renderer/renderVueFile';
+import type { CodeLine } from '../../CodeViewer/core/types';
 import { getFileIcon } from '../../FileExplorer/lib/getFileIcon';
+import { hoveredFilePathAtom } from '../model/atoms';
 
 // Module-level cache for processedLines (Phase 1 performance optimization)
 // Key: `${filePath}|${deadCodeResultsVersion}`
@@ -29,11 +29,14 @@ export const invalidateProcessedLinesCache = () => {
   deadCodeResultsVersion++;
 };
 
-const FileSection = forwardRef<HTMLDivElement, {
-  node: SourceFileNode;
-  files: Record<string, string>;
-  highlightedLines: Set<number>;
-}>(({ node, files, highlightedLines }, ref) => {
+const FileSection = forwardRef<
+  HTMLDivElement,
+  {
+    node: SourceFileNode;
+    files: Record<string, string>;
+    highlightedLines: Set<number>;
+  }
+>(({ node, files, highlightedLines }, ref) => {
   const deadCodeResults = useAtomValue(deadCodeResultsAtom);
   const activeTab = useAtomValue(activeTabAtom);
   const hoveredFilePath = useAtomValue(hoveredFilePathAtom);
@@ -131,11 +134,7 @@ const FileSection = forwardRef<HTMLDivElement, {
       </div>
 
       {/* 코드 뷰어 */}
-      <CodeViewer
-        processedLines={processedLines}
-        node={node}
-        highlightedLines={highlightedLines}
-      />
+      <CodeViewer processedLines={processedLines} node={node} highlightedLines={highlightedLines} />
     </div>
   );
 });

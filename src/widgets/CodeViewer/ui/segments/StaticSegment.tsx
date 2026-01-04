@@ -3,7 +3,7 @@
  * (keyword, punctuation, string, comment, text 등)
  */
 
-import React from 'react';
+import type React from 'react';
 import type { CodeSegment, SegmentStyle } from '../../core/types';
 
 interface StaticSegmentProps {
@@ -13,9 +13,7 @@ interface StaticSegmentProps {
 }
 
 export const StaticSegment: React.FC<StaticSegmentProps> = ({ segment, style, isFocused }) => {
-  const className = isFocused
-    ? `${style.className} bg-cyan-500/30 rounded`
-    : style.className;
+  const className = isFocused ? `${style.className} bg-cyan-500/30 rounded` : style.className;
 
   return (
     <span className={className} title={style.title}>

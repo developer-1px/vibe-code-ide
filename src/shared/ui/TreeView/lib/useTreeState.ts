@@ -3,7 +3,7 @@
  * Manages collapsed paths and focused index with optional external control
  * Also handles auto-scroll to focused item with margin
  */
-import { useState, useCallback, useMemo, useRef, useEffect } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 export interface UseTreeStateProps {
   /** External collapsed paths (optional) */
@@ -39,29 +39,35 @@ export function useTreeState({
   const focusedIndex = externalFocused ?? internalFocused;
   const itemRefs = externalRefs ?? internalRefs;
 
-  const toggleCollapse = useCallback((path: string) => {
-    if (externalToggle) {
-      externalToggle(path);
-    } else {
-      setInternalCollapsed(prev => {
-        const next = new Set(prev);
-        if (next.has(path)) {
-          next.delete(path);
-        } else {
-          next.add(path);
-        }
-        return next;
-      });
-    }
-  }, [externalToggle]);
+  const toggleCollapse = useCallback(
+    (path: string) => {
+      if (externalToggle) {
+        externalToggle(path);
+      } else {
+        setInternalCollapsed((prev) => {
+          const next = new Set(prev);
+          if (next.has(path)) {
+            next.delete(path);
+          } else {
+            next.add(path);
+          }
+          return next;
+        });
+      }
+    },
+    [externalToggle]
+  );
 
-  const setFocusedIndex = useCallback((index: number) => {
-    if (externalFocusChange) {
-      externalFocusChange(index);
-    } else {
-      setInternalFocused(index);
-    }
-  }, [externalFocusChange]);
+  const setFocusedIndex = useCallback(
+    (index: number) => {
+      if (externalFocusChange) {
+        externalFocusChange(index);
+      } else {
+        setInternalFocused(index);
+      }
+    },
+    [externalFocusChange]
+  );
 
   // Auto-scroll to focused item when focusedIndex changes
   useEffect(() => {
@@ -133,7 +139,7 @@ export function useTreeState({
 
     // 요소가 컨테이너 상단 여백보다 위에 있으면 위로 스크롤
     if (elementRect.top < containerRect.top + margin) {
-      const scrollAmount = (containerRect.top + margin) - elementRect.top;
+      const scrollAmount = containerRect.top + margin - elementRect.top;
       console.log('[useTreeState] Scrolling UP by:', scrollAmount);
       scrollContainer.scrollTop -= scrollAmount;
     }

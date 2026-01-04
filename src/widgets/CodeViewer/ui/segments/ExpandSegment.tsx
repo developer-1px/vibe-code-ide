@@ -2,11 +2,11 @@
  * ExpandSegment - 의존성 노드 열기 핸들러
  */
 
-import React from 'react';
 import { useSetAtom } from 'jotai';
-import type { CodeSegment, SegmentStyle } from '../../core/types';
+import type React from 'react';
 import type { CanvasNode } from '../../../../entities/CanvasNode/model/types';
 import { visibleNodeIdsAtom } from '../../../PipelineCanvas/model/atoms';
+import type { CodeSegment, SegmentStyle } from '../../core/types';
 
 interface ExpandSegmentProps {
   segment: CodeSegment;
@@ -29,9 +29,7 @@ export const ExpandSegment: React.FC<ExpandSegmentProps> = ({ segment, node, sty
     });
   };
 
-  const className = isFocused
-    ? `${style.className} bg-cyan-500/30 rounded`
-    : style.className;
+  const className = isFocused ? `${style.className} bg-cyan-500/30 rounded` : style.className;
 
   return (
     <span onClick={handleClick} className={className} title={style.title}>

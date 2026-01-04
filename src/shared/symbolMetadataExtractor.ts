@@ -3,8 +3,8 @@
  * Uses TypeScript Language Service to enrich symbols with metadata
  */
 
-import type { SourceFileNode } from '../entities/SourceFileNode/model/types';
 import type { CodeSymbolMetadata } from '../entities/CodeSymbol/model/types';
+import type { SourceFileNode } from '../entities/SourceFileNode/model/types';
 import { getQuickInfoAtPosition } from '../widgets/CodeViewer/core/renderer/tsLanguageService';
 
 /**
@@ -63,11 +63,7 @@ export function extractSymbolMetadata(
     }
 
     // Skip root nodes (TEMPLATE_ROOT, JSX_ROOT, FILE_ROOT)
-    if (
-      node.id.endsWith('::TEMPLATE_ROOT') ||
-      node.id.endsWith('::JSX_ROOT') ||
-      node.id.endsWith('::FILE_ROOT')
-    ) {
+    if (node.id.endsWith('::TEMPLATE_ROOT') || node.id.endsWith('::JSX_ROOT') || node.id.endsWith('::FILE_ROOT')) {
       console.log('[symbolMetadataExtractor] Skipping root node:', node.id);
       return;
     }
@@ -90,12 +86,7 @@ export function extractSymbolMetadata(
       const firstIdentifierPos = node.codeSnippet.search(/\b[a-zA-Z_$][a-zA-Z0-9_$]*\b/);
 
       if (firstIdentifierPos >= 0) {
-        typeInfo = getQuickInfoAtPosition(
-          node.codeSnippet,
-          node.filePath,
-          firstIdentifierPos,
-          isTsx
-        );
+        typeInfo = getQuickInfoAtPosition(node.codeSnippet, node.filePath, firstIdentifierPos, isTsx);
       }
     }
 

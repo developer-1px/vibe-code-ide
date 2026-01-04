@@ -4,12 +4,12 @@
  * - Cmd+Click: 정의로 이동
  */
 
-import React from 'react';
 import { useSetAtom } from 'jotai';
-import type { CodeSegment, SegmentStyle } from '../../../../widgets/CodeViewer/core/types/codeLine.ts';
-import type { CanvasNode } from '../../../../entities/CanvasNode/model/types.ts';
-import { activeLocalVariablesAtom } from '../model/atoms.ts';
+import type React from 'react';
 import { useGotoDefinition } from '@/features/File/GotoDefinition/lib/useGotoDefinition.ts';
+import type { CanvasNode } from '../../../../entities/CanvasNode/model/types.ts';
+import type { CodeSegment, SegmentStyle } from '../../../../widgets/CodeViewer/core/types/codeLine.ts';
+import { activeLocalVariablesAtom } from '../model/atoms.ts';
 
 interface LocalVariableSegmentProps {
   segment: CodeSegment;
@@ -55,9 +55,7 @@ export const LocalVariableSegment: React.FC<LocalVariableSegmentProps> = ({ segm
     });
   };
 
-  const className = isFocused
-    ? `${style.className} bg-cyan-500/30 rounded`
-    : style.className;
+  const className = isFocused ? `${style.className} bg-cyan-500/30 rounded` : style.className;
 
   return (
     <span onClick={handleClick} className={className} title={style.title}>

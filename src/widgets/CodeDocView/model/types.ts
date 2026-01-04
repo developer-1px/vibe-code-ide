@@ -6,10 +6,10 @@
  * 블록 타입
  */
 export enum BlockType {
-  PROSE = 'PROSE',       // 설명 텍스트
-  CODE = 'CODE',         // 코드 블록
-  TAG = 'TAG',           // NOTE, WARNING 등의 태그
-  BRANCH = 'BRANCH'      // 분기 설명
+  PROSE = 'PROSE', // 설명 텍스트
+  CODE = 'CODE', // 코드 블록
+  TAG = 'TAG', // NOTE, WARNING 등의 태그
+  BRANCH = 'BRANCH', // 분기 설명
 }
 
 /**
@@ -18,8 +18,8 @@ export enum BlockType {
 export interface DocBlock {
   type: BlockType;
   content: string;
-  label?: string;    // TAG, BRANCH의 라벨
-  lines?: string;    // 라인 범위 (e.g., "L10-15")
+  label?: string; // TAG, BRANCH의 라벨
+  lines?: string; // 라인 범위 (e.g., "L10-15")
 }
 
 /**
@@ -81,7 +81,7 @@ export interface SymbolDetail {
   members?: SymbolMember[];
   analysis?: SymbolAnalysis;
   blocks?: DocBlock[];
-  flowchart?: string;  // Mermaid flowchart
+  flowchart?: string; // Mermaid flowchart
 }
 
 /**

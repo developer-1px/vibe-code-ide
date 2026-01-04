@@ -42,8 +42,8 @@ export interface PropInfo {
   name: string;
   line: number;
   componentName: string; // 어느 컴포넌트의 prop인지
-  isDeclared: boolean;   // Props 타입에 정의됨
-  isUsed: boolean;       // 컴포넌트 내에서 실제 사용됨
+  isDeclared: boolean; // Props 타입에 정의됨
+  isUsed: boolean; // 컴포넌트 내에서 실제 사용됨
 }
 
 export interface ComponentPropsInfo {
@@ -56,8 +56,8 @@ export interface ArgumentInfo {
   name: string;
   line: number;
   functionName: string; // 어느 함수의 argument인지
-  isDeclared: boolean;  // 파라미터로 선언됨
-  isUsed: boolean;      // 함수 body에서 실제 사용됨
+  isDeclared: boolean; // 파라미터로 선언됨
+  isUsed: boolean; // 함수 body에서 실제 사용됨
 }
 
 export interface FunctionArgumentsInfo {
@@ -130,7 +130,6 @@ export function getFunctionArguments(node: SourceFileNode): FunctionArgumentsInf
   return extractFunctionArgumentsFromAST(node.sourceFile);
 }
 
-
 // ========================================
 // Private 구현 함수 (외부에서 직접 호출 금지)
 // ========================================
@@ -153,7 +152,7 @@ function extractExportsFromAST(sourceFile: ts.SourceFile): ExportInfo[] {
     // Export 키워드가 있는 선언
     if (ts.canHaveModifiers(astNode)) {
       const modifiers = ts.getModifiers(astNode);
-      const hasExport = modifiers?.some(m => m.kind === ts.SyntaxKind.ExportKeyword);
+      const hasExport = modifiers?.some((m) => m.kind === ts.SyntaxKind.ExportKeyword);
 
       if (hasExport) {
         // Function declarations
@@ -161,17 +160,17 @@ function extractExportsFromAST(sourceFile: ts.SourceFile): ExportInfo[] {
           exports.push({
             name: astNode.name.text,
             line: getLineNumber(sourceFile, astNode),
-            kind: 'function'
+            kind: 'function',
           });
         }
         // Variable statements
         else if (ts.isVariableStatement(astNode)) {
-          astNode.declarationList.declarations.forEach(decl => {
+          astNode.declarationList.declarations.forEach((decl) => {
             if (ts.isIdentifier(decl.name)) {
               exports.push({
                 name: decl.name.text,
                 line: getLineNumber(sourceFile, decl),
-                kind: 'variable'
+                kind: 'variable',
               });
             }
           });
@@ -181,7 +180,7 @@ function extractExportsFromAST(sourceFile: ts.SourceFile): ExportInfo[] {
           exports.push({
             name: astNode.name.text,
             line: getLineNumber(sourceFile, astNode),
-            kind: 'type'
+            kind: 'type',
           });
         }
         // Interface
@@ -189,7 +188,7 @@ function extractExportsFromAST(sourceFile: ts.SourceFile): ExportInfo[] {
           exports.push({
             name: astNode.name.text,
             line: getLineNumber(sourceFile, astNode),
-            kind: 'interface'
+            kind: 'interface',
           });
         }
         // Class
@@ -197,7 +196,7 @@ function extractExportsFromAST(sourceFile: ts.SourceFile): ExportInfo[] {
           exports.push({
             name: astNode.name.text,
             line: getLineNumber(sourceFile, astNode),
-            kind: 'class'
+            kind: 'class',
           });
         }
         // Enum
@@ -205,7 +204,7 @@ function extractExportsFromAST(sourceFile: ts.SourceFile): ExportInfo[] {
           exports.push({
             name: astNode.name.text,
             line: getLineNumber(sourceFile, astNode),
-            kind: 'enum'
+            kind: 'enum',
           });
         }
       }
@@ -224,7 +223,7 @@ function extractExportsFromAST(sourceFile: ts.SourceFile): ExportInfo[] {
 function extractImportsFromAST(sourceFile: ts.SourceFile): ImportInfo[] {
   const imports: ImportInfo[] = [];
 
-  sourceFile.statements.forEach(statement => {
+  sourceFile.statements.forEach((statement) => {
     if (ts.isImportDeclaration(statement)) {
       const moduleSpecifier = statement.moduleSpecifier;
       const from = ts.isStringLiteral(moduleSpecifier) ? moduleSpecifier.text : '';
@@ -240,20 +239,20 @@ function extractImportsFromAST(sourceFile: ts.SourceFile): ImportInfo[] {
           line,
           from,
           isDefault: true,
-          isNamespace: false
+          isNamespace: false,
         });
       }
 
       // Named imports: import { useState, useEffect } from 'react'
       if (importClause.namedBindings) {
         if (ts.isNamedImports(importClause.namedBindings)) {
-          importClause.namedBindings.elements.forEach(element => {
+          importClause.namedBindings.elements.forEach((element) => {
             imports.push({
               name: element.name.text,
               line: getLineNumber(sourceFile, element.name), // ← element의 정확한 위치
               from,
               isDefault: false,
-              isNamespace: false
+              isNamespace: false,
             });
           });
         }
@@ -264,7 +263,7 @@ function extractImportsFromAST(sourceFile: ts.SourceFile): ImportInfo[] {
             line,
             from,
             isDefault: false,
-            isNamespace: true
+            isNamespace: true,
           });
         }
       }
@@ -283,11 +282,12 @@ function extractLocalFunctionsFromAST(sourceFile: ts.SourceFile): DeclarationInf
 
   function visit(node: ts.Node) {
     // 함수/메서드/화살표 함수 내부 분석
-    if (ts.isFunctionDeclaration(node) ||
-        ts.isFunctionExpression(node) ||
-        ts.isArrowFunction(node) ||
-        ts.isMethodDeclaration(node)) {
-
+    if (
+      ts.isFunctionDeclaration(node) ||
+      ts.isFunctionExpression(node) ||
+      ts.isArrowFunction(node) ||
+      ts.isMethodDeclaration(node)
+    ) {
       if (!node.body) return;
 
       // 해당 함수 스코프 내의 함수 선언 수집
@@ -298,17 +298,17 @@ function extractLocalFunctionsFromAST(sourceFile: ts.SourceFile): DeclarationInf
         // Function declaration
         if (ts.isFunctionDeclaration(n) && n.name) {
           declaredFunctions.set(n.name.text, {
-            line: getLineNumber(sourceFile, n)
+            line: getLineNumber(sourceFile, n),
           });
         }
 
         // Function expression or arrow function assigned to variable
         if (ts.isVariableStatement(n)) {
-          n.declarationList.declarations.forEach(decl => {
+          n.declarationList.declarations.forEach((decl) => {
             if (ts.isIdentifier(decl.name) && decl.initializer) {
               if (ts.isArrowFunction(decl.initializer) || ts.isFunctionExpression(decl.initializer)) {
                 declaredFunctions.set(decl.name.text, {
-                  line: getLineNumber(sourceFile, decl)
+                  line: getLineNumber(sourceFile, decl),
                 });
               }
             }
@@ -322,9 +322,7 @@ function extractLocalFunctionsFromAST(sourceFile: ts.SourceFile): DeclarationInf
         if (ts.isIdentifier(n)) {
           // 선언이 아닌 사용만 체크
           const parent = n.parent;
-          if (parent &&
-              !ts.isFunctionDeclaration(parent) &&
-              !ts.isVariableDeclaration(parent)) {
+          if (parent && !ts.isFunctionDeclaration(parent) && !ts.isVariableDeclaration(parent)) {
             usedIdentifiers.add(n.text);
           }
         }
@@ -341,7 +339,7 @@ function extractLocalFunctionsFromAST(sourceFile: ts.SourceFile): DeclarationInf
           unusedFunctions.push({
             name: funcName,
             line: info.line,
-            kind: 'function'
+            kind: 'function',
           });
         }
       });
@@ -363,11 +361,12 @@ function extractLocalVariablesFromAST(sourceFile: ts.SourceFile): DeclarationInf
 
   function visit(node: ts.Node) {
     // 함수/메서드/화살표 함수 내부 분석
-    if (ts.isFunctionDeclaration(node) ||
-        ts.isFunctionExpression(node) ||
-        ts.isArrowFunction(node) ||
-        ts.isMethodDeclaration(node)) {
-
+    if (
+      ts.isFunctionDeclaration(node) ||
+      ts.isFunctionExpression(node) ||
+      ts.isArrowFunction(node) ||
+      ts.isMethodDeclaration(node)
+    ) {
       if (!node.body) return;
 
       // 해당 함수 스코프 내의 변수 선언 수집
@@ -376,16 +375,18 @@ function extractLocalVariablesFromAST(sourceFile: ts.SourceFile): DeclarationInf
 
       function collectVariables(n: ts.Node) {
         if (ts.isVariableStatement(n)) {
-          n.declarationList.declarations.forEach(decl => {
+          n.declarationList.declarations.forEach((decl) => {
             if (ts.isIdentifier(decl.name)) {
               // 함수가 아닌 변수만
-              if (!decl.initializer ||
-                  (!ts.isArrowFunction(decl.initializer) &&
-                   !ts.isFunctionExpression(decl.initializer) &&
-                   !ts.isFunctionDeclaration(decl.initializer))) {
+              if (
+                !decl.initializer ||
+                (!ts.isArrowFunction(decl.initializer) &&
+                  !ts.isFunctionExpression(decl.initializer) &&
+                  !ts.isFunctionDeclaration(decl.initializer))
+              ) {
                 declaredVariables.set(decl.name.text, {
                   line: getLineNumber(sourceFile, decl),
-                  node: decl
+                  node: decl,
                 });
               }
             }
@@ -415,7 +416,7 @@ function extractLocalVariablesFromAST(sourceFile: ts.SourceFile): DeclarationInf
           unusedVariables.push({
             name: varName,
             line: info.line,
-            kind: 'variable'
+            kind: 'variable',
           });
         }
       });
@@ -444,12 +445,14 @@ function extractUsedIdentifiersFromAST(sourceFile: ts.SourceFile): Set<string> {
     }
 
     // Declaration 이름 (interface, type 포함)
-    if (ts.isFunctionDeclaration(parent) ||
-        ts.isVariableDeclaration(parent) ||
-        ts.isClassDeclaration(parent) ||
-        ts.isInterfaceDeclaration(parent) ||
-        ts.isTypeAliasDeclaration(parent) ||
-        ts.isParameter(parent)) {
+    if (
+      ts.isFunctionDeclaration(parent) ||
+      ts.isVariableDeclaration(parent) ||
+      ts.isClassDeclaration(parent) ||
+      ts.isInterfaceDeclaration(parent) ||
+      ts.isTypeAliasDeclaration(parent) ||
+      ts.isParameter(parent)
+    ) {
       return parent.name === node;
     }
 
@@ -526,7 +529,7 @@ function extractComponentPropsFromAST(sourceFile: ts.SourceFile): ComponentProps
 
     // Inline object type: { name: string; age: number }
     if (ts.isTypeLiteralNode(typeNode)) {
-      typeNode.members.forEach(member => {
+      typeNode.members.forEach((member) => {
         if (ts.isPropertySignature(member) && ts.isIdentifier(member.name)) {
           props.push(member.name.text);
         }
@@ -539,10 +542,10 @@ function extractComponentPropsFromAST(sourceFile: ts.SourceFile): ComponentProps
       const typeName = typeNode.typeName.text;
 
       // 파일에서 해당 interface/type 정의 찾기
-      sourceFile.statements.forEach(statement => {
+      sourceFile.statements.forEach((statement) => {
         // interface MyProps { ... }
         if (ts.isInterfaceDeclaration(statement) && statement.name.text === typeName) {
-          statement.members.forEach(member => {
+          statement.members.forEach((member) => {
             if (ts.isPropertySignature(member) && ts.isIdentifier(member.name)) {
               props.push(member.name.text);
             }
@@ -551,7 +554,7 @@ function extractComponentPropsFromAST(sourceFile: ts.SourceFile): ComponentProps
         // type MyProps = { ... }
         if (ts.isTypeAliasDeclaration(statement) && statement.name.text === typeName) {
           if (ts.isTypeLiteralNode(statement.type)) {
-            statement.type.members.forEach(member => {
+            statement.type.members.forEach((member) => {
               if (ts.isPropertySignature(member) && ts.isIdentifier(member.name)) {
                 props.push(member.name.text);
               }
@@ -572,7 +575,7 @@ function extractComponentPropsFromAST(sourceFile: ts.SourceFile): ComponentProps
 
     // { name, age }: Props 패턴
     if (ts.isObjectBindingPattern(param.name)) {
-      param.name.elements.forEach(element => {
+      param.name.elements.forEach((element) => {
         if (ts.isIdentifier(element.name)) {
           props.push(element.name.text);
         }
@@ -633,18 +636,18 @@ function extractComponentPropsFromAST(sourceFile: ts.SourceFile): ComponentProps
     const usedPropsSet = new Set([...destructuredProps, ...propsUsage]);
 
     // 5. PropInfo[] 생성
-    const props: PropInfo[] = declaredProps.map(propName => ({
+    const props: PropInfo[] = declaredProps.map((propName) => ({
       name: propName,
       line: line,
       componentName: componentName,
       isDeclared: true,
-      isUsed: usedPropsSet.has(propName)
+      isUsed: usedPropsSet.has(propName),
     }));
 
     componentsInfo.push({
       componentName,
       line,
-      props
+      props,
     });
   }
 
@@ -654,7 +657,7 @@ function extractComponentPropsFromAST(sourceFile: ts.SourceFile): ComponentProps
     }
     // const MyComponent = () => {}
     if (ts.isVariableStatement(node)) {
-      node.declarationList.declarations.forEach(decl => {
+      node.declarationList.declarations.forEach((decl) => {
         if (decl.initializer) {
           if (ts.isFunctionExpression(decl.initializer) || ts.isArrowFunction(decl.initializer)) {
             analyzeComponent(decl.initializer);
@@ -721,7 +724,7 @@ function extractFunctionArgumentsFromAST(sourceFile: ts.SourceFile): FunctionArg
     }
     // Destructuring: function foo({ a, b }) {}
     else if (ts.isObjectBindingPattern(param.name)) {
-      param.name.elements.forEach(element => {
+      param.name.elements.forEach((element) => {
         if (ts.isIdentifier(element.name)) {
           names.push(element.name.text);
         }
@@ -729,7 +732,7 @@ function extractFunctionArgumentsFromAST(sourceFile: ts.SourceFile): FunctionArg
     }
     // Array destructuring: function foo([a, b]) {}
     else if (ts.isArrayBindingPattern(param.name)) {
-      param.name.elements.forEach(element => {
+      param.name.elements.forEach((element) => {
         if (ts.isBindingElement(element) && ts.isIdentifier(element.name)) {
           names.push(element.name.text);
         }
@@ -783,13 +786,13 @@ function extractFunctionArgumentsFromAST(sourceFile: ts.SourceFile): FunctionArg
     // 모든 파라미터 분석
     const argumentsInfo: ArgumentInfo[] = [];
 
-    parameters.forEach(param => {
+    parameters.forEach((param) => {
       // Rest parameters는 skip (...args)
       if (param.dotDotDotToken) return;
 
       const paramNames = extractParameterNames(param);
 
-      paramNames.forEach(paramName => {
+      paramNames.forEach((paramName) => {
         const isUsed = isIdentifierUsedInBody(node.body, paramName);
 
         argumentsInfo.push({
@@ -797,17 +800,17 @@ function extractFunctionArgumentsFromAST(sourceFile: ts.SourceFile): FunctionArg
           line: getLineNumber(sourceFile, param),
           functionName: functionName,
           isDeclared: true,
-          isUsed: isUsed
+          isUsed: isUsed,
         });
       });
     });
 
     // Unused arguments가 있으면 추가
-    if (argumentsInfo.some(arg => !arg.isUsed)) {
+    if (argumentsInfo.some((arg) => !arg.isUsed)) {
       functionsInfo.push({
         functionName,
         line,
-        arguments: argumentsInfo
+        arguments: argumentsInfo,
       });
     }
   }
@@ -818,7 +821,7 @@ function extractFunctionArgumentsFromAST(sourceFile: ts.SourceFile): FunctionArg
     }
     // const myFunc = () => {}
     if (ts.isVariableStatement(node)) {
-      node.declarationList.declarations.forEach(decl => {
+      node.declarationList.declarations.forEach((decl) => {
         if (decl.initializer) {
           if (ts.isFunctionExpression(decl.initializer) || ts.isArrowFunction(decl.initializer)) {
             analyzeFunction(decl.initializer);

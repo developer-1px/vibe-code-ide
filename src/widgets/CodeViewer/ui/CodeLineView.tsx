@@ -1,19 +1,18 @@
-
-import React, { useEffect, useRef, useMemo } from 'react';
 import { useAtomValue } from 'jotai';
+import React, { useEffect, useMemo, useRef } from 'react';
 import * as ts from 'typescript';
-import { CanvasNode } from '../../../entities/CanvasNode/model/types';
+import { getFoldedCount, isLineFolded, isLineInsideFold } from '@/features/Code/CodeFold/lib/foldUtils';
+import { foldedLinesAtom } from '@/features/Code/CodeFold/model/atoms';
+import FoldBadge from '@/features/Code/CodeFold/ui/FoldBadge';
+import FoldButton from '@/features/Code/CodeFold/ui/FoldButton';
+import { targetLineAtom } from '@/features/File/Navigation/model/atoms';
+import { useEditorTheme } from '../../../app/theme/EditorThemeProvider';
+import type { CanvasNode } from '../../../entities/CanvasNode/model/types';
+import { layoutNodesAtom } from '../../PipelineCanvas/model/atoms';
 import type { CodeLine } from '../core/types';
-import CodeLineSlots from './CodeLineSlots';
 import CodeLineExportSlots from './CodeLineExportSlots';
 import CodeLineSegment from './CodeLineSegment';
-import FoldButton from '@/features/Code/CodeFold/ui/FoldButton';
-import FoldBadge from '@/features/Code/CodeFold/ui/FoldBadge';
-import { isLineInsideFold, isLineFolded, getFoldedCount } from '@/features/Code/CodeFold/lib/foldUtils';
-import { targetLineAtom } from '@/features/File/Navigation/model/atoms';
-import { foldedLinesAtom } from '@/features/Code/CodeFold/model/atoms';
-import { layoutNodesAtom } from '../../PipelineCanvas/model/atoms';
-import { useEditorTheme } from '../../../app/theme/EditorThemeProvider';
+import CodeLineSlots from './CodeLineSlots';
 
 const CodeLineView = ({
   line,
@@ -40,7 +39,7 @@ const CodeLineView = ({
   const exportedSymbolName = useMemo(() => {
     if (!hasDeclarationKeyword) return undefined;
     // Find segment with isDeclarationName = true
-    const declSegment = line.segments.find(seg => seg.isDeclarationName);
+    const declSegment = line.segments.find((seg) => seg.isDeclarationName);
     return declSegment?.text;
   }, [hasDeclarationKeyword, line.segments]);
 
@@ -51,7 +50,7 @@ const CodeLineView = ({
     let count = 0;
 
     // Check all nodes (regardless of visibility)
-    layoutNodes.forEach(n => {
+    layoutNodes.forEach((n) => {
       // Skip if node doesn't import this file
       if (!n.dependencies?.includes(node.filePath)) return;
 
@@ -91,10 +90,7 @@ const CodeLineView = ({
 
   // Line number 스타일 계산 (useMemo로 캐싱)
   const lineNumberClassName = useMemo(() => {
-    const isHighlighted =
-      hasDeclarationKeyword ||
-      isDefinitionLine ||
-      isFolded;  // Only highlight when actually folded, not just foldable
+    const isHighlighted = hasDeclarationKeyword || isDefinitionLine || isFolded; // Only highlight when actually folded, not just foldable
 
     return isHighlighted ? 'text-vibe-accent font-bold' : '';
   }, [hasDeclarationKeyword, isDefinitionLine, isFolded]);
@@ -123,27 +119,26 @@ const CodeLineView = ({
       data-line-num={line.num}
     >
       {/* Line Number Column: Aligned text-right, fixed leading/padding to match code */}
-      <div className={`flex-none ${theme.dimensions.lineNumberWidth} ${theme.spacing.lineNumberX} text-[9px] text-right ${theme.colors.lineNumber.text} border-r ${theme.colors.lineNumber.border} ${theme.colors.lineNumber.background} ${theme.spacing.lineY}`}>
+      <div
+        className={`flex-none ${theme.dimensions.lineNumberWidth} ${theme.spacing.lineNumberX} text-[9px] text-right ${theme.colors.lineNumber.text} border-r ${theme.colors.lineNumber.border} ${theme.colors.lineNumber.background} ${theme.spacing.lineY}`}
+      >
         <div className="relative inline-block w-full flex items-center justify-end gap-1">
           {/* Render input slots for each dependency token in this line */}
           <CodeLineSlots line={line} />
 
-          <span className={lineNumberClassName}>
-            {line.num}
-          </span>
+          <span className={lineNumberClassName}>{line.num}</span>
         </div>
       </div>
 
       {/* Fold Button Column */}
       <div className="flex-none w-4 flex items-center justify-center">
-        <FoldButton
-          line={line}
-          node={node}
-        />
+        <FoldButton line={line} node={node} />
       </div>
 
       {/* Code Content Column */}
-      <div className={`flex-1 ${theme.spacing.lineX} ${theme.spacing.lineY} overflow-x-auto whitespace-pre-wrap break-words select-text`}>
+      <div
+        className={`flex-1 ${theme.spacing.lineX} ${theme.spacing.lineY} overflow-x-auto whitespace-pre-wrap break-words select-text`}
+      >
         {line.segments.map((segment, segIdx) => (
           <CodeLineSegment
             key={segIdx}
@@ -157,12 +152,7 @@ const CodeLineView = ({
         ))}
 
         {/* Inline Fold Badge */}
-        <FoldBadge
-          line={line}
-          node={node}
-          isFolded={isFolded}
-          foldedCount={foldedCount}
-        />
+        <FoldBadge line={line} node={node} isFolded={isFolded} foldedCount={foldedCount} />
       </div>
 
       {/* Output Port: Show only for exported declarations */}
@@ -185,8 +175,7 @@ const CodeLineView = ({
 
           {/* Hover tooltip */}
           <div className="hidden group-hover:block absolute right-5 whitespace-nowrap bg-slate-800 text-emerald-300 text-xs px-2 py-1 rounded border border-emerald-500/30">
-            Export (line {line.num})
-            {usageCount > 0 && ` • ${usageCount} usage${usageCount > 1 ? 's' : ''}`}
+            Export (line {line.num}){usageCount > 0 && ` • ${usageCount} usage${usageCount > 1 ? 's' : ''}`}
           </div>
         </div>
       )}

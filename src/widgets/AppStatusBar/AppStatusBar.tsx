@@ -16,14 +16,5 @@ export function AppStatusBar() {
   const column = 1;
   const aiActive = false;
 
-  return (
-    <StatusBar
-      branch={branch}
-      ahead={ahead}
-      behind={behind}
-      line={line}
-      column={column}
-      aiActive={aiActive}
-    />
-  );
+  return <StatusBar branch={branch} ahead={ahead} behind={behind} line={line} column={column} aiActive={aiActive} />;
 }

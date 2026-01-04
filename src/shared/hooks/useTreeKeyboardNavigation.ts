@@ -4,7 +4,7 @@
  *
  * Note: Auto-scroll은 TreeView의 useTreeState에서 처리됩니다.
  */
-import { useState, useRef } from 'react';
+import { useRef, useState } from 'react';
 import { useHotkeys } from 'react-hotkeys-hook';
 
 const TREE_HOTKEYS = {
@@ -118,7 +118,7 @@ export function useTreeKeyboardNavigation<T extends TreeNavigationItem>({
               console.log('[useTreeKeyboardNavigation] Arrow Left - Moving to parent folder from collapsed folder');
               // ✅ ID 기반 부모 찾기
               if (item.parentId) {
-                const parentIndex = flatItemList.findIndex(i => i.id === item.parentId);
+                const parentIndex = flatItemList.findIndex((i) => i.id === item.parentId);
                 if (parentIndex !== -1) {
                   setFocusedIndex(parentIndex);
                 }
@@ -129,7 +129,7 @@ export function useTreeKeyboardNavigation<T extends TreeNavigationItem>({
             console.log('[useTreeKeyboardNavigation] Arrow Left - Moving to parent folder from file/item');
             // ✅ ID 기반 부모 찾기
             if (item.parentId) {
-              const parentIndex = flatItemList.findIndex(i => i.id === item.parentId);
+              const parentIndex = flatItemList.findIndex((i) => i.id === item.parentId);
               if (parentIndex !== -1) {
                 setFocusedIndex(parentIndex);
               }

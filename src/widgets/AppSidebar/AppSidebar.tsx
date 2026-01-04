@@ -2,18 +2,20 @@
  * AppSidebar - Sidebar container with FileExplorer
  * Provides resizable sidebar layout for file navigation
  */
-import React, { useRef, useState } from 'react';
+
 import { useAtomValue } from 'jotai';
+import { ChevronDown, ChevronRight } from 'lucide-react';
+import type React from 'react';
+import { useRef, useState } from 'react';
 import { Sidebar } from '@/components/ide/Sidebar';
-import { isSidebarOpenAtom } from './model/atoms';
-import { viewModeAtom } from '../../app/model/atoms';
-import { openedTabsAtom, activeTabAtom } from '@/features/File/OpenFiles/model/atoms';
-import UploadFolderButton from '../../features/UploadFolderButton';
-import { FileExplorer } from '../FileExplorer/FileExplorer';
-import { getFileName } from '../../shared/pathUtils';
-import { getFileIcon } from '../FileExplorer/lib/getFileIcon';
 import { useOpenFile } from '@/features/File/OpenFiles/lib/useOpenFile';
-import { ChevronRight, ChevronDown } from 'lucide-react';
+import { activeTabAtom, openedTabsAtom } from '@/features/File/OpenFiles/model/atoms';
+import { viewModeAtom } from '../../app/model/atoms';
+import UploadFolderButton from '../../features/UploadFolderButton';
+import { getFileName } from '../../shared/pathUtils';
+import { FileExplorer } from '../FileExplorer/FileExplorer';
+import { getFileIcon } from '../FileExplorer/lib/getFileIcon';
+import { isSidebarOpenAtom } from './model/atoms';
 
 export const AppSidebar: React.FC = () => {
   const isSidebarOpen = useAtomValue(isSidebarOpenAtom);
@@ -38,13 +40,7 @@ export const AppSidebar: React.FC = () => {
 
   return (
     <div ref={containerRef} tabIndex={0} className="relative focus:outline-none">
-      <Sidebar
-        resizable
-        defaultWidth={250}
-        minWidth={200}
-        maxWidth={800}
-        className="h-full shadow-2xl"
-      >
+      <Sidebar resizable defaultWidth={250} minWidth={200} maxWidth={800} className="h-full shadow-2xl">
         <Sidebar.Header>
           <span className="text-2xs font-medium text-text-secondary normal-case">{headerLabel}</span>
           <UploadFolderButton />

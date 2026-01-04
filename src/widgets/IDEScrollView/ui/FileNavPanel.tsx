@@ -16,7 +16,6 @@ const FileNavPanel = ({
   currentFilePath: string | null;
   onFileClick: (filePath: string) => void;
 }) => {
-
   return (
     <div className="w-48 border-l border-border-DEFAULT bg-bg-elevated overflow-y-auto">
       {/* 헤더 */}
@@ -47,9 +46,7 @@ const FileNavPanel = ({
               />
               <div className="flex flex-col min-w-0">
                 <span
-                  className={`text-xs truncate ${
-                    isActive ? 'text-text-primary font-medium' : 'text-text-secondary'
-                  }`}
+                  className={`text-xs truncate ${isActive ? 'text-text-primary font-medium' : 'text-text-secondary'}`}
                 >
                   {fileName}
                 </span>
