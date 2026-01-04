@@ -46,7 +46,7 @@ export function CommandPalette({
   const inputRef = React.useRef<HTMLInputElement>(null);
 
   // Headless keyboard navigation with auto-scroll
-  const { focusedIndex, setFocusedIndex, itemRefs, scrollContainerRef } = useListKeyboardNavigation({
+  const { focusedIndex, itemRefs, scrollContainerRef } = useListKeyboardNavigation({
     items: results,
     onSelect: (result) => onSelectResult(result),
     onClose: () => onOpenChange(false),
@@ -295,7 +295,6 @@ export function CommandPalette({
                         onSelectResult(result);
                       }
                     }}
-                    onMouseEnter={() => setFocusedIndex(index)}
                   >
                     <div
                       className={cn(
