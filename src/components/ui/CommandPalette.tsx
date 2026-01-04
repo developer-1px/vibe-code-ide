@@ -297,10 +297,8 @@ export function CommandPalette({
                       }
                     }}
                     className={cn(
-                      'group flex cursor-pointer items-center gap-2 rounded-md px-2 py-1 transition-all',
-                      isSelected
-                        ? 'bg-warm-glow/30 border border-warm-300/20'
-                        : 'border border-transparent hover:bg-white/5'
+                      'group flex cursor-pointer items-center gap-2 rounded-md px-2 py-1',
+                      isSelected ? 'bg-warm-glow/30 border border-warm-300/20' : 'border border-transparent'
                     )}
                     onClick={() => onSelectResult(result)}
                     onKeyDown={(e) => {
@@ -314,7 +312,7 @@ export function CommandPalette({
                     <div
                       className={cn(
                         'flex h-5 w-5 shrink-0 items-center justify-center rounded',
-                        isSelected ? 'bg-warm-glow/30' : 'bg-bg-surface group-hover:bg-bg-base'
+                        isSelected ? 'bg-warm-glow/30' : 'bg-bg-surface'
                       )}
                     >
                       <Icon size={11} strokeWidth={1.5} className={getIconColor(result, isSelected)} />
