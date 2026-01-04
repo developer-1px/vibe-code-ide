@@ -13,6 +13,11 @@ import { DEFAULT_FILES } from '../../constants';
 // 가상 파일 시스템 (Virtual file system)
 export const filesAtom = atom<Record<string, string>>(DEFAULT_FILES);
 
+// Folder Focus Mode - 특정 폴더를 Root로 하는 격리 뷰
+// null: 전체 파일 트리 표시
+// "src/features": 해당 폴더만 Root로 표시
+export const focusedFolderAtom = atom<string | null>(null);
+
 // ============================================================================
 // Graph Data Atoms (Parsed Project Data)
 // ============================================================================

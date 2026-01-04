@@ -31,20 +31,20 @@ export function AppActivityBar() {
         }}
       />
       <ActivityBarItem
-        icon={LucideMap}
-        label="Canvas View"
-        active={viewMode === 'canvas'}
-        onClick={() => {
-          setViewMode('canvas');
-        }}
-      />
-      <ActivityBarItem
         icon={BookOpenText}
         label="Code Doc"
         active={viewMode === 'codeDoc'}
         onClick={() => {
           setViewMode('codeDoc');
           setDeadCodePanelOpen(false);
+        }}
+      />
+      <ActivityBarItem
+        icon={LucideMap}
+        label="Canvas View"
+        active={viewMode === 'canvas'}
+        onClick={() => {
+          setViewMode('canvas');
         }}
       />
       <ActivityBarItem
