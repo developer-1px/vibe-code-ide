@@ -8,7 +8,7 @@
     "build": "vite build",
     "preview": "vite preview",
     "lint": "biome check ./src",
-    "lint:fix": "biome check --write ./src",
+    "lint:fix": "biome check --write --unsafe ./src",
     "format": "biome format --write ./src"
   },
   "dependencies": {
