@@ -46,15 +46,16 @@ export function useOpenFile() {
       ? filePath.split('::')[0]
       : filePath;
 
+    // IDE/CodeDoc 모드: 탭으로 열기
+    // 1. 이미 열려있는 파일이면 탭 추가하지 않음 (기존 탭 유지)
+    // 2. 안 열려있는 파일이면 현재 활성 탭 바로 다음에 새 탭 추가
     if (viewMode === 'ide' || viewMode === 'codeDoc') {
-
-      // IDE/CodeDoc 모드: 탭으로 열기
-      // 1. 이미 열려있는 파일이면 탭 추가하지 않음 (기존 탭 유지)
-      // 2. 안 열려있는 파일이면 현재 활성 탭 바로 다음에 새 탭 추가
       setOpenedTabs((prev) => {
+        // 이미 열려있으면 탭 추가 안 함
         if (prev.includes(actualFilePath)) {
-          return prev; // 이미 열려있으면 탭 추가 안 함
+          return prev;
         }
+
         // 현재 활성 탭의 위치를 찾아서 그 다음에 삽입
         const activeIndex = activeTab ? prev.indexOf(activeTab) : -1;
         const insertIndex = activeIndex >= 0 ? activeIndex + 1 : prev.length;

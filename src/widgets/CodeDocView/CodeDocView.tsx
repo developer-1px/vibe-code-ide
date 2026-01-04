@@ -30,13 +30,13 @@ const CodeDocView = () => {
 
   return (
     <div className="flex-1 h-full flex overflow-hidden bg-bg-elevated">
-      {/* 좌측: 스크롤 가능한 문서 뷰 */}
+      {/* 좌측: 스크롤 가능한 문서 뷰 (PDF 뷰어 스타일) */}
       <div
         id="codedoc-view-container"
-        className="flex-1 overflow-y-auto bg-bg-elevated"
+        className="flex-1 overflow-y-auto bg-bg-base select-text"
         data-doc-mode={documentMode}
       >
-        <div className="max-w-4xl mx-auto py-8">
+        <div className="max-w-4xl mx-auto py-12 px-6 md:px-12 select-text">
           {openedTabs.map((filePath) => {
             const node = fullNodeMap.get(filePath);
             if (!node) return null;

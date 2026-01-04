@@ -40,7 +40,7 @@ export const viewModeAtom = atom<ViewMode>('ide'); // Default to IDE mode
 
 // 문서 모드 - Dark vs Light (for CodeDocView)
 export type DocumentMode = 'dark' | 'light';
-export const documentModeAtom = atom<DocumentMode>('dark'); // Default to dark mode
+export const documentModeAtom = atom<DocumentMode>('light'); // Default to light mode (GitBook-style)
 
 // ============================================================================
 // Focus Management

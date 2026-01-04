@@ -4,43 +4,117 @@
  */
 
 import * as ts from 'typescript';
-import type { SourceFileNode } from '../../SourceFileNode/model/types';
-import type { CodeDocSection, CommentStyle } from '../model/types';
+import type { SourceFileNode } from '../../../entities/SourceFileNode/model/types';
+import type { CodeDocSection, CommentStyle, ParsedCodeDoc, ImportSymbol, SymbolKind } from './types';
+import { extractFileHeader } from './extractFileHeader';
+import { extractExportSignatures } from './extractExportSignatures';
 
 /**
- * TypeScript 함수 시그니처를 간결한 형식으로 변환
- * export function extractOutlineStructure(node: SourceFileNode): OutlineNode[]
- * → extractOutlineStructure(node: SourceFileNode) → OutlineNode[]
+ * Infer symbol kind from name patterns
  */
-function formatFunctionSignature(node: ts.FunctionDeclaration | ts.VariableStatement, sourceFile: ts.SourceFile): string {
-  // Function Declaration
-  if (ts.isFunctionDeclaration(node)) {
-    const name = node.name?.getText(sourceFile) || 'anonymous';
-    const params = node.parameters.map(p => p.getText(sourceFile)).join(', ');
-    const returnType = node.type ? node.type.getText(sourceFile) : 'void';
-    return `${name}(${params}) → ${returnType}`;
+function inferSymbolKind(name: string, isTypeOnly: boolean): SymbolKind {
+  // Type-only imports are likely types or interfaces
+  if (isTypeOnly) {
+    // PascalCase with "Props", "Type", "Options" suffix → type
+    if (/^[A-Z][a-z]+[A-Z]/.test(name) && /(Props|Type|Options|Config|Data)$/.test(name)) {
+      return 'type';
+    }
+    // PascalCase → interface or type
+    if (/^[A-Z]/.test(name)) {
+      return 'interface';
+    }
+    return 'type';
   }
 
-  // Arrow Function (const foo = () => {})
-  if (ts.isVariableStatement(node)) {
-    const declaration = node.declarationList.declarations[0];
-    if (declaration && ts.isVariableDeclaration(declaration) && declaration.initializer) {
-      const name = declaration.name.getText(sourceFile);
+  // PascalCase starting with uppercase → Component or Class
+  if (/^[A-Z]/.test(name)) {
+    // Known React components or custom components
+    if (name.endsWith('Provider') || name.endsWith('Context') || name.endsWith('Button') || name.endsWith('Modal') || name.endsWith('View') || name.endsWith('Card')) {
+      return 'component';
+    }
+    // Class-like names
+    return 'class';
+  }
 
-      if (ts.isArrowFunction(declaration.initializer) || ts.isFunctionExpression(declaration.initializer)) {
-        const func = declaration.initializer as ts.ArrowFunction | ts.FunctionExpression;
-        const params = func.parameters.map(p => p.getText(sourceFile)).join(', ');
-        const returnType = func.type ? func.type.getText(sourceFile) : 'unknown';
-        return `${name}(${params}) → ${returnType}`;
+  // camelCase starting with "use" → hook
+  if (/^use[A-Z]/.test(name)) {
+    return 'hook';
+  }
+
+  // UPPER_CASE → const
+  if (/^[A-Z_]+$/.test(name)) {
+    return 'const';
+  }
+
+  // camelCase → likely function
+  if (/^[a-z][a-zA-Z0-9]*$/.test(name)) {
+    return 'function';
+  }
+
+  return 'unknown';
+}
+
+/**
+ * Extract all import symbols from a SourceFileNode
+ */
+function extractImportsFromAST(node: SourceFileNode): ImportSymbol[] {
+  const imports: ImportSymbol[] = [];
+  const sourceFile = node.sourceFile;
+
+  ts.forEachChild(sourceFile, (child) => {
+    // Only process ImportDeclaration nodes
+    if (!ts.isImportDeclaration(child)) return;
+
+    const importClause = child.importClause;
+    if (!importClause) return;
+
+    const moduleSpecifier = child.moduleSpecifier;
+    if (!ts.isStringLiteral(moduleSpecifier)) return;
+
+    const fromPath = moduleSpecifier.text;
+    const isTypeOnly = importClause.isTypeOnly || false;
+
+    // Named imports: import { foo, bar } from '...'
+    if (importClause.namedBindings) {
+      if (ts.isNamedImports(importClause.namedBindings)) {
+        importClause.namedBindings.elements.forEach((element) => {
+          const name = element.name.getText(sourceFile);
+          const kind = inferSymbolKind(name, isTypeOnly || element.isTypeOnly);
+          imports.push({
+            name,
+            kind,
+            fromPath,
+            isTypeOnly: isTypeOnly || element.isTypeOnly
+          });
+        });
       }
 
-      // Constant/Variable
-      const type = declaration.type ? declaration.type.getText(sourceFile) : 'unknown';
-      return `${name}: ${type}`;
+      // Namespace import: import * as React from 'react'
+      if (ts.isNamespaceImport(importClause.namedBindings)) {
+        const name = importClause.namedBindings.name.getText(sourceFile);
+        imports.push({
+          name,
+          kind: 'const',
+          fromPath,
+          isTypeOnly
+        });
+      }
     }
-  }
 
-  return node.getText(sourceFile);
+    // Default import: import React from 'react'
+    if (importClause.name) {
+      const name = importClause.name.getText(sourceFile);
+      const kind = inferSymbolKind(name, isTypeOnly);
+      imports.push({
+        name,
+        kind,
+        fromPath,
+        isTypeOnly
+      });
+    }
+  });
+
+  return imports;
 }
 
 /**
@@ -178,38 +252,6 @@ function containsControlFlow(code: string): boolean {
 }
 
 /**
- * AST에서 export 선언 추출
- */
-function extractExportSignatures(node: SourceFileNode): CodeDocSection[] {
-  const exportSections: CodeDocSection[] = [];
-  const sourceFile = node.sourceFile;
-
-  ts.forEachChild(sourceFile, (child) => {
-    // Export로 시작하는 선언문만 처리
-    const modifiers = ts.canHaveModifiers(child) ? ts.getModifiers(child) : undefined;
-    const hasExportModifier = modifiers?.some(m => m.kind === ts.SyntaxKind.ExportKeyword);
-
-    if (!hasExportModifier) return;
-
-    // 함수 또는 변수 선언
-    if (ts.isFunctionDeclaration(child) || ts.isVariableStatement(child)) {
-      const signature = formatFunctionSignature(child, sourceFile);
-      const startLine = sourceFile.getLineAndCharacterOfPosition(child.getStart(sourceFile)).line + 1;
-      const endLine = sourceFile.getLineAndCharacterOfPosition(child.getEnd()).line + 1;
-
-      exportSections.push({
-        type: 'export',
-        content: signature,
-        startLine,
-        endLine
-      });
-    }
-  });
-
-  return exportSections;
-}
-
-/**
  * 코드에서 JSX 블록 추출 (return ( ~ ) 부분)
  * @returns { jsxContent, codeWithoutJsx, jsxStartLine, jsxEndLine }
  */
@@ -271,12 +313,87 @@ function extractJSXBlock(code: string, startLine: number): {
 }
 
 /**
- * 소스 파일을 CodeDoc 섹션으로 파싱
+ * Interface 선언을 각각 분리
+ * 하나의 코드 섹션에 여러 interface가 있으면 각각 독립 섹션으로 분리
  */
-export function parseCodeDoc(node: SourceFileNode): CodeDocSection[] {
+function splitInterfaceDeclarations(sections: CodeDocSection[], sourceFile: ts.SourceFile): CodeDocSection[] {
+  // 1. 모든 interface 선언 위치 추출 (export 포함)
+  const interfaceDeclarations: Array<{
+    node: ts.InterfaceDeclaration;
+    startLine: number;
+    endLine: number;
+    isExport: boolean;
+  }> = [];
+
+  ts.forEachChild(sourceFile, (child) => {
+    if (ts.isInterfaceDeclaration(child)) {
+      const modifiers = ts.canHaveModifiers(child) ? ts.getModifiers(child) : undefined;
+      const isExport = modifiers?.some(m => m.kind === ts.SyntaxKind.ExportKeyword) || false;
+
+      const startLine = sourceFile.getLineAndCharacterOfPosition(child.getStart(sourceFile)).line + 1;
+      const endLine = sourceFile.getLineAndCharacterOfPosition(child.getEnd()).line + 1;
+      interfaceDeclarations.push({ node: child, startLine, endLine, isExport });
+    }
+  });
+
+  // Interface 선언이 없으면 그대로 반환
+  if (interfaceDeclarations.length === 0) {
+    return sections;
+  }
+
+  // 2. 각 섹션 처리
+  const result: CodeDocSection[] = [];
+
+  sections.forEach(section => {
+    // Comment, export, jsx, control은 그대로 유지
+    if (section.type !== 'code') {
+      result.push(section);
+      return;
+    }
+
+    // 이 섹션 범위 내의 interface 선언 찾기
+    const interfacesInSection = interfaceDeclarations.filter(
+      iface => iface.startLine >= section.startLine && iface.endLine <= section.endLine
+    );
+
+    // Interface가 없으면 그대로 유지
+    if (interfacesInSection.length === 0) {
+      result.push(section);
+      return;
+    }
+
+    // Interface가 1개 이상이면 각각 분리
+    // export interface는 signature로 표시되므로 코드 블록에서 제외하지 않음 (본문도 표시)
+    interfacesInSection.forEach(iface => {
+      result.push({
+        type: 'code',
+        content: iface.node.getText(sourceFile),
+        startLine: iface.startLine,
+        endLine: iface.endLine
+      });
+    });
+  });
+
+  return result;
+}
+
+/**
+ * 소스 파일을 CodeDoc 섹션으로 파싱
+ * 한 번의 AST 순회로 sections + imports 모두 추출
+ */
+export function parseCodeDoc(node: SourceFileNode): ParsedCodeDoc {
   const sourceText = node.codeSnippet;
   const lines = sourceText.split('\n');
   const sections: CodeDocSection[] = [];
+
+  // Import 심볼 추출 (AST 순회)
+  const imports = extractImportsFromAST(node);
+
+  // 파일 상단 주석 추출
+  const fileHeader = extractFileHeader(lines);
+  if (fileHeader) {
+    sections.push(fileHeader);
+  }
 
   let currentSection: CodeDocSection | null = null;
   let currentLines: string[] = [];
@@ -432,18 +549,56 @@ export function parseCodeDoc(node: SourceFileNode): CodeDocSection[] {
     }
   }
 
+  // Interface 선언 분리 (여러 interface가 한 섹션에 있으면 각각 분리)
+  const sectionsWithSplitInterfaces = splitInterfaceDeclarations(sections, node.sourceFile);
+
+  // 모든 섹션에 바로 앞 주석 연결 (빈 줄 없이 연속인 경우)
+  sectionsWithSplitInterfaces.forEach(section => {
+    // Comment는 제외 (자기 자신과 연결 방지)
+    if (section.type === 'comment') return;
+
+    // 바로 앞 섹션 찾기
+    const prevSection = sectionsWithSplitInterfaces.find(s =>
+      s.type === 'comment' &&
+      s.endLine === section.startLine - 1 // 빈 줄 없이 바로 앞
+    );
+
+    if (prevSection) {
+      // 관련 주석 연결
+      section.relatedComment = prevSection;
+    }
+  });
+
   // Export 시그니처 추출 (AST 기반)
   const exportSections = extractExportSignatures(node);
-  sections.push(...exportSections);
 
-  // 라인 번호 순으로 정렬 (같은 라인이면 export가 먼저)
-  sections.sort((a, b) => {
+  // Export signature에도 바로 앞 주석 연결
+  exportSections.forEach(exportSection => {
+    const prevSection = sectionsWithSplitInterfaces.find(s =>
+      s.type === 'comment' &&
+      s.endLine === exportSection.startLine - 1
+    );
+
+    if (prevSection) {
+      exportSection.relatedComment = prevSection;
+    }
+  });
+
+  sectionsWithSplitInterfaces.push(...exportSections);
+
+  // 라인 번호 순으로 정렬 (같은 라인이면 코드 본문이 먼저, signature가 나중)
+  sectionsWithSplitInterfaces.sort((a, b) => {
     if (a.startLine === b.startLine) {
-      if (a.type === 'export') return -1;
-      if (b.type === 'export') return 1;
+      // 같은 라인: code/jsx/control이 먼저, export signature가 나중
+      if (a.type === 'export') return 1;
+      if (b.type === 'export') return -1;
     }
     return a.startLine - b.startLine;
   });
 
-  return sections;
+  // sections + imports 함께 반환 (한 번의 파싱 결과)
+  return {
+    sections: sectionsWithSplitInterfaces,
+    imports
+  };
 }

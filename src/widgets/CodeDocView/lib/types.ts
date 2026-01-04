@@ -14,11 +14,11 @@
 export type CommentStyle = 'line' | 'block' | 'jsdoc' | 'separator' | 'xml';
 
 /**
- * CodeDoc 섹션 (주석, 코드, export, jsx, 또는 제어문)
+ * CodeDoc 섹션 (주석, 코드, export, jsx, 제어문, 또는 파일 헤더)
  */
 export interface CodeDocSection {
   /** 섹션 타입 */
-  type: 'comment' | 'code' | 'export' | 'jsx' | 'control';
+  type: 'comment' | 'code' | 'export' | 'jsx' | 'control' | 'fileHeader';
 
   /** 섹션 내용 (주석의 경우 텍스트, 코드의 경우 원본 코드) */
   content: string;
@@ -39,6 +39,11 @@ export interface CodeDocSection {
 
   /** 추출된 제목 텍스트 (separator 스타일의 경우) */
   headingText?: string;
+
+  // Export specific fields
+
+  /** Export signature 바로 앞의 주석 (빈 줄 없이 연속된 경우) */
+  relatedComment?: CodeDocSection;
 }
 
 /**
@@ -50,4 +55,37 @@ export interface CodeDocFile {
 
   /** 섹션 배열 */
   sections: CodeDocSection[];
+}
+
+/**
+ * Import 심볼 종류
+ */
+export type SymbolKind = 'function' | 'type' | 'const' | 'component' | 'hook' | 'class' | 'interface' | 'enum' | 'unknown';
+
+/**
+ * Import된 심볼 정보
+ */
+export interface ImportSymbol {
+  /** 심볼 이름 (예: "useState", "Button") */
+  name: string;
+
+  /** 심볼 종류 */
+  kind: SymbolKind;
+
+  /** 소스 경로 (예: "react", "./Button") */
+  fromPath: string;
+
+  /** import type인지 여부 */
+  isTypeOnly: boolean;
+}
+
+/**
+ * parseCodeDoc 반환 타입 (한 번의 파싱으로 sections + imports 추출)
+ */
+export interface ParsedCodeDoc {
+  /** 주석, 코드, export 등 섹션 배열 */
+  sections: CodeDocSection[];
+
+  /** Import된 심볼 배열 */
+  imports: ImportSymbol[];
 }
