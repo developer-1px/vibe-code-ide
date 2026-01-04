@@ -91,9 +91,10 @@ export function useListKeyboardNavigation<T>({
   }, [enabled, scope, enableScope, disableScope, debug]);
 
   // Reset focusedIndex when items change
+  // biome-ignore lint/correctness/useExhaustiveDependencies: items must trigger reset
   useEffect(() => {
     setFocusedIndex(0);
-  }, []);
+  }, [items, setFocusedIndex]);
 
   // Auto-scroll to focused item
   useAutoScroll({
