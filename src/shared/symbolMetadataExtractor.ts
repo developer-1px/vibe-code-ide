@@ -50,7 +50,7 @@ function isTsxFile(filePath: string): boolean {
  */
 export function extractSymbolMetadata(
   fullNodeMap: Map<string, SourceFileNode>,
-  files: Record<string, string>
+  _files: Record<string, string>
 ): Map<string, CodeSymbolMetadata> {
   console.log('[symbolMetadataExtractor] Starting extraction, fullNodeMap size:', fullNodeMap.size);
   const metadata = new Map<string, CodeSymbolMetadata>();
@@ -79,7 +79,7 @@ export function extractSymbolMetadata(
 
     if (node.codeSnippet && node.filePath) {
       const isTsx = isTsxFile(node.filePath);
-      const startLine = node.startLine || 1;
+      const _startLine = node.startLine || 1;
 
       // Try to get type info from the first identifier in the code
       // Position 0 is usually the declaration keyword, so we try position after that

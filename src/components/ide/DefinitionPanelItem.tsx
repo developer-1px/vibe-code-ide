@@ -12,7 +12,7 @@ interface DefinitionPanelItemProps {
 }
 
 // Get icon for symbol kind
-function getSymbolIcon(kind: SymbolKind, isExported?: boolean) {
+function getSymbolIcon(kind: SymbolKind, _isExported?: boolean) {
   const iconProps = { size: 10 };
 
   switch (kind) {
@@ -137,7 +137,7 @@ export function DefinitionPanelItem({
         {/* Type annotation (if exists) */}
         {symbol.type && (
           <span className="text-text-tertiary text-2xs shrink-0">
-            {symbol.type.length > 30 ? symbol.type.substring(0, 30) + '...' : symbol.type}
+            {symbol.type.length > 30 ? `${symbol.type.substring(0, 30)}...` : symbol.type}
           </span>
         )}
       </div>
@@ -145,7 +145,7 @@ export function DefinitionPanelItem({
       {/* Children */}
       {isExpanded && hasChildren && (
         <div>
-          {symbol.children!.map((child, idx) => (
+          {symbol.children?.map((child, idx) => (
             <DefinitionPanelItem
               key={`${child.line}-${child.name}-${idx}`}
               symbol={child}

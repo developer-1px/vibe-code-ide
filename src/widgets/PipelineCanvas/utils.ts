@@ -23,7 +23,7 @@ export const getUsageIndex = (code: string, id: string) => {
     const regex = new RegExp(`(?<![a-zA-Z0-9_$])${escapedId}(?![a-zA-Z0-9_$])`);
     const match = regex.exec(code);
     return match ? match.index : Infinity;
-  } catch (e) {
+  } catch (_e) {
     return code.indexOf(shortId);
   }
 };

@@ -3,7 +3,6 @@
  * 파일 목록 표시 및 스크롤 네비게이션
  */
 
-import React from 'react';
 import { getFileName } from '../../../shared/pathUtils';
 import { getFileIcon } from '../../FileExplorer/lib/getFileIcon';
 

@@ -4,7 +4,7 @@
  */
 
 import { useAtomValue } from 'jotai';
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 import { activeLocalVariablesAtom } from '@/features/Code/FocusMode/model/atoms';
 import { LocalVariableSegment } from '@/features/Code/FocusMode/ui/LocalVariableSegment';
 import { useEditorTheme } from '../../../app/theme/EditorThemeProvider';

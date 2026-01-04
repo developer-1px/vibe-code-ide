@@ -6,7 +6,7 @@ import type { LucideIcon } from 'lucide-react';
 import { Code2, CodeXml, SquareFunction } from 'lucide-react';
 
 export function getFileIcon(fileName: string): LucideIcon {
-  const ext = fileName.includes('.') ? '.' + fileName.split('.').pop() : '';
+  const ext = fileName.includes('.') ? `.${fileName.split('.').pop()}` : '';
 
   switch (ext.toLowerCase()) {
     case '.tsx':

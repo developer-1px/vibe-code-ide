@@ -4,7 +4,7 @@
  */
 
 import { useAtomValue, useSetAtom } from 'jotai';
-import React, { forwardRef, useEffect, useMemo, useState, useTransition } from 'react';
+import { forwardRef, useEffect, useState, useTransition } from 'react';
 import { deadCodeResultsAtom } from '@/features/Code/CodeAnalyzer/DeadCodeAnalyzer/model/atoms';
 import { activeTabAtom } from '@/features/File/OpenFiles/model/atoms';
 import type { SourceFileNode } from '../../../entities/SourceFileNode/model/types';
@@ -43,7 +43,7 @@ const FileSection = forwardRef<
   const setHoveredFilePath = useSetAtom(hoveredFilePathAtom);
   const fileName = getFileName(node.filePath);
   const FileIconComponent = getFileIcon(fileName);
-  const [isPending, startTransition] = useTransition();
+  const [_isPending, startTransition] = useTransition();
 
   // Check if this file section is active (via activeTab or hover)
   const isActive = activeTab === node.filePath || hoveredFilePath === node.filePath;
@@ -51,7 +51,7 @@ const FileSection = forwardRef<
   // Invalidate cache when deadCodeResults changes
   useEffect(() => {
     deadCodeResultsVersion++;
-  }, [deadCodeResults]);
+  }, []);
 
   // Phase A + B: Progressive Rendering with Stale-While-Revalidate
   // 1단계: Plaintext 즉시 표시 (파싱 없음, 초고속)

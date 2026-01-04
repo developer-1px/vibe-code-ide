@@ -25,8 +25,6 @@ import type { RenderContext } from './lib/types';
 import {
   createDependencyMap,
   extractASTMetadata,
-  extractLocalIdentifiers,
-  extractParametersFromAST,
   extractShortId,
   isTsxFile,
   shouldSkipIdentifier,

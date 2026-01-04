@@ -5,7 +5,6 @@
 import * as ts from 'typescript';
 import type { CodeLine, SegmentKind } from '../../types/codeLine';
 import { addSegmentToLines } from './segmentBuilders';
-import type { SegmentToAdd } from './types';
 
 /**
  * AST에서 segment kind를 결정

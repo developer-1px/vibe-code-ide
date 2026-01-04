@@ -4,7 +4,7 @@
  */
 
 import { useAtomValue } from 'jotai';
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 import { calculateFoldRanges } from '@/features/Code/CodeFold/lib/foldUtils';
 import { foldedLinesAtom } from '@/features/Code/CodeFold/model/atoms';
 import { currentThemeAtom } from '../../app/theme/atoms';

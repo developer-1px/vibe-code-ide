@@ -6,18 +6,14 @@ import {
   FileText,
   GitBranch,
   GitCommit,
-  GitMerge,
-  GitPullRequest,
   Minus,
   Plus,
   RotateCw,
   Upload,
-  X,
 } from 'lucide-react';
 import * as React from 'react';
 import { cn } from '@/components/lib/utils';
 import { Button } from '@/components/ui/Button';
-import { Input } from '@/components/ui/Input';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/Select';
 import { Separator } from '@/components/ui/Separator';

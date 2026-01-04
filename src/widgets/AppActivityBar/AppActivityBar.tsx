@@ -4,18 +4,8 @@
  */
 
 import { useAtom, useSetAtom } from 'jotai';
-import {
-  BookOpenText,
-  Files,
-  GitBranch,
-  LucideMap,
-  Search,
-  SearchAlertIcon,
-  Settings,
-  Sparkles,
-  Trash2Icon,
-} from 'lucide-react';
-import React, { useState } from 'react';
+import { BookOpenText, Files, GitBranch, LucideMap, SearchAlertIcon, Settings, Sparkles } from 'lucide-react';
+import { useState } from 'react';
 import { ActivityBar, ActivityBarItem } from '@/components/ide/ActivityBar';
 import { DocumentModeToggle } from '@/features/DocumentMode/DocumentModeToggle';
 import { viewModeAtom } from '../../app/model/atoms';

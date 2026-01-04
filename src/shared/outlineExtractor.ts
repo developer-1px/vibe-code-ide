@@ -244,7 +244,7 @@ function getStatementName(stmt: ts.Node, sourceFile: ts.SourceFile): string {
   }
   if (ts.isIfStatement(stmt)) {
     const condition = stmt.expression.getText(sourceFile);
-    return `if (${condition.length > 30 ? condition.slice(0, 30) + '...' : condition})`;
+    return `if (${condition.length > 30 ? `${condition.slice(0, 30)}...` : condition})`;
   }
   if (ts.isForOfStatement(stmt)) {
     const variable = stmt.initializer.getText(sourceFile);
@@ -261,7 +261,7 @@ function getStatementName(stmt: ts.Node, sourceFile: ts.SourceFile): string {
   }
   if (ts.isWhileStatement(stmt)) {
     const condition = stmt.expression.getText(sourceFile);
-    return `while (${condition.length > 30 ? condition.slice(0, 30) + '...' : condition})`;
+    return `while (${condition.length > 30 ? `${condition.slice(0, 30)}...` : condition})`;
   }
   if (ts.isDoStatement(stmt)) {
     const condition = stmt.expression.getText(sourceFile);
@@ -276,23 +276,23 @@ function getStatementName(stmt: ts.Node, sourceFile: ts.SourceFile): string {
   }
   if (ts.isReturnStatement(stmt)) {
     const value = stmt.expression?.getText(sourceFile) || '';
-    return `return ${value.length > 30 ? value.slice(0, 30) + '...' : value}`;
+    return `return ${value.length > 30 ? `${value.slice(0, 30)}...` : value}`;
   }
   if (ts.isThrowStatement(stmt)) {
     const value = stmt.expression.getText(sourceFile);
-    return `throw ${value.length > 30 ? value.slice(0, 30) + '...' : value}`;
+    return `throw ${value.length > 30 ? `${value.slice(0, 30)}...` : value}`;
   }
   if (ts.isExpressionStatement(stmt) && ts.isCallExpression(stmt.expression)) {
     const expression = stmt.expression.expression.getText(sourceFile);
     return `${expression}()`;
   }
-  return stmt.getText(sourceFile).split('\n')[0].slice(0, 50) + '...';
+  return `${stmt.getText(sourceFile).split('\n')[0].slice(0, 50)}...`;
 }
 
 /**
  * Get child statements from a node (for recursion)
  */
-function getChildStatements(node: ts.Node, sourceFile: ts.SourceFile): ts.Node[] {
+function getChildStatements(node: ts.Node, _sourceFile: ts.SourceFile): ts.Node[] {
   const children: ts.Node[] = [];
 
   // Function: process body statements

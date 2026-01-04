@@ -1,5 +1,5 @@
 import { useAtomValue } from 'jotai';
-import React, { useEffect, useMemo, useRef } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import * as ts from 'typescript';
 import { getFoldedCount, isLineFolded, isLineInsideFold } from '@/features/Code/CodeFold/lib/foldUtils';
 import { foldedLinesAtom } from '@/features/Code/CodeFold/model/atoms';

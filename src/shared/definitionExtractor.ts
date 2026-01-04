@@ -138,7 +138,7 @@ function extractType(node: ts.Node, typeChecker?: ts.TypeChecker): string | unde
         const typeString = typeChecker.typeToString(type, node, ts.TypeFormatFlags.NoTruncation);
         // 너무 긴 타입은 생략
         if (typeString.length > 100) {
-          return typeString.substring(0, 97) + '...';
+          return `${typeString.substring(0, 97)}...`;
         }
         return typeString;
       }
@@ -477,7 +477,7 @@ export function extractDefinitions(node: SourceFileNode, files?: Record<string, 
                       const innerIsConst = (statement.declarationList.flags & ts.NodeFlags.Const) !== 0;
                       const innerIsLet = (statement.declarationList.flags & ts.NodeFlags.Let) !== 0;
 
-                      children!.push({
+                      children?.push({
                         kind: innerIsConst ? 'const' : innerIsLet ? 'let' : 'let',
                         name: innerDecl.name.text,
                         line: getLineNumber(sourceFile, innerDecl),
@@ -489,7 +489,7 @@ export function extractDefinitions(node: SourceFileNode, files?: Record<string, 
 
                 // Nested function declarations inside arrow function
                 if (ts.isFunctionDeclaration(statement) && statement.name) {
-                  children!.push({
+                  children?.push({
                     kind: 'function',
                     name: statement.name.text,
                     line: getLineNumber(sourceFile, statement),
@@ -505,7 +505,7 @@ export function extractDefinitions(node: SourceFileNode, files?: Record<string, 
             children = [];
             declaration.initializer.properties.forEach((prop) => {
               if (ts.isPropertyAssignment(prop) && ts.isIdentifier(prop.name)) {
-                children!.push({
+                children?.push({
                   kind: 'property',
                   name: prop.name.text,
                   line: getLineNumber(sourceFile, prop),

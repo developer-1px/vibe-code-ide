@@ -231,7 +231,7 @@ function isCommentLine(line: string): boolean {
 /**
  * 라인이 export 선언인지 판별
  */
-function isExportLine(line: string): boolean {
+function _isExportLine(line: string): boolean {
   const trimmed = line.trim();
   return trimmed.startsWith('export ');
 }
@@ -278,7 +278,7 @@ function extractJSXBlock(
 
   // return ( 이후 괄호 매칭으로 JSX 블록 끝 찾기
   let openParens = 0;
-  const jsxStartLineIdx = returnIndex;
+  const _jsxStartLineIdx = returnIndex;
   let jsxEndLineIdx = returnIndex;
   let started = false;
 

@@ -29,7 +29,7 @@ export function DeadCodePanel({ className }: { className?: string }) {
   return (
     <div className="flex h-full w-full overflow-hidden">
       {/* 좌측: Dead Code Panel */}
-      <div ref={containerRef} tabIndex={0} className="relative focus:outline-none">
+      <div ref={containerRef} className="relative focus:outline-none">
         <Sidebar resizable defaultWidth={280} minWidth={200} maxWidth={600} className="h-full shadow-2xl">
           <Sidebar.Header>
             <DeadCodePanelHeader />

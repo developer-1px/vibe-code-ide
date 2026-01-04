@@ -1,10 +1,8 @@
-import { CaseSensitive, ChevronDown, ChevronRight, FileSearch, Replace, Search, WholeWord, X } from 'lucide-react';
+import { CaseSensitive, ChevronDown, ChevronRight, FileSearch, Replace, Search, WholeWord } from 'lucide-react';
 import * as React from 'react';
 import { cn } from '@/components/lib/utils';
 import { Button } from '@/components/ui/Button';
-import { Checkbox } from '@/components/ui/Checkbox';
 import { Input } from '@/components/ui/Input';
-import { Label } from '@/components/ui/Label';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 
 export interface SearchPanelProps {

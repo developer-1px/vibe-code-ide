@@ -12,7 +12,7 @@
  */
 
 import { useAtomValue, useSetAtom } from 'jotai';
-import React, { useCallback, useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { deadCodeResultsAtom } from '@/features/Code/CodeAnalyzer/DeadCodeAnalyzer/model/atoms';
 import { filesAtom, viewModeAtom } from '../../../app/model/atoms';
 import type { CanvasNode } from '../../../entities/CanvasNode/model/types';

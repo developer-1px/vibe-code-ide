@@ -1,9 +1,8 @@
-import { ChevronDown, ChevronUp, Maximize2, Minimize2, Plus, Split, Terminal, Trash2, X } from 'lucide-react';
+import { Maximize2, Minimize2, Plus, Split, Terminal, Trash2, X } from 'lucide-react';
 import * as React from 'react';
 import { cn } from '@/components/lib/utils';
 import { Button } from '@/components/ui/Button';
 import { Indicator } from '@/components/ui/Indicator';
-import { ScrollArea } from '@/components/ui/ScrollArea';
 
 export interface TerminalPanelProps {
   className?: string;
@@ -145,7 +144,7 @@ export function TerminalPanel({ className }: TerminalPanelProps) {
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
-  }, [activeTerminal?.history]);
+  }, []);
 
   return (
     <div
@@ -237,7 +236,6 @@ export function TerminalPanel({ className }: TerminalPanelProps) {
                 onChange={(e) => setCurrentInput(e.target.value)}
                 onKeyDown={handleKeyDown}
                 className="flex-1 bg-transparent text-text-primary outline-none caret-warm-300"
-                autoFocus
                 spellCheck={false}
               />
             </div>

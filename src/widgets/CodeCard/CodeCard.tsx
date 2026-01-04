@@ -1,5 +1,5 @@
 import { useAtomValue, useSetAtom } from 'jotai';
-import React, { useEffect, useMemo, useRef } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import { deadCodeResultsAtom } from '@/features/Code/CodeAnalyzer/DeadCodeAnalyzer/model/atoms';
 import { getFoldableLinesByMaxDepth } from '@/features/Code/CodeFold/lib/foldUtils';
 // Atoms
@@ -12,10 +12,8 @@ import CodeViewer from '../CodeViewer/CodeViewer';
 // Lib - Pure Utilities
 import { renderCodeLinesDirect } from '../CodeViewer/core/renderer/renderCodeLinesDirect';
 import { renderVueFile } from '../CodeViewer/core/renderer/renderVueFile';
-import type { CodeLine } from '../CodeViewer/core/types/codeLine';
 import VueTemplateSection from '../CodeViewer/ui/VueTemplateSection';
 import { hoveredFilePathAtom } from '../IDEScrollView/model/atoms';
-import { cardPositionsAtom } from '../PipelineCanvas/model/atoms';
 import CodeCardCopyButton from './ui/CodeCardCopyButton';
 // UI Components
 import CodeCardHeader from './ui/CodeCardHeader';

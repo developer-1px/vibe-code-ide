@@ -80,7 +80,7 @@ export function useTreeRenderer<TNode>({
         return (
           <React.Fragment key={nodePath}>
             {nodeElement}
-            <div>{nodeChildren!.map((child) => renderNode(child, depth + 1))}</div>
+            <div>{nodeChildren?.map((child) => renderNode(child, depth + 1))}</div>
           </React.Fragment>
         );
       }

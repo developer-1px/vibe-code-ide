@@ -23,7 +23,7 @@ import {
   getLocalVariables,
   getUsedIdentifiers,
 } from '../entities/SourceFileNode/lib/metadata';
-import type { GraphData, SourceFileNode } from '../entities/SourceFileNode/model/types';
+import type { GraphData } from '../entities/SourceFileNode/model/types';
 
 export interface DeadCodeItem {
   filePath: string;

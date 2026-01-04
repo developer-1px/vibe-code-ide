@@ -77,7 +77,7 @@ function extractTokensFromAST(node: any, source: string, tokens: Token[] = []): 
             }
 
             // Attribute value (content만, 따옴표 제외)
-            if (prop.value && prop.value.content) {
+            if (prop.value?.content) {
               const valueContent = prop.value.content;
               // value.loc.start.offset은 따옴표 시작 위치, +1 하면 내용 시작
               const valueStart = prop.value.loc.start.offset + 1;
@@ -100,7 +100,7 @@ function extractTokensFromAST(node: any, source: string, tokens: Token[] = []): 
       break;
 
     case 5: // INTERPOLATION {{ }}
-      if (node.content && node.content.loc) {
+      if (node.content?.loc) {
         // {{ }} 내부의 expression (SIMPLE_EXPRESSION)
         const exprText = node.content.loc.source.trim();
         const exprOffset = node.content.loc.start.offset;
@@ -270,7 +270,7 @@ function findTagLine(source: string, tagPattern: string, startFromLine: number =
   const lines = source.split('\n');
   const startIndex = Math.max(0, startFromLine - 1); // Ensure non-negative
   for (let i = startIndex; i < lines.length; i++) {
-    if (lines[i] && lines[i].includes(tagPattern)) {
+    if (lines[i]?.includes(tagPattern)) {
       // Add existence check
       return i + 1; // 1-based line number
     }
@@ -384,7 +384,7 @@ export function renderVueFile(node: CanvasNode, files: Record<string, string>): 
       const scriptContent = script.content.replace(/^\n/, '').replace(/\n$/, '');
 
       const scriptSource = ts.createSourceFile(
-        filePath + '.ts',
+        `${filePath}.ts`,
         scriptContent,
         ts.ScriptTarget.Latest,
         true,
@@ -436,7 +436,7 @@ export function renderVueFile(node: CanvasNode, files: Record<string, string>): 
       // 섹션 사이의 빈 라인 추가
       if (i < sections.length - 1) {
         const currentSectionEnd =
-          sections[i].type === 'template' ? descriptor.template!.loc.end.line : script!.loc.end.line;
+          sections[i].type === 'template' ? descriptor.template?.loc.end.line : script?.loc.end.line;
         const nextSectionStart = sections[i + 1].startLine;
 
         // 사이에 있는 빈 라인들 추가

@@ -9,7 +9,6 @@ import { filesAtom, graphDataAtom, parseErrorAtom, viewModeAtom } from './app/mo
 import { store } from './app/model/store';
 import { ThemeProvider } from './app/theme/ThemeProvider';
 import { KeyboardShortcuts } from './features/KeyboardShortcuts/KeyboardShortcuts';
-import { WorkspacePersistence } from './features/WorkspacePersistence/WorkspacePersistence';
 import { AppActivityBar } from './widgets/AppActivityBar/AppActivityBar';
 import { AppStatusBar } from './widgets/AppStatusBar/AppStatusBar';
 import { AppTitleBar } from './widgets/AppTitleBar/AppTitleBar';

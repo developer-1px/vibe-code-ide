@@ -41,7 +41,7 @@ const CanvasConnections: React.FC = () => {
   const layoutLinks = useAtomValue(layoutLinksAtom);
   const layoutNodes = useAtomValue(layoutNodesAtom);
   const transform = useAtomValue(transformAtom);
-  const cardPositions = useAtomValue(cardPositionsAtom);
+  const _cardPositions = useAtomValue(cardPositionsAtom);
 
   const drawConnections = useCallback(() => {
     // Find the content container (parent of this SVG)
@@ -153,7 +153,7 @@ const CanvasConnections: React.FC = () => {
     });
 
     setPaths(newPaths);
-  }, [layoutLinks, transform.k, transform.x, transform.y, layoutNodes, cardPositions]);
+  }, [layoutLinks, transform.k, layoutNodes]);
 
   // Draw on zoom/pan transform changes (during manual pan/zoom)
   useEffect(() => {

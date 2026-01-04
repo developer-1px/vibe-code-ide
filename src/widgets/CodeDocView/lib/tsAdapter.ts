@@ -6,7 +6,7 @@
 import * as ts from 'typescript';
 import type { SourceFileNode } from '../../../entities/SourceFileNode/model/types';
 import { getFileName } from '../../../shared/pathUtils';
-import type { BlockType, DocBlock, DocData, ImportItem, Parameter, SymbolDetail } from '../model/types';
+import type { DocBlock, DocData, ImportItem, Parameter, SymbolDetail } from '../model/types';
 import { parseCodeDoc } from './parseCodeDoc';
 
 /**

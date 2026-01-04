@@ -74,7 +74,6 @@ export const FocusedIdentifierItem: React.FC<FocusedIdentifierItemProps> = ({ me
     <div
       ref={chipRef}
       onClick={handleClick}
-      tabIndex={0}
       className="
         group relative flex items-start gap-2 px-3 py-1.5 text-xs font-mono
         border-l-2 border-l-cyan-400 rounded-r transition-all duration-200

@@ -29,7 +29,7 @@ export function useOpenFile() {
   const setTargetLine = useSetAtom(targetLineAtom);
   const setActiveLocalVariables = useSetAtom(activeLocalVariablesAtom);
   const setFocusedPane = useSetAtom(focusedPaneAtom);
-  const setViewMode = useSetAtom(viewModeAtom);
+  const _setViewMode = useSetAtom(viewModeAtom);
 
   /**
    * 파일 열기

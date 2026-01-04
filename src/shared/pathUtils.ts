@@ -118,7 +118,7 @@ export function isUnderDirectory(path: string, directory: string): boolean {
 
   if (!normalizedDir) return true;
 
-  return normalizedPath.startsWith(normalizedDir + '/') || normalizedPath === normalizedDir;
+  return normalizedPath.startsWith(`${normalizedDir}/`) || normalizedPath === normalizedDir;
 }
 
 /**

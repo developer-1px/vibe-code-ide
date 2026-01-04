@@ -7,7 +7,7 @@
  */
 
 import { useAtomValue } from 'jotai';
-import React, { useEffect, useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { getItemKey } from '@/features/Code/CodeAnalyzer/DeadCodeAnalyzer/lib/categoryUtils';
 import {
   deadCodeResultsAtom,
@@ -35,12 +35,12 @@ const IDEScrollView = () => {
     if (isDeadCodeMode) {
       // Dead Code 모드: 선택된 항목들에서 파일 경로 추출
       const allItems: DeadCodeItem[] = [
-        ...deadCodeResults!.unusedExports,
-        ...deadCodeResults!.unusedImports,
-        ...deadCodeResults!.deadFunctions,
-        ...deadCodeResults!.unusedVariables,
-        ...deadCodeResults!.unusedProps,
-        ...deadCodeResults!.unusedArguments,
+        ...deadCodeResults?.unusedExports,
+        ...deadCodeResults?.unusedImports,
+        ...deadCodeResults?.deadFunctions,
+        ...deadCodeResults?.unusedVariables,
+        ...deadCodeResults?.unusedProps,
+        ...deadCodeResults?.unusedArguments,
       ];
 
       const selectedDeadCodeItems = allItems.filter((item) => selectedItems.has(getItemKey(item)));
@@ -66,12 +66,12 @@ const IDEScrollView = () => {
 
     // Dead Code 모드: 선택된 항목의 라인 번호
     const allItems: DeadCodeItem[] = [
-      ...deadCodeResults!.unusedExports,
-      ...deadCodeResults!.unusedImports,
-      ...deadCodeResults!.deadFunctions,
-      ...deadCodeResults!.unusedVariables,
-      ...deadCodeResults!.unusedProps,
-      ...deadCodeResults!.unusedArguments,
+      ...deadCodeResults?.unusedExports,
+      ...deadCodeResults?.unusedImports,
+      ...deadCodeResults?.deadFunctions,
+      ...deadCodeResults?.unusedVariables,
+      ...deadCodeResults?.unusedProps,
+      ...deadCodeResults?.unusedArguments,
     ];
 
     const linesByFile = new Map<string, Set<number>>();
@@ -82,7 +82,7 @@ const IDEScrollView = () => {
         if (!linesByFile.has(item.filePath)) {
           linesByFile.set(item.filePath, new Set<number>());
         }
-        linesByFile.get(item.filePath)!.add(item.line);
+        linesByFile.get(item.filePath)?.add(item.line);
       });
 
     return linesByFile;

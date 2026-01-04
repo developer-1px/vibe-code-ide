@@ -1,5 +1,5 @@
 import { Check as IconCheck, Copy as IconCopy } from 'lucide-react';
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 const CodeCardCopyButton = ({ codeSnippet }: { codeSnippet: string }) => {
   const [isCopied, setIsCopied] = useState(false);

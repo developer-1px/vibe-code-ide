@@ -82,7 +82,7 @@ export function FileExplorer({ containerRef }: { containerRef: React.RefObject<H
   // Reset focusedIndex when focusedFolder changes
   useEffect(() => {
     setFocusedIndex(0);
-  }, [focusedFolder, setFocusedIndex]);
+  }, [setFocusedIndex]);
 
   if (fileTree.length === 0) {
     return <div className="px-3 py-6 text-xs text-text-secondary text-center">No files</div>;
@@ -108,7 +108,7 @@ export function FileExplorer({ containerRef }: { containerRef: React.RefObject<H
       >
         {({ node, depth, isFocused, isCollapsed, itemRef, handleFocus, handleToggle }) => {
           const isActive = activeTab === node.filePath;
-          const fileExtension = node.name.includes('.') ? '.' + node.name.split('.').pop() : undefined;
+          const fileExtension = node.name.includes('.') ? `.${node.name.split('.').pop()}` : undefined;
           const icon = node.type === 'folder' ? (isCollapsed ? Folder : FolderOpen) : getFileIcon(node.name);
 
           return (

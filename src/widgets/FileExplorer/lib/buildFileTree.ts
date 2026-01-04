@@ -44,7 +44,7 @@ export function buildFileTree(files: Record<string, string>, focusedFolder: stri
   let filteredFiles = files;
   if (focusedFolder) {
     filteredFiles = {};
-    const prefix = focusedFolder.endsWith('/') ? focusedFolder : focusedFolder + '/';
+    const prefix = focusedFolder.endsWith('/') ? focusedFolder : `${focusedFolder}/`;
 
     Object.keys(files).forEach((filePath) => {
       if (filePath.startsWith(prefix)) {

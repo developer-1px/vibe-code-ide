@@ -51,7 +51,7 @@ export const useD3Zoom = (containerRef: RefObject<HTMLDivElement>) => {
       // Initial Center
       selection.call(zoom.transform, d3.zoomIdentity.translate(width / 2, height / 2).scale(0.8));
     }
-  }, []);
+  }, [containerRef.current]);
 
   // --- Sync transform to atom ---
   useEffect(() => {

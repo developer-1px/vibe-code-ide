@@ -57,7 +57,7 @@ const VueTemplateSection = ({
         if (!tokensByLine.has(comp.line)) {
           tokensByLine.set(comp.line, []);
         }
-        tokensByLine.get(comp.line)!.push({
+        tokensByLine.get(comp.line)?.push({
           start: comp.column - 1, // column은 1-based
           end: comp.column - 1 + comp.name.length,
           name: comp.name,
@@ -73,7 +73,7 @@ const VueTemplateSection = ({
         if (!tokensByLine.has(variable.line)) {
           tokensByLine.set(variable.line, []);
         }
-        tokensByLine.get(variable.line)!.push({
+        tokensByLine.get(variable.line)?.push({
           start: variable.column - 1,
           end: variable.column - 1 + variable.name.length,
           name: variable.name,

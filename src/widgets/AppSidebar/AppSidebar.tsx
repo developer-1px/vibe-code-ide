@@ -39,7 +39,7 @@ export const AppSidebar: React.FC = () => {
   const projectLabel = 'Project';
 
   return (
-    <div ref={containerRef} tabIndex={0} className="relative focus:outline-none">
+    <div ref={containerRef} className="relative focus:outline-none">
       <Sidebar resizable defaultWidth={250} minWidth={200} maxWidth={800} className="h-full shadow-2xl">
         <Sidebar.Header>
           <span className="text-2xs font-medium text-text-secondary normal-case">{headerLabel}</span>

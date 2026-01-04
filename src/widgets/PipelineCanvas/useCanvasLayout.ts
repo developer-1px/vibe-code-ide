@@ -1,11 +1,11 @@
 import { useAtomValue, useSetAtom } from 'jotai';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { fullNodeMapAtom } from '../../app/model/atoms';
 import type { CanvasNode } from '../../entities/CanvasNode/model/types';
-import { type GraphData, SourceFileNode } from '../../entities/SourceFileNode/model/types';
+import type { GraphData } from '../../entities/SourceFileNode/model/types';
 import { layoutLinksAtom, layoutNodesAtom } from './model/atoms';
 
-export const useCanvasLayout = (initialData: GraphData | null, visibleNodeIds: Set<string>) => {
+export const useCanvasLayout = (_initialData: GraphData | null, visibleNodeIds: Set<string>) => {
   const [layoutNodes, setLayoutNodes] = useState<CanvasNode[]>([]);
   const [layoutLinks, setLayoutLinks] = useState<{ source: string; target: string }[]>([]);
 
@@ -25,7 +25,7 @@ export const useCanvasLayout = (initialData: GraphData | null, visibleNodeIds: S
     visibleNodeIds.forEach((nodeId) => {
       const node = fullNodeMap.get(nodeId);
 
-      if (node && node.codeSnippet && node.codeSnippet.trim() !== '') {
+      if (node?.codeSnippet && node.codeSnippet.trim() !== '') {
         canvasNodes.push({
           ...node,
           level: 0,

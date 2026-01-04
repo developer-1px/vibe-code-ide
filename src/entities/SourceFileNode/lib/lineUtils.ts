@@ -100,7 +100,7 @@ export const processCodeLines = (
         const relativeStart = range.startOffset - lineInfo.start;
         const relativeEnd = range.endOffset - lineInfo.start;
 
-        tokensByLine.get(lineInfo.lineIdx)!.push({
+        tokensByLine.get(lineInfo.lineIdx)?.push({
           ...range,
           // Convert absolute offset to line-relative column
           relativeStart,

@@ -31,7 +31,7 @@ export const DeadCodeFileItem = React.forwardRef<
   const { openFile } = useOpenFile();
   const { toggleItemSelection, isItemSelected } = useDeadCodeSelection();
 
-  const fileExtension = fileName.includes('.') ? '.' + fileName.split('.').pop() : undefined;
+  const fileExtension = fileName.includes('.') ? `.${fileName.split('.').pop()}` : undefined;
   const fileIcon = getFileIcon(fileName);
 
   const handleItemClick = (item: DeadCodeItem) => {

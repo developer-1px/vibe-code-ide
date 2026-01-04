@@ -8,7 +8,6 @@ import { extractSymbolMetadata } from '@/shared/symbolMetadataExtractor.ts';
 import { filesAtom, focusedPaneAtom, fullNodeMapAtom, graphDataAtom } from '../../app/model/atoms';
 import CopyAllCodeButton from '../../features/CopyAllCodeButton.tsx';
 import ResetViewButton from '../../features/ResetViewButton.tsx';
-import CanvasBackground from './CanvasBackground.tsx';
 import { CanvasCodeCard } from './CanvasCodeCard.tsx';
 import CanvasConnections from './CanvasConnections.tsx';
 import D3ZoomContainer from './D3ZoomContainer.tsx';

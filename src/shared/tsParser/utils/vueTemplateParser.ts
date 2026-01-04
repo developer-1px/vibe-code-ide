@@ -5,7 +5,7 @@
  */
 
 import { type ElementNode, type Node, NodeTypes } from '@vue/compiler-core';
-import { parse, type SFCTemplateBlock } from '@vue/compiler-sfc';
+import { parse } from '@vue/compiler-sfc';
 
 export interface TemplateComponent {
   name: string;

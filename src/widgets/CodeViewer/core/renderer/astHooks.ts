@@ -56,9 +56,9 @@ function isExportedNode(node: ts.Node): boolean {
   }
 
   // Method 2: Use ts.canHaveModifiers and ts.getModifiers (newer TS versions)
-  if (ts.canHaveModifiers && ts.canHaveModifiers(node)) {
-    const mods = ts.getModifiers && ts.getModifiers(node);
-    if (mods && mods.some((mod) => mod.kind === ts.SyntaxKind.ExportKeyword)) {
+  if (ts.canHaveModifiers?.(node)) {
+    const mods = ts.getModifiers?.(node);
+    if (mods?.some((mod) => mod.kind === ts.SyntaxKind.ExportKeyword)) {
       return true;
     }
   }
@@ -270,7 +270,7 @@ export function processExportDeclaration(
   node: ts.Node,
   sourceFile: ts.SourceFile,
   result: CodeLine[],
-  filePath: string
+  _filePath: string
 ): void {
   if (!ts.isExportDeclaration(node)) return;
 
@@ -296,7 +296,7 @@ export function processExportDeclaration(
 
     // TODO: nodeId 매핑은 나중에 추가 (원본 선언을 찾아서 연결)
     // 현재는 이름만 저장
-    result[lineIdx].exportSlots!.push({
+    result[lineIdx].exportSlots?.push({
       name,
       offset,
       // nodeId will be resolved later
@@ -311,7 +311,7 @@ export function processExportDeclaration(
  */
 export function processExportDefault(
   node: ts.Node,
-  sourceFile: ts.SourceFile,
+  _sourceFile: ts.SourceFile,
   result: CodeLine[],
   declarationMap: Map<string, number>
 ): void {

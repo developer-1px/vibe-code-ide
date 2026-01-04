@@ -307,7 +307,7 @@ const loadDynamicFiles = (): Record<string, string> | null => {
       return files;
     }
     return null;
-  } catch (error) {
+  } catch (_error) {
     // import.meta.glob not available or failed
     return null;
   }

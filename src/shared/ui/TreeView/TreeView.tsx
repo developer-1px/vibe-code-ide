@@ -30,7 +30,7 @@
  *   )}
  * </TreeView>
  */
-import React, { useRef } from 'react';
+import { useRef } from 'react';
 import { useTreeRenderer } from './lib/useTreeRenderer';
 import { useTreeState } from './lib/useTreeState';
 import type { TreeViewProps } from './model/types';

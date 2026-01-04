@@ -17,7 +17,7 @@ import { DeadCodeCategory } from './DeadCodeCategory';
 export function DeadCodeList({ itemRefs }: { itemRefs: React.MutableRefObject<Map<number, HTMLDivElement>> }) {
   const deadCodeResults = useAtomValue(deadCodeResultsAtom);
   const isAnalyzing = useAtomValue(isAnalyzingAtom);
-  const collapsedFolders = useAtomValue(collapsedFoldersAtom);
+  const _collapsedFolders = useAtomValue(collapsedFoldersAtom);
   const categories = useCategoryIndices();
 
   // Build combined flat list for all categories
@@ -31,7 +31,7 @@ export function DeadCodeList({ itemRefs }: { itemRefs: React.MutableRefObject<Ma
     ];
   }, [deadCodeResults]);
 
-  const allCategoryTree = useMemo(() => buildDeadCodeTree(allCategoryItems), [allCategoryItems]);
+  const _allCategoryTree = useMemo(() => buildDeadCodeTree(allCategoryItems), [allCategoryItems]);
 
   return (
     <ScrollArea className="flex-1">

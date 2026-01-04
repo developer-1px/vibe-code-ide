@@ -11,7 +11,6 @@ import { fullNodeMapAtom, viewModeAtom } from '../../../../app/model/atoms';
 import type { CanvasNode } from '../../../../entities/CanvasNode/model/types';
 import { focusedNodeIdAtom } from '../../../IDEView/model/atoms';
 import { cardPositionsAtom, transformAtom, visibleNodeIdsAtom } from '../../../PipelineCanvas/model/atoms';
-import { pruneDetachedNodes } from '../../../PipelineCanvas/utils';
 import type { CodeSegment, SegmentStyle } from '../../core/types';
 
 interface ExternalSegmentProps {
@@ -114,7 +113,7 @@ export const ExternalSegment: React.FC<ExternalSegmentProps> = ({ segment, node,
       // 노드 열기
       setVisibleNodeIds((prev: Set<string>) => {
         const next = new Set(prev);
-        next.add(targetNode!.id);
+        next.add(targetNode?.id);
         return next;
       });
 
@@ -138,7 +137,7 @@ export const ExternalSegment: React.FC<ExternalSegmentProps> = ({ segment, node,
 
         setCardPositions((prev) => {
           const next = new Map(prev);
-          next.set(targetNode!.id, { x: newX, y: newY });
+          next.set(targetNode?.id, { x: newX, y: newY });
           return next;
         });
       }

@@ -2,29 +2,20 @@ import {
   Blocks,
   BookA,
   Box,
-  Braces,
   ChevronDown,
   ChevronRight,
-  Code2,
   Component,
   CornerDownRight,
   Dot,
   FileCode,
-  FileType,
-  FunctionSquare,
   GitBranch,
-  Hash,
   MessageSquare,
   PackageOpen,
   Phone,
   Repeat,
-  RotateCw,
   Shuffle,
-  SquareStack,
   Type,
-  Variable,
 } from 'lucide-react';
-import { cn } from '@/components/lib/utils';
 import type { OutlineNode, OutlineNodeKind } from '../../shared/outlineExtractor';
 
 interface OutlinePanelItemProps {
@@ -226,8 +217,8 @@ export function OutlinePanelItem({
       {/* Children */}
       {isExpanded && hasChildren && (
         <div className="border-l-2 border-slate-600/60 ml-3 pl-1">
-          {node.children!.map((child, idx) => {
-            const prevChild = idx > 0 ? node.children![idx - 1] : null;
+          {node.children?.map((child, idx) => {
+            const prevChild = idx > 0 ? node.children?.[idx - 1] : null;
             return (
               <OutlinePanelItem
                 key={`${child.line}-${child.name}-${idx}`}

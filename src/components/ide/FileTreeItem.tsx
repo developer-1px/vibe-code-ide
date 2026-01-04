@@ -34,7 +34,7 @@ export const FileTreeItem = React.forwardRef<HTMLDivElement, FileTreeItemProps>(
     },
     ref
   ) => {
-    const handleClick = (e: React.MouseEvent) => {
+    const handleClick = (_e: React.MouseEvent) => {
       // Single click - update focus
       if (onFocus) {
         onFocus();
@@ -45,7 +45,7 @@ export const FileTreeItem = React.forwardRef<HTMLDivElement, FileTreeItemProps>(
       }
     };
 
-    const handleDoubleClick = (e: React.MouseEvent) => {
+    const handleDoubleClick = (_e: React.MouseEvent) => {
       // Double click - open file or toggle folder
       if (onDoubleClick) {
         onDoubleClick();

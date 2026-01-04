@@ -99,7 +99,7 @@ function getExportMap(fullNodeMap: Map<string, SourceFileNode>): Map<string, boo
       }
 
       visitNode(sourceFile);
-    } catch (e) {
+    } catch (_e) {
       // Skip files that fail to parse
     }
   });

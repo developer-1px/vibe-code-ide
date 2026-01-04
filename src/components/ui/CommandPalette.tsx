@@ -81,7 +81,7 @@ export function CommandPalette({
   // Get icon for result type
   const getIcon = (result: SearchResult) => {
     if (result.type === 'file') {
-      const ext = result.filePath.includes('.') ? '.' + result.filePath.split('.').pop() : '';
+      const ext = result.filePath.includes('.') ? `.${result.filePath.split('.').pop()}` : '';
 
       switch (ext.toLowerCase()) {
         case '.tsx':
@@ -128,7 +128,7 @@ export function CommandPalette({
     if (isSelected) return 'text-warm-300';
 
     if (result.type === 'file') {
-      const ext = result.filePath.includes('.') ? '.' + result.filePath.split('.').pop() : '';
+      const ext = result.filePath.includes('.') ? `.${result.filePath.split('.').pop()}` : '';
 
       switch (ext.toLowerCase()) {
         case '.tsx':

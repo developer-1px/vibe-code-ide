@@ -26,7 +26,7 @@ export const UnifiedSearchModal: React.FC = () => {
   const [query, setQuery] = useAtom(searchQueryAtom);
   const [results, setResults] = useAtom(searchResultsAtom);
   const [focusedIndex, setFocusedIndex] = useAtom(searchFocusedIndexAtom);
-  const [collapsedFolders, setCollapsedFolders] = useAtom(collapsedFoldersAtom);
+  const [_collapsedFolders, setCollapsedFolders] = useAtom(collapsedFoldersAtom);
   const setFocusedPane = useSetAtom(focusedPaneAtom);
 
   const files = useAtomValue(filesAtom);
@@ -123,7 +123,12 @@ export const UnifiedSearchModal: React.FC = () => {
       // Close modal
       handleClose();
     },
-    [openFile, setCollapsedFolders, setFocusedPane]
+    [
+      openFile,
+      setCollapsedFolders,
+      setFocusedPane, // Close modal
+      handleClose,
+    ]
   );
 
   const handleClose = useCallback(() => {

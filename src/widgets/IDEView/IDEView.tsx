@@ -5,7 +5,7 @@
 
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import { FileText } from 'lucide-react';
-import React, { useEffect, useMemo, useRef } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import { useHotkeys, useHotkeysContext } from 'react-hotkeys-hook';
 import { OutlinePanel } from '@/components/ide/OutlinePanel';
 import { Tab, TabBar } from '@/components/ide/TabBar';

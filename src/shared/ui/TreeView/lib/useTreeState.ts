@@ -3,7 +3,7 @@
  * Manages collapsed paths and focused index with optional external control
  * Also handles auto-scroll to focused item with margin
  */
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 export interface UseTreeStateProps {
   /** External collapsed paths (optional) */
@@ -151,7 +151,7 @@ export function useTreeState({
     } else {
       console.log('[useTreeState] No scroll needed - element in view with margin');
     }
-  }, [focusedIndex, scrollContainerRef]);
+  }, [focusedIndex, scrollContainerRef, itemRefs.current.get]);
 
   return {
     collapsedPaths,

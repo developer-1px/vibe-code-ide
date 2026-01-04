@@ -57,7 +57,7 @@ export const WorkspacePersistence = () => {
       let changed = false;
 
       // Remove chips for closed nodes
-      next.forEach((identifiers, nodeId) => {
+      next.forEach((_identifiers, nodeId) => {
         if (!visibleNodeIds.has(nodeId)) {
           next.delete(nodeId);
           changed = true;

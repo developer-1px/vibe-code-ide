@@ -4,7 +4,7 @@
  */
 
 import { useAtomValue } from 'jotai';
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { activeTabAtom, openedTabsAtom } from '@/features/File/OpenFiles/model/atoms';
 import { fullNodeMapAtom } from '../../app/model/atoms';
 import { convertToDocData } from './lib/tsAdapter';

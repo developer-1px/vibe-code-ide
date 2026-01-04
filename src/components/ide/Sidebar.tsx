@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { cn } from '@/components/lib/utils';
-import { FileTreeItem } from './FileTreeItem';
 
 // AppSidebar.Header - Compound Component
 export interface SidebarHeaderProps extends React.HTMLAttributes<HTMLDivElement> {

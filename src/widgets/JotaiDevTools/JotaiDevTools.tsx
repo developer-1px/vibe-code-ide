@@ -3,7 +3,7 @@
  */
 
 import type { Atom } from 'jotai';
-import { ChevronDown, ChevronRight } from 'lucide-react';
+import { ChevronDown } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import * as deadCodeAtoms from '@/features/Code/CodeAnalyzer/DeadCodeAnalyzer/model/atoms';
 import * as codeFoldAtoms from '@/features/Code/CodeFold/model/atoms';
@@ -100,7 +100,7 @@ const JotaiDevTools = () => {
           });
         });
         unsubscribers.push(unsub);
-      } catch (e) {
+      } catch (_e) {
         // Skip atoms that can't be subscribed
       }
     });

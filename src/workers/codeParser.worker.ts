@@ -4,7 +4,6 @@
  */
 
 import * as ts from 'typescript';
-import type { SourceFileNode } from '../entities/SourceFileNode/model/types';
 import type { CodeLine } from '../widgets/CodeViewer/core/types';
 
 // Worker 메시지 타입 정의
@@ -27,9 +26,9 @@ interface ParseResponse {
 // 핵심 파싱 로직만 복사 (또는 shared로 분리 필요)
 // 임시로 간단한 파서 구현
 
-function parseInWorker(filePath: string, content: string, files: Record<string, string>): CodeLine[] {
+function parseInWorker(filePath: string, content: string, _files: Record<string, string>): CodeLine[] {
   // TypeScript AST 파싱
-  const sourceFile = ts.createSourceFile(filePath, content, ts.ScriptTarget.Latest, true);
+  const _sourceFile = ts.createSourceFile(filePath, content, ts.ScriptTarget.Latest, true);
 
   const lines = content.split('\n');
 

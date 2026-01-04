@@ -1,4 +1,4 @@
-import React, { type ReactNode, type RefObject, useRef } from 'react';
+import type { ReactNode, RefObject } from 'react';
 import { useD3Zoom } from './useD3Zoom';
 
 const D3ZoomContainer = ({

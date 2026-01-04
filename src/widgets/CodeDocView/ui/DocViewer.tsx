@@ -193,7 +193,7 @@ const TextbookCodeBlock: React.FC<{
 
 // --- Mermaid Diagram Component ---
 const MermaidDiagram: React.FC<{ chart: string; id: string }> = ({ chart, id }) => {
-  const containerRef = useRef<HTMLDivElement>(null);
+  const _containerRef = useRef<HTMLDivElement>(null);
   const [svg, setSvg] = useState<string | null>(null);
 
   useEffect(() => {
