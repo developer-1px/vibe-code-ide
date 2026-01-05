@@ -8,9 +8,9 @@ import type { EditorTheme } from '../types';
 export const defaultEditorTheme: EditorTheme = {
   name: 'default',
   typography: {
-    fontSize: 'text-[11px]',
+    fontSize: 'text-[12px]',
     fontFamily: 'font-mono',
-    lineHeight: 'leading-[1rem]',
+    lineHeight: 'leading-[1.2rem]',
   },
   colors: {
     background: '', // @TODO
@@ -39,8 +39,8 @@ export const defaultEditorTheme: EditorTheme = {
   },
   spacing: {
     containerY: 'py-2',
-    lineX: 'px-3',
     lineY: '',
+    lineX: 'px-3',
     lineNumberX: 'pr-2',
   },
   dimensions: {

@@ -69,7 +69,8 @@ export function DefinitionPanel({ onSymbolClick, symbols = [] }: DefinitionPanel
       if (!resizeRef.current) return;
 
       const containerRect = resizeRef.current.getBoundingClientRect();
-      const newWidth = e.clientX - containerRect.left;
+      // 우측 패널이므로 오른쪽에서 왼쪽으로 resize (containerRect.right - e.clientX)
+      const newWidth = containerRect.right - e.clientX;
 
       if (newWidth >= MIN_WIDTH && newWidth <= MAX_WIDTH) {
         setWidth(newWidth);
@@ -114,18 +115,18 @@ export function DefinitionPanel({ onSymbolClick, symbols = [] }: DefinitionPanel
   return (
     <div
       ref={resizeRef}
-      className="border-r border-border-DEFAULT bg-bg-elevated flex flex-col flex-shrink-0 relative"
+      className="border-l border-border-DEFAULT bg-bg-elevated flex flex-col flex-shrink-0 relative"
       style={{ width: `${width}px` }}
     >
       {/* Resize Handle */}
       <div
-        className={`absolute right-0 top-0 bottom-0 w-1 cursor-col-resize group transition-colors ${
+        className={`absolute left-0 top-0 bottom-0 w-1 cursor-col-resize group transition-colors ${
           isResizing ? 'bg-warm-300/60' : 'hover:bg-warm-300/30'
         }`}
         onMouseDown={handleResizeStart}
         style={{ zIndex: 10 }}
       >
-        <div className="absolute right-0 top-1/2 -translate-y-1/2 flex items-center justify-center w-4 h-12 rounded-l bg-bg-elevated/80 opacity-0 group-hover:opacity-100 transition-opacity border border-r-0 border-border-DEFAULT">
+        <div className="absolute left-0 top-1/2 -translate-y-1/2 flex items-center justify-center w-4 h-12 rounded-r bg-bg-elevated/80 opacity-0 group-hover:opacity-100 transition-opacity border border-l-0 border-border-DEFAULT">
           <GripVertical size={12} className="text-warm-300" />
         </div>
       </div>

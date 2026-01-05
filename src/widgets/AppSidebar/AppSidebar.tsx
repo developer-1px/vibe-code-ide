@@ -11,7 +11,6 @@ import { Sidebar } from '@/components/ide/Sidebar';
 import { useOpenFile } from '@/features/File/OpenFiles/lib/useOpenFile';
 import { activeTabAtom, openedTabsAtom } from '@/features/File/OpenFiles/model/atoms';
 import { viewModeAtom } from '../../app/model/atoms';
-import UploadFolderButton from '../../features/UploadFolderButton';
 import { getFileName } from '../../shared/pathUtils';
 import { FileExplorer } from '../FileExplorer/FileExplorer';
 import { getFileIcon } from '../FileExplorer/lib/getFileIcon';
@@ -19,7 +18,7 @@ import { isSidebarOpenAtom } from './model/atoms';
 
 export const AppSidebar: React.FC = () => {
   const isSidebarOpen = useAtomValue(isSidebarOpenAtom);
-  const viewMode = useAtomValue(viewModeAtom);
+  const _viewMode = useAtomValue(viewModeAtom);
   const openedTabs = useAtomValue(openedTabsAtom);
   const activeTab = useAtomValue(activeTabAtom);
   const { openFile } = useOpenFile();
@@ -33,19 +32,12 @@ export const AppSidebar: React.FC = () => {
     return null;
   }
 
-  // ViewMode에 따라 헤더 텍스트 변경
-  const headerLabel = viewMode === 'codeDoc' ? 'DOCUMENTS' : 'FILES';
   const workspaceLabel = 'Workspace';
   const projectLabel = 'Project';
 
   return (
     <div ref={containerRef} className="relative focus:outline-none">
       <Sidebar resizable defaultWidth={250} minWidth={200} maxWidth={800} className="h-full shadow-2xl">
-        <Sidebar.Header>
-          <span className="text-2xs font-medium text-text-secondary normal-case">{headerLabel}</span>
-          <UploadFolderButton />
-        </Sidebar.Header>
-
         {/* WORKSPACE */}
         {openedTabs.length > 0 && (
           <div className={isFileExplorerCollapsed ? 'flex-1 flex flex-col overflow-hidden' : ''}>

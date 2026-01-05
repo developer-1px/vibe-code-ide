@@ -431,6 +431,10 @@ function extractLocalVariablesFromAST(sourceFile: ts.SourceFile): DeclarationInf
 
 /**
  * AST에서 사용된 identifiers 추출 (Private)
+ *
+ * 개선 사항:
+ * - Destructuring된 변수 감지 추가
+ * - BindingElement (구조 분해 할당의 각 요소) 처리
  */
 function extractUsedIdentifiersFromAST(sourceFile: ts.SourceFile): Set<string> {
   const usedIdentifiers = new Set<string>();
@@ -440,8 +444,14 @@ function extractUsedIdentifiersFromAST(sourceFile: ts.SourceFile): Set<string> {
     if (!parent) return false;
 
     // Import 이름
-    if (ts.isImportClause(parent) || ts.isImportSpecifier(parent)) {
+    if (ts.isImportClause(parent) || ts.isImportSpecifier(parent) || ts.isNamespaceImport(parent)) {
       return true;
+    }
+
+    // BindingElement (구조 분해 할당의 각 요소)
+    // 예: const { foo, bar } = obj; 에서 foo, bar
+    if (ts.isBindingElement(parent)) {
+      return parent.name === node;
     }
 
     // Declaration 이름 (interface, type 포함)
@@ -451,8 +461,20 @@ function extractUsedIdentifiersFromAST(sourceFile: ts.SourceFile): Set<string> {
       ts.isClassDeclaration(parent) ||
       ts.isInterfaceDeclaration(parent) ||
       ts.isTypeAliasDeclaration(parent) ||
-      ts.isParameter(parent)
+      ts.isParameter(parent) ||
+      ts.isEnumDeclaration(parent)
     ) {
+      return parent.name === node;
+    }
+
+    // Property assignment의 왼쪽 (선언)
+    // 예: { foo: foo } 에서 첫 번째 foo는 선언, 두 번째 foo는 사용
+    if (ts.isPropertyAssignment(parent)) {
+      return parent.name === node;
+    }
+
+    // Property signature (interface/type의 필드명)
+    if (ts.isPropertySignature(parent) || ts.isPropertyDeclaration(parent)) {
       return parent.name === node;
     }
 
@@ -462,6 +484,18 @@ function extractUsedIdentifiersFromAST(sourceFile: ts.SourceFile): Set<string> {
   function visit(astNode: ts.Node) {
     // Import declarations는 skip
     if (ts.isImportDeclaration(astNode)) {
+      return;
+    }
+
+    // Type declarations는 내부 순회하지 않음 (type-only usage 제외)
+    // 하지만 type annotation은 순회해서 사용된 타입 추적
+    if (ts.isInterfaceDeclaration(astNode) || ts.isTypeAliasDeclaration(astNode)) {
+      // Type의 body만 순회 (name은 선언이므로 제외)
+      astNode.getChildren(sourceFile).forEach((child) => {
+        if (child !== astNode.name) {
+          visit(child);
+        }
+      });
       return;
     }
 

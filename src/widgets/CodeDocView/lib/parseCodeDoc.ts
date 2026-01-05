@@ -407,6 +407,7 @@ export function parseCodeDoc(node: SourceFileNode): ParsedCodeDoc {
     const line = lines[i];
     const lineNum = i + 1;
     const isComment = isCommentLine(line);
+    const isBlankLine = line.trim().length === 0;
 
     if (isComment) {
       // 코드 섹션이 진행 중이었다면 종료
@@ -469,6 +470,55 @@ export function parseCodeDoc(node: SourceFileNode): ParsedCodeDoc {
         currentLines.push(line);
         currentSection.endLine = lineNum;
       }
+    } else if (isBlankLine) {
+      // ✅ 빈 줄을 만나면 현재 코드 블록 종료
+      if (currentSection?.type === 'code' && currentLines.length > 0) {
+        const codeContent = currentLines.join('\n').trimEnd();
+        currentSection.content = codeContent;
+        currentSection.endLine = lineNum - 1;
+
+        // JSX 블록 분리
+        if (containsJSX(codeContent)) {
+          const jsxBlock = extractJSXBlock(codeContent, currentSection.startLine);
+          if (jsxBlock) {
+            // JSX 제외한 코드 블록
+            if (jsxBlock.codeWithoutJsx.trim().length > 0) {
+              sections.push({
+                ...currentSection,
+                content: jsxBlock.codeWithoutJsx.trimEnd(),
+                type: containsControlFlow(jsxBlock.codeWithoutJsx) ? 'control' : 'code',
+              });
+            }
+            // JSX 블록
+            sections.push({
+              type: 'jsx',
+              content: jsxBlock.jsxContent!,
+              startLine: jsxBlock.jsxStartLine,
+              endLine: jsxBlock.jsxEndLine,
+            });
+          } else {
+            // JSX 추출 실패 시 전체를 jsx로
+            currentSection.type = 'jsx';
+            sections.push(currentSection);
+          }
+        } else if (containsControlFlow(codeContent)) {
+          // 제어문 블록
+          currentSection.type = 'control';
+          sections.push(currentSection);
+        } else {
+          // 일반 코드 블록
+          sections.push(currentSection);
+        }
+
+        currentLines = [];
+        currentSection = null;
+      }
+
+      // ✅ 주석 섹션은 빈 줄에서 종료하지 않음 (빈 줄도 포함)
+      if (currentSection?.type === 'comment') {
+        currentLines.push(line); // 빈 줄도 주석 내용에 포함
+        currentSection.endLine = lineNum;
+      }
     } else {
       // 주석 섹션이 진행 중이었다면 종료
       if (currentSection?.type === 'comment' && currentLines.length > 0) {
@@ -484,20 +534,18 @@ export function parseCodeDoc(node: SourceFileNode): ParsedCodeDoc {
         currentSection = null;
       }
 
-      // 일반 코드 섹션 처리
+      // ✅ 일반 코드: 빈 라인이 아니면 기존 코드 블록에 추가 (그룹화)
       if (!currentSection || currentSection.type !== 'code') {
-        // 빈 라인이 아닌 경우에만 새 코드 섹션 시작
-        if (line.trim().length > 0) {
-          currentSection = {
-            type: 'code',
-            content: '',
-            startLine: lineNum,
-            endLine: lineNum,
-          };
-          currentLines = [line];
-        }
+        // 새 코드 섹션 시작
+        currentSection = {
+          type: 'code',
+          content: '',
+          startLine: lineNum,
+          endLine: lineNum,
+        };
+        currentLines = [line];
       } else {
-        // 기존 코드 섹션이 진행 중이면 빈 라인도 포함
+        // 기존 코드 섹션 계속 (연속된 선언문은 하나의 블록)
         currentLines.push(line);
         currentSection.endLine = lineNum;
       }

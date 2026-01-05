@@ -4,16 +4,18 @@
  */
 
 import { useAtom, useSetAtom } from 'jotai';
-import { BookOpenText, Files, GitBranch, LucideMap, SearchAlertIcon, Settings, Sparkles } from 'lucide-react';
+import { BookOpenText, Files, GitBranch, ListTree, LucideMap, SearchAlertIcon, Settings, Sparkles } from 'lucide-react';
 import { useState } from 'react';
 import { ActivityBar, ActivityBarItem } from '@/components/ide/ActivityBar';
 import { DocumentModeToggle } from '@/features/DocumentMode/DocumentModeToggle';
-import { viewModeAtom } from '../../app/model/atoms';
+import UploadFolderButton from '@/features/UploadFolderButton';
+import { rightPanelOpenAtom, viewModeAtom } from '../../app/model/atoms';
 import { deadCodePanelOpenAtom } from '../DeadCodePanel/model/atoms';
 
 export function AppActivityBar() {
   const [viewMode, setViewMode] = useAtom(viewModeAtom);
   const setDeadCodePanelOpen = useSetAtom(deadCodePanelOpenAtom);
+  const [rightPanelOpen, setRightPanelOpen] = useAtom(rightPanelOpenAtom);
 
   // Active view for ActivityBar (0: Explorer, 1: Search, 2: Dead Code, 3: Canvas, 4: AI)
   const [activeView, setActiveView] = useState(0);
@@ -65,6 +67,13 @@ export function AppActivityBar() {
       />
       <ActivityBarItem icon={GitBranch} label="Git" />
       <div className="flex-1" />
+      <ActivityBarItem
+        icon={ListTree}
+        label="Definitions"
+        active={rightPanelOpen}
+        onClick={() => setRightPanelOpen(!rightPanelOpen)}
+      />
+      <UploadFolderButton />
       <div className="px-1">
         <DocumentModeToggle />
       </div>

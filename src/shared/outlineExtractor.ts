@@ -506,3 +506,70 @@ export function extractOutlineStructure(node: SourceFileNode): OutlineNode[] {
   console.log('[outlineExtractor] Extracted structure nodes:', nodes.length, 'from', node.filePath);
   return nodes;
 }
+
+/**
+ * Check if outline node is a function-related block
+ */
+function isFunctionNode(node: OutlineNode): boolean {
+  return (
+    node.kind === 'function' ||
+    node.kind === 'arrow-function' ||
+    node.kind === 'method' ||
+    node.kind === 'const' || // const foo = () => {} 같은 경우
+    node.kind === 'let' ||
+    node.kind === 'var'
+  );
+}
+
+/**
+ * Recursively find function hierarchy for a given line number
+ */
+function findFunctionHierarchy(
+  nodes: OutlineNode[],
+  lineNumber: number,
+  hierarchy: OutlineNode[] = []
+): OutlineNode[] | null {
+  for (const node of nodes) {
+    // Check if this line is within this node's range
+    const inRange = node.line <= lineNumber && (!node.endLine || node.endLine >= lineNumber);
+
+    if (inRange) {
+      // If this is a function node, add to hierarchy
+      if (isFunctionNode(node)) {
+        const newHierarchy = [...hierarchy, node];
+
+        // If this node has children, search recursively
+        if (node.children) {
+          const childResult = findFunctionHierarchy(node.children, lineNumber, newHierarchy);
+          if (childResult) {
+            return childResult;
+          }
+        }
+
+        // No deeper function found, return current hierarchy
+        return newHierarchy;
+      }
+
+      // Not a function node, but in range - search children
+      if (node.children) {
+        const childResult = findFunctionHierarchy(node.children, lineNumber, hierarchy);
+        if (childResult) {
+          return childResult;
+        }
+      }
+    }
+  }
+
+  // No matching function found at this level
+  return hierarchy.length > 0 ? hierarchy : null;
+}
+
+/**
+ * Get function hierarchy for a specific line number
+ * Returns array of function blocks (top-level → innermost)
+ */
+export function getFunctionHierarchyForLine(node: SourceFileNode, lineNumber: number): OutlineNode[] {
+  const structure = extractOutlineStructure(node);
+  const hierarchy = findFunctionHierarchy(structure, lineNumber);
+  return hierarchy || [];
+}

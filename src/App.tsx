@@ -1,14 +1,24 @@
 import { Provider, useAtomValue, useSetAtom } from 'jotai';
 import type React from 'react';
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { HotkeysProvider } from 'react-hotkeys-hook';
 import { UnifiedSearchModal } from '@/features/Search/UnifiedSearch/ui/UnifiedSearchModal';
 import { parseProject } from '@/shared/tsParser/parseProject';
 import AppSidebar from '@/widgets/AppSidebar/AppSidebar';
-import { filesAtom, graphDataAtom, parseErrorAtom, viewModeAtom } from './app/model/atoms';
+import {
+  filesAtom,
+  fullNodeMapAtom,
+  graphDataAtom,
+  parseErrorAtom,
+  rightPanelOpenAtom,
+  viewModeAtom,
+} from './app/model/atoms';
 import { store } from './app/model/store';
 import { ThemeProvider } from './app/theme/ThemeProvider';
+import { DefinitionPanel } from './components/ide/DefinitionPanel';
+import { activeTabAtom } from './features/File/OpenFiles/model/atoms';
 import { KeyboardShortcuts } from './features/KeyboardShortcuts/KeyboardShortcuts';
+import { extractDefinitions } from './shared/definitionExtractor';
 import { AppActivityBar } from './widgets/AppActivityBar/AppActivityBar';
 import { AppStatusBar } from './widgets/AppStatusBar/AppStatusBar';
 import { AppTitleBar } from './widgets/AppTitleBar/AppTitleBar';
@@ -16,7 +26,6 @@ import CodeDocView from './widgets/CodeDocView/CodeDocView';
 import { DeadCodePanel } from './widgets/DeadCodePanel/DeadCodePanel';
 import { deadCodePanelOpenAtom } from './widgets/DeadCodePanel/model/atoms';
 import IDEScrollView from './widgets/IDEScrollView/IDEScrollView';
-import JotaiDevTools from './widgets/JotaiDevTools/JotaiDevTools';
 import PipelineCanvas from './widgets/PipelineCanvas/PipelineCanvas.tsx';
 
 const AppContent: React.FC = () => {
@@ -26,6 +35,9 @@ const AppContent: React.FC = () => {
   const setParseError = useSetAtom(parseErrorAtom);
   const viewMode = useAtomValue(viewModeAtom);
   const deadCodePanelOpen = useAtomValue(deadCodePanelOpenAtom);
+  const rightPanelOpen = useAtomValue(rightPanelOpenAtom);
+  const activeTab = useAtomValue(activeTabAtom);
+  const fullNodeMap = useAtomValue(fullNodeMapAtom);
 
   useEffect(() => {
     try {
@@ -37,6 +49,14 @@ const AppContent: React.FC = () => {
       setParseError(e.message || 'Syntax Error');
     }
   }, [files, setGraphData, setParseError]);
+
+  // Extract definitions for current active file
+  const definitions = useMemo(() => {
+    if (!activeTab || !fullNodeMap.has(activeTab)) return [];
+    const node = fullNodeMap.get(activeTab);
+    if (!node) return [];
+    return extractDefinitions(node, files);
+  }, [activeTab, fullNodeMap, files]);
 
   return (
     <div className="flex h-screen flex-col overflow-hidden bg-bg-deep text-text-primary select-none">
@@ -62,13 +82,16 @@ const AppContent: React.FC = () => {
           {viewMode === 'ide' && <IDEScrollView />}
           {viewMode === 'codeDoc' && <CodeDocView />}
         </div>
+
+        {/* Right Sidebar: DefinitionPanel */}
+        {rightPanelOpen && <DefinitionPanel symbols={definitions} />}
       </div>
 
       {/* Status Bar */}
       <AppStatusBar />
 
       {/* Jotai DevTools */}
-      <JotaiDevTools />
+      {/*<JotaiDevTools />*/}
 
       {/* Unified Search Modal (Shift+Shift) */}
       <UnifiedSearchModal />

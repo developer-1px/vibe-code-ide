@@ -7,6 +7,7 @@
 import { useAtomValue, useSetAtom } from 'jotai';
 import { useEffect, useRef } from 'react';
 import { useHotkeys } from 'react-hotkeys-hook';
+import { useOpenFile } from '@/features/File/OpenFiles/lib/useOpenFile';
 import { searchModalOpenAtom } from '@/features/Search/UnifiedSearch/model/atoms';
 import { viewModeAtom } from '../../app/model/atoms';
 import { isSidebarOpenAtom } from '../../widgets/AppSidebar/model/atoms';
@@ -14,6 +15,8 @@ import { isSidebarOpenAtom } from '../../widgets/AppSidebar/model/atoms';
 const GLOBAL_HOTKEYS = {
   TOGGLE_SIDEBAR: 'mod+\\',
   TOGGLE_VIEW_MODE: 'backquote',
+  CLOSE_FILE: 'mod+w',
+  CLOSE_FILE_ESC: 'escape',
 } as const;
 
 export const KeyboardShortcuts = () => {
@@ -21,6 +24,7 @@ export const KeyboardShortcuts = () => {
   const setSearchModalOpen = useSetAtom(searchModalOpenAtom);
   const viewMode = useAtomValue(viewModeAtom);
   const setViewMode = useSetAtom(viewModeAtom);
+  const { closeFile } = useOpenFile();
 
   // Global hotkeys (no ref needed - always active)
   useHotkeys(
@@ -38,10 +42,15 @@ export const KeyboardShortcuts = () => {
           setViewMode((prev) => (prev === 'ide' ? 'codeDoc' : 'ide'));
           console.log('[KeyboardShortcuts] View mode toggled:', viewMode === 'ide' ? 'codeDoc' : 'ide');
           break;
+        case GLOBAL_HOTKEYS.CLOSE_FILE:
+        case GLOBAL_HOTKEYS.CLOSE_FILE_ESC:
+          closeFile();
+          console.log('[KeyboardShortcuts] Close current file');
+          break;
       }
     },
     { enableOnFormTags: true },
-    [setIsSidebarOpen, setViewMode, viewMode]
+    [setIsSidebarOpen, setViewMode, viewMode, closeFile]
   );
 
   // Shift+Shift (더블탭) - 검색 모달 열기

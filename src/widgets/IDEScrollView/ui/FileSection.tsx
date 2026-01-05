@@ -4,7 +4,7 @@
  */
 
 import { useAtomValue, useSetAtom } from 'jotai';
-import { forwardRef, useEffect, useState, useTransition } from 'react';
+import { forwardRef, useEffect, useRef, useState, useTransition } from 'react';
 import { deadCodeResultsAtom } from '@/features/Code/CodeAnalyzer/DeadCodeAnalyzer/model/atoms';
 import { activeTabAtom } from '@/features/File/OpenFiles/model/atoms';
 import type { SourceFileNode } from '../../../entities/SourceFileNode/model/types';
@@ -14,7 +14,7 @@ import CodeViewer from '../../CodeViewer/CodeViewer';
 import { renderCodeLinesDirect } from '../../CodeViewer/core/renderer/renderCodeLinesDirect';
 import { renderPlaintext } from '../../CodeViewer/core/renderer/renderPlaintext';
 import { renderVueFile } from '../../CodeViewer/core/renderer/renderVueFile';
-import type { CodeLine } from '../../CodeViewer/core/types';
+import type { CodeLine } from '../../CodeViewer/core/types/codeLine';
 import { getFileIcon } from '../../FileExplorer/lib/getFileIcon';
 import { hoveredFilePathAtom } from '../model/atoms';
 
@@ -116,21 +116,38 @@ const FileSection = forwardRef<
     }
   }, [cacheKey, node, files, deadCodeResults]);
 
+  // Ref for the header element
+  const headerRef = useRef<HTMLDivElement>(null);
+
+  // Ref for the scroll container (IDEScrollView의 스크롤 컨테이너)
+  const scrollContainerRef = useRef<HTMLElement | null>(null);
+
+  useEffect(() => {
+    // IDEScrollView의 스크롤 컨테이너 찾기
+    const scrollContainer = document.getElementById('scroll-view-container');
+    console.log('[FileSection] Found scroll container:', scrollContainer);
+    scrollContainerRef.current = scrollContainer;
+  }, []);
+
   return (
     <div
       ref={ref}
       id={`file-section-${node.filePath}`}
       className={`
-        border-b border-border-DEFAULT mb-8 transition-all duration-200 ease-in-out
+        relative
+        border-b border-border-DEFAULT mb-8
         ${!isActive ? 'grayscale opacity-50' : ''}
       `}
       onMouseEnter={() => setHoveredFilePath(node.filePath)}
       onMouseLeave={() => setHoveredFilePath(null)}
     >
-      {/* 파일 헤더 */}
-      <div className="sticky top-0 z-10 bg-bg-elevated border-b border-border-hover px-4 py-2 flex items-center gap-2 shadow-sm">
-        <FileIconComponent size={14} className="text-text-secondary" />
-        <span className="text-xs font-medium text-text-primary">{node.filePath}</span>
+      {/* 파일 헤더 + Sticky Stack (함께 sticky) */}
+      <div ref={headerRef} className="sticky top-0 z-10 bg-bg-elevated shadow-sm">
+        {/* 파일명 헤더 */}
+        <div className="px-4 py-2 flex items-center gap-2 border-b border-border-hover">
+          <FileIconComponent size={14} className="text-text-secondary" />
+          <span className="text-xs font-medium text-text-primary">{node.filePath}</span>
+        </div>
       </div>
 
       {/* 코드 뷰어 */}

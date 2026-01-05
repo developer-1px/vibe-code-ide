@@ -4,10 +4,11 @@ import { cn } from '@/components/lib/utils';
 export interface TitleBarProps extends React.HTMLAttributes<HTMLDivElement> {
   filename?: string;
   projectName?: string;
+  children?: React.ReactNode;
 }
 
 const TitleBar = React.forwardRef<HTMLDivElement, TitleBarProps>(
-  ({ className, filename, projectName, ...props }, ref) => {
+  ({ className, filename, projectName, children, ...props }, ref) => {
     return (
       <div
         ref={ref}
@@ -38,7 +39,10 @@ const TitleBar = React.forwardRef<HTMLDivElement, TitleBarProps>(
             </>
           )}
         </div>
-        <div className="w-13" /> {/* Spacer for balance */}
+        {/* Right Controls */}
+        <div className="flex items-center gap-2" style={{ WebkitAppRegion: 'no-drag' } as React.CSSProperties}>
+          {children}
+        </div>
       </div>
     );
   }

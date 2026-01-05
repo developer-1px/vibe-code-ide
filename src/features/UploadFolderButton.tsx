@@ -60,11 +60,11 @@ const UploadFolderButton: React.FC = () => {
     <>
       <button
         onClick={() => fileInputRef.current?.click()}
-        className="flex items-center gap-1 text-[10px] px-2 py-1 rounded bg-vibe-accent/10 text-vibe-accent hover:bg-vibe-accent/20 transition-colors"
-        title="Upload Vue project folder"
+        className="relative flex h-[var(--limn-activity-bar-icon)] w-[var(--limn-activity-bar-icon)] items-center justify-center rounded-md border border-transparent bg-transparent hover:bg-white/5 hover:border-border-light transition-all duration-normal"
+        title="Upload Project Folder"
+        aria-label="Upload Project Folder"
       >
-        <IconUpload className="w-3 h-3" />
-        Upload
+        <IconUpload size={18} strokeWidth={1.5} className="text-text-muted transition-colors" />
       </button>
       <input
         ref={fileInputRef}

@@ -13,12 +13,13 @@ import { EditorThemeProvider } from '../../app/theme/EditorThemeProvider';
 import { jetbrainsEditorTheme } from '../../app/theme/jetbrains/editor';
 import { vscodeEditorTheme } from '../../app/theme/vscode/editor';
 import type { CanvasNode } from '../../entities/CanvasNode/model/types';
+import type { SourceFileNode } from '../../entities/SourceFileNode/model/types';
 import type { CodeLine } from './core/types';
 import CodeLineView from './ui/CodeLineView.tsx';
 
 interface CodeViewerProps {
   processedLines: CodeLine[];
-  node: CanvasNode;
+  node: CanvasNode | SourceFileNode;
   highlightedLines?: Set<number>;
 }
 
@@ -65,6 +66,7 @@ const CodeViewer = ({ processedLines, node, highlightedLines }: CodeViewerProps)
               node={node}
               foldRanges={foldRanges}
               isHighlighted={isHighlighted}
+              allLines={processedLines}
             />
           );
         })}

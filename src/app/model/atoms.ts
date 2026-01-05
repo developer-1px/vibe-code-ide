@@ -54,3 +54,10 @@ export const documentModeAtom = atom<DocumentMode>('light'); // Default to light
 // 글로벌 포커스 관리 (Global focus management)
 export type FocusedPane = 'sidebar' | 'canvas' | 'search' | null;
 export const focusedPaneAtom = atom<FocusedPane>('sidebar'); // Default to sidebar when it's open
+
+// ============================================================================
+// Right Panel Atoms
+// ============================================================================
+
+// 우측 DefinitionPanel 표시 여부 (기본값: true - 미리 열어둠)
+export const rightPanelOpenAtom = atom<boolean>(true);

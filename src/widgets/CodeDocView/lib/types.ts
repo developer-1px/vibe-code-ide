@@ -6,8 +6,8 @@
 /**
  * 주석 스타일 종류
  * - line: 일반 한줄 주석 (//)
- * - block: 블록 주석 (/* */)
- * - jsdoc: JSDoc 스타일 주석 (/** */)
+ * - block: 블록 주석 (slash-star ... star-slash)
+ * - jsdoc: JSDoc 스타일 주석 (slash-star-star ... star-slash)
  * - separator: 구분선 스타일 주석 (// ==== Title ====)
  * - xml: XML Doc 주석 (///)
  */
@@ -60,7 +60,16 @@ export interface CodeDocFile {
 /**
  * Import 심볼 종류
  */
-export type SymbolKind = 'function' | 'type' | 'const' | 'component' | 'hook' | 'class' | 'interface' | 'enum' | 'unknown';
+export type SymbolKind =
+  | 'function'
+  | 'type'
+  | 'const'
+  | 'component'
+  | 'hook'
+  | 'class'
+  | 'interface'
+  | 'enum'
+  | 'unknown';
 
 /**
  * Import된 심볼 정보
