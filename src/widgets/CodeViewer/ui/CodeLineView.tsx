@@ -146,14 +146,12 @@ const CodeLineView = ({
     >
       {/* Line Number Column: Aligned text-right, fixed leading/padding to match code */}
       <div
-        className={`flex-none ${theme.dimensions.lineNumberWidth} ${theme.spacing.lineNumberX} text-[9px] text-right ${theme.colors.lineNumber.text} border-r ${theme.colors.lineNumber.border} ${theme.colors.lineNumber.background} ${theme.spacing.lineY}`}
+        className={`flex-none ${theme.dimensions.lineNumberWidth} ${theme.spacing.lineNumberX} flex items-center justify-end gap-1 text-3xs leading-snug ${theme.colors.lineNumber.text} border-r ${theme.colors.lineNumber.border} ${theme.colors.lineNumber.background}`}
       >
-        <div className="relative inline-block w-full flex items-center justify-end gap-1">
-          {/* Render input slots for each dependency token in this line */}
-          {options.showSlots && <CodeLineSlots line={line} />}
+        {/* Render input slots for each dependency token in this line */}
+        {options.showSlots && <CodeLineSlots line={line} />}
 
-          <span className={lineNumberClassName}>{line.num}</span>
-        </div>
+        <span className={lineNumberClassName}>{line.num}</span>
       </div>
 
       {/* Fold Button Column */}
@@ -191,7 +189,7 @@ const CodeLineView = ({
         >
           {/* Usage count badge */}
           {usageCount > 0 && (
-            <div className="text-[10px] font-bold text-emerald-400 bg-emerald-900/40 px-1.5 py-0.5 rounded-full border border-emerald-500/30 min-w-[20px] text-center">
+            <div className="text-2xs font-bold text-emerald-400 bg-emerald-900/40 px-1.5 py-0.5 rounded-full border border-emerald-500/30 min-w-[20px] text-center">
               {usageCount}
             </div>
           )}
