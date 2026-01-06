@@ -5,8 +5,8 @@
  */
 
 import ts from 'typescript';
-import type { SourceFileNode } from '../entities/SourceFileNode/model/types';
-import { createLanguageService } from './tsParser/utils/languageService';
+import type { SourceFileNode } from '../../../entities/SourceFileNode/model/types';
+import { createLanguageService } from '../../../shared/tsParser/utils/languageService';
 
 // Re-export OutlinePanel types (from LIMN component)
 export type SymbolKind =
