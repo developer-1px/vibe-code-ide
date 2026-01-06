@@ -28,6 +28,19 @@ export const graphDataAtom = atom(null as GraphData | null);
 // 파싱 에러 (Parse errors)
 export const parseErrorAtom = atom(null as string | null);
 
+// 파싱 진행 상태 (Parsing progress) - for Web Worker
+export const parseProgressAtom = atom<{
+  isLoading: boolean;
+  current: number;
+  total: number;aom
+  currentFile: string | null;
+}>({
+  isLoading: false,
+  current: 0,
+  total: 0,
+  currentFile: null,
+});
+
 // Full node map - derived from graphDataAtom (auto-computed)
 export const fullNodeMapAtom = atom((get) => {
   const graphData = get(graphDataAtom);
@@ -66,5 +79,8 @@ export const hoveredIdentifierAtom = atom<string | null>(null);
 // Right Panel Atoms
 // ============================================================================
 
-// 우측 DefinitionPanel 표시 여부 (기본값: true - 미리 열어둠)
+// 우측 패널 표시 여부 (기본값: true - 미리 열어둠)
 export const rightPanelOpenAtom = atom<boolean>(true);
+
+// 우측 패널 타입 ('definition' | 'related')
+export const rightPanelTypeAtom = atom<'definition' | 'related'>('related');

@@ -58,6 +58,200 @@ When analyzing JavaScript/TypeScript/Vue/React code:
 
 ---
 
+## ⚠️ CRITICAL RULES - SINGLE AST TRAVERSAL
+
+**파일당 1번만 파싱! Worker에서 모든 Symbol 수집 완료.**
+
+### 문제: 중복 AST 순회
+
+```typescript
+// ❌ WRONG - 3번 AST 순회
+// 1. Worker: 파일 파싱 → 파일 노드만 생성
+// 2. symbolExtractor: AST 재순회 → type/interface/function 찾기
+// 3. definitionExtractor: AST 재순회 → 상세 메타데이터 추출
+```
+
+**문제점**:
+- 같은 파일을 여러 번 파싱 (느림!)
+- AST 순회 로직이 여러 파일에 흩어짐
+- Symbol이 필요한 기능 추가할 때마다 새로 만듦
+
+### 해결: Worker Single-Pass Collection
+
+**Worker가 파일 파싱 시 모든 Symbol 노드 생성**
+
+#### Step 1: Worker Symbol Extraction (`workers/parseProject.worker.ts`)
+
+```typescript
+// ✅ Worker가 파일 노드 + Symbol 노드 모두 생성
+function parseProjectInWorker(files: Record<string, string>): SerializedSourceFileNode[] {
+  const nodes: SerializedSourceFileNode[] = [];
+
+  filePathsArray.forEach((filePath) => {
+    const sourceFile = ts.createSourceFile(...);
+
+    // 1️⃣ 파일 노드 생성
+    nodes.push({
+      id: filePath,
+      type: 'file',
+      ...
+    });
+
+    // 2️⃣ Symbol 노드 생성 (type, interface, function, const, class, enum)
+    // 🔥 AST 순회 1번으로 모든 symbol 수집
+    extractSymbolNodes(sourceFile, filePath, nodes);
+  });
+
+  return nodes;
+}
+
+function extractSymbolNodes(
+  sourceFile: ts.SourceFile,
+  filePath: string,
+  nodes: SerializedSourceFileNode[]
+): void {
+  sourceFile.statements.forEach((statement) => {
+    // Type alias
+    if (ts.isTypeAliasDeclaration(statement)) {
+      nodes.push({
+        id: `${filePath}::${statement.name.text}`,  // Symbol ID format
+        label: statement.name.text,
+        filePath,
+        type: 'type',
+        codeSnippet: statement.getText(sourceFile),
+        startLine: getLineNumber(sourceFile, statement),
+        dependencies: [],
+      });
+    }
+    // Interface, Function, Const, Class, Enum...
+  });
+}
+```
+
+#### Step 2: Symbol Node ID Convention
+
+```typescript
+// ✅ File nodes
+id: 'src/app/atoms.ts'
+
+// ✅ Symbol nodes (filePath::symbolName)
+id: 'src/app/atoms.ts::DocumentMode'      // type
+id: 'src/app/atoms.ts::filesAtom'         // const
+id: 'src/app/atoms.ts::parseProject'      // function
+id: 'src/app/atoms.ts::IGraphData'        // interface
+```
+
+#### Step 3: App.tsx - Conditional sourceFile Reconstruction
+
+```typescript
+// ✅ Symbol 노드는 sourceFile 불필요 (선언 코드만 저장)
+const reconstructedNodes: SourceFileNode[] = nodes.map((serializedNode: any) => {
+  if (serializedNode.type !== 'file') {
+    // Symbol 노드는 그대로 반환
+    return serializedNode as SourceFileNode;
+  }
+
+  // 파일 노드만 sourceFile 재구성
+  const sourceFile = ts.createSourceFile(...);
+  return {
+    ...serializedNode,
+    sourceFile,
+  };
+});
+```
+
+#### Step 4: Search/Analysis - fullNodeMap 필터링
+
+```typescript
+// ✅ CORRECT - fullNodeMap에 이미 Symbol 노드 포함
+// AST 재순회 없이 필터링만
+export function getAllSearchableItems(
+  fullNodeMap: Map<string, SourceFileNode>,
+  ...
+): SearchResult[] {
+  const results: SearchResult[] = [];
+
+  // ✅ Worker가 생성한 Symbol 노드 직접 사용 (AST 순회 없음!)
+  fullNodeMap.forEach((node) => {
+    const isFile = node.type === 'file';
+
+    results.push({
+      id: isFile ? `file-${node.id}` : `symbol-${node.id}`,
+      type: isFile ? 'file' : 'symbol',
+      name: isFile ? getFileName(node.filePath) : node.label,
+      nodeType: node.type,  // 'type', 'interface', 'function', 'const', etc.
+      ...
+    });
+  });
+
+  return results;
+}
+```
+
+### Symbol Types
+
+Worker가 자동 수집하는 Symbol 노드:
+
+| Type | Example | ID Format |
+|------|---------|-----------|
+| `type` | `type Foo = string` | `file.ts::Foo` |
+| `interface` | `interface Bar { }` | `file.ts::Bar` |
+| `function` | `function baz() { }` | `file.ts::baz` |
+| `const` | `const value = 1` | `file.ts::value` |
+| `variable` | `let count = 0` | `file.ts::count` |
+| `class` | `class MyClass { }` | `file.ts::MyClass` |
+| `enum` | `enum Status { }` | `file.ts::Status` |
+
+### 금지 사항
+
+❌ **Search/Analysis에서 AST 재순회 금지**
+```typescript
+// ❌ WRONG - fullNodeMap에 이미 있는데 또 순회
+function getSymbols(node: SourceFileNode) {
+  const symbols = [];
+  ts.forEachChild(node.sourceFile, (child) => {
+    if (ts.isTypeAliasDeclaration(child)) {
+      symbols.push(child.name.text);  // ← Worker가 이미 했음!
+    }
+  });
+  return symbols;
+}
+```
+
+✅ **fullNodeMap 필터링만 사용**
+```typescript
+// ✅ CORRECT - fullNodeMap 필터링
+function getSymbols(fullNodeMap: Map<string, SourceFileNode>, filePath: string) {
+  return Array.from(fullNodeMap.values()).filter(
+    node => node.filePath === filePath && node.type !== 'file'
+  );
+}
+```
+
+### Usage (사용처) 추출은 예외
+
+**Top-level 선언이 아닌 Usage는 AST 순회 필요**:
+```typescript
+// ✅ OK - Usage는 Worker에서 수집 불가 (top-level이 아님)
+fullNodeMap.forEach((node) => {
+  if (node.type !== 'file' || !node.sourceFile) return;
+
+  // Usage 추출은 AST 순회 필요
+  const usages = getIdentifiers(node.sourceFile, declaredSymbols);
+  results.push(...usages);
+});
+```
+
+### 체크리스트
+
+TypeScript 관련 기능 추가 시:
+- [ ] Symbol 정보가 필요한가? → fullNodeMap에서 필터링
+- [ ] Worker에 새로운 Symbol 타입 추가 필요한가? → `extractSymbolNodes()` 수정
+- [ ] AST 순회하려고 하는가? → STOP! fullNodeMap 먼저 확인
+- [ ] Usage (사용처) 찾기인가? → OK (top-level 아니므로 순회 필요)
+
+---
+
 ## ⚠️ CRITICAL RULES - GETTER LAYER PATTERN
 
 **파싱은 파일당 1번만! AST와 사용처 사이에 Getter Layer를 두어라.**

@@ -5,6 +5,7 @@
 import * as ts from 'typescript';
 import type { CodeSymbolMetadata } from '../../../../entities/CodeSymbol/model/types.ts';
 import type { SourceFileNode } from '../../../../entities/SourceFileNode/model/types.ts';
+import { getExports } from '../../../../entities/SourceFileNode/lib/metadata.ts';
 import { getFileName } from '../../../../shared/pathUtils.ts';
 import type { SearchResult } from '../model/types.ts';
 
@@ -72,33 +73,24 @@ function getIdentifiers(
 }
 
 /**
- * Get export information from source file using TypeScript AST
- * ✅ 개선: fullNodeMap의 sourceFile 재사용 (재파싱 제거)
+ * Get export information from Export View (no AST traversal!)
+ * 🔥 View 기반: Worker가 미리 계산한 Export View 사용
  */
 function getExportMap(fullNodeMap: Map<string, SourceFileNode>): Map<string, boolean> {
   const exportMap = new Map<string, boolean>();
 
-  // ✅ type === 'file' 노드만 사용 (이미 파싱된 sourceFile 재사용)
+  // 🔥 View 조회 (AST 순회 없음!)
   fullNodeMap.forEach((node) => {
-    if (node.type !== 'file' || !node.sourceFile) return;
+    if (node.type !== 'file') return;
 
     try {
-      const { sourceFile, filePath } = node;
+      const { filePath } = node;
+      const exports = getExports(node); // View 우선 조회
 
-      function visitNode(astNode: ts.Node) {
-        const isExported = !!(ts.getCombinedModifierFlags(astNode as ts.Declaration) & ts.ModifierFlags.Export);
-
-        if (isExported) {
-          const { line } = sourceFile.getLineAndCharacterOfPosition(astNode.getStart(sourceFile));
-          const lineNumber = line + 1;
-          const key = `${filePath}:${lineNumber}`;
-          exportMap.set(key, true);
-        }
-
-        ts.forEachChild(astNode, visitNode);
-      }
-
-      visitNode(sourceFile);
+      exports.forEach((exp) => {
+        const key = `${filePath}:${exp.line}`;
+        exportMap.set(key, true);
+      });
     } catch (_e) {
       // Skip files that fail to parse
     }
@@ -124,8 +116,10 @@ export function getAllSearchableItems(
   const exportMap = getExportMap(fullNodeMap);
 
   // 1. Extract declarations from fullNodeMap and collect symbol names
+  // ✅ Worker가 생성한 Symbol 노드 (type/interface/function/const 등) 직접 사용
+  // ✅ AST 재순회 없음 - fullNodeMap에 이미 포함됨
   fullNodeMap.forEach((node) => {
-    const isFile = !node.id.includes('::');
+    const isFile = node.type === 'file';
 
     // Skip ROOT nodes (parser metadata nodes)
     if (
@@ -215,6 +209,7 @@ export function getAllSearchableItems(
 
   // 3. Extract all usages from parsed files
   // ✅ fullNodeMap의 sourceFile 재사용 (재파싱 제거)
+  // ✅ Usage 추출만 AST 순회 필요 (top-level 선언이 아니므로 Worker에서 수집 불가)
   fullNodeMap.forEach((node) => {
     if (node.type !== 'file' || !node.sourceFile) return;
 

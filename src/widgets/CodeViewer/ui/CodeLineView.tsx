@@ -1,6 +1,5 @@
 import { useAtomValue } from 'jotai';
 import { useEffect, useMemo, useRef } from 'react';
-import * as ts from 'typescript';
 import { getFoldedCount, isLineFolded, isLineInsideFold } from '@/features/Code/CodeFold/lib/foldUtils';
 import { foldedLinesAtom } from '@/features/Code/CodeFold/model/atoms';
 import FoldBadge from '@/features/Code/CodeFold/ui/FoldBadge';
@@ -9,6 +8,7 @@ import { targetLineAtom } from '@/features/File/Navigation/model/atoms';
 import { useEditorTheme } from '../../../app/theme/EditorThemeProvider';
 import type { CanvasNode } from '../../../entities/CanvasNode/model/types';
 import type { SourceFileNode } from '../../../entities/SourceFileNode/model/types';
+import { getSymbolUsages } from '../../../entities/SourceFileNode/lib/metadata';
 import { layoutNodesAtom } from '../../PipelineCanvas/model/atoms';
 import type { CodeLine } from '../core/types';
 import CodeLineExportSlots from './CodeLineExportSlots';
@@ -80,26 +80,14 @@ const CodeLineView = ({
   }, [hasDeclarationKeyword, line.segments]);
 
   // 사용자가 dependency 연결 강도를 직관적으로 파악할 수 있도록 badge 숫자로 표시
+  // 🔥 View 기반 조회 (AST 순회 없음!)
   const usageCount = useMemo(() => {
     if (!hasDeclarationKeyword || !exportedSymbolName) return 0;
 
-    return layoutNodes
-      .filter((n) => n.dependencies?.includes(node.filePath))
-      .flatMap((n) => {
-        const sourceFile = (n as any).sourceFile as ts.SourceFile | undefined;
-        if (!sourceFile) return [];
-
-        return sourceFile.statements.filter(ts.isImportDeclaration).flatMap((statement) => {
-          const importClause = statement.importClause;
-          if (!importClause?.namedBindings) return [];
-          if (!ts.isNamedImports(importClause.namedBindings)) return [];
-
-          return importClause.namedBindings.elements
-            .map((element) => element.name.text)
-            .filter((importedName) => importedName === exportedSymbolName);
-        });
-      }).length;
-  }, [hasDeclarationKeyword, exportedSymbolName, layoutNodes, node.filePath]);
+    // Worker가 미리 계산한 Usage View 조회
+    const importers = getSymbolUsages(node, exportedSymbolName);
+    return importers.length;
+  }, [hasDeclarationKeyword, exportedSymbolName, node]);
 
   // Go to Definition으로 이동한 라인을 자동으로 highlight하여 사용자가 목표 위치를 놓치지 않도록 함
   const isTargetLine = targetLine?.nodeId === node.id && targetLine.lineNum === line.num;

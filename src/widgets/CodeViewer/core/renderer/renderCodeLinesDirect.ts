@@ -18,7 +18,7 @@ import {
 } from './astHooks';
 import { addComments, getSegmentKind } from './lib/astAnalyzers';
 import { extractDeadIdentifiers } from './lib/deadCodeHelpers';
-import { enrichWithLanguageService } from './lib/languageServiceEnrichers';
+import { enrichWithLanguageService, addInlayHints } from './lib/languageServiceEnrichers';
 // Refactored pure functions
 import { addSegmentToLines, createInitialLines, finalizeAllLines } from './lib/segmentBuilders';
 import type { RenderContext } from './lib/types';
@@ -188,6 +188,9 @@ export function renderCodeLinesDirect(
 
     // Language Service로 정의 위치 및 hover 정보 추가
     currentLines = enrichWithLanguageService(currentLines, codeSnippet, filePath || '', isTsx);
+
+    // ✅ IntelliJ-style Inlay Hints 추가 (함수 호출 파라미터 이름 표시)
+    currentLines = addInlayHints(currentLines, codeSnippet, filePath || '', files);
 
     return currentLines;
   } catch (error) {

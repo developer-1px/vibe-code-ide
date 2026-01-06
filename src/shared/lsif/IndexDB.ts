@@ -7,15 +7,7 @@
  * 3. documents - Document index (빠른 조회용)
  */
 
-import type {
-  Vertex,
-  Edge,
-  DocumentIndex,
-  VertexRecord,
-  EdgeRecord,
-  VertexType,
-  EdgeLabel,
-} from './types';
+import type { DocumentIndex, Edge, EdgeLabel, EdgeRecord, Vertex, VertexRecord, VertexType } from './types';
 
 const DB_NAME = 'lsif-code-index';
 const DB_VERSION = 1;
@@ -160,9 +152,7 @@ export async function queryVertices(
       request.onerror = () => reject(request.error);
       request.onsuccess = () => {
         const records = request.result as VertexRecord[];
-        const vertices = records
-          .filter((r) => r.vertexType === vertexType)
-          .map((r) => r.data);
+        const vertices = records.filter((r) => r.vertexType === vertexType).map((r) => r.data);
         resolve(vertices);
       };
     });
@@ -233,10 +223,7 @@ export async function saveEdge(edge: Edge): Promise<void> {
  * Edge 조회 (outV + label로)
  * "이 vertex에서 나가는 특정 label의 edge"
  */
-export async function getEdgesByOutV(
-  outV: string,
-  label?: EdgeLabel
-): Promise<Edge[]> {
+export async function getEdgesByOutV(outV: string, label?: EdgeLabel): Promise<Edge[]> {
   try {
     const db = await openDB();
 
@@ -333,7 +320,7 @@ export async function getDocumentIndex(uri: string): Promise<DocumentIndex | nul
 
       request.onerror = () => reject(request.error);
       request.onsuccess = () => {
-        resolve(request.result as DocumentIndex || null);
+        resolve((request.result as DocumentIndex) || null);
       };
     });
   } catch (error) {
@@ -456,17 +443,10 @@ export async function clearAllIndexes(): Promise<void> {
     const db = await openDB();
 
     return new Promise((resolve, reject) => {
-      const tx = db.transaction(
-        [STORE_VERTICES, STORE_EDGES, STORE_DOCUMENTS],
-        'readwrite'
-      );
+      const tx = db.transaction([STORE_VERTICES, STORE_EDGES, STORE_DOCUMENTS], 'readwrite');
 
       let completed = 0;
-      const stores = [
-        tx.objectStore(STORE_VERTICES),
-        tx.objectStore(STORE_EDGES),
-        tx.objectStore(STORE_DOCUMENTS),
-      ];
+      const stores = [tx.objectStore(STORE_VERTICES), tx.objectStore(STORE_EDGES), tx.objectStore(STORE_DOCUMENTS)];
 
       stores.forEach((store) => {
         const request = store.clear();

@@ -5,6 +5,7 @@
 
 import * as ts from 'typescript';
 import type { SourceFileNode } from '../../../entities/SourceFileNode/model/types';
+import { getExports } from '../../../entities/SourceFileNode/lib/metadata';
 import type { CodeDocSection } from './types';
 
 /**
@@ -48,19 +49,23 @@ function formatFunctionSignature(
 
 /**
  * AST에서 export 선언 추출 (함수, 변수, interface)
+ * 🔥 View 기반: Export 여부는 View로 확인, signature만 AST 사용
  */
 export function extractExportSignatures(node: SourceFileNode): CodeDocSection[] {
   const exportSections: CodeDocSection[] = [];
   const sourceFile = node.sourceFile;
 
+  // 🔥 Export View 조회 (AST 순회 없음!)
+  const exports = getExports(node);
+  const exportLines = new Set(exports.map((exp) => exp.line));
+
+  // Export line에 해당하는 AST 노드만 찾아서 signature 추출
   ts.forEachChild(sourceFile, (child) => {
-    // Export로 시작하는 선언문만 처리
-    const modifiers = ts.canHaveModifiers(child) ? ts.getModifiers(child) : undefined;
-    const hasExportModifier = modifiers?.some((m) => m.kind === ts.SyntaxKind.ExportKeyword);
-
-    if (!hasExportModifier) return;
-
     const startLine = sourceFile.getLineAndCharacterOfPosition(child.getStart(sourceFile)).line + 1;
+
+    // 🔥 View에 없는 라인은 스킵 (export 아님)
+    if (!exportLines.has(startLine)) return;
+
     const endLine = sourceFile.getLineAndCharacterOfPosition(child.getEnd()).line + 1;
 
     // 함수 또는 변수 선언

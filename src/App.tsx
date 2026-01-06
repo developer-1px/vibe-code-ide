@@ -1,24 +1,28 @@
 import { Provider, useAtomValue, useSetAtom } from 'jotai';
 import type React from 'react';
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import { HotkeysProvider } from 'react-hotkeys-hook';
 import { UnifiedSearchModal } from '@/features/Search/UnifiedSearch/ui/UnifiedSearchModal';
-import { parseProject } from '@/shared/tsParser/parseProject';
+import * as ts from 'typescript';
+import type { SourceFileNode } from './entities/SourceFileNode/model/types';
 import AppSidebar from '@/widgets/AppSidebar/AppSidebar';
 import {
   filesAtom,
   fullNodeMapAtom,
   graphDataAtom,
   parseErrorAtom,
+  parseProgressAtom,
   rightPanelOpenAtom,
+  rightPanelTypeAtom,
   viewModeAtom,
 } from './app/model/atoms';
 import { store } from './app/model/store';
 import { ThemeProvider } from './app/theme/ThemeProvider';
-import { DefinitionPanel } from './components/ide/DefinitionPanel';
+import { DefinitionPanel } from './widgets/Panels/DefinitionPanel/DefinitionPanel.tsx';
+import { RelatedPanel } from './widgets/Panels/RelatedPanel/RelatedPanel.tsx';
 import { activeTabAtom } from './features/File/OpenFiles/model/atoms';
 import { KeyboardShortcuts } from './features/KeyboardShortcuts/KeyboardShortcuts';
-import { extractDefinitions } from './shared/definitionExtractor';
+import { getFileMetadata } from './entities/SourceFileNode/lib/metadata';
 import { AppActivityBar } from './widgets/AppActivityBar/AppActivityBar';
 import { AppStatusBar } from './widgets/AppStatusBar/AppStatusBar';
 import { AppTitleBar } from './widgets/AppTitleBar/AppTitleBar';
@@ -33,29 +37,127 @@ const AppContent: React.FC = () => {
   const files = useAtomValue(filesAtom);
   const setGraphData = useSetAtom(graphDataAtom);
   const setParseError = useSetAtom(parseErrorAtom);
+  const setParseProgress = useSetAtom(parseProgressAtom);
   const viewMode = useAtomValue(viewModeAtom);
   const deadCodePanelOpen = useAtomValue(deadCodePanelOpenAtom);
   const rightPanelOpen = useAtomValue(rightPanelOpenAtom);
+  const rightPanelType = useAtomValue(rightPanelTypeAtom);
   const activeTab = useAtomValue(activeTabAtom);
   const fullNodeMap = useAtomValue(fullNodeMapAtom);
+  const workerRef = useRef<Worker | null>(null);
 
+  // 🔥 Web Worker for Project Parsing
   useEffect(() => {
-    try {
-      const parsedData = parseProject(files);
-      setParseError(null);
-      setGraphData(parsedData);
-    } catch (e: any) {
-      console.warn('Project Parse Error:', e);
-      setParseError(e.message || 'Syntax Error');
-    }
-  }, [files, setGraphData, setParseError]);
+    console.log('[App] Files changed, starting Worker-based parsing');
 
-  // Extract definitions for current active file
+    // Create Worker
+    const worker = new Worker(
+      new URL('./workers/parseProject.worker.ts', import.meta.url),
+      { type: 'module' }
+    );
+    workerRef.current = worker;
+
+    // Set loading state
+    setParseProgress({
+      isLoading: true,
+      current: 0,
+      total: Object.keys(files).length,
+      currentFile: null,
+    });
+
+    // Handle Worker messages
+    worker.onmessage = (event) => {
+      const { type } = event.data;
+
+      if (type === 'progress') {
+        // Update progress
+        const { current, total, currentFile } = event.data;
+        setParseProgress({
+          isLoading: true,
+          current,
+          total,
+          currentFile,
+        });
+      } else if (type === 'result') {
+        // Parse complete
+        const { nodes, parseTime } = event.data;
+        console.log(`[App] Worker parsing complete: ${nodes.length} nodes in ${parseTime.toFixed(2)}ms`);
+
+        // Reconstruct SourceFileNode[] with ts.SourceFile
+        const reconstructedNodes: SourceFileNode[] = nodes.map((serializedNode: any) => {
+          // Symbol 노드는 sourceFile 재구성 불필요 (type/interface/function/const 등)
+          if (serializedNode.type !== 'file') {
+            return serializedNode as SourceFileNode;
+          }
+
+          // 파일 노드만 sourceFile 재구성
+          const scriptKind = serializedNode.filePath.endsWith('.tsx')
+            ? ts.ScriptKind.TSX
+            : serializedNode.filePath.endsWith('.jsx')
+              ? ts.ScriptKind.JSX
+              : ts.ScriptKind.TS;
+
+          const sourceFile = ts.createSourceFile(
+            serializedNode.filePath,
+            serializedNode.codeSnippet,
+            ts.ScriptTarget.Latest,
+            true,
+            scriptKind
+          );
+
+          return {
+            ...serializedNode,
+            sourceFile,
+          };
+        });
+
+        setGraphData({ nodes: reconstructedNodes });
+        setParseError(null);
+        setParseProgress({
+          isLoading: false,
+          current: nodes.length,
+          total: nodes.length,
+          currentFile: null,
+        });
+
+        // Terminate worker
+        worker.terminate();
+      }
+    };
+
+    worker.onerror = (error) => {
+      console.error('[App] Worker error:', error);
+      setParseError('Worker parsing failed');
+      setParseProgress({
+        isLoading: false,
+        current: 0,
+        total: 0,
+        currentFile: null,
+      });
+      worker.terminate();
+    };
+
+    // Send parsing request
+    worker.postMessage({ type: 'parseProject', files });
+
+    // Cleanup
+    return () => {
+      if (workerRef.current) {
+        workerRef.current.terminate();
+        workerRef.current = null;
+      }
+    };
+  }, [files, setGraphData, setParseError, setParseProgress]);
+
+  // 🔥 Performance Optimization: Use cached metadata instead of extractDefinitions
+  // - getFileMetadata() returns cached result if available
+  // - Avoids duplicate AST traversal (App.tsx + IDEView.tsx + CodeDocView.tsx)
   const definitions = useMemo(() => {
     if (!activeTab || !fullNodeMap.has(activeTab)) return [];
     const node = fullNodeMap.get(activeTab);
     if (!node) return [];
-    return extractDefinitions(node, files);
+    const metadata = getFileMetadata(node, files);
+    return metadata.definitions;
   }, [activeTab, fullNodeMap, files]);
 
   return (
@@ -83,8 +185,12 @@ const AppContent: React.FC = () => {
           {viewMode === 'codeDoc' && <CodeDocView />}
         </div>
 
-        {/* Right Sidebar: DefinitionPanel */}
-        {rightPanelOpen && <DefinitionPanel symbols={definitions} />}
+        {/* Right Sidebar: DefinitionPanel or RelatedPanel */}
+        {rightPanelOpen && (
+          rightPanelType === 'definition'
+            ? <DefinitionPanel symbols={definitions} />
+            : <RelatedPanel currentFilePath={activeTab} />
+        )}
       </div>
 
       {/* Status Bar */}

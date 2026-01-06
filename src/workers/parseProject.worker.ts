@@ -9,9 +9,9 @@
  */
 
 import * as ts from 'typescript';
-import { parseFileToLSIF, buildReferenceResults } from '../shared/lsif/indexer';
 import { batchSave, saveDocumentIndex } from '../shared/lsif/IndexDB';
-import type { LSIFIndexResult, DocumentIndex } from '../shared/lsif/types';
+import { buildReferenceResults, parseFileToLSIF } from '../shared/lsif/indexer';
+import type { DocumentIndex, LSIFIndexResult } from '../shared/lsif/types';
 
 // Mock tsconfig.json paths (실제로는 tsconfig.json에서 읽어와야 하지만 웹 환경이므로 하드코딩)
 const PATH_ALIASES: Record<string, string> = {
@@ -148,9 +148,7 @@ function resolvePath(from: string, to: string, files: Record<string, string>): s
   // 2. 상대 경로 처리
   if (to.startsWith('.')) {
     const fromDir = from.substring(0, from.lastIndexOf('/'));
-    const resolved = to.startsWith('./')
-      ? `${fromDir}/${to.substring(2)}`
-      : `${fromDir}/${to}`;
+    const resolved = to.startsWith('./') ? `${fromDir}/${to.substring(2)}` : `${fromDir}/${to}`;
 
     return tryResolveWithExtensions(resolved, files);
   }
@@ -162,11 +160,7 @@ function resolvePath(from: string, to: string, files: Record<string, string>): s
 /**
  * Dependencies 추출 (import 문)
  */
-function getDependencies(
-  sourceFile: ts.SourceFile,
-  filePath: string,
-  files: Record<string, string>
-): string[] {
+function getDependencies(sourceFile: ts.SourceFile, filePath: string, files: Record<string, string>): string[] {
   const dependencies: string[] = [];
 
   sourceFile.statements.forEach((statement) => {
@@ -207,10 +201,7 @@ function getLineNumber(sourceFile: ts.SourceFile, node: ts.Node): number {
  * - sourceFile을 1번 순회하여 특정 메타데이터 추출
  * - 여러 View를 등록하여 Single Pass Multi-View 구현
  */
-type ViewFunction = (
-  sourceFile: ts.SourceFile,
-  filePath: string
-) => Record<string, any>;
+type ViewFunction = (sourceFile: ts.SourceFile, filePath: string) => Record<string, any>;
 
 /**
  * View Registry (확장 가능)
@@ -220,13 +211,11 @@ const VIEW_REGISTRY: Record<string, ViewFunction> = {
   /**
    * Export View: export 선언 정보 수집
    */
-  exports: (sourceFile, filePath) => {
+  exports: (sourceFile, _filePath) => {
     const exports: ExportInfo[] = [];
 
     sourceFile.statements.forEach((statement) => {
-      const hasExport = statement.modifiers?.some(
-        (m) => m.kind === ts.SyntaxKind.ExportKeyword
-      );
+      const hasExport = statement.modifiers?.some((m) => m.kind === ts.SyntaxKind.ExportKeyword);
 
       if (!hasExport) return;
 
@@ -291,7 +280,7 @@ const VIEW_REGISTRY: Record<string, ViewFunction> = {
   /**
    * Import View: import 선언 정보 수집
    */
-  imports: (sourceFile, filePath) => {
+  imports: (sourceFile, _filePath) => {
     const imports: ImportInfo[] = [];
 
     sourceFile.statements.forEach((statement) => {
@@ -354,7 +343,7 @@ function createViews(sourceFile: ts.SourceFile, filePath: string): Record<string
   const views: Record<string, any> = {};
 
   // 🔥 등록된 모든 View 함수 실행 (1번 순회)
-  for (const [viewName, viewFn] of Object.entries(VIEW_REGISTRY)) {
+  for (const [_viewName, viewFn] of Object.entries(VIEW_REGISTRY)) {
     Object.assign(views, viewFn(sourceFile, filePath));
   }
 
@@ -365,11 +354,7 @@ function createViews(sourceFile: ts.SourceFile, filePath: string): Record<string
  * Symbol 노드 추출 (type, interface, function, const, class, enum)
  * 🔥 Worker 파싱 시점에 1번만 실행 - AST 재순회 방지
  */
-function extractSymbolNodes(
-  sourceFile: ts.SourceFile,
-  filePath: string,
-  nodes: SerializedSourceFileNode[]
-): void {
+function extractSymbolNodes(sourceFile: ts.SourceFile, filePath: string, nodes: SerializedSourceFileNode[]): void {
   sourceFile.statements.forEach((statement) => {
     // Type alias
     if (ts.isTypeAliasDeclaration(statement)) {
@@ -506,13 +491,7 @@ function parseProjectInWorker(files: Record<string, string>): SerializedSourceFi
       }
 
       // TypeScript AST 생성
-      const sourceFile = ts.createSourceFile(
-        filePath,
-        parseContent,
-        ts.ScriptTarget.Latest,
-        true,
-        scriptKind
-      );
+      const sourceFile = ts.createSourceFile(filePath, parseContent, ts.ScriptTarget.Latest, true, scriptKind);
 
       // Dependencies 추출
       const dependencies = getDependencies(sourceFile, filePath, files);
@@ -524,7 +503,9 @@ function parseProjectInWorker(files: Record<string, string>): SerializedSourceFi
       try {
         const lsifIndex = parseFileToLSIF(filePath, content, sourceFile);
         lsifResults.push(lsifIndex);
-        console.log(`[Worker] LSIF index created for ${filePath}: ${lsifIndex.vertices.length} vertices, ${lsifIndex.edges.length} edges`);
+        console.log(
+          `[Worker] LSIF index created for ${filePath}: ${lsifIndex.vertices.length} vertices, ${lsifIndex.edges.length} edges`
+        );
       } catch (lsifError) {
         console.error(`[Worker] LSIF indexing error for ${filePath}:`, lsifError);
       }
@@ -544,7 +525,6 @@ function parseProjectInWorker(files: Record<string, string>): SerializedSourceFi
       // 2️⃣ Symbol 노드 생성 (type, interface, function, const, class, enum)
       // 🔥 AST 순회 1번으로 모든 symbol 수집
       extractSymbolNodes(sourceFile, filePath, nodes);
-
     } catch (error) {
       console.error(`[Worker] Error parsing ${filePath}:`, error);
     }
@@ -576,7 +556,7 @@ function parseProjectInWorker(files: Record<string, string>): SerializedSourceFi
           if (!usageMap.has(usageKey)) {
             usageMap.set(usageKey, new Set());
           }
-          usageMap.get(usageKey)!.add(importerFilePath);
+          usageMap.get(usageKey)?.add(importerFilePath);
         }
       });
     });
@@ -625,11 +605,7 @@ function parseProjectInWorker(files: Record<string, string>): SerializedSourceFi
 /**
  * LSIF Indexes를 IndexedDB에 저장
  */
-async function saveLSIFIndexes(
-  lsifResults: LSIFIndexResult[],
-  refVertices: any[],
-  refEdges: any[]
-): Promise<void> {
+async function saveLSIFIndexes(lsifResults: LSIFIndexResult[], refVertices: any[], refEdges: any[]): Promise<void> {
   try {
     // 1. 모든 vertices와 edges 수집
     const allVertices = lsifResults.flatMap((r) => r.vertices).concat(refVertices);
@@ -642,9 +618,7 @@ async function saveLSIFIndexes(
 
     // 3. Document indexes 저장
     for (const result of lsifResults) {
-      const docVertex = allVertices.find(
-        (v) => v.type === 'document' && v.id === result.documentId
-      );
+      const docVertex = allVertices.find((v) => v.type === 'document' && v.id === result.documentId);
 
       if (docVertex && docVertex.type === 'document') {
         const docIndex: DocumentIndex = {

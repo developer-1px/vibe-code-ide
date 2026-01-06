@@ -4,6 +4,7 @@
  */
 
 import {
+  Braces,
   Calculator,
   Code2,
   CodeXml,
@@ -14,6 +15,7 @@ import {
   Folder,
   Search,
   SquareFunction,
+  Type,
   Upload,
 } from 'lucide-react';
 import * as React from 'react';
@@ -86,6 +88,15 @@ export function CommandPalette({
       return Folder;
     }
 
+    // Type/Interface icons (파일처럼 별도 표시)
+    if (result.nodeType === 'type') {
+      return Type;
+    }
+
+    if (result.nodeType === 'interface') {
+      return Braces;
+    }
+
     // Symbol icons
     if (result.nodeType === 'usage') {
       return Eye;
@@ -131,6 +142,15 @@ export function CommandPalette({
 
     if (result.type === 'folder') {
       return 'text-yellow-400';
+    }
+
+    // Type/Interface colors (파일처럼 별도 색상)
+    if (result.nodeType === 'type') {
+      return 'text-purple-400';
+    }
+
+    if (result.nodeType === 'interface') {
+      return 'text-blue-400';
     }
 
     // Symbol colors
@@ -198,7 +218,8 @@ export function CommandPalette({
 
   // Render result subtitle
   const renderSubtitle = (result: SearchResult, isSelected: boolean) => {
-    if (result.type === 'file' || result.type === 'folder') {
+    // FILE/FOLDER/TYPE/INTERFACE: Show file path
+    if (result.type === 'file' || result.type === 'folder' || result.nodeType === 'type' || result.nodeType === 'interface') {
       return highlightText(result.filePath, 'filePath', result, isSelected);
     }
 
@@ -308,8 +329,8 @@ export function CommandPalette({
                     </div>
 
                     {/* Content */}
-                    {result.type === 'file' || result.type === 'folder' ? (
-                      // FILE/FOLDER: Name → full path
+                    {result.type === 'file' || result.type === 'folder' || result.nodeType === 'type' || result.nodeType === 'interface' ? (
+                      // FILE/FOLDER/TYPE/INTERFACE: Name → full path
                       <>
                         <div className="flex-1 min-w-0 flex items-center gap-2">
                           <span

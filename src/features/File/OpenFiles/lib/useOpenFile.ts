@@ -54,9 +54,9 @@ export function useOpenFile() {
           return prev;
         }
 
-        // 현재 활성 탭의 위치를 찾아서 그 다음에 삽입
+        // 현재 활성 탭의 바로 앞에 삽입 (이전 위치)
         const activeIndex = activeTab ? prev.indexOf(activeTab) : -1;
-        const insertIndex = activeIndex >= 0 ? activeIndex + 1 : prev.length;
+        const insertIndex = activeIndex >= 0 ? activeIndex : prev.length;
         return [...prev.slice(0, insertIndex), actualFilePath, ...prev.slice(insertIndex)];
       });
 

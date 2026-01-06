@@ -1,10 +1,10 @@
 /**
  * Extract import declarations from SourceFileNode
- * Import 선언 추출 (TypeScript AST 기반)
+ * Import 선언 추출 (View 기반)
  */
 
-import * as ts from 'typescript';
-import type { SourceFileNode } from '../../SourceFileNode/model/types';
+import type { SourceFileNode } from '../../../entities/SourceFileNode/model/types';
+import { getImports } from '../../../entities/SourceFileNode/lib/metadata';
 
 export type SymbolKind =
   | 'function'
@@ -78,62 +78,25 @@ function inferSymbolKind(name: string, isTypeOnly: boolean): SymbolKind {
 
 /**
  * Extract all import symbols from a SourceFileNode
+ * 🔥 View 기반: Import View 사용 (AST 순회 없음!)
  */
 export function extractImports(node: SourceFileNode): ImportSymbol[] {
   const imports: ImportSymbol[] = [];
-  const sourceFile = node.sourceFile;
 
-  ts.forEachChild(sourceFile, (child) => {
-    // Only process ImportDeclaration nodes
-    if (!ts.isImportDeclaration(child)) return;
+  // 🔥 Import View 조회
+  const importView = getImports(node);
 
-    const importClause = child.importClause;
-    if (!importClause) return;
+  importView.forEach((imp) => {
+    // TODO: Worker Import View에 isTypeOnly 필드 추가 필요
+    const isTypeOnly = false; // Fallback
+    const kind = inferSymbolKind(imp.name, isTypeOnly);
 
-    const moduleSpecifier = child.moduleSpecifier;
-    if (!ts.isStringLiteral(moduleSpecifier)) return;
-
-    const fromPath = moduleSpecifier.text;
-    const isTypeOnly = importClause.isTypeOnly || false;
-
-    // Named imports: import { foo, bar } from '...'
-    if (importClause.namedBindings) {
-      if (ts.isNamedImports(importClause.namedBindings)) {
-        importClause.namedBindings.elements.forEach((element) => {
-          const name = element.name.getText(sourceFile);
-          const kind = inferSymbolKind(name, isTypeOnly || element.isTypeOnly);
-          imports.push({
-            name,
-            kind,
-            fromPath,
-            isTypeOnly: isTypeOnly || element.isTypeOnly,
-          });
-        });
-      }
-
-      // Namespace import: import * as React from 'react'
-      if (ts.isNamespaceImport(importClause.namedBindings)) {
-        const name = importClause.namedBindings.name.getText(sourceFile);
-        imports.push({
-          name,
-          kind: 'const',
-          fromPath,
-          isTypeOnly,
-        });
-      }
-    }
-
-    // Default import: import React from 'react'
-    if (importClause.name) {
-      const name = importClause.name.getText(sourceFile);
-      const kind = inferSymbolKind(name, isTypeOnly);
-      imports.push({
-        name,
-        kind,
-        fromPath,
-        isTypeOnly,
-      });
-    }
+    imports.push({
+      name: imp.name,
+      kind,
+      fromPath: imp.from,
+      isTypeOnly,
+    });
   });
 
   return imports;

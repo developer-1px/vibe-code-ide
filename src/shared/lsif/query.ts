@@ -6,24 +6,19 @@
  * - textDocument/* : LSP 요청 시뮬레이션
  */
 
-import {
-  getVertex,
-  queryVertices,
-  getEdgesByOutV,
-} from './IndexDB';
+import { getEdgesByOutV, getVertex, queryVertices } from './IndexDB';
 import type {
-  Vertex,
-  Edge,
-  EdgeLabel,
-  DocumentVertex,
-  RangeVertex,
-  ResultSetVertex,
   DefinitionResultVertex,
-  HoverResultVertex,
-  ReferenceResultVertex,
-  Range,
+  DocumentVertex,
+  EdgeLabel,
   ExportInfo,
+  HoverResultVertex,
   ImportInfo,
+  Range,
+  RangeVertex,
+  ReferenceResultVertex,
+  ResultSetVertex,
+  Vertex,
 } from './types';
 
 // ========================================
@@ -36,10 +31,7 @@ import type {
  * @param edgeLabel - 따라갈 Edge label
  * @returns 목적지 Vertex (없으면 null)
  */
-export async function followEdge(
-  vertexId: string,
-  edgeLabel: EdgeLabel
-): Promise<Vertex | null> {
+export async function followEdge(vertexId: string, edgeLabel: EdgeLabel): Promise<Vertex | null> {
   try {
     // 1. outV가 vertexId인 edge 찾기
     const edges = await getEdgesByOutV(vertexId, edgeLabel);
@@ -60,10 +52,7 @@ export async function followEdge(
 /**
  * 여러 Edge를 따라 모든 목적지 Vertex 조회
  */
-export async function followEdges(
-  vertexId: string,
-  edgeLabel: EdgeLabel
-): Promise<Vertex[]> {
+export async function followEdges(vertexId: string, edgeLabel: EdgeLabel): Promise<Vertex[]> {
   try {
     const edges = await getEdgesByOutV(vertexId, edgeLabel);
 
@@ -101,7 +90,7 @@ export async function textDocumentDefinition(
   try {
     // 1. Document vertex 조회
     const docId = `doc:${uri}`;
-    const docVertex = await getVertex(docId) as DocumentVertex | null;
+    const docVertex = (await getVertex(docId)) as DocumentVertex | null;
 
     if (!docVertex) return null;
 
@@ -115,13 +104,10 @@ export async function textDocumentDefinition(
     if (!targetRange) return null;
 
     // 3. Range → ResultSet → DefinitionResult
-    const resultSet = await followEdge(targetRange.id, 'next') as ResultSetVertex | null;
+    const resultSet = (await followEdge(targetRange.id, 'next')) as ResultSetVertex | null;
     if (!resultSet) return null;
 
-    const defResult = await followEdge(
-      resultSet.id,
-      'textDocument/definition'
-    ) as DefinitionResultVertex | null;
+    const defResult = (await followEdge(resultSet.id, 'textDocument/definition')) as DefinitionResultVertex | null;
 
     if (!defResult) return null;
 
@@ -149,13 +135,10 @@ export async function textDocumentHover(
 
     if (!targetRange) return null;
 
-    const resultSet = await followEdge(targetRange.id, 'next') as ResultSetVertex | null;
+    const resultSet = (await followEdge(targetRange.id, 'next')) as ResultSetVertex | null;
     if (!resultSet) return null;
 
-    const hoverResult = await followEdge(
-      resultSet.id,
-      'textDocument/hover'
-    ) as HoverResultVertex | null;
+    const hoverResult = (await followEdge(resultSet.id, 'textDocument/hover')) as HoverResultVertex | null;
 
     if (!hoverResult) return null;
 
@@ -183,13 +166,10 @@ export async function textDocumentReferences(
 
     if (!targetRange) return [];
 
-    const resultSet = await followEdge(targetRange.id, 'next') as ResultSetVertex | null;
+    const resultSet = (await followEdge(targetRange.id, 'next')) as ResultSetVertex | null;
     if (!resultSet) return [];
 
-    const refResult = await followEdge(
-      resultSet.id,
-      'textDocument/references'
-    ) as ReferenceResultVertex | null;
+    const refResult = (await followEdge(resultSet.id, 'textDocument/references')) as ReferenceResultVertex | null;
 
     if (!refResult) return [];
 
@@ -270,23 +250,17 @@ export async function getImportsFromLSIF(uri: string): Promise<ImportInfo[]> {
  * @param symbolName - Symbol 이름
  * @returns 사용하는 파일 경로 배열
  */
-export async function getSymbolUsagesFromLSIF(
-  uri: string,
-  symbolName: string
-): Promise<string[]> {
+export async function getSymbolUsagesFromLSIF(uri: string, symbolName: string): Promise<string[]> {
   try {
     const docId = `doc:${uri}`;
     const rsId = `rs:${docId}:${symbolName}`;
 
     // ResultSet vertex 조회
-    const resultSet = await getVertex(rsId) as ResultSetVertex | null;
+    const resultSet = (await getVertex(rsId)) as ResultSetVertex | null;
     if (!resultSet) return [];
 
     // ReferenceResult 조회
-    const refResult = await followEdge(
-      rsId,
-      'textDocument/references'
-    ) as ReferenceResultVertex | null;
+    const refResult = (await followEdge(rsId, 'textDocument/references')) as ReferenceResultVertex | null;
 
     if (!refResult) return [];
 
@@ -306,10 +280,7 @@ export async function getSymbolUsagesFromLSIF(
 /**
  * 위치가 Range 안에 있는지 확인
  */
-function isPositionInRange(
-  position: { line: number; character: number },
-  range: Range
-): boolean {
+function isPositionInRange(position: { line: number; character: number }, range: Range): boolean {
   // Line 비교
   if (position.line < range.start.line || position.line > range.end.line) {
     return false;

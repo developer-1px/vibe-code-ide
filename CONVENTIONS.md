@@ -634,6 +634,95 @@ const { descriptor } = parse(code);
 - ✅ 문자열 정리: `text.trim()`, `text.replace(/\s+/g, ' ')`
 - ❌ 코드 분석: 절대 사용 금지
 
+### Symbol 수집 원칙 (Single AST Traversal)
+
+**핵심**: Worker 파싱 시점에 파일 노드 + Symbol 노드 모두 생성
+
+#### Worker Symbol Extraction
+
+```typescript
+// ✅ parseProject.worker.ts
+function parseProjectInWorker(files: Record<string, string>): SerializedSourceFileNode[] {
+  const nodes: SerializedSourceFileNode[] = [];
+
+  filePathsArray.forEach((filePath) => {
+    const sourceFile = ts.createSourceFile(...);
+
+    // 1️⃣ 파일 노드 생성
+    nodes.push({ id: filePath, type: 'file', ... });
+
+    // 2️⃣ Symbol 노드 생성 (AST 순회 1번으로 완료)
+    extractSymbolNodes(sourceFile, filePath, nodes);
+  });
+
+  return nodes;
+}
+```
+
+#### Symbol Node Types
+
+Worker가 자동으로 수집하는 Symbol:
+- `type` - Type alias 선언
+- `interface` - Interface 선언
+- `function` - Function 선언
+- `const` - Const 변수
+- `variable` - Let/Var 변수
+- `class` - Class 선언
+- `enum` - Enum 선언
+
+#### Symbol Node ID Convention
+
+```typescript
+// File nodes
+id: 'src/app/atoms.ts'
+
+// Symbol nodes (filePath::symbolName)
+id: 'src/app/atoms.ts::DocumentMode'
+id: 'src/app/atoms.ts::filesAtom'
+id: 'src/app/atoms.ts::parseProject'
+```
+
+#### Symbol 사용 패턴
+
+```typescript
+// ✅ CORRECT - fullNodeMap 필터링
+function getTypeSymbols(fullNodeMap: Map<string, SourceFileNode>) {
+  return Array.from(fullNodeMap.values()).filter(
+    node => node.type === 'type'
+  );
+}
+
+// ❌ WRONG - AST 재순회 (Worker가 이미 함!)
+function getTypeSymbols(node: SourceFileNode) {
+  const types = [];
+  ts.forEachChild(node.sourceFile, (child) => {
+    if (ts.isTypeAliasDeclaration(child)) {
+      types.push(child.name.text);
+    }
+  });
+  return types;
+}
+```
+
+#### 예외: Usage 추출
+
+**Top-level 선언이 아닌 Usage는 AST 순회 필요**:
+```typescript
+// ✅ OK - Usage는 Worker에서 수집 불가
+fullNodeMap.forEach((node) => {
+  if (node.type !== 'file') return;
+  const usages = getIdentifiers(node.sourceFile, declaredSymbols);
+});
+```
+
+#### 체크리스트
+
+TypeScript 기능 추가 시:
+- [ ] Symbol 정보 필요? → fullNodeMap 필터링
+- [ ] 새 Symbol 타입 필요? → Worker `extractSymbolNodes()` 수정
+- [ ] AST 순회 시도? → STOP! fullNodeMap 확인
+- [ ] Usage 찾기? → OK (예외적으로 순회 필요)
+
 ---
 
 ## Git Commit Convention
@@ -662,12 +751,13 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 
 ## 요약
 
-### 핵심 원칙 4가지
+### 핵심 원칙 5가지
 
 1. **배럴 Export 사용 안 함** - 직접 import만 사용
 2. **Handler Props Drilling 금지** - 데이터는 props, Handler는 atom
 3. **Interface는 데이터 구조만** - 컴포넌트 Props는 Inline으로
 4. **정규식으로 코드 분석 금지** - 반드시 AST Parser 사용
+5. **Single AST Traversal** - Worker에서 파일 + Symbol 노드 모두 생성, AST 재순회 금지
 
 ### 빠른 체크리스트
 
@@ -680,5 +770,11 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 타입 정의 시:
 - [ ] 재사용되는 데이터 구조만 interface로 정의했는가?
 - [ ] 컴포넌트 Props를 interface로 만들지 않았는가?
+
+TypeScript 기능 추가 시:
+- [ ] Symbol 정보가 필요한가? → fullNodeMap 필터링만 사용
+- [ ] AST를 순회하려고 하는가? → STOP! fullNodeMap 먼저 확인
+- [ ] 새로운 Symbol 타입이 필요한가? → Worker의 extractSymbolNodes() 수정
+- [ ] Usage(사용처)를 찾는가? → OK (예외적으로 AST 순회 필요)
 
 이 컨벤션을 따르면 유지보수가 쉽고 확장 가능한 코드베이스를 유지할 수 있습니다.

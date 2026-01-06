@@ -8,19 +8,19 @@
  */
 
 import * as ts from 'typescript';
-import type {
-  Vertex,
-  Edge,
-  DocumentVertex,
-  RangeVertex,
-  ResultSetVertex,
-  DefinitionResultVertex,
-  HoverResultVertex,
-  ReferenceResultVertex,
-  Range,
-  LSIFIndexResult,
-} from './types';
 import { hashContent } from './query';
+import type {
+  DefinitionResultVertex,
+  DocumentVertex,
+  Edge,
+  HoverResultVertex,
+  LSIFIndexResult,
+  Range,
+  RangeVertex,
+  ReferenceResultVertex,
+  ResultSetVertex,
+  Vertex,
+} from './types';
 
 // ========================================
 // Main Entry Point
@@ -33,11 +33,7 @@ import { hashContent } from './query';
  * @param sourceFile - TypeScript AST
  * @returns LSIF Vertices + Edges
  */
-export function parseFileToLSIF(
-  filePath: string,
-  content: string,
-  sourceFile: ts.SourceFile
-): LSIFIndexResult {
+export function parseFileToLSIF(filePath: string, content: string, sourceFile: ts.SourceFile): LSIFIndexResult {
   const vertices: Vertex[] = [];
   const edges: Edge[] = [];
 
@@ -102,11 +98,7 @@ interface ExportInfo {
  * Export 선언을 LSIF 구조로 변환
  * Export → Range → ResultSet → DefinitionResult + HoverResult
  */
-function extractExportInfo(
-  node: ts.Node,
-  sourceFile: ts.SourceFile,
-  docId: string
-): ExportInfo | null {
+function extractExportInfo(node: ts.Node, sourceFile: ts.SourceFile, docId: string): ExportInfo | null {
   const ranges: RangeVertex[] = [];
   const vertices: Vertex[] = [];
   const edges: Edge[] = [];
@@ -240,9 +232,7 @@ function extractHoverContent(
 ): string {
   // Function signature
   if (ts.isFunctionDeclaration(node)) {
-    const params = node.parameters
-      .map((p) => p.getText(sourceFile))
-      .join(', ');
+    const params = node.parameters.map((p) => p.getText(sourceFile)).join(', ');
     const returnType = node.type ? `: ${node.type.getText(sourceFile)}` : '';
     return `\`\`\`typescript\nfunction ${name}(${params})${returnType}\n\`\`\``;
   }
@@ -250,9 +240,7 @@ function extractHoverContent(
   // Variable with type
   if (ts.isVariableStatement(node)) {
     const declaration = node.declarationList.declarations[0];
-    const type = declaration.type
-      ? `: ${declaration.type.getText(sourceFile)}`
-      : '';
+    const type = declaration.type ? `: ${declaration.type.getText(sourceFile)}` : '';
     return `\`\`\`typescript\nconst ${name}${type}\n\`\`\``;
   }
 
@@ -286,15 +274,11 @@ function extractHoverContent(
 /**
  * Import 선언을 Range Vertex로 변환
  */
-function extractImportRange(
-  node: ts.ImportDeclaration,
-  sourceFile: ts.SourceFile,
-  docId: string
-): RangeVertex | null {
+function extractImportRange(node: ts.ImportDeclaration, sourceFile: ts.SourceFile, docId: string): RangeVertex | null {
   if (!node.importClause) return null;
 
   const { importClause } = node;
-  const moduleSpecifier = (node.moduleSpecifier as ts.StringLiteral).text;
+  const _moduleSpecifier = (node.moduleSpecifier as ts.StringLiteral).text;
 
   // Default import: import Foo from 'bar'
   if (importClause.name) {
@@ -338,10 +322,7 @@ function extractImportRange(
   }
 
   // Namespace import: import * as Foo from 'bar'
-  if (
-    importClause.namedBindings &&
-    ts.isNamespaceImport(importClause.namedBindings)
-  ) {
+  if (importClause.namedBindings && ts.isNamespaceImport(importClause.namedBindings)) {
     const name = importClause.namedBindings.name.text;
     const range = nodeToRange(importClause.namedBindings, sourceFile);
     const rangeId = `range:${docId}:${range.start.line}:${range.start.character}`;
@@ -371,9 +352,10 @@ function extractImportRange(
  * @param allResults - 모든 파일의 LSIF 결과
  * @returns ReferenceResult vertices + item edges
  */
-export function buildReferenceResults(
-  allResults: LSIFIndexResult[]
-): { vertices: ReferenceResultVertex[]; edges: Edge[] } {
+export function buildReferenceResults(allResults: LSIFIndexResult[]): {
+  vertices: ReferenceResultVertex[];
+  edges: Edge[];
+} {
   const vertices: ReferenceResultVertex[] = [];
   const edges: Edge[] = [];
 
@@ -382,34 +364,24 @@ export function buildReferenceResults(
 
   allResults.forEach((result) => {
     result.vertices.forEach((vertex) => {
-      if (
-        vertex.type === 'range' &&
-        vertex.tag?.type === 'definition'
-      ) {
+      if (vertex.type === 'range' && vertex.tag?.type === 'definition') {
         const docId = vertex.documentId;
         const symbolName = vertex.tag.text;
 
         if (!exportMap.has(docId)) {
           exportMap.set(docId, new Map());
         }
-        exportMap.get(docId)!.set(symbolName, vertex.range);
+        exportMap.get(docId)?.set(symbolName, vertex.range);
       }
     });
   });
 
   // 2. 모든 import 수집 (어떤 symbol이 어디서 참조되는지)
-  const referenceMap = new Map<
-    string,
-    Array<{ uri: string; range: Range }>
-  >(); // key: rsId
+  const referenceMap = new Map<string, Array<{ uri: string; range: Range }>>(); // key: rsId
 
   allResults.forEach((result) => {
     result.vertices.forEach((vertex) => {
-      if (
-        vertex.type === 'range' &&
-        vertex.tag?.type === 'reference' &&
-        vertex.tag.kind === 'import'
-      ) {
+      if (vertex.type === 'range' && vertex.tag?.type === 'reference' && vertex.tag.kind === 'import') {
         const importName = vertex.tag.text;
         const importerUri = vertex.documentId.replace('doc:', '');
 
@@ -417,16 +389,13 @@ export function buildReferenceResults(
         // 현재는 간단하게 같은 이름으로 매칭 (나중에 개선 필요)
         allResults.forEach((targetResult) => {
           targetResult.vertices.forEach((targetVertex) => {
-            if (
-              targetVertex.type === 'resultSet' &&
-              targetVertex.symbolName === importName
-            ) {
+            if (targetVertex.type === 'resultSet' && targetVertex.symbolName === importName) {
               const rsId = targetVertex.id;
 
               if (!referenceMap.has(rsId)) {
                 referenceMap.set(rsId, []);
               }
-              referenceMap.get(rsId)!.push({
+              referenceMap.get(rsId)?.push({
                 uri: importerUri,
                 range: vertex.range,
               });
@@ -451,7 +420,7 @@ export function buildReferenceResults(
     edges.push(createEdge(rsId, 'textDocument/references', refResultId));
 
     // ReferenceResult → Range edges (item)
-    references.forEach((ref, index) => {
+    references.forEach((ref, _index) => {
       const rangeId = `range:doc:${ref.uri}:${ref.range.start.line}:${ref.range.start.character}`;
       edges.push(createEdge(refResultId, 'item', rangeId));
     });
@@ -486,11 +455,7 @@ function nodeToRange(node: ts.Node, sourceFile: ts.SourceFile): Range {
 /**
  * Edge 생성 헬퍼
  */
-function createEdge(
-  outV: string,
-  label: Edge['label'],
-  inV: string
-): Edge {
+function createEdge(outV: string, label: Edge['label'], inV: string): Edge {
   return {
     id: `edge:${outV}:${label}:${inV}`,
     type: 'edge',
@@ -513,9 +478,7 @@ function hasExportModifier(node: ts.Node): boolean {
 /**
  * 파일 확장자로 languageId 결정
  */
-function getLanguageId(
-  filePath: string
-): 'typescript' | 'javascript' | 'vue' {
+function getLanguageId(filePath: string): 'typescript' | 'javascript' | 'vue' {
   if (filePath.endsWith('.vue')) return 'vue';
   if (filePath.endsWith('.js') || filePath.endsWith('.jsx')) return 'javascript';
   return 'typescript';

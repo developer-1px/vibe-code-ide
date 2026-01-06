@@ -8,6 +8,7 @@ import { forwardRef, useEffect, useRef, useState, useTransition } from 'react';
 import { deadCodeResultsAtom } from '@/features/Code/CodeAnalyzer/DeadCodeAnalyzer/model/atoms';
 import { activeTabAtom } from '@/features/File/OpenFiles/model/atoms';
 import type { SourceFileNode } from '../../../entities/SourceFileNode/model/types';
+import { FileIcon } from '../../../entities/SourceFileNode/ui/FileIcon.tsx';
 import { getFileName } from '../../../shared/pathUtils';
 import { getWorkerPool } from '../../../shared/workerPool';
 import CodeViewer from '../../CodeViewer/CodeViewer';
@@ -15,7 +16,6 @@ import { renderCodeLinesDirect } from '../../CodeViewer/core/renderer/renderCode
 import { renderPlaintext } from '../../CodeViewer/core/renderer/renderPlaintext';
 import { renderVueFile } from '../../CodeViewer/core/renderer/renderVueFile';
 import type { CodeLine } from '../../CodeViewer/core/types/codeLine';
-import { getFileIcon } from '../../FileExplorer/lib/getFileIcon';
 import { hoveredFilePathAtom } from '../model/atoms';
 
 // Module-level cache for processedLines (Phase 1 performance optimization)
@@ -42,7 +42,6 @@ const FileSection = forwardRef<
   const hoveredFilePath = useAtomValue(hoveredFilePathAtom);
   const setHoveredFilePath = useSetAtom(hoveredFilePathAtom);
   const fileName = getFileName(node.filePath);
-  const FileIconComponent = getFileIcon(fileName);
   const [_isPending, startTransition] = useTransition();
 
   // Check if this file section is active (via activeTab or hover)
@@ -145,7 +144,7 @@ const FileSection = forwardRef<
       <div ref={headerRef} className="sticky top-0 z-10 bg-bg-elevated shadow-sm">
         {/* 파일명 헤더 */}
         <div className="px-4 py-2 flex items-center gap-2 border-b border-border-hover">
-          <FileIconComponent size={14} className="text-text-secondary" />
+          <FileIcon fileName={fileName} size={14} className="text-text-secondary" />
           <span className="text-xs font-medium text-text-primary">{node.filePath}</span>
         </div>
       </div>

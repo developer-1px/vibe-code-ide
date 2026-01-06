@@ -26,13 +26,7 @@ export interface Range {
 // Vertex Types
 // ========================================
 
-export type VertexType =
-  | 'document'
-  | 'range'
-  | 'resultSet'
-  | 'definitionResult'
-  | 'hoverResult'
-  | 'referenceResult';
+export type VertexType = 'document' | 'range' | 'resultSet' | 'definitionResult' | 'hoverResult' | 'referenceResult';
 
 /**
  * Document Vertex - 소스 파일

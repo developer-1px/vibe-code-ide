@@ -13,9 +13,8 @@ import { deadCodeResultsAtom } from '@/features/Code/CodeAnalyzer/DeadCodeAnalyz
 import { targetLineAtom } from '@/features/File/Navigation/model/atoms';
 import { activeTabAtom, openedTabsAtom } from '@/features/File/OpenFiles/model/atoms';
 import { filesAtom, fullNodeMapAtom, viewModeAtom } from '../../app/model/atoms';
+import { getFileMetadata } from '../../entities/SourceFileNode/lib/metadata';
 import { useTabNavigation } from '../../features/File/useTabNavigation';
-import { extractDefinitions } from '../../shared/definitionExtractor';
-import { extractOutlineStructure } from '../../shared/outlineExtractor';
 import { getFileName } from '../../shared/pathUtils';
 import CodeViewer from '../CodeViewer/CodeViewer';
 import { renderCodeLinesDirect } from '../CodeViewer/core/renderer/renderCodeLinesDirect';
@@ -122,16 +121,14 @@ const IDEView = () => {
     return renderCodeLinesDirect(activeNode, files, deadCodeResults);
   }, [activeNode, files, deadCodeResults]);
 
-  // Extract outline structure from active node
-  const outlineNodes = useMemo(() => {
-    if (!activeNode) return [];
-    return extractOutlineStructure(activeNode);
-  }, [activeNode]);
-
-  // Extract definitions from active node (already hierarchical by block scope)
-  const definitions = useMemo(() => {
-    if (!activeNode) return [];
-    return extractDefinitions(activeNode, files);
+  // 🔥 Performance Optimization: Use cached metadata instead of separate extractors
+  // - getFileMetadata() returns cached result if available (cached in App.tsx)
+  // - Avoids duplicate AST traversal (was: 2 separate AST traversals here + 1 in App.tsx)
+  // - Now: Single AST traversal shared across App.tsx and IDEView.tsx
+  const { outlineNodes, definitions } = useMemo(() => {
+    if (!activeNode) return { outlineNodes: [], definitions: [] };
+    const metadata = getFileMetadata(activeNode, files);
+    return metadata;
   }, [activeNode, files]);
 
   // Scroll to line handler for OutlinePanel

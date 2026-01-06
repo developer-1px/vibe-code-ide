@@ -2,7 +2,10 @@
  * Language Service로 정의 위치 및 hover 정보 추가
  */
 
+import * as ts from 'typescript';
 import type { CodeLine } from '../../types/codeLine';
+import { getParameterHintsForCall } from '../../../../../shared/tsParser/utils/languageService';
+import { createLanguageService } from '../../../../../shared/tsParser/utils/languageService';
 import { findDefinitionLocation, getQuickInfoAtPosition } from '../tsLanguageService';
 
 // Development mode flag
@@ -133,4 +136,102 @@ export const enrichWithLanguageService = (
       return segment;
     }),
   }));
+};
+
+/**
+ * IntelliJ-style Inlay Hints 추가 (간단한 테스트 버전)
+ * 모든 CallExpression의 argument에 "test:" 힌트 표시
+ *
+ * @param lines - 코드 라인 배열
+ * @param codeSnippet - 전체 코드
+ * @param filePath - 파일 경로
+ * @param files - 전체 파일 맵
+ * @returns 업데이트된 코드 라인 배열
+ */
+export const addInlayHints = (
+  lines: CodeLine[],
+  codeSnippet: string,
+  filePath: string,
+  files: Record<string, string>
+): CodeLine[] => {
+  try {
+    // Language Service 생성
+    const languageService = createLanguageService(files, filePath);
+    const fileName = filePath;
+
+    // sourceFile 가져오기
+    const program = languageService.getProgram();
+    if (!program) {
+      console.warn('[addInlayHints] No program available');
+      return lines;
+    }
+
+    const sourceFile = program.getSourceFile(fileName);
+    if (!sourceFile) {
+      console.warn('[addInlayHints] No sourceFile available');
+      return lines;
+    }
+
+    // CallExpression의 모든 argument 위치 수집
+    const allHints = new Map<number, string>(); // argPosition → paramName
+
+    function visit(node: ts.Node) {
+      if (ts.isCallExpression(node)) {
+        // Language Service로 signature help 가져오기
+        const expr = node.expression;
+        const exprPos = expr.getEnd();
+
+        try {
+          const signatureHelp = languageService.getSignatureHelpItems(fileName, exprPos, {});
+
+          if (signatureHelp && signatureHelp.items.length > 0) {
+            const signature = signatureHelp.items[0];
+            const parameters = signature.parameters;
+
+            // 각 argument에 대응하는 parameter 이름 매핑
+            node.arguments.forEach((arg, idx) => {
+              if (idx < parameters.length) {
+                const paramName = parameters[idx].name;
+                const argStart = arg.getStart(sourceFile);
+                allHints.set(argStart, paramName);
+              }
+            });
+          }
+        } catch (error) {
+          // Signature help 실패해도 계속 진행
+          console.debug('[addInlayHints] Signature help failed for:', node.expression.getText(sourceFile));
+        }
+      }
+      ts.forEachChild(node, visit);
+    }
+
+    visit(sourceFile);
+
+    if (allHints.size === 0) {
+      return lines;
+    }
+
+    // 각 라인의 segment에 inlayHint 추가
+    const updatedLines = lines.map((line) => ({
+      ...line,
+      segments: line.segments.map((segment) => {
+        if (segment.position !== undefined && allHints.has(segment.position)) {
+          const paramName = allHints.get(segment.position)!;
+          return {
+            ...segment,
+            inlayHint: {
+              text: `${paramName}:`,
+              position: 'before' as const,
+            },
+          };
+        }
+        return segment;
+      }),
+    }));
+
+    return updatedLines;
+  } catch (error) {
+    console.error('[addInlayHints] Error adding inlay hints:', error);
+    return lines;
+  }
 };

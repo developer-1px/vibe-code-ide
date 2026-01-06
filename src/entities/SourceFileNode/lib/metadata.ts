@@ -12,12 +12,8 @@
  */
 
 import ts from 'typescript';
+import { getExportsFromLSIF, getImportsFromLSIF, getSymbolUsagesFromLSIF } from '../../../shared/lsif/query';
 import type { SourceFileNode } from '../model/types';
-import {
-  getExportsFromLSIF,
-  getImportsFromLSIF,
-  getSymbolUsagesFromLSIF,
-} from '../../../shared/lsif/query';
 
 // ========================================
 // Public 인터페이스
@@ -136,7 +132,7 @@ export function getSymbolUsages(node: SourceFileNode, symbolName: string): strin
   if (node.type !== 'file') return [];
 
   // 🔥 View 우선 조회 (AST 순회 없음!)
-  if (node.views?.usages && node.views.usages[symbolName]) {
+  if (node.views?.usages?.[symbolName]) {
     return node.views.usages[symbolName];
   }
 
@@ -929,10 +925,10 @@ function extractFunctionArgumentsFromAST(sourceFile: ts.SourceFile): FunctionArg
 // 🔥 Performance Optimization: FileMetadata Caching
 // ========================================
 
-import type { DefinitionSymbol } from '../../../widgets/Panels/DefinitionPanel/definitionExtractor.ts';
 import type { OutlineNode } from '../../../shared/outlineExtractor';
-import { extractDefinitions } from '../../../widgets/Panels/DefinitionPanel/definitionExtractor.ts';
 import { extractOutlineStructure } from '../../../shared/outlineExtractor';
+import type { DefinitionSymbol } from '../../../widgets/Panels/DefinitionPanel/definitionExtractor.ts';
+import { extractDefinitions } from '../../../widgets/Panels/DefinitionPanel/definitionExtractor.ts';
 
 export interface FileMetadata {
   definitions: DefinitionSymbol[];
@@ -1103,10 +1099,7 @@ export async function getImportsAsync(node: SourceFileNode): Promise<ImportInfo[
  * @param symbolName - 조회할 symbol 이름
  * @returns import하는 파일 경로 배열
  */
-export async function getSymbolUsagesAsync(
-  node: SourceFileNode,
-  symbolName: string
-): Promise<string[]> {
+export async function getSymbolUsagesAsync(node: SourceFileNode, symbolName: string): Promise<string[]> {
   if (node.type !== 'file') return [];
 
   try {
@@ -1121,7 +1114,7 @@ export async function getSymbolUsagesAsync(
   }
 
   // 🔥 2. View Map Fallback
-  if (node.views?.usages && node.views.usages[symbolName]) {
+  if (node.views?.usages?.[symbolName]) {
     console.log(`[getSymbolUsagesAsync] 📦 View Map hit for ${node.filePath}#${symbolName}`);
     return node.views.usages[symbolName];
   }

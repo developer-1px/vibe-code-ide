@@ -10,11 +10,11 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { FileTreeItem } from '@/components/ide/FileTreeItem';
 import { useOpenFile } from '@/features/File/OpenFiles/lib/useOpenFile';
 import { activeTabAtom, openedTabsAtom } from '@/features/File/OpenFiles/model/atoms';
+import { FileIcon } from '../../entities/SourceFileNode/ui/FileIcon.tsx';
 import { filesAtom, focusedFolderAtom } from '../../app/model/atoms';
 import { useTreeKeyboardNavigation } from '../../shared/hooks/useTreeKeyboardNavigation';
 import { TreeView } from '../../shared/ui/TreeView/TreeView';
 import { buildFileTree } from './lib/buildFileTree';
-import { getFileIcon } from './lib/getFileIcon';
 import { getFlatItemList } from './lib/getFlatItemList';
 import { getInitialCollapsedFolders } from './lib/getInitialCollapsedFolders';
 import { FolderBreadcrumb } from './ui/FolderBreadcrumb';
@@ -113,7 +113,12 @@ export function FileExplorer({ containerRef }: { containerRef: React.RefObject<H
           const isActive = activeTab === node.filePath;
           const isOpened = node.filePath ? openedTabs.includes(node.filePath) : false;
           const fileExtension = node.name.includes('.') ? `.${node.name.split('.').pop()}` : undefined;
-          const icon = node.type === 'folder' ? (isCollapsed ? Folder : FolderOpen) : getFileIcon(node.name);
+          const icon =
+            node.type === 'folder'
+              ? isCollapsed
+                ? Folder
+                : FolderOpen
+              : (() => <FileIcon fileName={node.name} />) as React.ComponentType;
 
           return (
             <FileTreeItem
