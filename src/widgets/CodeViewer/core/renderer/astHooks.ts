@@ -174,6 +174,52 @@ export function processTemplateLiteral(node: ts.Node, sourceFile: ts.SourceFile,
 }
 
 /**
+ * Check if an identifier is in a type position (not a value position)
+ * Examples:
+ * - const x: React.FC → React is in type position
+ * - typeof React → React is in type position
+ * - React.useCallback() → React is NOT in type position (value)
+ */
+function isInTypePosition(node: ts.Identifier): boolean {
+  const parent = (node as any).parent;
+
+  // Direct TypeReference: const x: React
+  if (ts.isTypeReferenceNode(parent)) {
+    return true;
+  }
+
+  // TypeQuery: typeof React
+  if (ts.isTypeQueryNode(parent)) {
+    return true;
+  }
+
+  // PropertyAccess in type position: React.FC
+  if (ts.isPropertyAccessExpression(parent) || ts.isPropertyAccessChain(parent)) {
+    let current: ts.Node = parent;
+    // Walk up to find if this PropertyAccess is inside a type
+    while (current) {
+      const p = (current as any).parent;
+
+      // Found a type node parent
+      if (ts.isTypeReferenceNode(p) || ts.isTypeNode(p)) {
+        return true;
+      }
+
+      // Continue walking up if still in PropertyAccess chain
+      if (ts.isPropertyAccessExpression(p) || ts.isQualifiedName(p)) {
+        current = p;
+        continue;
+      }
+
+      // Stop if we've left the PropertyAccess chain
+      break;
+    }
+  }
+
+  return false;
+}
+
+/**
  * Hook 2: Identifier 분류 및 처리
  * Phase 2-B: Refactored to use RenderContext (13 params → 4 params)
  */
@@ -186,6 +232,17 @@ export function processIdentifier(
   const start = node.getStart(sourceFile);
   const end = node.getEnd();
   const name = node.text;
+
+  // ✅ Skip JSX attribute names (e.g., store={store} - first "store" is attribute name)
+  const parent = (node as any).parent;
+  if (ts.isJsxAttribute(parent) && parent.name === node) {
+    return; // Skip - this is an attribute name, not a value
+  }
+
+  // ✅ Skip type positions (e.g., React in React.FC)
+  if (isInTypePosition(node)) {
+    return; // Skip - this is in a type position, display as plain text
+  }
 
   // Self reference (사용처)
   if (name === ctx.nodeShortId) {
@@ -216,7 +273,7 @@ export function processIdentifier(
 
   if (importSource) {
     const isNpm = importSource.startsWith('npm:');
-    const kind: SegmentKind = isNpm ? 'identifier' : 'external-import';
+    const kind: SegmentKind = isNpm ? 'external-npm' : 'external-import'; // ✅ npm 모듈은 external-npm으로 분류
     addKind(start, end, kind, undefined, importSource, node);
     addKind(start, end, 'identifier', importSource, undefined, node);
   } else if (ctx.dependencyMap.has(name)) {

@@ -3,7 +3,9 @@
  * 외부 파일의 변수/함수를 클릭하면 해당 파일을 열고 정의 위치로 이동
  */
 
+import { useAtomValue, useSetAtom } from 'jotai';
 import type React from 'react';
+import { hoveredIdentifierAtom } from '@/app/model/atoms';
 import { useOpenFile } from '@/features/File/OpenFiles/lib/useOpenFile';
 import type { CanvasNode } from '../../../../entities/CanvasNode/model/types';
 import { getTokenStyle } from '../../../../entities/SourceFileNode/lib/styleUtils';
@@ -25,6 +27,10 @@ export const DependencyTokenSegment: React.FC<DependencyTokenSegmentProps> = ({
   isFocused,
 }) => {
   const { openFile } = useOpenFile();
+  const hoveredIdentifier = useAtomValue(hoveredIdentifierAtom);
+  const setHoveredIdentifier = useSetAtom(hoveredIdentifierAtom);
+
+  const isHovered = hoveredIdentifier === segment.text;
 
   const isComponent = /^[A-Z]/.test(segment.text);
 
@@ -46,12 +52,26 @@ export const DependencyTokenSegment: React.FC<DependencyTokenSegmentProps> = ({
     // TODO: 여기에 기존 CodeToken의 토글 로직 추가 가능
   };
 
-  const className = isFocused ? `${style.className} bg-cyan-500/30 rounded` : style.className;
+  const handleMouseEnter = () => {
+    setHoveredIdentifier(segment.text);
+  };
+
+  const handleMouseLeave = () => {
+    setHoveredIdentifier(null);
+  };
+
+  const className = isFocused
+    ? `${style.className} bg-cyan-500/30 rounded`
+    : isHovered
+      ? `${style.className} bg-yellow-400/20 rounded`
+      : style.className;
 
   return (
     <span
-      className={`${className} inline-block px-0.5 rounded transition-all duration-200 select-text cursor-pointer border ${getTokenStyle(false, isComponent)}`}
+      className={`${className} inline-block rounded transition-all duration-200 select-text cursor-pointer border ${getTokenStyle(false, isComponent)}`}
       onClick={handleClick}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
     >
       {segment.text}
     </span>

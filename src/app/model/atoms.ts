@@ -56,6 +56,13 @@ export type FocusedPane = 'sidebar' | 'canvas' | 'search' | null;
 export const focusedPaneAtom = atom<FocusedPane>('sidebar'); // Default to sidebar when it's open
 
 // ============================================================================
+// Code Highlight Atoms
+// ============================================================================
+
+// Hover된 identifier 추적 (identifier hover highlight)
+export const hoveredIdentifierAtom = atom<string | null>(null);
+
+// ============================================================================
 // Right Panel Atoms
 // ============================================================================
 

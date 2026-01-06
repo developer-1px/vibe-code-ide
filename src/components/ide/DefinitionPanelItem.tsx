@@ -1,4 +1,4 @@
-import { BookA, Box, ChevronDown, ChevronRight, Dot, FunctionSquare, PackageOpen, Type } from 'lucide-react';
+import { BookA, Box, Dot, FunctionSquare, MessageSquare, PackageOpen, Blocks, Type, Layers, CheckCircle, Settings, BugPlay } from 'lucide-react';
 import { cn } from '@/components/lib/utils';
 import type { DefinitionSymbol, SymbolKind } from '../../shared/definitionExtractor';
 
@@ -35,6 +35,16 @@ function getSymbolIcon(kind: SymbolKind, _isExported?: boolean) {
       return <Dot {...iconProps} className="text-cyan-200" fill="currentColor" />;
     case 'property':
       return <Dot {...iconProps} className="text-slate-400/85" fill="currentColor" />;
+    case 'comment':
+      return <MessageSquare {...iconProps} className="text-slate-400/70" />;
+    case 'block':
+      return <Blocks {...iconProps} className="text-slate-500" />;
+    case 'test-suite':
+      return <BugPlay {...iconProps} className="text-blue-300" />;
+    case 'test-case':
+      return <BugPlay {...iconProps} className="text-green-300" />;
+    case 'test-hook':
+      return <BugPlay {...iconProps} className="text-orange-300" />;
     default:
       return <BookA {...iconProps} className="text-slate-400" />;
   }
@@ -62,6 +72,12 @@ function getSymbolColor(kind: SymbolKind): string {
       return 'text-cyan-200';
     case 'property':
       return 'text-slate-400/85';
+    case 'test-suite':
+      return 'text-blue-300';
+    case 'test-case':
+      return 'text-green-300';
+    case 'test-hook':
+      return 'text-orange-300';
     default:
       return 'text-slate-400';
   }
@@ -75,87 +91,62 @@ export function DefinitionPanelItem({
   onToggle,
   onSymbolClick,
 }: DefinitionPanelItemProps) {
-  const hasChildren = symbol.children && symbol.children.length > 0;
-
-  // Create unique key for this symbol (line + name)
-  const symbolKey = `${symbol.line}-${symbol.name}`;
-
   // Display name with export indicator
   const displayName = symbol.modifiers?.export ? `${symbol.name}` : symbol.name;
+
+  // Block detection
+  const isBlockStart = symbol.foldInfo && symbol.foldInfo.foldStart === symbol.line;
 
   const handleClick = () => {
     onSymbolClick(symbol.line);
   };
 
-  const handleToggle = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    if (hasChildren) {
-      onToggle(symbolKey);
-    }
-  };
-
   return (
-    <div>
-      {/* Symbol Header */}
-      <div
-        className={cn(
-          'group flex flex-nowrap h-[var(--limn-file-item-height)] items-center gap-1 px-2 cursor-pointer hover:bg-white/5 transition-colors',
-          'border-l-2 border-transparent'
-        )}
-        style={{
-          paddingLeft: `calc(12px + ${depth} * var(--limn-indent))`,
-        }}
-        onClick={handleClick}
-      >
-        {/* Chevron */}
-        {hasChildren ? (
-          <button onClick={handleToggle} className="shrink-0">
-            {isExpanded ? (
-              <ChevronDown size={11} className="text-text-secondary" />
-            ) : (
-              <ChevronRight size={11} className="text-text-secondary" />
-            )}
-          </button>
-        ) : (
-          <div className="w-[11px] shrink-0" />
-        )}
-
-        {/* Kind Icon */}
-        <div className="shrink-0">{getSymbolIcon(symbol.kind, symbol.modifiers?.export)}</div>
-
-        {/* Symbol Name */}
-        <span
+    <div className={cn(isBlockStart && 'mt-3 border-t border-border-subtle pt-1')}>
+      {/* Comment - Label style with // prefix */}
+      {symbol.kind === 'comment' ? (
+        <div
           className={cn(
-            'flex-1 truncate whitespace-nowrap overflow-hidden text-ellipsis min-w-0 flex items-center gap-1',
-            getSymbolColor(symbol.kind)
+            'flex items-center gap-1 px-2 py-0.5 text-2xs text-text-muted italic',
+            symbol.hasBlankLineBefore && 'mt-2',
+            symbol.hasBlankLineAfter && 'mb-2'
           )}
+          style={{
+            paddingLeft: `calc(12px + ${depth} * var(--limn-indent))`,
+          }}
         >
-          {displayName}
-          {symbol.modifiers?.export && <span className="text-warm-300 text-2xs opacity-60">↗</span>}
-        </span>
+          {/* // prefix aligned with icon position */}
+          <span className="shrink-0 text-2xs opacity-50">//</span>
+          {/* Comment text */}
+          <span className="flex-1 truncate whitespace-nowrap overflow-hidden text-ellipsis">{displayName}</span>
+        </div>
+      ) : (
+        /* Symbol Header */
+        <div
+          className={cn(
+            'group flex flex-nowrap h-[var(--limn-file-item-height)] items-center gap-1 px-2 text-xs cursor-pointer border-l-2',
+            'border-transparent text-text-secondary hover:bg-white/5 transition-colors'
+          )}
+          style={{
+            paddingLeft: `calc(12px + ${depth} * var(--limn-indent))`,
+          }}
+          onClick={handleClick}
+        >
+          {/* Kind Icon */}
+          <div className="shrink-0">{getSymbolIcon(symbol.kind, symbol.modifiers?.export)}</div>
 
-        {/* Type annotation (if exists) */}
-        {symbol.type && (
-          <span className="text-text-tertiary text-2xs shrink-0">
-            {symbol.type.length > 30 ? `${symbol.type.substring(0, 30)}...` : symbol.type}
+          {/* Symbol Name */}
+          <span className="flex-1 truncate whitespace-nowrap overflow-hidden text-ellipsis min-w-0 flex items-center gap-1">
+            {displayName}
+            {symbol.modifiers?.export && <span className="text-warm-300 text-2xs opacity-60">↗</span>}
           </span>
-        )}
-      </div>
 
-      {/* Children */}
-      {isExpanded && hasChildren && (
-        <div>
-          {symbol.children?.map((child, idx) => (
-            <DefinitionPanelItem
-              key={`${child.line}-${child.name}-${idx}`}
-              symbol={child}
-              depth={depth + 1}
-              isExpanded={expandedSymbols.has(`${child.line}-${child.name}`)}
-              expandedSymbols={expandedSymbols}
-              onToggle={onToggle}
-              onSymbolClick={onSymbolClick}
-            />
-          ))}
+          {/* Type annotation (if exists) */}
+          {symbol.type && (
+            <span className="text-text-tertiary text-2xs shrink-0">
+              {symbol.type.length > 30 ? `${symbol.type.substring(0, 30)}...` : symbol.type}
+            </span>
+          )}
         </div>
       )}
     </div>

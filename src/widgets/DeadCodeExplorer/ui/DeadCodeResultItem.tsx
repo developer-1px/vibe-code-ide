@@ -70,7 +70,7 @@ export const DeadCodeResultItem = React.forwardRef<
       {/* Left side: Icon + Symbol name */}
       <div className="flex items-center gap-2 min-w-0">
         <KindIcon size={12} className="text-text-muted shrink-0" />
-        <span className="text-[10px] text-text-primary font-medium truncate">
+        <span className="text-2xs text-text-primary font-medium truncate">
           {item.symbolName}
           {item.componentName && <span className="text-text-tertiary ml-1">(in {item.componentName})</span>}
           {item.functionName && <span className="text-text-tertiary ml-1">(in {item.functionName})</span>}
@@ -79,7 +79,7 @@ export const DeadCodeResultItem = React.forwardRef<
 
       {/* Right side: File location + Checkbox */}
       <div className="flex items-center gap-2 shrink-0">
-        <span className="text-[10px] text-text-tertiary">
+        <span className="text-2xs text-text-tertiary">
           {fileName}:{item.line}
         </span>
         <Checkbox

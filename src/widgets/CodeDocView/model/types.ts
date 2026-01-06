@@ -70,9 +70,10 @@ export interface Parameter {
  */
 export interface SymbolDetail {
   name: string;
-  type: 'function' | 'interface' | 'class';
+  type: 'function' | 'interface' | 'class' | 'test-suite' | 'test-case' | 'test-hook';
   modifiers?: string[];
   lineRange?: string;
+  startLine?: number; // 소스 파일에서의 시작 라인 (스크롤용)
   signature: string;
   description: string;
   parameters?: Parameter[];
@@ -82,6 +83,13 @@ export interface SymbolDetail {
   analysis?: SymbolAnalysis;
   blocks?: DocBlock[];
   flowchart?: string; // Mermaid flowchart
+
+  // Test-specific fields
+  testMetadata?: {
+    url?: string;
+    selectors?: string[];
+    expectations?: string[];
+  };
 }
 
 /**

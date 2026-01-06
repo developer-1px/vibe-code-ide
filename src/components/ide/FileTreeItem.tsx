@@ -7,6 +7,7 @@ export interface FileTreeItemProps {
   icon: LucideIcon | React.ComponentType;
   label: string;
   active?: boolean;
+  opened?: boolean; // File is in openedTabs (Workspace)
   focused?: boolean; // Keyboard navigation focus (different from active)
   isFolder?: boolean;
   isOpen?: boolean;
@@ -23,6 +24,7 @@ export const FileTreeItem = React.forwardRef<HTMLDivElement, FileTreeItemProps>(
       icon: Icon,
       label,
       active,
+      opened,
       focused,
       isFolder,
       isOpen,
@@ -67,7 +69,7 @@ export const FileTreeItem = React.forwardRef<HTMLDivElement, FileTreeItemProps>(
       switch (ext.toLowerCase()) {
         case '.ts':
         case '.tsx':
-          return 'text-[#3178c6]'; // TypeScript blue
+          return 'text-[#4A90E2]'; // TypeScript blue (brighter)
         case '.js':
         case '.jsx':
           return 'text-[#f7df1e]'; // JavaScript yellow
@@ -94,7 +96,7 @@ export const FileTreeItem = React.forwardRef<HTMLDivElement, FileTreeItemProps>(
         className={cn(
           'group flex flex-nowrap h-[var(--limn-file-item-height)] items-center gap-1 border-l-2 px-2 text-xs cursor-pointer',
           active
-            ? 'border-warm-300 bg-warm-active-bg text-text-primary'
+            ? 'border-transparent text-text-primary'
             : focused
               ? 'border-warm-300/50 bg-white/8 text-text-primary'
               : 'border-transparent text-text-secondary'
@@ -128,7 +130,9 @@ export const FileTreeItem = React.forwardRef<HTMLDivElement, FileTreeItemProps>(
           />
         )}
         <span className="flex-1 truncate whitespace-nowrap overflow-hidden text-ellipsis min-w-0">{label}</span>
-        {active && !isFolder && <Indicator variant="warning" className="h-1 w-1 shrink-0" />}
+        {opened && !isFolder && (
+          <Indicator variant="warning" className={cn('h-1 w-1 shrink-0', active && 'animate-pulse')} />
+        )}
       </div>
     );
   }

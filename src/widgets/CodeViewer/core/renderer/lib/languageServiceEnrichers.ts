@@ -9,6 +9,38 @@ import { findDefinitionLocation, getQuickInfoAtPosition } from '../tsLanguageSer
 const __DEV__ = import.meta.env.DEV;
 
 /**
+ * Check if type string represents a function
+ * Examples:
+ * - "() => void"
+ * - "(a: number) => string"
+ * - "function foo(): void"
+ * - "(method) log(message?: any, ...optionalParams: any[]): void"
+ */
+function isFunctionType(typeString: string): boolean {
+  // Check for arrow function signature: (...) => ...
+  if (typeString.includes('=>')) {
+    return true;
+  }
+
+  // Check for function keyword: function foo()
+  if (typeString.includes('function ')) {
+    return true;
+  }
+
+  // Check for method signature: (method) foo(...)
+  if (typeString.startsWith('(method)')) {
+    return true;
+  }
+
+  // Check for constructor: new (...) => ...
+  if (typeString.includes('new (')) {
+    return true;
+  }
+
+  return false;
+}
+
+/**
  * Phase 3-B: Performance threshold for Language Service enrichment
  * Skip enrichment for very large files to improve initial render performance
  */
@@ -79,8 +111,15 @@ export const enrichWithLanguageService = (
           ? getQuickInfoAtPosition(codeSnippet, filePath || '', segment.position, isTsx)
           : undefined;
 
+        // ✅ Check if this identifier is a function based on type information
+        const isFunction = hoverInfo ? isFunctionType(hoverInfo) : false;
+
+        // Add 'function' kind if it's a function
+        const updatedKinds = isFunction && segment.kinds ? [...segment.kinds, 'function'] : segment.kinds;
+
         return {
           ...segment,
+          kinds: updatedKinds,
           definitionLocation: defLocation
             ? {
                 filePath: defLocation.filePath,

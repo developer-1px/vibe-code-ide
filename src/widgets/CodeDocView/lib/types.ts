@@ -14,11 +14,11 @@
 export type CommentStyle = 'line' | 'block' | 'jsdoc' | 'separator' | 'xml';
 
 /**
- * CodeDoc 섹션 (주석, 코드, export, jsx, 제어문, 또는 파일 헤더)
+ * CodeDoc 섹션 (주석, 코드, export, jsx, 제어문, 테스트, 또는 파일 헤더)
  */
 export interface CodeDocSection {
   /** 섹션 타입 */
-  type: 'comment' | 'code' | 'export' | 'jsx' | 'control' | 'fileHeader';
+  type: 'comment' | 'code' | 'export' | 'jsx' | 'control' | 'fileHeader' | 'test-suite' | 'test-case' | 'test-hook';
 
   /** 섹션 내용 (주석의 경우 텍스트, 코드의 경우 원본 코드) */
   content: string;
@@ -44,6 +44,18 @@ export interface CodeDocSection {
 
   /** Export signature 바로 앞의 주석 (빈 줄 없이 연속된 경우) */
   relatedComment?: CodeDocSection;
+
+  // Test specific fields
+
+  /** 테스트 이름 (test-suite, test-case, test-hook의 경우) */
+  testName?: string;
+
+  /** 테스트 메타데이터 (URL, selectors, expectations 등) */
+  testMetadata?: {
+    url?: string;
+    selectors?: string[];
+    expectations?: string[];
+  };
 }
 
 /**

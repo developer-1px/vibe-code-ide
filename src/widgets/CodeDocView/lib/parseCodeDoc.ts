@@ -237,6 +237,66 @@ function _isExportLine(line: string): boolean {
 }
 
 /**
+ * 테스트 이름 추출 (test.describe(...), test(...), it(...))
+ */
+function extractTestName(line: string): string {
+  // test.describe('name', ...) or describe('name', ...)
+  const describeMatch = line.match(/(?:test\.)?describe\s*\(\s*['"`](.+?)['"`]/);
+  if (describeMatch) return describeMatch[1];
+
+  // test('name', ...) or it('name', ...)
+  const testMatch = line.match(/(?:test|it)\s*\(\s*['"`](.+?)['"`]/);
+  if (testMatch) return testMatch[1];
+
+  // test.beforeEach(...) or test.afterEach(...)
+  const hookMatch = line.match(/test\.(beforeEach|afterEach)/);
+  if (hookMatch) return hookMatch[1];
+
+  // beforeEach(...) or afterEach(...)
+  const bareHookMatch = line.match(/^(beforeEach|afterEach)/);
+  if (bareHookMatch) return bareHookMatch[1];
+
+  return '';
+}
+
+/**
+ * 테스트 메타데이터 추출 (page.goto, getByTestId, expect)
+ */
+function extractTestMetadata(code: string): {
+  url?: string;
+  selectors?: string[];
+  expectations?: string[];
+} {
+  const metadata: {
+    url?: string;
+    selectors?: string[];
+    expectations?: string[];
+  } = {};
+
+  // Extract URL from page.goto('...')
+  const gotoMatch = code.match(/page\.goto\s*\(\s*['"`](.+?)['"`]/);
+  if (gotoMatch) {
+    metadata.url = gotoMatch[1];
+  }
+
+  // Extract selectors from getByTestId('...')
+  const selectorMatches = code.matchAll(/getByTestId\s*\(\s*['"`](.+?)['"`]/g);
+  const selectors = Array.from(selectorMatches).map((match) => match[1]);
+  if (selectors.length > 0) {
+    metadata.selectors = selectors;
+  }
+
+  // Extract expectations from expect(...).toXXX
+  const expectationMatches = code.matchAll(/expect\(.+?\)\.(\w+)/g);
+  const expectations = Array.from(expectationMatches).map((match) => match[1]);
+  if (expectations.length > 0) {
+    metadata.expectations = [...new Set(expectations)]; // Remove duplicates
+  }
+
+  return metadata;
+}
+
+/**
  * 코드 블록이 JSX를 포함하는지 판별
  */
 function containsJSX(code: string): boolean {
@@ -254,6 +314,30 @@ function containsControlFlow(code: string): boolean {
   // 제어문 키워드: if, switch, case, return, for, while, try, catch
   const controlKeywords = /\b(if|switch|case|return|for|while|try|catch|throw)\b/;
   return controlKeywords.test(code);
+}
+
+/**
+ * 코드 블록이 테스트인지 판별하고 타입 반환
+ */
+function detectTestType(code: string): 'test-suite' | 'test-case' | 'test-hook' | null {
+  const trimmed = code.trim();
+
+  // test.describe(...) or describe(...)
+  if (/(?:test\.)?describe\s*\(/.test(trimmed)) {
+    return 'test-suite';
+  }
+
+  // test.beforeEach(...) or test.afterEach(...) or beforeEach(...) or afterEach(...)
+  if (/(?:test\.)?(beforeEach|afterEach)\s*\(/.test(trimmed)) {
+    return 'test-hook';
+  }
+
+  // test(...) or it(...)
+  if (/(?:test|it)\s*\(/.test(trimmed)) {
+    return 'test-case';
+  }
+
+  return null;
 }
 
 /**
@@ -403,6 +487,60 @@ export function parseCodeDoc(node: SourceFileNode): ParsedCodeDoc {
   let currentSection: CodeDocSection | null = null;
   let currentLines: string[] = [];
 
+  // 코드 블록 종료 헬퍼 함수
+  const finalizeCodeSection = (codeContent: string, section: CodeDocSection) => {
+    // 1. 테스트 감지 (최우선)
+    const testType = detectTestType(codeContent);
+    if (testType) {
+      const testName = extractTestName(codeContent.split('\n')[0]);
+      const testMetadata = extractTestMetadata(codeContent);
+      sections.push({
+        ...section,
+        type: testType,
+        testName,
+        testMetadata,
+      });
+      return;
+    }
+
+    // 2. JSX 블록 분리
+    if (containsJSX(codeContent)) {
+      const jsxBlock = extractJSXBlock(codeContent, section.startLine);
+      if (jsxBlock) {
+        // JSX 제외한 코드 블록
+        if (jsxBlock.codeWithoutJsx.trim().length > 0) {
+          sections.push({
+            ...section,
+            content: jsxBlock.codeWithoutJsx.trimEnd(),
+            type: containsControlFlow(jsxBlock.codeWithoutJsx) ? 'control' : 'code',
+          });
+        }
+        // JSX 블록
+        sections.push({
+          type: 'jsx',
+          content: jsxBlock.jsxContent!,
+          startLine: jsxBlock.jsxStartLine,
+          endLine: jsxBlock.jsxEndLine,
+        });
+      } else {
+        // JSX 추출 실패 시 전체를 jsx로
+        section.type = 'jsx';
+        sections.push(section);
+      }
+      return;
+    }
+
+    // 3. 제어문 블록
+    if (containsControlFlow(codeContent)) {
+      section.type = 'control';
+      sections.push(section);
+      return;
+    }
+
+    // 4. 일반 코드 블록
+    sections.push(section);
+  };
+
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i];
     const lineNum = i + 1;
@@ -416,38 +554,7 @@ export function parseCodeDoc(node: SourceFileNode): ParsedCodeDoc {
         currentSection.content = codeContent;
         currentSection.endLine = lineNum - 1;
 
-        // JSX 블록 분리
-        if (containsJSX(codeContent)) {
-          const jsxBlock = extractJSXBlock(codeContent, currentSection.startLine);
-          if (jsxBlock) {
-            // JSX 제외한 코드 블록
-            if (jsxBlock.codeWithoutJsx.trim().length > 0) {
-              sections.push({
-                ...currentSection,
-                content: jsxBlock.codeWithoutJsx.trimEnd(),
-                type: containsControlFlow(jsxBlock.codeWithoutJsx) ? 'control' : 'code',
-              });
-            }
-            // JSX 블록
-            sections.push({
-              type: 'jsx',
-              content: jsxBlock.jsxContent!,
-              startLine: jsxBlock.jsxStartLine,
-              endLine: jsxBlock.jsxEndLine,
-            });
-          } else {
-            // JSX 추출 실패 시 전체를 jsx로
-            currentSection.type = 'jsx';
-            sections.push(currentSection);
-          }
-        } else if (containsControlFlow(codeContent)) {
-          // 제어문 블록
-          currentSection.type = 'control';
-          sections.push(currentSection);
-        } else {
-          // 일반 코드 블록
-          sections.push(currentSection);
-        }
+        finalizeCodeSection(codeContent, currentSection);
 
         currentLines = [];
         currentSection = null;
@@ -471,47 +578,30 @@ export function parseCodeDoc(node: SourceFileNode): ParsedCodeDoc {
         currentSection.endLine = lineNum;
       }
     } else if (isBlankLine) {
-      // ✅ 빈 줄을 만나면 현재 코드 블록 종료
+      // ✅ 빈 줄: 다음 non-blank 라인이 주석인지 체크 후 결정
+      let nextNonBlankIdx = i + 1;
+      while (nextNonBlankIdx < lines.length && lines[nextNonBlankIdx].trim().length === 0) {
+        nextNonBlankIdx++;
+      }
+      const nextNonBlankLine = nextNonBlankIdx < lines.length ? lines[nextNonBlankIdx] : '';
+      const nextIsComment = nextNonBlankLine.length > 0 && isCommentLine(nextNonBlankLine);
+
       if (currentSection?.type === 'code' && currentLines.length > 0) {
-        const codeContent = currentLines.join('\n').trimEnd();
-        currentSection.content = codeContent;
-        currentSection.endLine = lineNum - 1;
+        if (nextIsComment) {
+          // 다음 non-blank가 주석이면 현재 코드 블록 종료 (새 그룹 시작)
+          const codeContent = currentLines.join('\n').trimEnd();
+          currentSection.content = codeContent;
+          currentSection.endLine = lineNum - 1;
 
-        // JSX 블록 분리
-        if (containsJSX(codeContent)) {
-          const jsxBlock = extractJSXBlock(codeContent, currentSection.startLine);
-          if (jsxBlock) {
-            // JSX 제외한 코드 블록
-            if (jsxBlock.codeWithoutJsx.trim().length > 0) {
-              sections.push({
-                ...currentSection,
-                content: jsxBlock.codeWithoutJsx.trimEnd(),
-                type: containsControlFlow(jsxBlock.codeWithoutJsx) ? 'control' : 'code',
-              });
-            }
-            // JSX 블록
-            sections.push({
-              type: 'jsx',
-              content: jsxBlock.jsxContent!,
-              startLine: jsxBlock.jsxStartLine,
-              endLine: jsxBlock.jsxEndLine,
-            });
-          } else {
-            // JSX 추출 실패 시 전체를 jsx로
-            currentSection.type = 'jsx';
-            sections.push(currentSection);
-          }
-        } else if (containsControlFlow(codeContent)) {
-          // 제어문 블록
-          currentSection.type = 'control';
-          sections.push(currentSection);
+          finalizeCodeSection(codeContent, currentSection);
+
+          currentLines = [];
+          currentSection = null;
         } else {
-          // 일반 코드 블록
-          sections.push(currentSection);
+          // 다음 non-blank가 코드면 빈 줄 포함하고 계속 누적 (같은 그룹 유지)
+          currentLines.push(line);
+          currentSection.endLine = lineNum;
         }
-
-        currentLines = [];
-        currentSection = null;
       }
 
       // ✅ 주석 섹션은 빈 줄에서 종료하지 않음 (빈 줄도 포함)
@@ -567,38 +657,7 @@ export function parseCodeDoc(node: SourceFileNode): ParsedCodeDoc {
       const codeContent = currentLines.join('\n').trimEnd();
       currentSection.content = codeContent;
 
-      // JSX 블록 분리
-      if (containsJSX(codeContent)) {
-        const jsxBlock = extractJSXBlock(codeContent, currentSection.startLine);
-        if (jsxBlock) {
-          // JSX 제외한 코드 블록
-          if (jsxBlock.codeWithoutJsx.trim().length > 0) {
-            sections.push({
-              ...currentSection,
-              content: jsxBlock.codeWithoutJsx.trimEnd(),
-              type: containsControlFlow(jsxBlock.codeWithoutJsx) ? 'control' : 'code',
-            });
-          }
-          // JSX 블록
-          sections.push({
-            type: 'jsx',
-            content: jsxBlock.jsxContent!,
-            startLine: jsxBlock.jsxStartLine,
-            endLine: jsxBlock.jsxEndLine,
-          });
-        } else {
-          // JSX 추출 실패 시 전체를 jsx로
-          currentSection.type = 'jsx';
-          sections.push(currentSection);
-        }
-      } else if (containsControlFlow(codeContent)) {
-        // 제어문 블록
-        currentSection.type = 'control';
-        sections.push(currentSection);
-      } else {
-        // 일반 코드 블록
-        sections.push(currentSection);
-      }
+      finalizeCodeSection(codeContent, currentSection);
     }
   }
 

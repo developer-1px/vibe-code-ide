@@ -38,6 +38,7 @@ export interface CodeLineViewOptions {
   showSlots?: boolean;
   showExportSlots?: boolean;
   interactive?: boolean; // pointer-events 제어
+  softWrap?: boolean; // 코드 줄바꿈 여부
 }
 
 const CodeLineView = ({
@@ -51,6 +52,7 @@ const CodeLineView = ({
     showSlots: true,
     showExportSlots: true,
     interactive: true,
+    softWrap: false,
   },
 }: {
   line: CodeLine;
@@ -161,7 +163,7 @@ const CodeLineView = ({
 
       {/* Code Content Column */}
       <div
-        className={`flex-1 ${theme.spacing.lineX} ${theme.spacing.lineY} overflow-x-auto whitespace-pre-wrap break-words select-text font-mono ${!options.interactive ? 'pointer-events-none' : ''}`}
+        className={`${options.softWrap ? 'flex-1' : 'w-fit min-w-full'} ${theme.spacing.lineX} ${theme.spacing.lineY} overflow-hidden ${options.softWrap ? 'whitespace-pre-wrap break-words' : 'whitespace-pre'} select-text font-mono ${!options.interactive ? 'pointer-events-none' : ''}`}
       >
         {line.segments.map((segment, segIdx) => (
           <CodeLineSegment

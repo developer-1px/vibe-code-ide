@@ -9,7 +9,7 @@ import type React from 'react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { FileTreeItem } from '@/components/ide/FileTreeItem';
 import { useOpenFile } from '@/features/File/OpenFiles/lib/useOpenFile';
-import { activeTabAtom } from '@/features/File/OpenFiles/model/atoms';
+import { activeTabAtom, openedTabsAtom } from '@/features/File/OpenFiles/model/atoms';
 import { filesAtom, focusedFolderAtom } from '../../app/model/atoms';
 import { useTreeKeyboardNavigation } from '../../shared/hooks/useTreeKeyboardNavigation';
 import { TreeView } from '../../shared/ui/TreeView/TreeView';
@@ -22,6 +22,7 @@ import { FolderBreadcrumb } from './ui/FolderBreadcrumb';
 export function FileExplorer({ containerRef }: { containerRef: React.RefObject<HTMLDivElement> }) {
   const files = useAtomValue(filesAtom);
   const activeTab = useAtomValue(activeTabAtom);
+  const openedTabs = useAtomValue(openedTabsAtom);
   const { openFile } = useOpenFile();
   const [focusedFolder, setFocusedFolder] = useAtom(focusedFolderAtom);
 
@@ -110,6 +111,7 @@ export function FileExplorer({ containerRef }: { containerRef: React.RefObject<H
       >
         {({ node, depth, isFocused, isCollapsed, itemRef, handleFocus, handleToggle }) => {
           const isActive = activeTab === node.filePath;
+          const isOpened = node.filePath ? openedTabs.includes(node.filePath) : false;
           const fileExtension = node.name.includes('.') ? `.${node.name.split('.').pop()}` : undefined;
           const icon = node.type === 'folder' ? (isCollapsed ? Folder : FolderOpen) : getFileIcon(node.name);
 
@@ -119,6 +121,7 @@ export function FileExplorer({ containerRef }: { containerRef: React.RefObject<H
               icon={icon}
               label={node.name}
               active={isActive}
+              opened={isOpened}
               focused={isFocused}
               isFolder={node.type === 'folder'}
               isOpen={!isCollapsed}

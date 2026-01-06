@@ -75,12 +75,12 @@ const Header: React.FC = () => {
 
       <div className="flex gap-2 items-center text-xs ml-auto">
         {parseError ? (
-          <span className="px-2 py-0.5 bg-theme-error/10 text-theme-error rounded text-[10px] border border-theme-error/20 flex items-center gap-1">
+          <span className="px-2 py-0.5 bg-theme-error/10 text-theme-error rounded text-2xs border border-theme-error/20 flex items-center gap-1">
             <IconAlertCircle className="w-3 h-3" />
             Syntax Error
           </span>
         ) : (
-          <span className="px-2 py-0.5 bg-theme-success/10 text-theme-success rounded text-[10px] border border-theme-success/20">
+          <span className="px-2 py-0.5 bg-theme-success/10 text-theme-success rounded text-2xs border border-theme-success/20">
             Project Analysis Active
           </span>
         )}

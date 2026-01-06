@@ -57,6 +57,19 @@ const Icon = ({ name, className = 'w-4 h-4' }: { name: string; className?: strin
     arrowDown: <path d="m6 9 6 6 6-6" />,
     arrowUp: <path d="m18 15-6-6-6 6" />,
     flow: <path d="M22 7M2 7l10-5 10 5-10 5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />,
+    testSuite: <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />,
+    testCase: (
+      <>
+        <circle cx="12" cy="12" r="10" />
+        <path d="M9 12l2 2 4-4" />
+      </>
+    ),
+    testHook: (
+      <>
+        <circle cx="12" cy="12" r="3" />
+        <path d="M12 1v6m0 6v6M5.6 5.6l4.2 4.2m4.2 4.2l4.2 4.2M1 12h6m6 0h6M5.6 18.4l4.2-4.2m4.2-4.2l4.2-4.2" />
+      </>
+    ),
   };
 
   return (
@@ -366,8 +379,10 @@ const TextbookCodeBlock: React.FC<{
   code: string;
   lang?: string;
   startLine?: number;
-}> = ({ code, lang = 'typescript', startLine = 1 }) => {
+  onLineClick?: (lineNumber: number) => void;
+}> = ({ code, lang = 'typescript', startLine = 1, onLineClick }) => {
   const codeRef = useRef<HTMLElement>(null);
+  const [hoveredLine, setHoveredLine] = useState<number | null>(null);
 
   useEffect(() => {
     if (codeRef.current && typeof hljs !== 'undefined') {
@@ -376,20 +391,63 @@ const TextbookCodeBlock: React.FC<{
   }, [code, lang]);
 
   const lineCount = code.split('\n').length;
-  const lineNumbers = Array.from({ length: lineCount }, (_, i) => startLine + i).join('\n');
+  const codeLines = code.split('\n');
+
+  const handleLineClick = (lineNumber: number) => {
+    if (onLineClick) {
+      onLineClick(lineNumber);
+    }
+  };
 
   return (
-    <div className="my-6 bg-gray-50 rounded-md overflow-hidden group border border-gray-100/50">
-      <div className="flex leading-7 py-3">
-        <div className="flex-none w-10 text-right pr-3 text-gray-300 select-none group-hover:text-gray-400 transition-colors">
-          <pre className="font-mono text-[10px] leading-7 pt-0.5">{lineNumbers}</pre>
+    <div className="my-4 bg-gray-50 rounded-md overflow-hidden group border border-gray-100/50">
+      <div className="flex leading-5 py-2">
+        {/* Line Numbers - Clickable */}
+        <div className="flex-none w-8 text-right pr-2 select-none">
+          {Array.from({ length: lineCount }, (_, i) => {
+            const lineNum = startLine + i;
+            const isHovered = hoveredLine === i;
+            return (
+              <div
+                key={i}
+                className={`font-mono text-[10px] leading-5 transition-colors ${onLineClick ? 'cursor-pointer' : ''} ${
+                  isHovered ? 'text-blue-500 font-bold' : 'text-gray-300 group-hover:text-gray-400'
+                }`}
+                onMouseEnter={() => setHoveredLine(i)}
+                onMouseLeave={() => setHoveredLine(null)}
+                onClick={() => handleLineClick(lineNum)}
+                title={onLineClick ? `Go to line ${lineNum}` : undefined}
+              >
+                {lineNum}
+              </div>
+            );
+          })}
         </div>
-        <div className="flex-1 overflow-x-auto custom-scrollbar pl-4 pr-4">
-          <pre className="font-mono leading-7 text-gray-800 m-0 text-[13px]">
-            <code ref={codeRef} className={`language-${lang} bg-transparent p-0 block`}>
-              {code}
-            </code>
-          </pre>
+
+        {/* Code Content */}
+        <div className="flex-1 overflow-x-auto custom-scrollbar pl-3 pr-3">
+          {codeLines.map((line, i) => {
+            const isHovered = hoveredLine === i;
+            return (
+              <div
+                key={i}
+                className={`font-mono leading-5 text-gray-800 text-[11px] transition-colors ${
+                  onLineClick ? 'cursor-pointer' : ''
+                } ${isHovered ? 'bg-blue-50/50' : ''}`}
+                onMouseEnter={() => setHoveredLine(i)}
+                onMouseLeave={() => setHoveredLine(null)}
+                onClick={() => handleLineClick(startLine + i)}
+              >
+                <code
+                  className={`language-${lang} bg-transparent p-0 block`}
+                  dangerouslySetInnerHTML={{
+                    __html:
+                      typeof hljs !== 'undefined' ? hljs.highlight(line || ' ', { language: lang }).value : line || ' ',
+                  }}
+                />
+              </div>
+            );
+          })}
         </div>
       </div>
     </div>
@@ -484,36 +542,59 @@ const Breadcrumb = ({ path, filename }: { path: string; filename: string }) => {
 };
 
 // --- Symbol Section ---
-const SymbolSection: React.FC<{ symbol: SymbolDetail; layout: 'linear' | 'split' }> = ({ symbol, layout }) => {
+const SymbolSection: React.FC<{
+  symbol: SymbolDetail;
+  layout: 'linear' | 'split';
+  onDefinitionClick?: (startLine: number) => void;
+}> = ({ symbol, layout, onDefinitionClick }) => {
   let TypeIcon = 'info';
   if (symbol.type === 'function') TypeIcon = 'function';
   if (symbol.type === 'interface') TypeIcon = 'interface';
   if (symbol.type === 'class') TypeIcon = 'class';
+  if (symbol.type === 'test-suite') TypeIcon = 'testSuite';
+  if (symbol.type === 'test-case') TypeIcon = 'testCase';
+  if (symbol.type === 'test-hook') TypeIcon = 'testHook';
+
+  const handleDefinitionClick = () => {
+    if (symbol.startLine && onDefinitionClick) {
+      onDefinitionClick(symbol.startLine);
+    }
+  };
 
   return (
     <section
       id={symbol.name}
-      className={`mb-24 pb-16 border-b border-gray-100 last:border-0 ${layout === 'split' ? 'grid grid-cols-12 gap-16' : ''}`}
+      className={`mb-8 p-8 bg-white border border-gray-100 rounded-lg shadow-sm hover:shadow-md transition-shadow ${layout === 'split' ? 'grid grid-cols-12 gap-16' : ''}`}
     >
       {/* LEFT COLUMN (Prose & Specs) */}
       <div className={`${layout === 'split' ? 'col-span-5' : ''}`}>
         {/* Header / Definition */}
         <div className="mb-8">
           <div className="mb-2">
-            <span className="font-sans text-[10px] font-bold text-gray-400 uppercase tracking-widest">
-              {symbol.type}
-            </span>
+            <span className="font-sans text-2xs font-bold text-gray-400 uppercase tracking-widest">{symbol.type}</span>
           </div>
 
-          <h3 className="text-3xl md:text-4xl font-serif font-bold text-gray-900 mb-6 break-all leading-snug flex items-center gap-4">
-            <div className="flex-none p-2 bg-gray-50 rounded-lg border border-gray-100 text-gray-400">
+          <h3
+            className={`text-3xl md:text-4xl font-serif font-bold text-gray-900 mb-6 break-all leading-snug flex items-center gap-4 ${
+              symbol.startLine ? 'cursor-pointer group' : ''
+            }`}
+            onClick={handleDefinitionClick}
+            title={symbol.startLine ? `Go to line ${symbol.startLine}` : undefined}
+          >
+            <div className="flex-none p-2 bg-gray-50 rounded-lg border border-gray-100 text-gray-400 group-hover:bg-blue-50 group-hover:border-blue-200 group-hover:text-blue-500 transition-colors">
               <Icon name={TypeIcon} className="w-6 h-6 stroke-1" />
             </div>
-            <span>{symbol.name}</span>
+            <span className="group-hover:text-blue-600 transition-colors">{symbol.name}</span>
           </h3>
 
           {/* Brief Signature Display - Minimalist */}
-          <div className="font-mono text-xs text-gray-500 mb-6 break-words bg-white border-l-2 border-gray-100 pl-3 py-1">
+          <div
+            className={`font-mono text-xs text-gray-500 mb-6 break-words bg-white border-l-2 border-gray-100 pl-3 py-1 ${
+              symbol.startLine ? 'cursor-pointer hover:border-blue-300 hover:bg-blue-50/30 transition-colors' : ''
+            }`}
+            onClick={handleDefinitionClick}
+            title={symbol.startLine ? `Go to line ${symbol.startLine}` : undefined}
+          >
             {symbol.signature}
           </div>
         </div>
@@ -521,7 +602,7 @@ const SymbolSection: React.FC<{ symbol: SymbolDetail; layout: 'linear' | 'split'
         {/* Flowchart Visualization (New) */}
         {symbol.flowchart && (
           <div className="mb-10">
-            <span className="block font-sans text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 flex items-center gap-2">
+            <span className="block font-sans text-2xs font-bold text-gray-400 uppercase tracking-widest mb-2 flex items-center gap-2">
               <Icon name="flow" className="w-3 h-3" />
               Logic Flow
             </span>
@@ -534,12 +615,73 @@ const SymbolSection: React.FC<{ symbol: SymbolDetail; layout: 'linear' | 'split'
           <RichText content={symbol.description} />
         </div>
 
+        {/* Test Metadata (for test-suite, test-case, test-hook) */}
+        {symbol.testMetadata && (
+          <div className="mb-10 pt-6 border-t border-gray-100">
+            <span className="block font-sans text-2xs font-bold text-gray-400 uppercase tracking-widest mb-4">
+              Test Details
+            </span>
+
+            {/* URL */}
+            {symbol.testMetadata.url && (
+              <div className="mb-4">
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="font-sans text-xs font-bold text-gray-900">Target URL</span>
+                </div>
+                <div className="font-mono text-xs text-blue-600 bg-blue-50 px-3 py-2 rounded border border-blue-100 break-all">
+                  {symbol.testMetadata.url}
+                </div>
+              </div>
+            )}
+
+            {/* Selectors */}
+            {symbol.testMetadata.selectors && symbol.testMetadata.selectors.length > 0 && (
+              <div className="mb-4">
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="font-sans text-xs font-bold text-gray-900">Test Selectors</span>
+                  <span className="font-mono text-2xs text-gray-400">({symbol.testMetadata.selectors.length})</span>
+                </div>
+                <div className="flex flex-wrap gap-1.5">
+                  {symbol.testMetadata.selectors.map((selector, i) => (
+                    <span
+                      key={i}
+                      className="font-mono text-[10px] text-gray-600 bg-gray-100 px-1.5 py-0.5 rounded border border-gray-200"
+                    >
+                      {selector}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Expectations */}
+            {symbol.testMetadata.expectations && symbol.testMetadata.expectations.length > 0 && (
+              <div className="mb-4">
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="font-sans text-xs font-bold text-gray-900">Assertions</span>
+                  <span className="font-mono text-2xs text-gray-400">({symbol.testMetadata.expectations.length})</span>
+                </div>
+                <div className="flex flex-wrap gap-1.5">
+                  {symbol.testMetadata.expectations.map((expectation, i) => (
+                    <span
+                      key={i}
+                      className="font-mono text-[10px] text-green-700 bg-green-50 px-1.5 py-0.5 rounded border border-green-200"
+                    >
+                      expect(...).{expectation}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
         {/* Technical Specifications (Params/Returns) - Minimalist List */}
         {((symbol.parameters?.length || 0) > 0 || symbol.returns) && (
           <div className="mb-10 pt-6 border-t border-gray-100">
             {symbol.parameters && symbol.parameters.length > 0 && (
               <div className="mb-6">
-                <span className="block font-sans text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3">
+                <span className="block font-sans text-2xs font-bold text-gray-400 uppercase tracking-widest mb-3">
                   Inputs
                 </span>
                 <ul className="space-y-4">
@@ -549,7 +691,7 @@ const SymbolSection: React.FC<{ symbol: SymbolDetail; layout: 'linear' | 'split'
                         <span className="font-mono text-xs font-bold text-gray-900 bg-gray-100 px-1.5 py-0.5 rounded">
                           {p.name}
                         </span>
-                        <span className="font-mono text-[10px] text-gray-400">{p.type}</span>
+                        <span className="font-mono text-2xs text-gray-400">{p.type}</span>
                       </div>
                       <div className="font-serif text-gray-600 mt-1.5 leading-relaxed">
                         <RichText content={p.description} />
@@ -562,7 +704,7 @@ const SymbolSection: React.FC<{ symbol: SymbolDetail; layout: 'linear' | 'split'
 
             {symbol.returns && symbol.returns !== 'void' && (
               <div className="mt-6">
-                <span className="block font-sans text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">
+                <span className="block font-sans text-2xs font-bold text-gray-400 uppercase tracking-widest mb-2">
                   Returns
                 </span>
                 <span className="font-mono text-xs text-gray-600 bg-gray-50 px-2 py-1 rounded inline-block">
@@ -636,7 +778,7 @@ const SymbolSection: React.FC<{ symbol: SymbolDetail; layout: 'linear' | 'split'
                         <Icon name={icon} className="w-5 h-5" />
                       </div>
                       <div>
-                        <div className="font-sans text-[10px] font-bold uppercase tracking-widest mb-2 opacity-70">
+                        <div className="font-sans text-2xs font-bold uppercase tracking-widest mb-2 opacity-70">
                           {label}
                         </div>
                         <div className="font-serif text-base leading-relaxed">
@@ -675,7 +817,7 @@ const SymbolSection: React.FC<{ symbol: SymbolDetail; layout: 'linear' | 'split'
                   const startLine = getStartLine(block.lines);
                   grouped.push(
                     <div key={idx}>
-                      <TextbookCodeBlock code={block.content} startLine={startLine} />
+                      <TextbookCodeBlock code={block.content} startLine={startLine} onLineClick={onDefinitionClick} />
                     </div>
                   );
                   return;
@@ -705,8 +847,16 @@ export const DocViewer: React.FC<DocViewerProps> = ({ data, layout }) => {
   const VISIBLE_IMPORTS = 8;
   const visibleImports = isDepsExpanded ? data.imports : data.imports.slice(0, VISIBLE_IMPORTS);
 
+  // Definition 클릭 핸들러 - IDE View로 전환하고 해당 라인으로 이동
+  const handleDefinitionClick = (startLine: number) => {
+    // TODO: IDE View로 전환하고 해당 파일의 해당 라인으로 스크롤
+    console.log('[DocViewer] Navigate to line:', startLine);
+    // 현재는 콘솔 로그만 출력
+    // 향후 viewModeAtom을 'ide'로 변경하고, activeTab의 해당 라인으로 스크롤하는 기능 추가 필요
+  };
+
   return (
-    <div className={`mx-auto ${layout === 'split' ? 'px-16 py-12 bg-white' : ''}`}>
+    <div className={`mx-auto ${layout === 'split' ? 'px-16 py-12' : ''}`}>
       {/* 1. Breadcrumb */}
       <Breadcrumb path={data.meta.path} filename={data.meta.filename} />
 
@@ -724,15 +874,15 @@ export const DocViewer: React.FC<DocViewerProps> = ({ data, layout }) => {
         {/* Meta Grid */}
         <div className="flex flex-wrap gap-x-12 gap-y-6 font-sans text-xs text-gray-500 uppercase tracking-widest border-t border-gray-100 pt-6">
           <div>
-            <span className="block text-[10px] text-gray-400 mb-1">Author</span>
+            <span className="block text-2xs text-gray-400 mb-1">Author</span>
             <span className="text-gray-900 font-bold">{data.meta.author || 'Unknown'}</span>
           </div>
           <div>
-            <span className="block text-[10px] text-gray-400 mb-1">Version</span>
+            <span className="block text-2xs text-gray-400 mb-1">Version</span>
             <span className="text-gray-900 font-bold">{data.meta.version || '1.0.0'}</span>
           </div>
           <div>
-            <span className="block text-[10px] text-gray-400 mb-1">Last Modified</span>
+            <span className="block text-2xs text-gray-400 mb-1">Last Modified</span>
             <span className="text-gray-900 font-bold">{data.meta.lastModified || new Date().toLocaleDateString()}</span>
           </div>
         </div>
@@ -784,13 +934,13 @@ export const DocViewer: React.FC<DocViewerProps> = ({ data, layout }) => {
       {/* 4. Main Content (Symbols) */}
       <div className="mb-32">
         {data.symbols?.map((symbol, idx) => (
-          <SymbolSection key={idx} symbol={symbol} layout={layout} />
+          <SymbolSection key={idx} symbol={symbol} layout={layout} onDefinitionClick={handleDefinitionClick} />
         ))}
       </div>
 
       <footer className="pt-12 border-t border-gray-100 flex justify-between items-center text-gray-400">
         <div className="font-serif text-sm">Generated by TSDoc GenAI</div>
-        <div className="font-sans text-[10px] tracking-widest uppercase">{new Date().toLocaleDateString()}</div>
+        <div className="font-sans text-2xs tracking-widest uppercase">{new Date().toLocaleDateString()}</div>
       </footer>
     </div>
   );
@@ -808,13 +958,16 @@ export const TableOfContents = ({ symbols }: { symbols: SymbolDetail[] }) => {
   return (
     <div className="w-64 flex-none hidden xl:block pl-8">
       <div className="fixed w-56 pt-12">
-        <h4 className="font-sans text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-6">On This Page</h4>
+        <h4 className="font-sans text-2xs font-bold text-gray-400 uppercase tracking-widest mb-6">On This Page</h4>
         <ul className="space-y-3 relative border-l border-gray-200 ml-1">
           {symbols.map((s, i) => {
             let icon = 'info';
             if (s.type === 'function') icon = 'function';
             if (s.type === 'interface') icon = 'interface';
             if (s.type === 'class') icon = 'class';
+            if (s.type === 'test-suite') icon = 'testSuite';
+            if (s.type === 'test-case') icon = 'testCase';
+            if (s.type === 'test-hook') icon = 'testHook';
 
             return (
               <li

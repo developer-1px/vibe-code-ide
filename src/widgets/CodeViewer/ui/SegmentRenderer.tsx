@@ -144,6 +144,7 @@ export const SegmentRenderer = ({
     segment.kinds?.includes('identifier') &&
     segment.nodeId &&
     !segment.kinds?.includes('external-import') &&
+    !segment.kinds?.includes('external-npm') &&
     !segment.kinds?.includes('external-closure') &&
     !segment.kinds?.includes('external-function')
   ) {

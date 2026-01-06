@@ -97,7 +97,7 @@ function getNodeIcon(kind: OutlineNodeKind) {
 }
 
 // Get color for node name
-function getNodeColor(kind: OutlineNodeKind): string {
+function _getNodeColor(kind: OutlineNodeKind): string {
   switch (kind) {
     case 'comment':
       return 'text-slate-400/70';
@@ -172,8 +172,9 @@ export function OutlinePanelItem({
     <div className={hasGapBefore ? 'mt-6' : ''}>
       {/* Node Header */}
       <div
-        className="flex flex-nowrap items-center gap-1 rounded px-1.5 py-0.5 hover:bg-white/5 transition-colors group overflow-hidden"
-        style={{ paddingLeft: `calc(${indent}px + var(--limn-indent) / 2)` }}
+        className="flex flex-nowrap h-[var(--limn-file-item-height)] items-center gap-1 px-2 text-xs cursor-pointer border-l-2 border-transparent text-text-secondary hover:bg-white/5 transition-colors overflow-hidden"
+        style={{ paddingLeft: `calc(12px + ${indent}px)` }}
+        onClick={() => onNodeClick(node.line)}
       >
         {/* Expand/Collapse */}
         {hasChildren ? (
@@ -182,7 +183,7 @@ export function OutlinePanelItem({
               e.stopPropagation();
               onToggle(nodeKey);
             }}
-            className="flex-shrink-0 hover:bg-theme-hover rounded-sm transition-colors"
+            className="shrink-0"
           >
             {isExpanded ? (
               <ChevronDown size={11} className="text-text-muted" />
@@ -191,16 +192,15 @@ export function OutlinePanelItem({
             )}
           </button>
         ) : (
-          <div className="w-3 flex-shrink-0" />
+          <div className="w-[11px] shrink-0" />
         )}
 
         {/* Kind Icon */}
-        <div className="w-4 flex items-center justify-center flex-shrink-0">{getNodeIcon(node.kind)}</div>
+        <div className="shrink-0">{getNodeIcon(node.kind)}</div>
 
         {/* Node Name (actual code line, truncates with ellipsis) */}
         <span
-          className={`${getNodeColor(node.kind)} cursor-pointer font-medium truncate overflow-hidden min-w-0`}
-          onClick={() => onNodeClick(node.line)}
+          className="flex-1 truncate whitespace-nowrap overflow-hidden text-ellipsis min-w-0"
           title={`${node.text || ''}\nLine ${node.line}${node.endLine ? ` - ${node.endLine}` : ''}`}
         >
           {displayName}
@@ -208,7 +208,7 @@ export function OutlinePanelItem({
 
         {/* End line indicator (for blocks) */}
         {node.endLine && node.endLine !== node.line && (
-          <span className="text-text-tertiary/30 text-2xs truncate overflow-hidden min-w-0">
+          <span className="text-text-tertiary text-2xs shrink-0">
             L{node.line}-{node.endLine}
           </span>
         )}

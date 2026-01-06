@@ -5,14 +5,15 @@
 
 import * as ts from 'typescript';
 import type { SourceFileNode } from '../../../entities/SourceFileNode/model/types';
+import { extractDefinitions } from '../../../shared/definitionExtractor';
 import { getFileName } from '../../../shared/pathUtils';
-import type { DocBlock, DocData, ImportItem, Parameter, SymbolDetail } from '../model/types';
+import type { DocBlock, DocData, ImportItem, SymbolDetail } from '../model/types';
 import { parseCodeDoc } from './parseCodeDoc';
 
 /**
  * JSDoc 파싱
  */
-function parseJSDoc(node: ts.Node): { description: string; tags: Record<string, string> } {
+function _parseJSDoc(node: ts.Node): { description: string; tags: Record<string, string> } {
   const result = { description: '', tags: {} as Record<string, string> };
   const jsDoc = (node as any).jsDoc as any[];
 
@@ -48,7 +49,7 @@ function getLineRange(sourceFile: ts.SourceFile, node: ts.Node): string {
 /**
  * Cyclomatic Complexity 계산
  */
-function calculateComplexity(node: ts.Node): number {
+function _calculateComplexity(node: ts.Node): number {
   let complexity = 1;
   function visit(n: ts.Node) {
     if (
@@ -115,7 +116,7 @@ function getLeadingComment(sourceFile: ts.SourceFile, stmt: ts.Statement): strin
 /**
  * Mermaid Flowchart 생성 (주석 기반 그룹화)
  */
-function generateFlowchart(sourceFile: ts.SourceFile, body: ts.Block | ts.Node): string {
+function _generateFlowchart(sourceFile: ts.SourceFile, body: ts.Block | ts.Node): string {
   const edges: string[] = [];
   const nodes: string[] = [];
   const subgraphs: Array<{ id: string; title: string; nodes: string[] }> = [];
@@ -124,7 +125,15 @@ function generateFlowchart(sourceFile: ts.SourceFile, body: ts.Block | ts.Node):
 
   const getId = () => `N${nodeIdCounter++}`;
   const getSubgraphId = () => `SG${subgraphIdCounter++}`;
-  const escape = (str: string) => str.replace(/["()[\]{}]/g, '').substring(0, 30);
+  // Mermaid 텍스트에서 특수문자를 안전하게 처리
+  const escape = (str: string) =>
+    str
+      .replace(/"/g, '#quot;') // " → #quot;
+      .replace(/\[/g, '#91;') // [ → #91;
+      .replace(/\]/g, '#93;') // ] → #93;
+      .replace(/\{/g, '#123;') // { → #123;
+      .replace(/\}/g, '#125;') // } → #125;
+      .substring(0, 30);
 
   const startId = getId();
   nodes.push(`${startId}([Start])`);
@@ -247,7 +256,7 @@ function generateFlowchart(sourceFile: ts.SourceFile, body: ts.Block | ts.Node):
 /**
  * 함수 본문을 DocBlock[]로 변환
  */
-function generateBlocks(sourceFile: ts.SourceFile, body: ts.Block | ts.Node): DocBlock[] {
+function _generateBlocks(sourceFile: ts.SourceFile, body: ts.Block | ts.Node): DocBlock[] {
   const blocks: DocBlock[] = [];
 
   if (!ts.isBlock(body)) {
@@ -341,12 +350,15 @@ function generateBlocks(sourceFile: ts.SourceFile, body: ts.Block | ts.Node): Do
 }
 
 /**
- * SourceFileNode를 DocData로 변환
+ * SourceFileNode를 DocData로 변환 (extractDefinitions 기반 - 중복 AST 순회 제거)
  */
 export function convertToDocData(node: SourceFileNode): DocData {
   const { sections, imports: parsedImports } = parseCodeDoc(node);
   const sourceFile = node.sourceFile;
   const fileName = getFileName(node.filePath);
+
+  // extractDefinitions() 한 번만 호출 (AST 순회 1회)
+  const definitions = extractDefinitions(node);
 
   // Imports 변환
   const imports: ImportItem[] = parsedImports.map((imp) => ({
@@ -354,143 +366,56 @@ export function convertToDocData(node: SourceFileNode): DocData {
     path: imp.fromPath,
   }));
 
-  // Exports 수집
-  const exports: any[] = [];
+  // Exports 수집 (export modifier가 있는 심볼들)
+  const exports: any[] = definitions
+    .filter((def) => def.modifiers?.export)
+    .map((def) => ({
+      name: def.name,
+      type:
+        def.kind === 'function'
+          ? 'function'
+          : def.kind === 'class'
+            ? 'class'
+            : def.kind === 'interface'
+              ? 'interface'
+              : 'const',
+    }));
 
-  // Symbols 수집
+  // Symbols 수집 (DefinitionSymbol → SymbolDetail 변환)
   const symbols: SymbolDetail[] = [];
 
   // 파일 헤더 (description)
   const fileHeader = sections.find((s) => s.type === 'fileHeader');
   const description = fileHeader?.content || '';
 
-  // AST 순회
-  ts.forEachChild(sourceFile, (child) => {
-    // Function Declaration
-    if (ts.isFunctionDeclaration(child)) {
-      const name = child.name?.text || 'anonymous';
-      const isExport = child.modifiers?.some((m) => m.kind === ts.SyntaxKind.ExportKeyword);
-      if (isExport) exports.push({ name, type: 'function' });
+  // definitions를 SymbolDetail로 변환
+  definitions.forEach((def) => {
+    // function, class, interface, test만 Symbol로 변환 (import, comment 등 제외)
+    if (
+      def.kind === 'function' ||
+      def.kind === 'class' ||
+      def.kind === 'interface' ||
+      def.kind === 'test-suite' ||
+      def.kind === 'test-case' ||
+      def.kind === 'test-hook'
+    ) {
+      const symbolDetail: SymbolDetail = {
+        name: def.name,
+        type: def.kind as any,
+        modifiers: def.modifiers ? Object.keys(def.modifiers).filter((k) => (def.modifiers as any)[k]) : undefined,
+        lineRange: def.foldInfo ? `L${def.foldInfo.foldStart}-${def.foldInfo.foldEnd}` : `L${def.line}`,
+        startLine: def.line, // ✅ 소스 파일에서의 시작 라인
+        signature: def.signature || def.name,
+        description: def.description || '',
+        parameters: def.params,
+        returns: def.returns,
+        analysis: def.complexity ? { complexity: def.complexity } : undefined,
+        blocks: def.blocks || [],
+        flowchart: def.flowchart,
+        testMetadata: def.testMetadata,
+      };
 
-      const { description: funcDesc, tags } = parseJSDoc(child);
-      const signatureEnd = child.body ? child.body.getStart() : child.end;
-      const signature = sourceFile.text.substring(child.getStart(), signatureEnd).trim();
-
-      const parameters: Parameter[] = child.parameters.map((p) => ({
-        name: p.name.getText(sourceFile),
-        type: p.type?.getText(sourceFile) || 'any',
-        description: tags[p.name.getText(sourceFile)] || '',
-      }));
-
-      symbols.push({
-        name,
-        type: 'function',
-        modifiers: child.modifiers?.map((m) => m.getText(sourceFile)) || [],
-        lineRange: getLineRange(sourceFile, child),
-        signature,
-        description: funcDesc,
-        parameters,
-        returns: child.type?.getText(sourceFile) || 'void',
-        analysis: {
-          complexity: calculateComplexity(child),
-        },
-        blocks: child.body ? generateBlocks(sourceFile, child.body) : [],
-        flowchart: child.body ? generateFlowchart(sourceFile, child.body) : undefined,
-      });
-    }
-
-    // Variable Statement (Arrow Function, Const Export)
-    else if (ts.isVariableStatement(child)) {
-      const isExport = child.modifiers?.some((m) => m.kind === ts.SyntaxKind.ExportKeyword);
-      child.declarationList.declarations.forEach((decl) => {
-        const name = decl.name.getText(sourceFile);
-
-        if (decl.initializer && (ts.isArrowFunction(decl.initializer) || ts.isFunctionExpression(decl.initializer))) {
-          if (isExport) exports.push({ name, type: 'function' });
-
-          const funcNode = decl.initializer;
-          const { description: funcDesc } = parseJSDoc(child);
-          const signature = `const ${name} = ${sourceFile.text.substring(funcNode.getStart(), funcNode.body.getStart()).trim()}`;
-
-          const parameters: Parameter[] = funcNode.parameters.map((p) => ({
-            name: p.name.getText(sourceFile),
-            type: p.type?.getText(sourceFile) || 'any',
-            description: '',
-          }));
-
-          symbols.push({
-            name,
-            type: 'function',
-            modifiers: ['export', 'const'],
-            lineRange: getLineRange(sourceFile, child),
-            signature,
-            description: funcDesc,
-            parameters,
-            blocks: generateBlocks(sourceFile, funcNode.body),
-            flowchart: generateFlowchart(sourceFile, funcNode.body),
-          });
-        } else {
-          if (isExport) exports.push({ name, type: 'const' });
-        }
-      });
-    }
-
-    // Interface Declaration
-    else if (ts.isInterfaceDeclaration(child)) {
-      const name = child.name.text;
-      const isExport = child.modifiers?.some((m) => m.kind === ts.SyntaxKind.ExportKeyword);
-      if (isExport) exports.push({ name, type: 'interface' });
-
-      const { description: intDesc } = parseJSDoc(child);
-      const signature = `interface ${name}${child.typeParameters ? `<${child.typeParameters.map((t) => t.getText(sourceFile)).join(', ')}>` : ''}`;
-
-      symbols.push({
-        name,
-        type: 'interface',
-        modifiers: ['export'],
-        lineRange: getLineRange(sourceFile, child),
-        signature,
-        description: intDesc,
-        members: child.members.map((m) => {
-          const mName = m.name?.getText(sourceFile) || '';
-          const mType = (m as any).type?.getText(sourceFile) || 'any';
-          const mDoc = parseJSDoc(m);
-          return { name: mName, type: mType, description: mDoc.description };
-        }),
-        blocks: [
-          {
-            type: 'CODE' as any,
-            content: child.getText(sourceFile),
-            lines: getLineRange(sourceFile, child),
-          },
-        ],
-      });
-    }
-
-    // Class Declaration
-    else if (ts.isClassDeclaration(child)) {
-      const name = child.name?.text || 'Anonymous';
-      const isExport = child.modifiers?.some((m) => m.kind === ts.SyntaxKind.ExportKeyword);
-      if (isExport) exports.push({ name, type: 'class' });
-
-      const { description: classDesc } = parseJSDoc(child);
-      const signature = `class ${name}`;
-
-      symbols.push({
-        name,
-        type: 'class',
-        modifiers: child.modifiers?.map((m) => m.getText(sourceFile)) || [],
-        lineRange: getLineRange(sourceFile, child),
-        signature,
-        description: classDesc,
-        members: child.members.map((m) => ({
-          name: m.name?.getText(sourceFile) || '',
-          type: 'unknown',
-          description: parseJSDoc(m).description,
-        })),
-        analysis: { complexity: calculateComplexity(child) },
-        blocks: [],
-      });
+      symbols.push(symbolDetail);
     }
   });
 

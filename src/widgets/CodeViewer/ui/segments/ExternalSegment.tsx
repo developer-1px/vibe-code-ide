@@ -7,7 +7,7 @@
 import { useAtomValue, useSetAtom } from 'jotai';
 import type React from 'react';
 import { useOpenFile } from '@/features/File/OpenFiles/lib/useOpenFile';
-import { fullNodeMapAtom, viewModeAtom } from '../../../../app/model/atoms';
+import { fullNodeMapAtom, hoveredIdentifierAtom, viewModeAtom } from '../../../../app/model/atoms';
 import type { CanvasNode } from '../../../../entities/CanvasNode/model/types';
 import { focusedNodeIdAtom } from '../../../IDEView/model/atoms';
 import { cardPositionsAtom, transformAtom, visibleNodeIdsAtom } from '../../../PipelineCanvas/model/atoms';
@@ -31,12 +31,16 @@ export const ExternalSegment: React.FC<ExternalSegmentProps> = ({ segment, node,
   const viewMode = useAtomValue(viewModeAtom);
   const setFocusedNodeId = useSetAtom(focusedNodeIdAtom);
   const { openFile } = useOpenFile();
+  const hoveredIdentifier = useAtomValue(hoveredIdentifierAtom);
+  const setHoveredIdentifier = useSetAtom(hoveredIdentifierAtom);
 
   // Check if active
   const isActive =
     segment.kinds?.includes('external-import') &&
     segment.definedIn &&
     (visibleNodeIds.has(segment.definedIn) || visibleNodeIds.has(segment.definedIn.split('::')[0]));
+
+  const isHovered = hoveredIdentifier === segment.text;
 
   const handleClick = (e: React.MouseEvent) => {
     console.log('[ExternalSegment] Clicked:', {
@@ -144,10 +148,28 @@ export const ExternalSegment: React.FC<ExternalSegmentProps> = ({ segment, node,
     }
   };
 
-  const className = isFocused ? `${style.className} bg-cyan-500/30 rounded` : style.className;
+  const handleMouseEnter = () => {
+    setHoveredIdentifier(segment.text);
+  };
+
+  const handleMouseLeave = () => {
+    setHoveredIdentifier(null);
+  };
+
+  const className = isFocused
+    ? `${style.className} bg-cyan-500/30 rounded`
+    : isHovered
+      ? `${style.className} bg-yellow-400/20 rounded`
+      : style.className;
 
   return (
-    <span onClick={handleClick} className={className} title={style.title}>
+    <span
+      onClick={handleClick}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+      className={className}
+      title={style.title}
+    >
       {segment.text}
     </span>
   );

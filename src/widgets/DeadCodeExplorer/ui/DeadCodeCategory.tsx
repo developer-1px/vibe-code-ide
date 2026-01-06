@@ -165,7 +165,7 @@ export function DeadCodeCategory({
                         onDoubleClick={() => handleItemClick(item)}
                       />
                       {codeSnippet && (
-                        <span className="text-[10px] text-text-tertiary truncate flex-1 font-mono">{codeSnippet}</span>
+                        <span className="text-2xs text-text-tertiary truncate flex-1 font-mono">{codeSnippet}</span>
                       )}
                     </div>
                     <Checkbox

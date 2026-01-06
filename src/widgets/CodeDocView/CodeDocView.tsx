@@ -64,7 +64,7 @@ const CodeDocView = () => {
   }
 
   return (
-    <div className="absolute inset-0 bg-bg-elevated overflow-hidden">
+    <div className="absolute inset-0 bg-gray-50 overflow-hidden">
       {/* Top Control Bar */}
       <div className="absolute top-6 right-8 z-50 print:hidden">
         <button
@@ -100,8 +100,8 @@ const CodeDocView = () => {
             <div
               key={filePath}
               id={`doc-${filePath}`}
-              className={`mx-auto shadow-sm min-h-[900px] transition-all duration-300 ${
-                layoutMode === 'split' ? 'max-w-full' : 'max-w-4xl bg-white border border-gray-200 px-12 py-16'
+              className={`mx-auto min-h-[900px] transition-all duration-300 ${
+                layoutMode === 'split' ? 'max-w-full' : 'max-w-4xl px-12 py-16'
               } ${index > 0 ? 'mt-12' : ''}`}
             >
               <DocViewer data={docData} layout={layoutMode} />

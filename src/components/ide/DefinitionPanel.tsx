@@ -23,39 +23,12 @@ export interface DefinitionPanelProps {
  * - Classes with methods and properties
  */
 export function DefinitionPanel({ onSymbolClick, symbols = [] }: DefinitionPanelProps) {
-  const [width, setWidth] = useState(240); // Default w-60 = 240px
+  const [width, setWidth] = useState(320); // Default w-60 = 240px
   const [isResizing, setIsResizing] = useState(false);
   const resizeRef = useRef<HTMLDivElement>(null);
 
-  // Initialize expandedSymbols to expand all symbols with children by default
-  const [expandedSymbols, setExpandedSymbols] = useState<Set<string>>(new Set());
-
   const MIN_WIDTH = 180;
-  const MAX_WIDTH = 400;
-
-  // Expand all symbols when symbols change (except imports)
-  useEffect(() => {
-    const allExpandableSymbols = new Set<string>();
-
-    const collectExpandable = (symbolList: DefinitionSymbol[]) => {
-      symbolList.forEach((symbol) => {
-        if (symbol.children && symbol.children.length > 0) {
-          const symbolKey = `${symbol.line}-${symbol.name}`;
-
-          // Skip imports - keep them collapsed by default
-          if (symbol.kind === 'import') {
-            return;
-          }
-
-          allExpandableSymbols.add(symbolKey);
-          collectExpandable(symbol.children);
-        }
-      });
-    };
-
-    collectExpandable(symbols);
-    setExpandedSymbols(allExpandableSymbols);
-  }, [symbols]);
+  const MAX_WIDTH = 800;
 
   // Handle resize
   useEffect(() => {
@@ -98,16 +71,6 @@ export function DefinitionPanel({ onSymbolClick, symbols = [] }: DefinitionPanel
     setIsResizing(true);
   };
 
-  const toggleSymbol = (symbolKey: string) => {
-    const newExpanded = new Set(expandedSymbols);
-    if (newExpanded.has(symbolKey)) {
-      newExpanded.delete(symbolKey);
-    } else {
-      newExpanded.add(symbolKey);
-    }
-    setExpandedSymbols(newExpanded);
-  };
-
   const handleSymbolClick = (line: number) => {
     onSymbolClick?.(line);
   };
@@ -132,23 +95,23 @@ export function DefinitionPanel({ onSymbolClick, symbols = [] }: DefinitionPanel
       </div>
 
       {/* Header */}
-      <div className="flex h-8 items-center justify-between border-b border-border-DEFAULT px-3 flex-shrink-0">
-        <span className="label">DEFINITIONS</span>
+      <div className="flex h-8 items-center justify-between border-b border-border-DEFAULT px-2 flex-shrink-0">
+        <span className="text-2xs font-medium text-text-tertiary normal-case">Definitions</span>
       </div>
 
       {/* Content */}
-      <div className="flex-1 overflow-y-auto p-2 font-mono text-[10px] leading-[1rem]">
+      <div className="flex-1 overflow-y-auto py-1">
         {symbols.length === 0 ? (
-          <div className="flex items-center justify-center h-full text-text-tertiary">No definitions found</div>
+          <div className="flex items-center justify-center h-full text-text-tertiary text-xs">No definitions found</div>
         ) : (
           symbols.map((symbol, idx) => (
             <DefinitionPanelItem
               key={`${symbol.line}-${symbol.name}-${idx}`}
               symbol={symbol}
               depth={0}
-              isExpanded={expandedSymbols.has(`${symbol.line}-${symbol.name}`)}
-              expandedSymbols={expandedSymbols}
-              onToggle={toggleSymbol}
+              isExpanded={false}
+              expandedSymbols={new Set()}
+              onToggle={() => {}}
               onSymbolClick={handleSymbolClick}
             />
           ))

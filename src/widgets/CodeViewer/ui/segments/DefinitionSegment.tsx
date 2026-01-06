@@ -40,8 +40,8 @@ export const DefinitionSegment: React.FC<DefinitionSegmentProps> = ({ segment, n
 
       {/* Hover Tooltip */}
       {showTooltip && segment.hoverInfo && (
-        <div className="absolute bottom-full left-0 mb-1 z-50 px-2 py-1 bg-slate-800 border border-slate-600 rounded text-xs text-slate-200 whitespace-pre-wrap max-w-md shadow-lg pointer-events-none">
-          <code className="font-mono text-[10px]">{segment.hoverInfo}</code>
+        <div className="absolute bottom-full left-0 mb-1 z-50 bg-slate-800 border border-slate-600 rounded text-xs text-slate-200 whitespace-pre-wrap max-w-md shadow-lg pointer-events-none">
+          <code className="font-mono text-2xs">{segment.hoverInfo}</code>
         </div>
       )}
     </span>

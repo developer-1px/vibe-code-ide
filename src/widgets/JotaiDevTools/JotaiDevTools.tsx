@@ -132,7 +132,7 @@ const JotaiDevTools = () => {
       <div className="flex items-center justify-between px-3 py-2 bg-slate-800 border-b border-slate-700 flex-shrink-0">
         <div className="flex items-center gap-2">
           <span className="text-xs font-semibold text-purple-400">Jotai DevTools</span>
-          <span className="text-[10px] text-slate-500">({updateHistory.length} updates)</span>
+          <span className="text-2xs text-slate-500">({updateHistory.length} updates)</span>
         </div>
         <button onClick={() => setIsOpen(false)} className="text-slate-400 hover:text-slate-200 transition-colors">
           <ChevronDown className="w-4 h-4" />
@@ -196,9 +196,9 @@ const AtomUpdateItem: React.FC<{ update: AtomUpdate; isFirst: boolean }> = ({ up
     >
       <div className="flex items-center gap-2 flex-1 min-w-0">
         <div className="text-[9px] text-slate-500 font-mono flex-shrink-0">{timeStr}</div>
-        <div className="text-[10px] font-semibold text-purple-300 flex-shrink-0">{name}</div>
+        <div className="text-2xs font-semibold text-purple-300 flex-shrink-0">{name}</div>
       </div>
-      <div className="text-[10px] text-slate-400 font-mono truncate flex-shrink-0 max-w-[150px]">{valuePreview}</div>
+      <div className="text-2xs text-slate-400 font-mono truncate flex-shrink-0 max-w-[150px]">{valuePreview}</div>
     </div>
   );
 };

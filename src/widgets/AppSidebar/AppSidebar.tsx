@@ -45,11 +45,11 @@ export const AppSidebar: React.FC = () => {
               onClick={() => setIsOpenedFilesCollapsed(!isOpenedFilesCollapsed)}
               className="flex w-full h-8 items-center justify-between border-b border-border-DEFAULT px-2 flex-shrink-0 hover:bg-bg-deep transition-colors"
             >
-              <span className="text-2xs font-medium text-text-secondary normal-case">{workspaceLabel}</span>
+              <span className="text-2xs font-medium text-text-tertiary normal-case">{workspaceLabel}</span>
               {isOpenedFilesCollapsed ? (
-                <ChevronRight className="w-3 h-3 text-text-tertiary" />
+                <ChevronRight className="w-3 h-3 text-text-muted" />
               ) : (
-                <ChevronDown className="w-3 h-3 text-text-tertiary" />
+                <ChevronDown className="w-3 h-3 text-text-muted" />
               )}
             </button>
             {!isOpenedFilesCollapsed && (
@@ -84,11 +84,11 @@ export const AppSidebar: React.FC = () => {
             onClick={() => setIsFileExplorerCollapsed(!isFileExplorerCollapsed)}
             className="flex w-full h-8 items-center justify-between border-b border-border-DEFAULT px-2 flex-shrink-0 hover:bg-bg-deep transition-colors"
           >
-            <span className="text-2xs font-medium text-text-secondary normal-case">{projectLabel}</span>
+            <span className="text-2xs font-medium text-text-tertiary normal-case">{projectLabel}</span>
             {isFileExplorerCollapsed ? (
-              <ChevronRight className="w-3 h-3 text-text-tertiary" />
+              <ChevronRight className="w-3 h-3 text-text-muted" />
             ) : (
-              <ChevronDown className="w-3 h-3 text-text-tertiary" />
+              <ChevronDown className="w-3 h-3 text-text-muted" />
             )}
           </button>
           {!isFileExplorerCollapsed && <FileExplorer containerRef={containerRef} />}
