@@ -67,13 +67,28 @@ export const DependencyTokenSegment: React.FC<DependencyTokenSegmentProps> = ({
       : style.className;
 
   return (
-    <span
-      className={`${className} inline-block rounded transition-all duration-200 select-text cursor-pointer border ${getTokenStyle(false, isComponent)}`}
-      onClick={handleClick}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-    >
-      {segment.text}
-    </span>
+    <>
+      {/* ✅ Inlay Hint */}
+      {segment.inlayHint && segment.inlayHint.position === 'before' && (
+        <span className="text-[10px] bg-gray-500/10 text-gray-600 px-1 py-0.5 rounded mr-1 select-none pointer-events-none">
+          {segment.inlayHint.text}
+        </span>
+      )}
+
+      <span
+        className={`${className} inline-block rounded transition-all duration-200 select-text cursor-pointer border ${getTokenStyle(false, isComponent)}`}
+        onClick={handleClick}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+      >
+        {segment.text}
+      </span>
+
+      {segment.inlayHint && segment.inlayHint.position === 'after' && (
+        <span className="text-[10px] bg-gray-500/10 text-gray-600 px-1 py-0.5 rounded ml-1 select-none pointer-events-none">
+          {segment.inlayHint.text}
+        </span>
+      )}
+    </>
   );
 };

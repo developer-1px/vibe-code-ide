@@ -10,10 +10,10 @@ import { useRef, useState } from 'react';
 import { Sidebar } from '@/components/ide/Sidebar';
 import { useOpenFile } from '@/features/File/OpenFiles/lib/useOpenFile';
 import { activeTabAtom, openedTabsAtom } from '@/features/File/OpenFiles/model/atoms';
+import { FileIcon } from '../../entities/SourceFileNode/ui/FileIcon.tsx';
 import { viewModeAtom } from '../../app/model/atoms';
 import { getFileName } from '../../shared/pathUtils';
 import { FileExplorer } from '../FileExplorer/FileExplorer';
-import { getFileIcon } from '../FileExplorer/lib/getFileIcon';
 import { isSidebarOpenAtom } from './model/atoms';
 
 export const AppSidebar: React.FC = () => {
@@ -56,7 +56,6 @@ export const AppSidebar: React.FC = () => {
               <div className="flex-1 flex flex-col overflow-y-auto border-b border-border-DEFAULT">
                 {openedTabs.map((filePath) => {
                   const fileName = getFileName(filePath);
-                  const Icon = getFileIcon(fileName);
                   const isActive = filePath === activeTab;
 
                   return (
@@ -68,7 +67,7 @@ export const AppSidebar: React.FC = () => {
                       }`}
                       title={filePath}
                     >
-                      <Icon className="w-4 h-4 flex-shrink-0" />
+                      <FileIcon fileName={fileName} size={16} />
                       <span className="truncate">{fileName}</span>
                     </button>
                   );

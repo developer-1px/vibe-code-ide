@@ -32,6 +32,14 @@ export interface DefinitionLocation {
 }
 
 /**
+ * Inlay hint information (IntelliJ-style parameter name hints)
+ */
+export interface InlayHint {
+  text: string; // Hint text to display (e.g., "count:")
+  position: 'before' | 'after'; // Where to display the hint relative to the segment
+}
+
+/**
  * A code segment represents a single token/text piece within a code line
  * with syntax highlighting information (domain model, UI-independent)
  */
@@ -47,4 +55,5 @@ export interface CodeSegment {
   definitionLocation?: DefinitionLocation; // Definition location from Language Service
   tsNode?: any; // ts.Node reference for type queries (avoid circular dependency)
   isDead?: boolean; // Whether this identifier is declared but never used (VSCode-like muted styling)
+  inlayHint?: InlayHint; // IntelliJ-style parameter name hints
 }

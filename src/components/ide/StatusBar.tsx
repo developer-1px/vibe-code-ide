@@ -12,6 +12,7 @@ export interface StatusBarProps extends React.HTMLAttributes<HTMLDivElement> {
   encoding?: string;
   language?: string;
   aiActive?: boolean;
+  statusText?: string; // Custom status text (e.g., parsing progress)
 }
 
 const StatusBar = React.forwardRef<HTMLDivElement, StatusBarProps>(
@@ -26,6 +27,7 @@ const StatusBar = React.forwardRef<HTMLDivElement, StatusBarProps>(
       encoding = 'UTF-8',
       language = 'TS',
       aiActive = false,
+      statusText,
       ...props
     },
     ref
@@ -42,6 +44,14 @@ const StatusBar = React.forwardRef<HTMLDivElement, StatusBarProps>(
       >
         {/* Left Side */}
         <div className="flex items-center gap-3">
+          {/* Custom status text (parsing progress, etc.) */}
+          {statusText && (
+            <div className="flex items-center gap-1 text-warm-400 font-medium">
+              <div className="w-1.5 h-1.5 rounded-full bg-warm-400 animate-pulse" />
+              <span>{statusText}</span>
+            </div>
+          )}
+
           <div className="flex items-center gap-1">
             <GitBranch size={11} className="text-text-muted" strokeWidth={1.5} />
             <span>{branch}</span>

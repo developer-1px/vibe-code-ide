@@ -54,8 +54,24 @@ export const StaticSegment: React.FC<StaticSegmentProps> = ({ segment, style, is
       : style.className;
 
   return (
-    <span className={className} title={style.title} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
-      {segment.text}
-    </span>
+    <>
+      {/* ✅ Inlay Hint (IntelliJ-style 파라미터 이름 표시) */}
+      {segment.inlayHint && segment.inlayHint.position === 'before' && (
+        <span className="text-[10px] bg-gray-500/10 text-gray-600 px-1 py-0.5 rounded mr-1 select-none pointer-events-none">
+          {segment.inlayHint.text}
+        </span>
+      )}
+
+      <span className={className} title={style.title} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
+        {segment.text}
+      </span>
+
+      {/* Inlay Hint 'after' 위치 (나중에 확장용) */}
+      {segment.inlayHint && segment.inlayHint.position === 'after' && (
+        <span className="text-[10px] bg-gray-500/10 text-gray-600 px-1 py-0.5 rounded ml-1 select-none pointer-events-none">
+          {segment.inlayHint.text}
+        </span>
+      )}
+    </>
   );
 };

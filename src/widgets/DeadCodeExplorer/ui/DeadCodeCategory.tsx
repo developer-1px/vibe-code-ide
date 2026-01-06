@@ -19,10 +19,10 @@ import { useDeadCodeSelection } from '@/features/Code/CodeAnalyzer/DeadCodeSelec
 import { CategoryCheckbox } from '@/features/Code/CodeAnalyzer/DeadCodeSelection/ui/CategoryCheckbox';
 import { targetLineAtom } from '@/features/File/Navigation/model/atoms';
 import { useOpenFile } from '@/features/File/OpenFiles/lib/useOpenFile';
+import { FileIcon } from '../../../entities/SourceFileNode/ui/FileIcon.tsx';
 import { filesAtom, viewModeAtom } from '../../../app/model/atoms';
 import type { DeadCodeItem } from '../../../shared/deadCodeAnalyzer';
 import { TreeView } from '../../../shared/ui/TreeView/TreeView';
-import { getFileIcon } from '../../FileExplorer/lib/getFileIcon';
 import { DeadCodeFolderItem } from './DeadCodeFolderItem';
 
 export function DeadCodeCategory({
@@ -144,8 +144,6 @@ export function DeadCodeCategory({
                   }
                 }
 
-                const fileIcon = getFileIcon(item.filePath);
-
                 return (
                   <div
                     ref={itemRef}
@@ -157,7 +155,7 @@ export function DeadCodeCategory({
                   >
                     <div className="flex-1 min-w-0 flex items-center gap-2">
                       <FileTreeItem
-                        icon={fileIcon}
+                        icon={(() => <FileIcon fileName={item.filePath} />) as React.ComponentType}
                         label={displayLabel}
                         focused={false}
                         indent={depth}

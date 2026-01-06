@@ -2,8 +2,8 @@
  * Getter Layer: SourceFileNode → 메타데이터
  *
  * AST와 사용처 사이의 추상화 계층
- * - 현재: AST 순회로 구현
- * - 미래: DB 조회로 전환 가능 (인터페이스 변경 없음)
+ * - 현재: LSIF IndexedDB 조회 → View Map → AST 순회 (3단계 fallback)
+ * - 미래: LSIF만 사용 (View Map, AST 제거 가능)
  *
  * 금지 사항:
  * - SourceFileNode에 metadata 필드 추가 금지
@@ -12,6 +12,7 @@
  */
 
 import ts from 'typescript';
+import { getExportsFromLSIF, getImportsFromLSIF, getSymbolUsagesFromLSIF } from '../../../shared/lsif/query';
 import type { SourceFileNode } from '../model/types';
 
 // ========================================
@@ -73,21 +74,70 @@ export interface FunctionArgumentsInfo {
 /**
  * 파일의 모든 export 정보 추출
  *
+ * 우선순위:
+ * 1. LSIF IndexedDB (Graph Database) - 가장 빠름
+ * 2. View Map (Worker에서 생성) - 빠름
+ * 3. AST 순회 (Fallback) - 느림
+ *
  * @example
  * const exports = getExports(node);
  * exports.forEach(exp => console.log(exp.name, exp.line));
  */
 export function getExports(node: SourceFileNode): ExportInfo[] {
-  if (!node.sourceFile || node.type !== 'file') return [];
-  return extractExportsFromAST(node.sourceFile);
+  if (node.type !== 'file') return [];
+
+  // 🔥 1. LSIF IndexedDB 조회 시도 (비동기이므로 Promise 반환 불가)
+  // TODO: async getter로 전환하거나, 컴포넌트에서 useEffect로 조회
+  // 현재는 동기 조회만 지원하므로 LSIF는 나중에 활용
+
+  // 🔥 2. View Map 조회 (AST 순회 없음!)
+  if (node.views?.exports) {
+    return node.views.exports;
+  }
+
+  // 🔥 3. Fallback: View가 없으면 기존 AST 순회 (호환성)
+  if (node.sourceFile) {
+    return extractExportsFromAST(node.sourceFile);
+  }
+
+  return [];
 }
 
 /**
  * 파일의 모든 import 정보 추출
  */
 export function getImports(node: SourceFileNode): ImportInfo[] {
-  if (!node.sourceFile || node.type !== 'file') return [];
-  return extractImportsFromAST(node.sourceFile);
+  if (node.type !== 'file') return [];
+
+  // 🔥 View 우선 조회 (AST 순회 없음!)
+  if (node.views?.imports) {
+    return node.views.imports;
+  }
+
+  // Fallback: View가 없으면 기존 AST 순회 (호환성)
+  if (node.sourceFile) {
+    return extractImportsFromAST(node.sourceFile);
+  }
+
+  return [];
+}
+
+/**
+ * 특정 symbol의 usage 정보 조회 (어떤 파일들이 이 symbol을 import하는지)
+ * @param node - 파일 노드
+ * @param symbolName - 조회할 symbol 이름
+ * @returns import하는 파일 경로 배열
+ */
+export function getSymbolUsages(node: SourceFileNode, symbolName: string): string[] {
+  if (node.type !== 'file') return [];
+
+  // 🔥 View 우선 조회 (AST 순회 없음!)
+  if (node.views?.usages?.[symbolName]) {
+    return node.views.usages[symbolName];
+  }
+
+  // Fallback: View가 없으면 빈 배열 (Usage는 Worker에서만 계산)
+  return [];
 }
 
 /**
@@ -869,4 +919,206 @@ function extractFunctionArgumentsFromAST(sourceFile: ts.SourceFile): FunctionArg
 
   visit(sourceFile);
   return functionsInfo;
+}
+
+// ========================================
+// 🔥 Performance Optimization: FileMetadata Caching
+// ========================================
+
+import type { OutlineNode } from '../../../shared/outlineExtractor';
+import { extractOutlineStructure } from '../../../shared/outlineExtractor';
+import type { DefinitionSymbol } from '../../../widgets/Panels/DefinitionPanel/definitionExtractor.ts';
+import { extractDefinitions } from '../../../widgets/Panels/DefinitionPanel/definitionExtractor.ts';
+
+export interface FileMetadata {
+  definitions: DefinitionSymbol[];
+  outlineNodes: OutlineNode[];
+}
+
+/**
+ * 🔥 Performance Cache: WeakMap을 사용하여 ts.SourceFile을 키로 메타데이터 캐싱
+ *
+ * - 동일한 파일에 대해 여러 컴포넌트가 getFileMetadata()를 호출해도 AST 순회는 1번만 실행
+ * - WeakMap이므로 파일이 삭제되면 자동으로 메모리에서 제거됨
+ * - App.tsx와 IDEView.tsx에서 extractDefinitions()를 중복 호출하는 문제 해결
+ */
+const fileMetadataCache = new WeakMap<ts.SourceFile, FileMetadata>();
+
+/**
+ * Get file metadata (definitions + outline structure) - WITH CACHING
+ *
+ * **캐싱 전략**:
+ * - 첫 호출: AST 순회 1회 실행 + 캐시 저장
+ * - 이후 호출: 캐시된 결과 즉시 반환
+ *
+ * **사용처**:
+ * - App.tsx: DefinitionPanel용 definitions
+ * - IDEView.tsx: OutlinePanel용 outlineNodes + DefinitionPanel용 definitions
+ * - CodeDocView.tsx: 문서 생성용 definitions
+ *
+ * **성능 개선**:
+ * - Before: AST 순회 3회 (App.tsx 1회 + IDEView.tsx 2회)
+ * - After: AST 순회 1회 (첫 호출에만) + 캐시 재사용
+ *
+ * @param node - SourceFileNode (must have sourceFile)
+ * @param files - Virtual file system (for type inference in extractDefinitions)
+ * @returns FileMetadata with definitions and outlineNodes
+ */
+export function getFileMetadata(node: SourceFileNode, files?: Record<string, string>): FileMetadata {
+  // 캐시 확인
+  const cached = fileMetadataCache.get(node.sourceFile);
+  if (cached) {
+    console.log('[getFileMetadata] ✅ Cache hit for:', node.filePath);
+    return cached;
+  }
+
+  console.log('[getFileMetadata] 🔥 Cache miss, extracting metadata for:', node.filePath);
+
+  // 🔥 AST 순회 1회 - definitions + outline 동시 추출
+  const definitions = extractDefinitions(node, files);
+  const outlineNodes = extractOutlineStructure(node);
+
+  const metadata: FileMetadata = {
+    definitions,
+    outlineNodes,
+  };
+
+  // 캐시 저장
+  fileMetadataCache.set(node.sourceFile, metadata);
+
+  return metadata;
+}
+
+/**
+ * Invalidate cache for a specific file
+ *
+ * **사용 시점**:
+ * - 파일 내용이 변경되었을 때
+ * - filesAtom이 업데이트되고 parseProject()가 재실행될 때
+ *
+ * @param node - SourceFileNode to invalidate
+ */
+export function invalidateFileMetadata(node: SourceFileNode): void {
+  fileMetadataCache.delete(node.sourceFile);
+  console.log('[invalidateFileMetadata] 🗑️ Cache invalidated for:', node.filePath);
+}
+
+/**
+ * Clear all metadata cache
+ *
+ * **사용 시점**:
+ * - 전체 프로젝트가 다시 파싱될 때
+ * - filesAtom이 완전히 교체될 때 (예: 새 폴더 업로드)
+ */
+export function clearAllMetadataCache(): void {
+  // WeakMap은 clear() 메서드가 없으므로 로그만 출력
+  // GC가 자동으로 메모리 회수
+  console.log('[clearAllMetadataCache] 🗑️ Metadata cache will be garbage collected');
+}
+
+// ========================================
+// LSIF Async Getters (Phase 3)
+// ========================================
+
+/**
+ * LSIF IndexedDB에서 export 정보 조회 (비동기)
+ *
+ * 우선순위:
+ * 1. LSIF IndexedDB (Graph Database) - 가장 빠름, persistent
+ * 2. View Map (Fallback)
+ * 3. AST 순회 (Fallback)
+ *
+ * @example
+ * const exports = await getExportsAsync(node);
+ * exports.forEach(exp => console.log(exp.name, exp.line));
+ */
+export async function getExportsAsync(node: SourceFileNode): Promise<ExportInfo[]> {
+  if (node.type !== 'file') return [];
+
+  try {
+    // 🔥 1. LSIF IndexedDB 조회
+    const lsifExports = await getExportsFromLSIF(node.filePath);
+    if (lsifExports.length > 0) {
+      console.log(`[getExportsAsync] ✅ LSIF hit for ${node.filePath}: ${lsifExports.length} exports`);
+      return lsifExports;
+    }
+  } catch (error) {
+    console.warn(`[getExportsAsync] ⚠️ LSIF query failed for ${node.filePath}:`, error);
+  }
+
+  // 🔥 2. View Map Fallback
+  if (node.views?.exports) {
+    console.log(`[getExportsAsync] 📦 View Map hit for ${node.filePath}`);
+    return node.views.exports;
+  }
+
+  // 🔥 3. AST Fallback
+  if (node.sourceFile) {
+    console.log(`[getExportsAsync] 🐌 AST fallback for ${node.filePath}`);
+    return extractExportsFromAST(node.sourceFile);
+  }
+
+  return [];
+}
+
+/**
+ * LSIF IndexedDB에서 import 정보 조회 (비동기)
+ */
+export async function getImportsAsync(node: SourceFileNode): Promise<ImportInfo[]> {
+  if (node.type !== 'file') return [];
+
+  try {
+    // 🔥 1. LSIF IndexedDB 조회
+    const lsifImports = await getImportsFromLSIF(node.filePath);
+    if (lsifImports.length > 0) {
+      console.log(`[getImportsAsync] ✅ LSIF hit for ${node.filePath}: ${lsifImports.length} imports`);
+      return lsifImports;
+    }
+  } catch (error) {
+    console.warn(`[getImportsAsync] ⚠️ LSIF query failed for ${node.filePath}:`, error);
+  }
+
+  // 🔥 2. View Map Fallback
+  if (node.views?.imports) {
+    console.log(`[getImportsAsync] 📦 View Map hit for ${node.filePath}`);
+    return node.views.imports;
+  }
+
+  // 🔥 3. AST Fallback
+  if (node.sourceFile) {
+    console.log(`[getImportsAsync] 🐌 AST fallback for ${node.filePath}`);
+    return extractImportsFromAST(node.sourceFile);
+  }
+
+  return [];
+}
+
+/**
+ * LSIF IndexedDB에서 symbol usage 정보 조회 (비동기)
+ * @param node - 파일 노드
+ * @param symbolName - 조회할 symbol 이름
+ * @returns import하는 파일 경로 배열
+ */
+export async function getSymbolUsagesAsync(node: SourceFileNode, symbolName: string): Promise<string[]> {
+  if (node.type !== 'file') return [];
+
+  try {
+    // 🔥 1. LSIF IndexedDB 조회
+    const lsifUsages = await getSymbolUsagesFromLSIF(node.filePath, symbolName);
+    if (lsifUsages.length > 0) {
+      console.log(`[getSymbolUsagesAsync] ✅ LSIF hit for ${node.filePath}#${symbolName}: ${lsifUsages.length} usages`);
+      return lsifUsages;
+    }
+  } catch (error) {
+    console.warn(`[getSymbolUsagesAsync] ⚠️ LSIF query failed for ${node.filePath}#${symbolName}:`, error);
+  }
+
+  // 🔥 2. View Map Fallback
+  if (node.views?.usages?.[symbolName]) {
+    console.log(`[getSymbolUsagesAsync] 📦 View Map hit for ${node.filePath}#${symbolName}`);
+    return node.views.usages[symbolName];
+  }
+
+  // 🔥 3. No fallback for usages (Worker에서만 계산)
+  return [];
 }

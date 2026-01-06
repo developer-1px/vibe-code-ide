@@ -9,9 +9,9 @@ import { Checkbox } from '@/components/ui/Checkbox';
 import { useDeadCodeSelection } from '@/features/Code/CodeAnalyzer/DeadCodeSelection/lib/useDeadCodeSelection';
 import { targetLineAtom } from '@/features/File/Navigation/model/atoms';
 import { useOpenFile } from '@/features/File/OpenFiles/lib/useOpenFile';
+import { FileIcon } from '../../../entities/SourceFileNode/ui/FileIcon.tsx';
 import { viewModeAtom } from '../../../app/model/atoms';
 import type { DeadCodeItem } from '../../../shared/deadCodeAnalyzer';
-import { getFileIcon } from '../../FileExplorer/lib/getFileIcon';
 
 export const DeadCodeFileItem = React.forwardRef<
   HTMLDivElement,
@@ -32,7 +32,6 @@ export const DeadCodeFileItem = React.forwardRef<
   const { toggleItemSelection, isItemSelected } = useDeadCodeSelection();
 
   const fileExtension = fileName.includes('.') ? `.${fileName.split('.').pop()}` : undefined;
-  const fileIcon = getFileIcon(fileName);
 
   const handleItemClick = (item: DeadCodeItem) => {
     openFile(item.filePath);
@@ -64,7 +63,7 @@ export const DeadCodeFileItem = React.forwardRef<
                     itemRefs.current.set(deadCodeGlobalIndex, el);
                   }
                 }}
-                icon={fileIcon}
+                icon={(() => <FileIcon fileName={fileName} />) as React.ComponentType}
                 label={`${fileName}:${item.line} - ${item.symbolName}`}
                 focused={itemFocused}
                 indent={depth}

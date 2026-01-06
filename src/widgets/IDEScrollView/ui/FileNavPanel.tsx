@@ -3,8 +3,8 @@
  * 파일 목록 표시 및 스크롤 네비게이션
  */
 
+import { FileIcon } from '../../../entities/SourceFileNode/ui/FileIcon.tsx';
 import { getFileName } from '../../../shared/pathUtils';
-import { getFileIcon } from '../../FileExplorer/lib/getFileIcon';
 
 const FileNavPanel = ({
   filePaths,
@@ -27,7 +27,6 @@ const FileNavPanel = ({
         {filePaths.map((filePath) => {
           const fileName = getFileName(filePath);
           const isActive = filePath === currentFilePath;
-          const FileIconComponent = getFileIcon(fileName);
 
           return (
             <button
@@ -39,7 +38,8 @@ const FileNavPanel = ({
                 ${isActive ? 'bg-warm-500/10 border-l-2 border-warm-300' : 'border-l-2 border-transparent'}
               `}
             >
-              <FileIconComponent
+              <FileIcon
+                fileName={fileName}
                 size={12}
                 className={`shrink-0 ${isActive ? 'text-warm-300' : 'text-text-tertiary'}`}
               />
