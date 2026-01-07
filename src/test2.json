@@ -1,0 +1,6940 @@
+[
+  {
+    "serviceCode": "SV_0197",
+    "upperServiceCode": "AI",
+    "serviceName": "AiTEMS",
+    "upperServiceName": "aiService",
+    "serviceDesc": "사용자별 이력을 분석하여 관심사와 취향에 맞는 상품을 추천하는 서비스",
+    "iconUrl": "https://portal.gcdn.ntruss.com/image/prod-aiService-aiTems_1719763828478.svg+xml",
+    "detailLinkUrl": "aitems",
+    "calcLinkUrl": "aiService#aiTems",
+    "inquiryUrl": "",
+    "keywords": [],
+    "labels": [],
+    "regionCodes": [
+      "KR",
+      "USWN",
+      "SGN",
+      "HK",
+      "JP",
+      "DEN"
+    ],
+    "platformTypeCode": "COMMON",
+    "metaTitle": "AiTEMS - AI Services",
+    "metaDesc": "",
+    "metaKeyword": [],
+    "eventContents": [],
+    "cmsPath": "/service-product/cms/cms_1720717310019.json",
+    "cmsVersion": "v1",
+    "sortOrder": 1,
+    "servicePlatforms": [
+      {
+        "serviceCode": "SV_0197",
+        "platformVersion": 2,
+        "consoleLinkUrl": "/aitems/service",
+        "guideLinkUrl": ""
+      }
+    ],
+    "modYmdt": "Jul 12, 2024, 2:01:50 AM",
+    "deployYmdt": "Dec 30, 2025, 2:38:41 PM"
+  },
+  {
+    "serviceCode": "SV_0174",
+    "upperServiceCode": "AI",
+    "serviceName": "CLOVA AiCall",
+    "upperServiceName": "aiService",
+    "serviceDesc": "AI 기능을 기반으로 고객센터를 구축하고 운영할 수 있는 서비스",
+    "iconUrl": "https://portal.gcdn.ntruss.com/image/prod-aiService-clovaAiCallConnect_1719763894754.svg+xml",
+    "detailLinkUrl": "CCAI",
+    "calcLinkUrl": "",
+    "inquiryUrl": "/support/question/service?parentCode=O2O_AI&code=O2O_AI_015",
+    "keywords": [],
+    "labels": [],
+    "regionCodes": [
+      "KR"
+    ],
+    "platformTypeCode": "COMMON",
+    "metaTitle": "CLOVA AiCall - AI Services",
+    "metaDesc": "",
+    "metaKeyword": [],
+    "eventContents": [],
+    "cmsPath": "/service-product/cms/cms_1750040612182.json",
+    "cmsVersion": "v1",
+    "sortOrder": 2,
+    "servicePlatforms": [
+      {
+        "serviceCode": "SV_0174",
+        "platformVersion": 2,
+        "consoleLinkUrl": "",
+        "guideLinkUrl": ""
+      }
+    ],
+    "modYmdt": "Jun 16, 2025, 11:23:32 AM",
+    "deployYmdt": "Dec 30, 2025, 2:38:41 PM"
+  },
+  {
+    "serviceCode": "SV_0059",
+    "upperServiceCode": "AI",
+    "serviceName": "CLOVA Chatbot",
+    "upperServiceName": "aiService",
+    "serviceDesc": "마케팅, 고객 응대 등 다양한 서비스에 활용할 수 있는 챗봇을 생성하는 서비스",
+    "iconUrl": "https://portal.gcdn.ntruss.com/image/prod-aiService-chatbot_1719763916967.svg+xml",
+    "detailLinkUrl": "chatbot",
+    "calcLinkUrl": "aiService#chatbot",
+    "inquiryUrl": "",
+    "keywords": [
+      "챗봇만들기",
+      "챗봇구축",
+      "챗봇딥러닝",
+      "오픈소스챗봇",
+      "네이버챗봇",
+      "챗봇시나리오",
+      "챗봇모델링",
+      "챗봇플랫폼",
+      "자연어처리",
+      "챗봇api",
+      "네이버챗봇api",
+      "네이버 ai api",
+      "네이버클라우드플랫폼챗봇",
+      "네이버클라우드챗봇",
+      "NCP챗봇",
+      "챗봇빌더",
+      "챗봇엔진",
+      "chatbot",
+      "chatbot api",
+      "Building chatbot",
+      "Chatbot development",
+      "Chatbot deep learning",
+      "Open source chatbot",
+      "NAVER chatbot",
+      "Chatbot scenario",
+      "Chatbot modeling",
+      "Chatbot engine",
+      "Chatbot platform",
+      "Natural language processing",
+      "NAVER chatbot api",
+      "NAVER AI chatbot",
+      "NAVER CLOUD PLATFORM chatbot",
+      "NAVER cloud chatbot",
+      "NCP chatbot"
+    ],
+    "labels": [],
+    "regionCodes": [
+      "KR",
+      "JP"
+    ],
+    "platformTypeCode": "CLASSIC",
+    "metaTitle": "CLOVA Chatbot - AI Services",
+    "metaDesc": "네이버 CLOVA Chatbot API. 사용자의 질문 의도를 이해하는 Chatbot 구축. 강력한 대화 모델 엔진 및 쉬운 Chatbot빌더 적용. 다양한 메시징 채널 연계 가능.",
+    "metaKeyword": [
+      "Clova Chatbot만들기",
+      "\r\nClova Chatbot구축",
+      "\r\nClova Chatbot딥러닝",
+      "\r\n오픈소스Clova Chatbot",
+      "\r\n네이버Clova Chatbot",
+      "\r\nClova Chatbot시나리오",
+      "\r\nClova Chatbot모델링",
+      "\r\nClova Chatbot엔진",
+      "\r\nClova Chatbot플랫폼",
+      "\r\n자연어처리",
+      "Clova Chatbot api",
+      "네이버Clova Chatbot api",
+      "네이버ai api",
+      "\r\n네이버클라우드플랫폼Clova Chatbot",
+      "\r\n네이버클라우드Clova Chatbot",
+      "\r\nNCPClova Chatbot\r\n"
+    ],
+    "eventContents": [],
+    "cmsPath": "/service-product/cms/cms_1721627610837.json",
+    "cmsVersion": "v1",
+    "sortOrder": 3,
+    "servicePlatforms": [
+      {
+        "serviceCode": "SV_0059",
+        "platformVersion": 1,
+        "consoleLinkUrl": "",
+        "guideLinkUrl": ""
+      },
+      {
+        "serviceCode": "SV_0059",
+        "platformVersion": 2,
+        "consoleLinkUrl": "/chatbot?platform=classic",
+        "guideLinkUrl": "/chatbot/chatbot-1-1.html"
+      }
+    ],
+    "modYmdt": "Oct 16, 2024, 10:35:59 PM",
+    "deployYmdt": "Dec 30, 2025, 2:38:41 PM"
+  },
+  {
+    "serviceCode": "SV_0172",
+    "upperServiceCode": "AI",
+    "serviceName": "CLOVA Dubbing",
+    "upperServiceName": "aiService",
+    "serviceDesc": "사용자가 입력한 문장을 음성으로 변환하여 영상에 합성할 수 있는 서비스",
+    "iconUrl": "https://portal.gcdn.ntruss.com/image/prod-aiService-clovaDubbing_1719763928960.svg+xml",
+    "detailLinkUrl": "clovaDubbing",
+    "calcLinkUrl": "aiService#clovaDubbing",
+    "inquiryUrl": "",
+    "keywords": [],
+    "labels": [],
+    "regionCodes": [
+      "KR"
+    ],
+    "platformTypeCode": "COMMON",
+    "metaTitle": "CLOVA Dubbing - AI Services",
+    "metaDesc": "자연스러운 CLOVA Voice로 동영상에 특별한 생동감을 더하세요.",
+    "metaKeyword": [],
+    "eventContents": [
+      "<span class=\"title\" style=\"color:red\">본 서비스는 출처 표기 없이 상업적 이용이 가능한 \"CLOVA Dubbing 유료 상품\" 입니다.</span>\n<br>다양한 AI 목소리를 활용하여 콘텐츠를 제작할 때 별도의 출처 표기 없이, 넉넉한 사용량으로 더빙 기능을 이용할 수 있습니다.</br> <br>※ 네이버에서 제공하는 무료 CLOVA Dubbing 서비스는 출처 표기가 필수이며, 사용량 및 상업적 사용에 제한이 있습니다.</span><br>※ 네이버 CLOVA Dubbing의 셀럽 보이스, 보이스 메이커 기능은 네이버 클라우드 플랫폼의 CLOVA Dubbing에서는 지원하지 않습니다.</br><a class=\"link\" target=\"_black\"href=\"https://clovadubbing.naver.com/\"><i class=\"icon-arrow\"></i> [CLOVA Dubbing 무료 서비스 이용하기]</a>"
+    ],
+    "cmsPath": "/service-product/cms/cms_1757057683660.json",
+    "cmsVersion": "v1",
+    "sortOrder": 4,
+    "servicePlatforms": [
+      {
+        "serviceCode": "SV_0172",
+        "platformVersion": 2,
+        "consoleLinkUrl": "/dubbing/domain",
+        "guideLinkUrl": ""
+      }
+    ],
+    "modYmdt": "Sep 5, 2025, 4:34:43 PM",
+    "deployYmdt": "Dec 30, 2025, 2:38:41 PM"
+  },
+  {
+    "serviceCode": "SV_0117",
+    "upperServiceCode": "AI",
+    "serviceName": "CLOVA OCR",
+    "upperServiceName": "aiService",
+    "serviceDesc": "인쇄물 속 글자를 추출하여 디지털 데이터로 변환해 주는 서비스",
+    "iconUrl": "https://portal.gcdn.ntruss.com/image/prod-aiService-opticalCharacterRecognition_1719764052752.svg+xml",
+    "detailLinkUrl": "ocr",
+    "calcLinkUrl": "aiService#ocr",
+    "inquiryUrl": "",
+    "keywords": [
+      "광학문자인식",
+      "이미지데이터 변환",
+      "텍스트 추출",
+      "필기체인식",
+      "문서처리 자동화",
+      "텍스트 스캔",
+      "텍스트 인식",
+      "손글씨 인식",
+      "문서 분류",
+      "업무 자동화",
+      "네이버 OCR",
+      "OCR",
+      "Optical Character Recognition",
+      "Image Data conversion",
+      "Text encoding",
+      "Cursive script recognition",
+      "Handwriting recognition",
+      "Document processing automation",
+      "Text scan",
+      "Text recognition",
+      "Document classification",
+      "business automation",
+      "Korean OCR"
+    ],
+    "labels": [],
+    "regionCodes": [
+      "KR",
+      "JP"
+    ],
+    "platformTypeCode": "CLASSIC",
+    "metaTitle": "CLOVA OCR - AI Services",
+    "metaDesc": "문서 인식 후 지정 영역 텍스트 및 데이터 추출. 한국어, 영어, 일본어 지원. 한국어와 일본어 필기체 인식 가능. ",
+    "metaKeyword": [
+      "광학문자인식",
+      "이미지데이터 변환",
+      "텍스트 추출",
+      "필기체 인식",
+      "문서처리 자동화",
+      "텍스트 스캔",
+      "텍스트 인식",
+      "손글씨 인식",
+      "문서 분류",
+      "업무 자동화",
+      "네이버 OCR"
+    ],
+    "eventContents": [],
+    "cmsPath": "/service-product/cms/cms_1750249332002.json",
+    "cmsVersion": "v1",
+    "sortOrder": 5,
+    "servicePlatforms": [
+      {
+        "serviceCode": "SV_0117",
+        "platformVersion": 2,
+        "consoleLinkUrl": "/ocr/subscription?platform=classic",
+        "guideLinkUrl": "/ocr/ocr-1-1.html"
+      }
+    ],
+    "modYmdt": "Jun 18, 2025, 9:22:12 PM",
+    "deployYmdt": "Dec 30, 2025, 2:38:41 PM"
+  },
+  {
+    "serviceCode": "SV_0171",
+    "upperServiceCode": "AI",
+    "serviceName": "CLOVA Speech",
+    "upperServiceName": "aiService",
+    "serviceDesc": "음성을 텍스트로 바꿔주며 음성 메모, 자막, 비서, 챗봇 등 다양한 음성 인식 서비스에 활용할 수 있습니다.",
+    "iconUrl": "https://portal.gcdn.ntruss.com/image/prod-aiService-NEST_1719764128090.svg+xml",
+    "detailLinkUrl": "clovaSpeech",
+    "calcLinkUrl": "aiService#clovaSpeech",
+    "inquiryUrl": "",
+    "keywords": [],
+    "labels": [
+      "UPDATE"
+    ],
+    "regionCodes": [
+      "KR",
+      "USWN",
+      "SGN",
+      "HK",
+      "JP",
+      "DEN"
+    ],
+    "platformTypeCode": "COMMON",
+    "metaTitle": "CLOVA Speech - AI Services",
+    "metaDesc": "",
+    "metaKeyword": [],
+    "eventContents": [],
+    "cmsPath": "/service-product/cms/cms_1761809144438.json",
+    "cmsVersion": "v1",
+    "sortOrder": 6,
+    "servicePlatforms": [
+      {
+        "serviceCode": "SV_0171",
+        "platformVersion": 2,
+        "consoleLinkUrl": "/nest/domain",
+        "guideLinkUrl": ""
+      }
+    ],
+    "modYmdt": "Nov 19, 2025, 7:06:03 PM",
+    "deployYmdt": "Dec 30, 2025, 2:38:41 PM"
+  },
+  {
+    "serviceCode": "SV_0207",
+    "upperServiceCode": "AI",
+    "serviceName": "CLOVA Studio",
+    "upperServiceName": "aiService",
+    "serviceDesc": "비즈니스에 최적화된 하이퍼스케일 AI 개발 도구",
+    "iconUrl": "https://portal.gcdn.ntruss.com/image/prod-aiService-clovaStudio_1719764153760.svg+xml",
+    "detailLinkUrl": "clovaStudio",
+    "calcLinkUrl": "aiService#clovaStudio",
+    "inquiryUrl": "",
+    "keywords": [
+      "하이퍼클로바",
+      "하이퍼 클로바",
+      "클로바 스튜디오",
+      "스튜디오",
+      "클로바스튜디오",
+      "하이퍼클로바x",
+      "하이퍼 클로바 x",
+      "hyperclova x"
+    ],
+    "labels": [
+      "BETA"
+    ],
+    "regionCodes": [
+      "KR"
+    ],
+    "platformTypeCode": "COMMON",
+    "metaTitle": "CLOVA Studio - AI Services",
+    "metaDesc": "",
+    "metaKeyword": [],
+    "eventContents": [],
+    "cmsPath": "/service-product/cms/cms_1763107101950.json",
+    "cmsVersion": "v1",
+    "sortOrder": 7,
+    "servicePlatforms": [
+      {
+        "serviceCode": "SV_0207",
+        "platformVersion": 2,
+        "consoleLinkUrl": "/clova-studio/product",
+        "guideLinkUrl": "/clova-studio/product"
+      }
+    ],
+    "modYmdt": "Nov 14, 2025, 4:58:22 PM",
+    "deployYmdt": "Dec 30, 2025, 2:38:41 PM"
+  },
+  {
+    "serviceCode": "SV_0158",
+    "upperServiceCode": "AI",
+    "serviceName": "CLOVA Voice",
+    "upperServiceName": "aiService",
+    "serviceDesc": "다양하고 자연스러운 목소리를 만들 수 있는 고품질 음성 합성 서비스",
+    "iconUrl": "https://portal.gcdn.ntruss.com/image/prod-aiService-clovaVoice_1719764173896.svg+xml",
+    "detailLinkUrl": "clovaVoice",
+    "calcLinkUrl": "aiService#clovaVoice",
+    "inquiryUrl": "",
+    "keywords": [],
+    "labels": [],
+    "regionCodes": [
+      "KR",
+      "USWN",
+      "SGN",
+      "HK",
+      "JP",
+      "DEN"
+    ],
+    "platformTypeCode": "COMMON",
+    "metaTitle": "CLOVA Voice - AI Services",
+    "metaDesc": "",
+    "metaKeyword": [],
+    "eventContents": [],
+    "cmsPath": "/service-product/cms/cms_1737013638527.json",
+    "cmsVersion": "v1",
+    "sortOrder": 8,
+    "servicePlatforms": [
+      {
+        "serviceCode": "SV_0158",
+        "platformVersion": 2,
+        "consoleLinkUrl": "/naver-service/application",
+        "guideLinkUrl": "/naveropenapi_v3/speech/clova_voice.html"
+      }
+    ],
+    "modYmdt": "Jan 16, 2025, 4:47:18 PM",
+    "deployYmdt": "Dec 30, 2025, 2:38:41 PM"
+  },
+  {
+    "serviceCode": "SV_0051",
+    "upperServiceCode": "AI",
+    "serviceName": "CLOVA Speech Recognition(CSR)",
+    "upperServiceName": "aiService",
+    "serviceDesc": "사람 목소리를 텍스트로 바꿔주는 서비스",
+    "iconUrl": "https://portal.gcdn.ntruss.com/image/prod-aiService-csr_1719764234396.svg+xml",
+    "detailLinkUrl": "csr",
+    "calcLinkUrl": "aiService#csr",
+    "inquiryUrl": "",
+    "keywords": [
+      "클로바음성인식",
+      "음성인식AI",
+      "음성인식솔루션",
+      "음성인식API",
+      "클로바API",
+      "비서앱API",
+      "음성메모API",
+      "음성비서",
+      "구글어시스턴트",
+      "네이버STT",
+      "네이버클라우드STT",
+      "네이버클라우드플랫폼STT",
+      "네이버음성인식",
+      "네이버클라우드음성인식",
+      "네이버클라우드플랫폼음성인식",
+      "CSR",
+      "Clova Speech Recognition",
+      "Speech recognition AI",
+      "Voice recognition AI",
+      "Speech recognition solution",
+      "Voice recognition solution",
+      "Speech recognition API",
+      "Voice recognition API",
+      "NAVER speech recognition",
+      "NAVER voice recognition",
+      "Clova API",
+      "Secretary application API",
+      "Secretary app API",
+      "Voice memo API",
+      "Voice secretary",
+      "Google Assistant",
+      "STT",
+      "NAVER STT",
+      "NAVER cloud STT",
+      "NAVER CLOUD PLATFORM STT"
+    ],
+    "labels": [],
+    "regionCodes": [
+      "KR",
+      "USWN",
+      "SGN",
+      "HK",
+      "JP",
+      "DEN"
+    ],
+    "platformTypeCode": "COMMON",
+    "metaTitle": "CLOVA Speech Recognition(CSR) - AI Services",
+    "metaDesc": "가장 뛰어난 한국어 음성 인식률을 가진 네이버 음성 인식 API 서비스(STT). 사람의 목소리를 텍스트로 변환. 비서 애플리케이션 및 음성 메모 서비스 등 다양한 음성 인식 서비스에 활용 가능.",
+    "metaKeyword": [
+      "클로바음성인식",
+      "음성인식인공지능",
+      "음성인식AI",
+      "음성인식솔루션",
+      "음성인식API",
+      "네이버음성인식",
+      "클로바API",
+      "비서앱API",
+      "음성메모API",
+      "음성비서",
+      "구글어시스턴트"
+    ],
+    "eventContents": [
+      "<span class=“title” style=\"color:blue;font-weight:bold;\">CLOVA Speech 서비스 통합 안내</span><br>\n이제 CLOVA Speech Recognition(CSR)의 기능을 CLOVA Speech에서 제공합니다.<br>\nCLOVA Speech를 통해 더 많은 기능을 이용할 수 있습니다. "
+    ],
+    "cmsPath": "/service-product/cms/cms_1754374141799.json",
+    "cmsVersion": "v1",
+    "sortOrder": 9,
+    "servicePlatforms": [
+      {
+        "serviceCode": "SV_0051",
+        "platformVersion": 1,
+        "consoleLinkUrl": "",
+        "guideLinkUrl": ""
+      },
+      {
+        "serviceCode": "SV_0051",
+        "platformVersion": 2,
+        "consoleLinkUrl": "/naver-service/application",
+        "guideLinkUrl": "/naveropenapi_v3/speech/recognition-sdk.html"
+      }
+    ],
+    "modYmdt": "Aug 5, 2025, 3:09:01 PM",
+    "deployYmdt": "Dec 30, 2025, 2:38:41 PM"
+  },
+  {
+    "serviceCode": "SV_0055",
+    "upperServiceCode": "AI",
+    "serviceName": "Papago Translation",
+    "upperServiceName": "aiService",
+    "serviceDesc": "입력한 텍스트를 여러 나라의 언어로 자동 번역하는 기계 번역 서비스",
+    "iconUrl": "https://portal.gcdn.ntruss.com/image/prod-aiService-papagoNmt_1719764254632.svg+xml",
+    "detailLinkUrl": "papagoTranslation",
+    "calcLinkUrl": "aiService#papagoTranslation",
+    "inquiryUrl": "",
+    "keywords": [
+      "파파고인공신경망번역",
+      "인공신경망번역",
+      "인공지능맥락번역",
+      "인공지능번역",
+      "파파고번역API",
+      "다국어번역API",
+      "네이버번역기API",
+      "NMT번역",
+      "자연스러운번역",
+      "번역솔루션",
+      "Papago NMT",
+      "Papago Neural Machine Translation",
+      "NMT",
+      "Neural Machine Translation",
+      "AI context translation",
+      "AI translation",
+      "Papago translation API",
+      "Multilingual translation API",
+      "NAVER translator API",
+      "NMT translation",
+      "Natural translation",
+      "Translation solution",
+      "Translator solution"
+    ],
+    "labels": [
+      "UPDATE"
+    ],
+    "regionCodes": [
+      "KR",
+      "USWN",
+      "SGN",
+      "HK",
+      "JP",
+      "DEN"
+    ],
+    "platformTypeCode": "COMMON",
+    "metaTitle": " Papago Translation - AI Services",
+    "metaDesc": "뛰어난 한국어 번역 품질 제공하는 인공신경망 기반 번역 API 서비스. 맥락이 고려된 자연스러운 번역 결과 제공. 영어, 중국어, 일본어, 스페인어 등 12개국 언어 번역 지원",
+    "metaKeyword": [
+      "파파고인공신경망번역",
+      "인공신경망번역",
+      "인공지능맥락번역",
+      "인공지능번역",
+      "파파고번역API",
+      "다국어번역API",
+      "네이버번역기API",
+      "NMT번역",
+      "자연스러운번역",
+      "번역솔루션"
+    ],
+    "eventContents": [],
+    "cmsPath": "/service-product/cms/cms_1753676045739.json",
+    "cmsVersion": "v1",
+    "sortOrder": 11,
+    "servicePlatforms": [
+      {
+        "serviceCode": "SV_0055",
+        "platformVersion": 1,
+        "consoleLinkUrl": "",
+        "guideLinkUrl": ""
+      },
+      {
+        "serviceCode": "SV_0055",
+        "platformVersion": 2,
+        "consoleLinkUrl": "/papago-translation",
+        "guideLinkUrl": "/naveropenapi_v3/translation/nmt.html"
+      }
+    ],
+    "modYmdt": "Dec 18, 2025, 3:29:57 PM",
+    "deployYmdt": "Dec 30, 2025, 2:38:41 PM"
+  },
+  {
+    "serviceCode": "SV_0199",
+    "upperServiceCode": "AI",
+    "serviceName": "Papago Image Translation",
+    "upperServiceName": "aiService",
+    "serviceDesc": "이미지 속 텍스트를 자동으로 인식하고 여러 나라의 언어로 번역할 수 있는 서비스",
+    "iconUrl": "https://portal.gcdn.ntruss.com/image/prod-aiService-papagoImageTrasnslation_1719764278731.svg+xml",
+    "detailLinkUrl": "papagoImageTranslation",
+    "calcLinkUrl": "aiService#papagoImageTranslation",
+    "inquiryUrl": "",
+    "keywords": [
+      "Papago Image Translation"
+    ],
+    "labels": [],
+    "regionCodes": [
+      "KR",
+      "USWN",
+      "SGN",
+      "HK",
+      "JP",
+      "DEN"
+    ],
+    "platformTypeCode": "COMMON",
+    "metaTitle": "Papago Image Translation - AI Services",
+    "metaDesc": "",
+    "metaKeyword": [
+      "Papago Image Translation"
+    ],
+    "eventContents": [],
+    "cmsPath": "/service-product/cms/cms_1731656153895.json",
+    "cmsVersion": "v1",
+    "sortOrder": 12,
+    "servicePlatforms": [
+      {
+        "serviceCode": "SV_0199",
+        "platformVersion": 2,
+        "consoleLinkUrl": "/papago-translation/subscription",
+        "guideLinkUrl": ""
+      }
+    ],
+    "modYmdt": "Nov 15, 2024, 4:35:54 PM",
+    "deployYmdt": "Dec 30, 2025, 2:38:41 PM"
+  },
+  {
+    "serviceCode": "SV_0057",
+    "upperServiceCode": "AI",
+    "serviceName": "Ncloud TensorFlow Server",
+    "upperServiceName": "aiService",
+    "serviceDesc": "TensorFlow와 머신러닝 패키지가 설치된 서버를 제공하는 서비스",
+    "iconUrl": "https://portal.gcdn.ntruss.com/image/prod-aiService-tensorFlowServer_1719764353549.svg+xml",
+    "detailLinkUrl": "NcloudTensorFlowServer",
+    "inquiryUrl": "",
+    "keywords": [
+      "딥러닝패키지",
+      "머신러닝패키지",
+      "텐서플로우",
+      "텐서플로우서버",
+      "딥러닝툴",
+      "클라우드딥러닝",
+      "딥러닝텐서플로우",
+      "딥러닝프로그래밍",
+      "머신러닝알고리즘",
+      "머신러닝서버",
+      "Deep learning package",
+      "Machine learning package",
+      "Tensorflow",
+      "Tensorflow server",
+      "Deep learning tool",
+      "Cloud deep learning",
+      "Deep learning tensorflow",
+      "Deep learning programming",
+      "Machine learning argorithm",
+      "Machine learning server"
+    ],
+    "labels": [],
+    "regionCodes": [
+      "KR",
+      "SGN",
+      "JP"
+    ],
+    "platformTypeCode": "VPC",
+    "metaTitle": "Ncloud TensorFlow Server - AI Services",
+    "metaDesc": "오픈 소스 클라우드 딥러닝/머신러닝 연구, 데이터 분석 라이브러리 및 서버 프레임워크.",
+    "metaKeyword": [
+      "딥러닝패키지",
+      "머신러닝패키지",
+      "텐서플로우",
+      "텐서플로우서버",
+      "딥러닝툴",
+      "클라우드딥러닝",
+      "딥러닝텐서플로우",
+      "딥러닝프로그래밍",
+      "머신러닝알고리즘",
+      "머신러닝서버"
+    ],
+    "eventContents": [],
+    "cmsPath": "/service-product/cms/cms_1755481304122.json",
+    "cmsVersion": "v1",
+    "sortOrder": 15,
+    "servicePlatforms": [
+      {
+        "serviceCode": "SV_0057",
+        "platformVersion": 1,
+        "consoleLinkUrl": "",
+        "guideLinkUrl": ""
+      },
+      {
+        "serviceCode": "SV_0057",
+        "platformVersion": 2,
+        "consoleLinkUrl": "/server/server?platform=vpc",
+        "guideLinkUrl": "/tensorflow/tensorflow-1-1.html"
+      }
+    ],
+    "modYmdt": "Aug 18, 2025, 10:41:44 AM",
+    "deployYmdt": "Dec 30, 2025, 2:38:41 PM"
+  },
+  {
+    "serviceCode": "SV_0058",
+    "upperServiceCode": "AI",
+    "serviceName": "Ncloud TensorFlow Cluster",
+    "upperServiceName": "aiService",
+    "serviceDesc": "CLI를 사용하여 클라우드 기반 TensorFlow 분산 병렬 처리 환경을 구성하는 서비스",
+    "iconUrl": "https://portal.gcdn.ntruss.com/image/prod-aiService-tensorFlowCluster_1719764374389.svg+xml",
+    "detailLinkUrl": "NcloudTensorFlowCluster",
+    "keywords": [
+      "분산병렬처리",
+      "텐서플로우분산처리",
+      "텐서플로우병렬처리",
+      "분산텐서플로우",
+      "텐서플로우클러스터링",
+      "딥러닝텐서플로우",
+      "텐서플로우아키텍처",
+      "클라우드텐서플로우",
+      "텐서플로우실행",
+      "텐서플로우환경구축",
+      "Distributed parallel processing",
+      "Distributed parallel computing",
+      "Tensorflow distributed processing",
+      "Tensorflow distributed computing",
+      "Tensorflow parallel processing",
+      "Tensorflow parallel computing",
+      "Distributed tensorflow",
+      "Tensorflow clustering",
+      "Deep learning tensorflow",
+      "Tensorflow architecture",
+      "Cloud tensorflow",
+      "Implementing tensorflow",
+      "Tensorflow environment setup"
+    ],
+    "labels": [],
+    "regionCodes": [
+      "KR"
+    ],
+    "platformTypeCode": "CLASSIC",
+    "metaTitle": "Ncloud TensorFlow Cluster - AI Services",
+    "metaDesc": "CLI 기반 대용량 텐서플로우 분산 병렬 처리 환경. ",
+    "metaKeyword": [
+      "분산병렬처리",
+      "텐서플로우분산처리",
+      "텐서플로우병렬처리",
+      "분산텐서플로우",
+      "텐서플로우클러스터링",
+      "딥러닝텐서플로우",
+      "텐서플로우아키텍처",
+      "클라우드텐서플로우",
+      "텐서플로우실행",
+      "텐서플로우환경구축"
+    ],
+    "eventContents": [],
+    "cmsPath": "/service-product/cms/cms_1721742120550.json",
+    "cmsVersion": "v1",
+    "sortOrder": 16,
+    "servicePlatforms": [
+      {
+        "serviceCode": "SV_0058",
+        "platformVersion": 1,
+        "consoleLinkUrl": "",
+        "guideLinkUrl": ""
+      },
+      {
+        "serviceCode": "SV_0058",
+        "platformVersion": 2,
+        "consoleLinkUrl": "/server/server?platform=classic",
+        "guideLinkUrl": "/tensorflow/tensorflow-2-1.html"
+      }
+    ],
+    "modYmdt": "Jul 23, 2024, 10:42:01 PM",
+    "deployYmdt": "Dec 30, 2025, 2:38:41 PM"
+  },
+  {
+    "serviceCode": "SV_0224",
+    "upperServiceCode": "AI",
+    "serviceName": "CLOVA GreenEye",
+    "upperServiceName": "aiService",
+    "serviceDesc": "이미지를 판독하여 유해 콘텐츠를 탐지하는 서비스",
+    "iconUrl": "https://portal.gcdn.ntruss.com/image/prod-aiService-clovaGreenEye_1719764391156.svg+xml",
+    "detailLinkUrl": "greenEye",
+    "calcLinkUrl": "",
+    "inquiryUrl": "/support/question/service?parentCode=O2O_AI&code=O2O_AI_027",
+    "keywords": [],
+    "labels": [],
+    "regionCodes": [
+      "KR"
+    ],
+    "platformTypeCode": "COMMON",
+    "metaTitle": "",
+    "metaDesc": "",
+    "metaKeyword": [],
+    "eventContents": [],
+    "cmsPath": "/service-product/cms/cms_1720717344792.json",
+    "cmsVersion": "v1",
+    "sortOrder": 22,
+    "servicePlatforms": [
+      {
+        "serviceCode": "SV_0224",
+        "platformVersion": 2,
+        "consoleLinkUrl": "/eye/subscription",
+        "guideLinkUrl": ""
+      }
+    ],
+    "modYmdt": "Jul 12, 2024, 2:02:24 AM",
+    "deployYmdt": "Dec 30, 2025, 2:38:41 PM"
+  },
+  {
+    "serviceCode": "SV_0233",
+    "upperServiceCode": "AI",
+    "serviceName": "CLOVA CareCall",
+    "upperServiceName": "aiService",
+    "serviceDesc": "AI가 일상적인 주제로 대상자와 통화하면서 건강 상태를 확인하는 전화 돌봄 서비스",
+    "iconUrl": "https://portal.gcdn.ntruss.com/image/prod-aiService-clovaCareCall_1719764444671.svg+xml",
+    "detailLinkUrl": "clovaCareCall",
+    "calcLinkUrl": "aiService#clovaCareCall",
+    "inquiryUrl": "/support/question/service?parentCode=O2O_AI&code=O2O_AI_030",
+    "keywords": [],
+    "labels": [],
+    "regionCodes": [
+      "KR"
+    ],
+    "platformTypeCode": "COMMON",
+    "metaTitle": "CLOVA CareCall - AI Services",
+    "metaDesc": "",
+    "metaKeyword": [],
+    "eventContents": [],
+    "cmsPath": "/service-product/cms/cms_1721193008191.json",
+    "cmsVersion": "v1",
+    "sortOrder": 24,
+    "servicePlatforms": [
+      {
+        "serviceCode": "SV_0233",
+        "platformVersion": 2,
+        "consoleLinkUrl": ""
+      }
+    ],
+    "modYmdt": "Dec 13, 2024, 8:32:04 PM",
+    "deployYmdt": "Dec 30, 2025, 2:38:41 PM"
+  },
+  {
+    "serviceCode": "SV_0265",
+    "upperServiceCode": "AI",
+    "serviceName": "NCLUE",
+    "upperServiceName": "aiService",
+    "serviceDesc": "비즈니스에 활용가능한 대규모 행동 모델 기반 고객 분석과 마케팅 도구",
+    "detailLinkUrl": "nclue",
+    "keywords": [
+      "NCLUE",
+      "nclue"
+    ],
+    "labels": [
+      "BETA"
+    ],
+    "regionCodes": [
+      "KR"
+    ],
+    "platformTypeCode": "VPC",
+    "metaTitle": "NCLUE - AI Services",
+    "metaKeyword": [
+      "NCLUE",
+      "nclue"
+    ],
+    "cmsPath": "/service-product/cms/cms_1759295834391.json",
+    "cmsVersion": "v1",
+    "sortOrder": 30,
+    "servicePlatforms": [
+      {
+        "serviceCode": "SV_0265",
+        "platformVersion": 2,
+        "consoleLinkUrl": "/nclue?platform=vpc"
+      }
+    ],
+    "modYmdt": "Oct 1, 2025, 2:17:14 PM",
+    "deployYmdt": "Dec 30, 2025, 2:38:41 PM"
+  },
+  {
+    "serviceCode": "SV_0291",
+    "upperServiceCode": "AI",
+    "serviceName": "ML expert Platform",
+    "upperServiceName": "aiService",
+    "serviceDesc": "전문가를 위한 ML 플랫폼, 통합된 ML의 모든 것을 경험하는 곳",
+    "detailLinkUrl": "mlExpertPlatform",
+    "keywords": [],
+    "labels": [
+      "COMINGSOON"
+    ],
+    "regionCodes": [
+      "KR"
+    ],
+    "platformTypeCode": "VPC",
+    "metaTitle": "ML expert platform - AI Services",
+    "metaDesc": "전문가를 위한 ML 플랫폼, 통합된 ML의 모든 것을 경험하는 곳",
+    "cmsPath": "/service-product/cms/cms_1765262468880.json",
+    "cmsVersion": "v1",
+    "sortOrder": 30,
+    "servicePlatforms": [
+      {
+        "serviceCode": "SV_0291",
+        "platformVersion": 2,
+        "consoleLinkUrl": "/mlxp/workspace?platform=vpc"
+      }
+    ],
+    "modYmdt": "Dec 9, 2025, 4:35:11 PM",
+    "deployYmdt": "Dec 30, 2025, 2:38:41 PM"
+  },
+  {
+    "serviceCode": "SV_0086",
+    "upperServiceCode": "ANALY",
+    "serviceName": "Cloud Hadoop",
+    "upperServiceName": "analytics",
+    "serviceDesc": "오픈 소스 분석 프레임워크 기반의 완전 관리형 빅데이터 분석 플랫폼",
+    "iconUrl": "https://portal.gcdn.ntruss.com/image/prod-analytics-cloudhadoop_1719765243852.svg+xml",
+    "detailLinkUrl": "cloudHadoop",
+    "calcLinkUrl": "analytics#cloudHadoop",
+    "inquiryUrl": "",
+    "keywords": [
+      "클라우드하둡",
+      "하둡분석",
+      "하둡서비스",
+      "네이버하둡",
+      "네이버클라우드하둡",
+      "빅데이터분석툴",
+      "오픈소스빅데이터툴",
+      "클라우드분석서비스",
+      "하둡개발클러스터",
+      "클러스터분석툴",
+      "Cloud hadoop",
+      "Hadoop analysis",
+      "Hadoop service",
+      "NAVER hadoop",
+      "NAVER cloud hadoop",
+      "Big data analysis tool",
+      "Open source big data tool",
+      "Cloud analytics service",
+      "Hadoop development cluster",
+      "Cluster analysis tool"
+    ],
+    "labels": [],
+    "regionCodes": [
+      "KR",
+      "SGN"
+    ],
+    "platformTypeCode": "VPC",
+    "metaTitle": "Cloud Hadoop - Big Data & Analytics",
+    "metaDesc": "하둡, H베이스, 스파크, 하이브 등 오픈소스 기반 클라우드 빅데이터 분석 프레임워크.",
+    "metaKeyword": [
+      "클라우드하둡",
+      "",
+      "하둡분석",
+      "하둡서비스",
+      "네이버하둡",
+      "네이버클라우드하둡",
+      "빅데이터분석툴",
+      "오픈소스빅데이터툴",
+      "클라우드분석서비스",
+      "하둡개발클러스터",
+      "클러스터분석툴"
+    ],
+    "eventContents": [],
+    "cmsPath": "/service-product/cms/cms_1742545027512.json",
+    "cmsVersion": "v1",
+    "sortOrder": 1,
+    "servicePlatforms": [
+      {
+        "serviceCode": "SV_0086",
+        "platformVersion": 1,
+        "consoleLinkUrl": "",
+        "guideLinkUrl": ""
+      },
+      {
+        "serviceCode": "SV_0086",
+        "platformVersion": 2,
+        "consoleLinkUrl": "/vpcCloudHadoop/clusters?platform=vpc",
+        "guideLinkUrl": "/hadoop/chadoop-1.html"
+      }
+    ],
+    "modYmdt": "Sep 18, 2025, 10:04:33 AM",
+    "deployYmdt": "Dec 30, 2025, 2:38:41 PM"
+  },
+  {
+    "serviceCode": "SV_0101",
+    "upperServiceCode": "ANALY",
+    "serviceName": "Cloud Search",
+    "upperServiceName": "analytics",
+    "serviceDesc": "웹사이트의 검색 기능을 간편하게 설정하고 관리할 수 있는 관리형 서비스",
+    "iconUrl": "https://portal.gcdn.ntruss.com/image/prod-analytics-CloudSearch_1719765266744.svg+xml",
+    "detailLinkUrl": "cloudSearch",
+    "calcLinkUrl": "analytics#cloudSearch",
+    "inquiryUrl": "",
+    "keywords": [],
+    "labels": [],
+    "regionCodes": [
+      "KR"
+    ],
+    "platformTypeCode": "COMMON",
+    "metaTitle": "Cloud Search - Big Data & Analytics",
+    "metaDesc": "",
+    "metaKeyword": [],
+    "eventContents": [],
+    "cmsPath": "/service-product/cms/cms_1720717367556.json",
+    "cmsVersion": "v1",
+    "sortOrder": 2,
+    "servicePlatforms": [
+      {
+        "serviceCode": "SV_0101",
+        "platformVersion": 1,
+        "consoleLinkUrl": "",
+        "guideLinkUrl": ""
+      },
+      {
+        "serviceCode": "SV_0101",
+        "platformVersion": 2,
+        "consoleLinkUrl": "/cloudsearch/domain",
+        "guideLinkUrl": "/cloudsearch/cloudsearch-1-1.html"
+      }
+    ],
+    "modYmdt": "Jul 12, 2024, 2:02:47 AM",
+    "deployYmdt": "Dec 30, 2025, 2:38:41 PM"
+  },
+  {
+    "serviceCode": "SV_0111",
+    "upperServiceCode": "ANALY",
+    "serviceName": "Search Engine Service",
+    "upperServiceName": "analytics",
+    "serviceDesc": "다양한 형태의 데이터를 검색, 분석, 시각화할 수 있는 관리형 OpenSearch 및 Elasticsearch 서비스",
+    "iconUrl": "https://portal.gcdn.ntruss.com/image/ElasticSearch_1719765356371.svg+xml",
+    "detailLinkUrl": "searchEngineService",
+    "calcLinkUrl": "analytics#elasticSearchService",
+    "inquiryUrl": "",
+    "keywords": [
+      "엘라스틱 서치",
+      "검색기능구현",
+      "검색기능개발",
+      "네이버 클라우드 플랫폼 Elasticsearch",
+      "네이버 클라우드 Elasticsearch",
+      "네이버 Elasticsearch",
+      "검색 오픈소스",
+      "키바나",
+      "검색엔진",
+      "네이버클라우드플랫폼 검색엔진",
+      "네이버 검색엔진",
+      "네이버 클라우드 검색엔진",
+      "Elastic Search",
+      "Naver Cloud Platform Elasticsearch",
+      "Naver Cloud Elasticsearch",
+      "Naver Elasticsearch",
+      "Open Source Search Engine",
+      "Kibana",
+      "Cloud Search engine",
+      "Naver Cloud Platform search engine",
+      "Naver search engine",
+      "Naver cloud search engine"
+    ],
+    "labels": [],
+    "regionCodes": [
+      "KR",
+      "SGN",
+      "JP"
+    ],
+    "platformTypeCode": "VPC",
+    "metaTitle": "Search Engine Service - Big Data & Analytics",
+    "metaDesc": "네이버 클라우드 플랫폼에서 Elasticsearch 클러스터를 손쉽게 배포, 운영 및 확장하여 검색 관련 다양한 기능을 수행하는데 도움",
+    "metaKeyword": [
+      "엘라스틱 서치",
+      "검색기능구현",
+      "검색기능개발",
+      "네이버 클라우드 플랫폼 Elasticsearch",
+      "네이버 클라우드 Elasticsearch",
+      "네이버 Elasticsearch",
+      "검색 오픈소스",
+      "키바나",
+      "검색엔진",
+      "네이버클라우드플랫폼 검색엔진",
+      "네이버 검색엔진",
+      "네이버 클라우드 검색엔진"
+    ],
+    "eventContents": [],
+    "cmsPath": "/service-product/cms/cms_1742545138739.json",
+    "cmsVersion": "v1",
+    "sortOrder": 3,
+    "servicePlatforms": [
+      {
+        "serviceCode": "SV_0111",
+        "platformVersion": 1,
+        "consoleLinkUrl": "",
+        "guideLinkUrl": ""
+      },
+      {
+        "serviceCode": "SV_0111",
+        "platformVersion": 2,
+        "consoleLinkUrl": "/VPCSearchEngine/cluster?platform=vpc",
+        "guideLinkUrl": "/ess/ess-1-1.html"
+      }
+    ],
+    "modYmdt": "Jul 16, 2025, 3:23:02 PM",
+    "deployYmdt": "Dec 30, 2025, 2:38:41 PM"
+  },
+  {
+    "serviceCode": "SV_0156",
+    "upperServiceCode": "ANALY",
+    "serviceName": "Cloud Data Streaming Service",
+    "upperServiceName": "analytics",
+    "serviceDesc": "오픈 소스 Apache Kafka 클러스터를 손쉽게 배포, 운영 및 확장할 수 있는 서비스",
+    "iconUrl": "https://portal.gcdn.ntruss.com/image/ico-CloudDataStreamingService_1719765435949.svg+xml",
+    "detailLinkUrl": "cloudDataStreamingService",
+    "calcLinkUrl": "analytics#cloudDataStreamingService",
+    "inquiryUrl": "",
+    "keywords": [],
+    "labels": [],
+    "regionCodes": [
+      "KR",
+      "SGN",
+      "JP"
+    ],
+    "platformTypeCode": "VPC",
+    "metaTitle": "Cloud Data Streaming Service - Big Data & Analytics",
+    "metaDesc": "",
+    "metaKeyword": [],
+    "eventContents": [],
+    "cmsPath": "/service-product/cms/cms_1742545233980.json",
+    "cmsVersion": "v1",
+    "sortOrder": 5,
+    "servicePlatforms": [
+      {
+        "serviceCode": "SV_0156",
+        "platformVersion": 2,
+        "consoleLinkUrl": "/CloudDataStreamingService/cluster?platform=vpc",
+        "guideLinkUrl": ""
+      }
+    ],
+    "modYmdt": "Apr 16, 2025, 11:27:45 AM",
+    "deployYmdt": "Dec 30, 2025, 2:38:41 PM"
+  },
+  {
+    "serviceCode": "SV_0183",
+    "upperServiceCode": "ANALY",
+    "serviceName": "Data Forest",
+    "upperServiceName": "analytics",
+    "serviceDesc": "빅데이터 분석을 위한 다양한 오픈 소스 애플리케이션을 제공하는 빅데이터 분석 플랫폼",
+    "iconUrl": "https://portal.gcdn.ntruss.com/image/prod-analytics-dataForest_1719765463181.svg+xml",
+    "detailLinkUrl": "dataForest",
+    "calcLinkUrl": "analytics#dataForest",
+    "inquiryUrl": "",
+    "keywords": [
+      "Data Forest",
+      "데이터포레스트",
+      "AI Forest",
+      "에이아이포레스트",
+      "Big Data",
+      "빅데이터",
+      "Machine Learning",
+      "머신러닝",
+      "Hadoop",
+      "하둡",
+      "Tensorflow",
+      "텐서플로우",
+      "Pytorch",
+      "파이토치",
+      "Serverless",
+      "서비리스"
+    ],
+    "labels": [],
+    "regionCodes": [
+      "KR"
+    ],
+    "platformTypeCode": "VPC",
+    "metaTitle": "Data Forest - Big Data & Analytics",
+    "metaDesc": "빅데이터 분석에서 머신러닝까지 다양한 오픈소스 어플리케이션을 제공하는 빅데이터 분석 플랫폼입",
+    "metaKeyword": [
+      "데이터포레스트",
+      "에이아이포레스트",
+      "빅데이터",
+      "머신러닝",
+      "하둡",
+      "텐서플로우",
+      "파이토치",
+      "서버리스"
+    ],
+    "eventContents": [],
+    "cmsPath": "/service-product/cms/cms_1744794728749.json",
+    "cmsVersion": "v1",
+    "sortOrder": 6,
+    "servicePlatforms": [
+      {
+        "serviceCode": "SV_0183",
+        "platformVersion": 2,
+        "consoleLinkUrl": "/dataforest/accounts?platform=vpc",
+        "guideLinkUrl": ""
+      }
+    ],
+    "modYmdt": "Apr 16, 2025, 6:12:09 PM",
+    "deployYmdt": "Dec 30, 2025, 2:38:41 PM"
+  },
+  {
+    "serviceCode": "SV_0194",
+    "upperServiceCode": "ANALY",
+    "serviceName": "Cloud Data Box",
+    "upperServiceName": "analytics",
+    "serviceDesc": "고객이 보유한 데이터와 네이버 데이터를 연동하여 분석할 수 있는 종합 분석 서비스",
+    "iconUrl": "https://portal.gcdn.ntruss.com/image/prod-analytics-cloudDataBox_1719765489587.svg+xml",
+    "detailLinkUrl": "cloudDataBox",
+    "calcLinkUrl": "analytics#cloudDataBox",
+    "inquiryUrl": "/support/question/sales?parentCode=SALES_INVOC&code=SALES_INVOC_006",
+    "keywords": [],
+    "labels": [],
+    "regionCodes": [
+      "KR"
+    ],
+    "platformTypeCode": "COMMON",
+    "metaTitle": "Cloud Data Box - Big Data & Analytics",
+    "metaDesc": "Cloud Data Box를 이용해 시장과 고객에 대한 차별화된 인사이트를 발굴할 수 있습니다",
+    "metaKeyword": [],
+    "eventContents": [],
+    "cmsPath": "/service-product/cms/cms_1720717399459.json",
+    "cmsVersion": "v1",
+    "sortOrder": 7,
+    "servicePlatforms": [
+      {
+        "serviceCode": "SV_0194",
+        "platformVersion": 2,
+        "consoleLinkUrl": "",
+        "guideLinkUrl": ""
+      }
+    ],
+    "modYmdt": "Jul 12, 2024, 2:03:19 AM",
+    "deployYmdt": "Dec 30, 2025, 2:38:41 PM"
+  },
+  {
+    "serviceCode": "SV_0216",
+    "upperServiceCode": "ANALY",
+    "serviceName": "Data Box Frame (Deprecated)",
+    "upperServiceName": "analytics",
+    "serviceDesc": "분석자는 데이터를 자유롭게 분석하고 데이터 관리자는 데이터 임의 반출을 제한할 수 있는 분석 환경 구축 서비스",
+    "iconUrl": "https://portal.gcdn.ntruss.com/image/prod-analytics-dataBoxFrame_1719765547590.svg+xml",
+    "detailLinkUrl": "dataBoxFrame",
+    "calcLinkUrl": "analytics#dataBoxFrame",
+    "inquiryUrl": "/support/question/service?parentCode=O2O_ANALYTICS&code=O2O_ANALYTICS_012",
+    "keywords": [],
+    "labels": [],
+    "regionCodes": [
+      "KR"
+    ],
+    "platformTypeCode": "COMMON",
+    "metaTitle": "Data Box Frame - Big Data & Analytics",
+    "metaDesc": "",
+    "metaKeyword": [],
+    "eventContents": [],
+    "cmsPath": "/service-product/cms/cms_1756258823823.json",
+    "cmsVersion": "v1",
+    "sortOrder": 9,
+    "servicePlatforms": [
+      {
+        "serviceCode": "SV_0216",
+        "platformVersion": 2,
+        "consoleLinkUrl": "/dataBoxFrame/my-box-frame",
+        "guideLinkUrl": ""
+      }
+    ],
+    "modYmdt": "Aug 27, 2025, 10:40:24 AM",
+    "deployYmdt": "Dec 30, 2025, 2:38:41 PM"
+  },
+  {
+    "serviceCode": "SV_0226",
+    "upperServiceCode": "ANALY",
+    "serviceName": "Data Catalog",
+    "upperServiceName": "analytics",
+    "serviceDesc": "데이터 자산의 활용성을 강화하는 클라우드 기반의 메타데이터 통합 및 관리 서비스",
+    "iconUrl": "https://portal.gcdn.ntruss.com/image/prod-analytics-dataCatalog_1719765564340.svg+xml",
+    "detailLinkUrl": "dataCatalog",
+    "calcLinkUrl": "analytics#dataCatalog",
+    "inquiryUrl": "",
+    "keywords": [],
+    "labels": [],
+    "regionCodes": [
+      "KR"
+    ],
+    "platformTypeCode": "VPC",
+    "metaTitle": "",
+    "metaDesc": "데이터 자산의 활용성을 강화하는 클라우드 기반의 메타데이터 통합 및 관리 서비스",
+    "metaKeyword": [],
+    "eventContents": [],
+    "cmsPath": "/service-product/cms/cms_1742545400897.json",
+    "cmsVersion": "v1",
+    "sortOrder": 11,
+    "servicePlatforms": [
+      {
+        "serviceCode": "SV_0226",
+        "platformVersion": 2,
+        "consoleLinkUrl": "/cloud-data-catalog/dataBase?platform=vpc",
+        "guideLinkUrl": ""
+      }
+    ],
+    "modYmdt": "Nov 19, 2025, 7:06:02 PM",
+    "deployYmdt": "Dec 30, 2025, 2:38:41 PM"
+  },
+  {
+    "serviceCode": "SV_0237",
+    "upperServiceCode": "ANALY",
+    "serviceName": "Data Flow",
+    "upperServiceName": "analytics",
+    "serviceDesc": "데이터를 쉽게 탐색, 변환, 이동할 수 있는 서버리스 ETL/Pipeline 서비스 ",
+    "iconUrl": "https://portal.gcdn.ntruss.com/image/prod-analytics-dataFlow_1719765590548.svg+xml",
+    "detailLinkUrl": "dataFlow",
+    "calcLinkUrl": "analytics#dataFlow",
+    "inquiryUrl": "",
+    "keywords": [],
+    "labels": [],
+    "regionCodes": [
+      "KR"
+    ],
+    "platformTypeCode": "VPC",
+    "metaTitle": "Data Flow - Big Data & Analytics",
+    "metaDesc": "데이터를 쉽게 탐색, 변환, 이동할 수 있는 서버리스 ETL/Pipeline 서비스 ",
+    "metaKeyword": [],
+    "eventContents": [],
+    "cmsPath": "/service-product/cms/cms_1754549086307.json",
+    "cmsVersion": "v1",
+    "sortOrder": 12,
+    "servicePlatforms": [
+      {
+        "serviceCode": "SV_0237",
+        "platformVersion": 2,
+        "consoleLinkUrl": "/dataflow/dashboard?platform=vpc"
+      }
+    ],
+    "modYmdt": "Aug 7, 2025, 3:44:46 PM",
+    "deployYmdt": "Dec 30, 2025, 2:38:41 PM"
+  },
+  {
+    "serviceCode": "SV_0241",
+    "upperServiceCode": "ANALY",
+    "serviceName": "Data Query",
+    "upperServiceName": "analytics",
+    "serviceDesc": "간편하게 데이터를 직접 분석할 수 있는 서버리스 대화형 쿼리 서비스  ",
+    "iconUrl": "https://portal.gcdn.ntruss.com/image/prod-analytics-dataQuery_1719765604715.svg+xml",
+    "detailLinkUrl": "dataQuery",
+    "calcLinkUrl": "analytics#dataQuery",
+    "inquiryUrl": "",
+    "keywords": [],
+    "labels": [],
+    "regionCodes": [
+      "KR"
+    ],
+    "platformTypeCode": "COMMON",
+    "metaTitle": "Data Query - Big Data & Analytics",
+    "metaDesc": "",
+    "metaKeyword": [],
+    "eventContents": [],
+    "cmsPath": "/service-product/cms/cms_1749724438072.json",
+    "cmsVersion": "v1",
+    "sortOrder": 13,
+    "servicePlatforms": [
+      {
+        "serviceCode": "SV_0241",
+        "platformVersion": 2,
+        "consoleLinkUrl": "/dataquery/dashboard"
+      }
+    ],
+    "modYmdt": "Jun 12, 2025, 7:33:58 PM",
+    "deployYmdt": "Dec 30, 2025, 2:38:41 PM"
+  },
+  {
+    "serviceCode": "SV_0267",
+    "upperServiceCode": "ANALY",
+    "serviceName": "NIMORO",
+    "upperServiceName": "analytics",
+    "serviceDesc": "데이터 분석 및 비즈니스 인텔리전스 플랫폼 ",
+    "detailLinkUrl": "nimoro",
+    "keywords": [],
+    "labels": [],
+    "regionCodes": [
+      "KR"
+    ],
+    "platformTypeCode": "VPC",
+    "metaTitle": "NIMORO - Big Data & Analytics",
+    "metaKeyword": [
+      "BI",
+      "Business Intelligence",
+      "시각화",
+      "데이터",
+      "데이터분석"
+    ],
+    "cmsPath": "/service-product/cms/cms_1758610432146.json",
+    "cmsVersion": "v1",
+    "sortOrder": 14,
+    "servicePlatforms": [
+      {
+        "serviceCode": "SV_0267",
+        "platformVersion": 2,
+        "consoleLinkUrl": "/nimoro?platform=vpc"
+      }
+    ],
+    "modYmdt": "Sep 23, 2025, 3:53:52 PM",
+    "deployYmdt": "Dec 30, 2025, 2:38:41 PM"
+  },
+  {
+    "serviceCode": "SV_0286",
+    "upperServiceCode": "ANALY",
+    "serviceName": "Data Stream",
+    "upperServiceName": "analytics",
+    "serviceDesc": "완전 관리형 서버리스 메시지 큐 서비스",
+    "detailLinkUrl": "dataStream",
+    "keywords": [
+      "Data Stream",
+      "DataStream",
+      "Kafka",
+      "Serverless Kafka",
+      "카프카",
+      "Managed kafka",
+      "서버리스"
+    ],
+    "labels": [],
+    "regionCodes": [
+      "KR"
+    ],
+    "platformTypeCode": "VPC",
+    "metaTitle": "Data Stream - Big Data & Analytics",
+    "metaDesc": "완전 관리형 서버리스 메시지 큐 서비스",
+    "metaKeyword": [
+      "Data Stream",
+      "DataStrem",
+      "kafka",
+      "serverless kafka",
+      "카프카",
+      "menaged kafka",
+      "서버리스"
+    ],
+    "cmsPath": "/service-product/cms/cms_1755587356079.json",
+    "cmsVersion": "v1",
+    "sortOrder": 25,
+    "servicePlatforms": [
+      {
+        "serviceCode": "SV_0286",
+        "platformVersion": 2,
+        "consoleLinkUrl": "/datastream?platform=vpc"
+      }
+    ],
+    "modYmdt": "Aug 19, 2025, 4:09:16 PM",
+    "deployYmdt": "Dec 30, 2025, 2:38:41 PM"
+  },
+  {
+    "serviceCode": "SV_0268",
+    "upperServiceCode": "ANALY",
+    "serviceName": "Datafence",
+    "upperServiceName": "analytics",
+    "serviceDesc": "데이터를 자유롭게 열람하되 임의로 반출할 수 없도록 통제할 수 있는 안전한 분석 환경 구축 서비스",
+    "detailLinkUrl": "datafence",
+    "keywords": [],
+    "labels": [],
+    "regionCodes": [
+      "KR"
+    ],
+    "platformTypeCode": "",
+    "cmsPath": "/service-product/cms/cms_1758699445374.json",
+    "cmsVersion": "v1",
+    "sortOrder": 25,
+    "servicePlatforms": [
+      {
+        "serviceCode": "SV_0268",
+        "platformVersion": 2,
+        "consoleLinkUrl": ""
+      }
+    ],
+    "modYmdt": "Sep 24, 2025, 4:37:25 PM",
+    "deployYmdt": "Dec 30, 2025, 2:38:41 PM"
+  },
+  {
+    "serviceCode": "SV_0061",
+    "upperServiceCode": "APP",
+    "serviceName": "GeoLocation",
+    "upperServiceName": "applicationService",
+    "serviceDesc": "사용자 IP 기반의 위치 정보를 제공하는 API",
+    "iconUrl": "https://portal.gcdn.ntruss.com/image/prod-applicationService-geolocation_1719764564366.svg+xml",
+    "detailLinkUrl": "geoLocation",
+    "calcLinkUrl": "applicationService#geolocation",
+    "keywords": [
+      "지역정보API",
+      "지역정보데이터베이스",
+      "지역정보DB",
+      "위치정보API",
+      "네이버날씨API",
+      "지오로케이션",
+      "GPS서비스",
+      "네이버지도API",
+      "주변정보",
+      "IP기반위치정보",
+      "위치기반서비스",
+      "Regional information API",
+      "Regional information database",
+      "Regional information DB",
+      "Location information API",
+      "NAVER weather API",
+      "GeoLocation",
+      "GPS service",
+      "NAVER map API",
+      "Nearby place information",
+      "IP-based location information",
+      "Location-based service"
+    ],
+    "labels": [],
+    "regionCodes": [
+      "KR"
+    ],
+    "platformTypeCode": "COMMON",
+    "metaTitle": "GeoLocation - Application Services",
+    "metaDesc": "국내 유일 사용자 IP 기반 시단위, 동단위 위치, 지역 관련 정보 제공. ",
+    "metaKeyword": [
+      "지역정보API",
+      "지역정보데이터베이스",
+      "지역정보DB",
+      "위치정보API",
+      "네이버날씨API",
+      "지오로케이션",
+      "GPS서비스",
+      "네이버지도API",
+      "주변정보",
+      "IP기반위치정보",
+      "위치기반서비스"
+    ],
+    "eventContents": [],
+    "cmsPath": "/service-product/cms/cms_1721742300833.json",
+    "cmsVersion": "v1",
+    "sortOrder": 1,
+    "servicePlatforms": [
+      {
+        "serviceCode": "SV_0061",
+        "platformVersion": 1,
+        "consoleLinkUrl": "",
+        "guideLinkUrl": ""
+      },
+      {
+        "serviceCode": "SV_0061",
+        "platformVersion": 2,
+        "consoleLinkUrl": "/geolocation/subscription",
+        "guideLinkUrl": "/api/api-2-1.html"
+      }
+    ],
+    "modYmdt": "May 28, 2025, 3:39:05 PM",
+    "deployYmdt": "Dec 30, 2025, 2:38:41 PM"
+  },
+  {
+    "serviceCode": "SV_0062",
+    "upperServiceCode": "APP",
+    "serviceName": "Maps",
+    "upperServiceName": "applicationService",
+    "serviceDesc": "네이버 지도 기능을 활용하여 위치 기반 서비스를 만들 수 있는 API",
+    "iconUrl": "https://portal.gcdn.ntruss.com/image/prod-applicationService-maps_1719764583042.svg+xml",
+    "detailLinkUrl": "maps",
+    "calcLinkUrl": "applicationService#maps",
+    "keywords": [
+      "지도API",
+      "네이버지도API",
+      "구글지도API",
+      "다음지도API",
+      "오픈소스지도API",
+      "위치기반서비스",
+      "주소-좌표변환API",
+      "좌표변환프로그램",
+      "정적지도API",
+      "국내지도API",
+      "네이버클라우드지도api",
+      "네이버클라우드플랫폼지도api",
+      "Map API",
+      "NAVER map API",
+      "Google map API",
+      "Daum map API",
+      "Open source map API",
+      "LBS",
+      "Location-Based Service",
+      "Address to coordinate API",
+      "Coordinate transformation program",
+      "Map static API",
+      "Korea map API"
+    ],
+    "labels": [],
+    "regionCodes": [
+      "KR",
+      "USWN",
+      "SGN",
+      "HK",
+      "JP",
+      "DEN"
+    ],
+    "platformTypeCode": "COMMON",
+    "metaTitle": "Maps - Application Services",
+    "metaDesc": "네이버 지도 API 활용한 다양한 위치 기반 서비스 구축 가능. 간단한 약도·길 찾기·주변 장소 정보 등 다양한 기능 제공",
+    "metaKeyword": [
+      "지도API",
+      "네이버지도API",
+      "구글지도API",
+      "다음지도API",
+      "오픈소스지도API",
+      "위치기반서비스",
+      "주소-좌표변환API",
+      "좌표변환프로그램",
+      "정적지도API",
+      "국내지도API"
+    ],
+    "eventContents": [
+      "2023년 1월부터 일부 Maps API 의 요금이 변경되었습니다.  <br class=\"hidden-lg-down\"/>\n요금 변경에 대한 더욱 자세한 내용은 공지사항 참고 부탁드립니다. <a target=\"_blank\" href=\"https://www.ncloud.com/support/notice/all/1424\" style=\"color: #14adea;font-weight:500\">(공지사항 바로가기)</a>"
+    ],
+    "cmsPath": "/service-product/cms/cms_1767663083138.json",
+    "cmsVersion": "v1",
+    "sortOrder": 2,
+    "servicePlatforms": [
+      {
+        "serviceCode": "SV_0062",
+        "platformVersion": 1,
+        "consoleLinkUrl": "",
+        "guideLinkUrl": ""
+      },
+      {
+        "serviceCode": "SV_0062",
+        "platformVersion": 2,
+        "consoleLinkUrl": "/naver-service/application",
+        "guideLinkUrl": "/naveropenapi_v3/maps/overview.html"
+      }
+    ],
+    "modYmdt": "Jan 6, 2026, 10:31:23 AM"
+  },
+  {
+    "serviceCode": "SV_0063",
+    "upperServiceCode": "APP",
+    "serviceName": "CAPTCHA",
+    "upperServiceName": "applicationService",
+    "serviceDesc": "다양한 방식으로 사람과 컴퓨터를 판별하여 어뷰징을 방지할 수 있는 서비스",
+    "iconUrl": "https://portal.gcdn.ntruss.com/image/prod-applicationService-captcha_1719764597629.svg+xml",
+    "detailLinkUrl": "captcha",
+    "calcLinkUrl": "applicationService#captcha",
+    "keywords": [
+      "캡차API",
+      "어뷰징방지",
+      "자동입력방지API",
+      "로봇판별API",
+      "이미지캡차",
+      "오디오캡차",
+      "네이버캡차API",
+      "구글캡차API",
+      "리캡차API",
+      "CAPTCHA API",
+      "Abuse prevention",
+      "Disable autocomplete API",
+      "Robot identification API",
+      "Image CAPTCHA",
+      "Audio CAPTCHA",
+      "NAVER CAPTCHA API ",
+      "Google CAPTCHA API",
+      "reCAPTCHA API"
+    ],
+    "labels": [],
+    "regionCodes": [
+      "KR",
+      "USWN",
+      "SGN",
+      "HK",
+      "JP",
+      "DEN"
+    ],
+    "platformTypeCode": "COMMON",
+    "metaTitle": "CAPTCHA - Application Services",
+    "metaDesc": "어뷰징/로봇 입력/자동 등록/ 웹크롤링 방지 이미지 및 오디오 방식 캡차 API.",
+    "metaKeyword": [
+      "캡차API",
+      "어뷰징방지",
+      "자동입력방지API",
+      "로봇판별 API",
+      "이미지캡차",
+      "오디오캡차",
+      "네이버캡차API",
+      "구글캡차API",
+      "리캡차API"
+    ],
+    "eventContents": [],
+    "cmsPath": "/service-product/cms/cms_1720717425801.json",
+    "cmsVersion": "v1",
+    "sortOrder": 3,
+    "servicePlatforms": [
+      {
+        "serviceCode": "SV_0063",
+        "platformVersion": 1,
+        "consoleLinkUrl": "",
+        "guideLinkUrl": ""
+      },
+      {
+        "serviceCode": "SV_0063",
+        "platformVersion": 2,
+        "consoleLinkUrl": "/naver-service/application",
+        "guideLinkUrl": "/naveropenapi_v3/captcha/image.html"
+      }
+    ],
+    "modYmdt": "Jul 12, 2024, 2:03:45 AM",
+    "deployYmdt": "Dec 30, 2025, 2:38:41 PM"
+  },
+  {
+    "serviceCode": "SV_0065",
+    "upperServiceCode": "APP",
+    "serviceName": "Simple & Easy Notification Service",
+    "upperServiceName": "applicationService",
+    "serviceDesc": "SMS, 알림톡 등 메시지 알림 기능을 구현하는 서비스",
+    "iconUrl": "https://portal.gcdn.ntruss.com/image/prod-applicationService-sens_1719764648448.svg+xml",
+    "detailLinkUrl": "sens",
+    "calcLinkUrl": "applicationService#sens",
+    "keywords": [
+      "SMS서버",
+      "대용량메시지",
+      "문자발송프로그램",
+      "대량문자전송",
+      "문자발송API",
+      "단체문자API",
+      "알림메시지구현",
+      "SMS server",
+      "Mass message",
+      "SMS mailing software",
+      "Mass texting",
+      "Texting API",
+      "Group text messaging API",
+      "Message alerting tool"
+    ],
+    "labels": [
+      "UPDATE"
+    ],
+    "regionCodes": [
+      "KR"
+    ],
+    "platformTypeCode": "COMMON",
+    "metaTitle": "Simple & Easy Notification Service - Application Services",
+    "metaDesc": "문자 메시지, 알림 기능 구현 API. 메시지 전송 현황 및 전송 이력 조회 제공.",
+    "metaKeyword": [
+      "SMS서버",
+      "대용량메시지",
+      "문자발송프로그램",
+      "대량문자전송",
+      "문자발송API",
+      "단체문자API",
+      "알림메시지구현"
+    ],
+    "eventContents": [
+      "서비스 정책 변경에 따라 본 서비스는 <b>사업자 계정으로만 이용이 가능</b>하십니다. (2024년 4월 11일 이후)",
+      "2024년 10월 17일 PUSH 서비스가 종료됩니다. 이에 따라 <b>4월 25일부터 PUSH 서비스 신규 이용이 제한</b> 됩니다."
+    ],
+    "cmsPath": "/service-product/cms/cms_1765773758266.json",
+    "cmsVersion": "v1",
+    "sortOrder": 5,
+    "servicePlatforms": [
+      {
+        "serviceCode": "SV_0065",
+        "platformVersion": 1,
+        "consoleLinkUrl": "",
+        "guideLinkUrl": ""
+      },
+      {
+        "serviceCode": "SV_0065",
+        "platformVersion": 2,
+        "consoleLinkUrl": "/sens/project",
+        "guideLinkUrl": "/sens/sens-1-1.html"
+      }
+    ],
+    "modYmdt": "Dec 15, 2025, 1:42:38 PM",
+    "deployYmdt": "Dec 30, 2025, 2:38:41 PM"
+  },
+  {
+    "serviceCode": "SV_0066",
+    "upperServiceCode": "APP",
+    "serviceName": "API Gateway",
+    "upperServiceName": "applicationService",
+    "serviceDesc": "API 호출, 관리, 모니터링 등 API와 관련된 모든 작업을 실행할 수 있는 서비스",
+    "iconUrl": "https://portal.gcdn.ntruss.com/image/prod-applicationService-apiGateway_1719764672070.svg+xml",
+    "detailLinkUrl": "apiGateway",
+    "calcLinkUrl": "applicationService#apiGateway",
+    "keywords": [
+      "API게이트웨이",
+      "API호출",
+      "API연동",
+      "API관리",
+      "API모니터링",
+      "API대시보드",
+      "REST API 호출",
+      "네이버API게이트웨이",
+      "네이버API호출",
+      "네이버API연동",
+      "API gateway",
+      "API call",
+      "API link",
+      "API interlock",
+      "API management",
+      "API monitoring",
+      "API dashboard",
+      "REST API call",
+      "NAVER API gateway",
+      "NAVER API call",
+      "NAVER API link"
+    ],
+    "labels": [],
+    "regionCodes": [
+      "KR",
+      "USWN",
+      "SGN",
+      "HK",
+      "JP",
+      "DEN"
+    ],
+    "platformTypeCode": "CLASSIC",
+    "metaTitle": "API Gateway - Application Services",
+    "metaDesc": "API 호출 및 연동 관리, API 관련 리소스 및 메서드 정의, API 수명주기 관리.",
+    "metaKeyword": [
+      "API게이트웨이,API호출,API연동,API관리,API모니터링,API대시보드,REST API 호출,네이버API게이트웨이,네이버API호출,네이버API연동"
+    ],
+    "eventContents": [],
+    "cmsPath": "/service-product/cms/cms_1732261829423.json",
+    "cmsVersion": "v1",
+    "sortOrder": 6,
+    "servicePlatforms": [
+      {
+        "serviceCode": "SV_0066",
+        "platformVersion": 1,
+        "consoleLinkUrl": "",
+        "guideLinkUrl": ""
+      },
+      {
+        "serviceCode": "SV_0066",
+        "platformVersion": 2,
+        "consoleLinkUrl": "/apigw/subscription?platform=classic",
+        "guideLinkUrl": "/apigw/apigw-1.html"
+      }
+    ],
+    "modYmdt": "Sep 18, 2025, 10:04:33 AM",
+    "deployYmdt": "Dec 30, 2025, 2:38:41 PM"
+  },
+  {
+    "serviceCode": "SV_0067",
+    "upperServiceCode": "APP",
+    "serviceName": "Search Trend",
+    "upperServiceName": "applicationService",
+    "serviceDesc": "네이버 통합검색 서비스를 통해 수집되는 검색어 통계를 다양한 기준으로 조회하고 활용할 수 있는 서비스",
+    "iconUrl": "https://portal.gcdn.ntruss.com/image/prod-applicationService-searchTrend_1719764720639.svg+xml",
+    "detailLinkUrl": "searchTrend",
+    "keywords": [
+      "네이버검색통계",
+      "네이버검색통계API",
+      "네이버통합검색API",
+      "검색어분석도구",
+      "네이버검색트렌드",
+      "네이버검색API",
+      "검색빅데이터",
+      "데이터랩",
+      "네이버데이터랩",
+      "검색엔진최적화",
+      "NAVER search statistics",
+      "NAVER search statistics API",
+      "NAVER search API",
+      "Search word analytics tool",
+      "NAVER search trend",
+      "Search engine big data",
+      "Data Lab",
+      "NAVER Data Lab",
+      "SEO",
+      "Search Engine Optimization"
+    ],
+    "labels": [
+      "BETA"
+    ],
+    "regionCodes": [
+      "KR",
+      "USWN",
+      "SGN",
+      "HK",
+      "JP",
+      "DEN"
+    ],
+    "platformTypeCode": "COMMON",
+    "metaTitle": "Search Trend - Application Services",
+    "metaDesc": "네이버 통합 검색어 키워드 기간별, 연령별, 성별, 디바이스별 데이터 조회, 분석 및 통계. 한시 무료.",
+    "metaKeyword": [
+      "네이버검색통계",
+      "네이버검색통계API",
+      "네이버통합검색API",
+      "검색어분석도구",
+      "네이버검색트렌드",
+      "네이버검색API",
+      "검색빅테이터",
+      "데이터랩",
+      "네이버데이터랩",
+      "검색엔진최적화"
+    ],
+    "eventContents": [],
+    "cmsPath": "/service-product/cms/cms_1720717431841.json",
+    "cmsVersion": "v1",
+    "sortOrder": 7,
+    "servicePlatforms": [
+      {
+        "serviceCode": "SV_0067",
+        "platformVersion": 1,
+        "consoleLinkUrl": "",
+        "guideLinkUrl": ""
+      },
+      {
+        "serviceCode": "SV_0067",
+        "platformVersion": 2,
+        "consoleLinkUrl": "/naver-service/application",
+        "guideLinkUrl": "/naveropenapi_v3/search-trend/trend.html"
+      }
+    ],
+    "modYmdt": "Jul 12, 2024, 2:03:51 AM",
+    "deployYmdt": "Dec 30, 2025, 2:38:41 PM"
+  },
+  {
+    "serviceCode": "SV_0069",
+    "upperServiceCode": "APP",
+    "serviceName": "Ncloud Simple RabbitMQ",
+    "upperServiceName": "applicationService",
+    "serviceDesc": "AMQP 기반의 고가용성 메시지 브로커인 RabbitMQ 클러스터를 쉽게 배포하는 서비스",
+    "iconUrl": "https://portal.gcdn.ntruss.com/image/prod-applicationService-simpleRabbitMQ_1719764744817.svg+xml",
+    "detailLinkUrl": "NcloudSimpleRabbitMQ",
+    "keywords": [
+      "RabbitMQ클러스터",
+      "메시지큐클러스터",
+      "메시지브로커클러스터",
+      "래빗엠큐",
+      "분산큐잉클러스터",
+      "메시지브로커솔루션",
+      "오픈소스메시지브로커",
+      "멀티노드메시지큐",
+      "클러스터메시지큐",
+      "분산메시지큐",
+      "RabbitMQ cluster",
+      "Message queue cluster",
+      "Message broker cluster",
+      "RabbitMQ",
+      "Distributed queuing cluster",
+      "Message broker solution",
+      "Open source message broker",
+      "Multi-node message queue",
+      "Cluster message queue",
+      "Distributed message queue"
+    ],
+    "labels": [],
+    "regionCodes": [
+      "KR"
+    ],
+    "platformTypeCode": "VPC",
+    "metaTitle": "Ncloud Simple RabbitMQ - Application Services",
+    "metaDesc": "AMQP 기반 고가용성 오픈소스 메시지 브로커 솔루션 래빗엠큐 클러스터 제공.",
+    "metaKeyword": [
+      "RabbitMQ클러스터",
+      "메시지큐클러스터",
+      "메시지브로커클러스터",
+      "래빗엠큐",
+      "분산큐잉클러스터",
+      "메세지브로커솔루션",
+      "오픈소스메시지브로커",
+      "멀티노트메시지큐",
+      "클러스터메시지큐",
+      "분산메시지큐"
+    ],
+    "eventContents": [],
+    "cmsPath": "/service-product/cms/cms_1720717433500.json",
+    "cmsVersion": "v1",
+    "sortOrder": 9,
+    "servicePlatforms": [
+      {
+        "serviceCode": "SV_0069",
+        "platformVersion": 1,
+        "consoleLinkUrl": "",
+        "guideLinkUrl": ""
+      },
+      {
+        "serviceCode": "SV_0069",
+        "platformVersion": 2,
+        "consoleLinkUrl": "/vrmq/main?platform=vpc",
+        "guideLinkUrl": "/rabbitmq/rabbitmq-1-2.html"
+      }
+    ],
+    "modYmdt": "Apr 16, 2025, 11:27:45 AM",
+    "deployYmdt": "Dec 30, 2025, 2:38:41 PM"
+  },
+  {
+    "serviceCode": "SV_0070",
+    "upperServiceCode": "APP",
+    "serviceName": "Cloud Outbound Mailer",
+    "upperServiceName": "applicationService",
+    "serviceDesc": "알림, 정보 제공, 마케팅용 대량 메일을 직접 또는 다른 서비스와 연결하여 전송하는 메일 전송 서비스",
+    "iconUrl": "https://portal.gcdn.ntruss.com/image/prod-applicationService-com_1719764774014.svg+xml",
+    "detailLinkUrl": "cloudOutboundMailer",
+    "calcLinkUrl": "applicationService#cloudOutBoundMailer",
+    "keywords": [
+      "메일서버호스팅",
+      "메일대량발송",
+      "대량메일예약발송",
+      "대량메일발송API",
+      "대량메일솔루션",
+      "대량메일발송프로그램",
+      "예약발송API",
+      "대량메일템플릿",
+      "네이버메일호스팅",
+      "기업메일호스팅",
+      "Mail server hosting",
+      "Mass mailing",
+      "Bulk mailing",
+      "Mass email scheduler",
+      "Bulk email scheduler",
+      "Mass mailing API",
+      "Bulk mailing API",
+      "Mass email solution",
+      "Bulk email solution",
+      "Mass email sending software",
+      "Bulk email sending software",
+      "Email scheduler API",
+      "Mass email template",
+      "NAVER email hosting",
+      "Enterprise email hosting"
+    ],
+    "labels": [],
+    "regionCodes": [
+      "KR"
+    ],
+    "platformTypeCode": "CLASSIC",
+    "metaTitle": "Cloud Outbound Mailer - Application Services",
+    "metaDesc": "대량 알림, 정보, 마케팅 메일 전송, 예약발송, 개인화 템플릿 등.",
+    "metaKeyword": [
+      "메일서버호스팅",
+      "메일대량발송",
+      "대량메일예약발송",
+      "대량메일발송API",
+      "대량메일솔루션",
+      "대량메일발송프로그램",
+      "예약발송API",
+      "대량메일템플릿",
+      "네이버메일호스팅",
+      "기업메일호스팅"
+    ],
+    "eventContents": [],
+    "cmsPath": "/service-product/cms/cms_1721742340034.json",
+    "cmsVersion": "v1",
+    "sortOrder": 10,
+    "servicePlatforms": [
+      {
+        "serviceCode": "SV_0070",
+        "platformVersion": 1,
+        "consoleLinkUrl": "",
+        "guideLinkUrl": ""
+      },
+      {
+        "serviceCode": "SV_0070",
+        "platformVersion": 2,
+        "consoleLinkUrl": "/emailSVR/subscription?platform=classic",
+        "guideLinkUrl": "/email/email-1-1.html"
+      }
+    ],
+    "modYmdt": "Nov 19, 2024, 9:40:28 PM",
+    "deployYmdt": "Dec 30, 2025, 2:38:41 PM"
+  },
+  {
+    "serviceCode": "SV_0169",
+    "upperServiceCode": "BIZAP",
+    "serviceName": "NAVER WORKS",
+    "upperServiceName": "businessApplication",
+    "serviceDesc": "협업, 경영지원, AI까지 일이 쉬워지는 생산성 플랫폼",
+    "detailLinkUrl": "naverWorks",
+    "calcLinkUrl": "",
+    "inquiryUrl": "",
+    "keywords": [
+      ""
+    ],
+    "labels": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "regionCodes": [
+      "KR"
+    ],
+    "platformTypeCode": "COMMON",
+    "metaTitle": "NAVER WORKS - Business Applications",
+    "metaDesc": "",
+    "metaKeyword": [],
+    "eventContents": [],
+    "sortOrder": 19,
+    "servicePlatforms": [
+      {
+        "serviceCode": "SV_0169",
+        "platformVersion": 2,
+        "consoleLinkUrl": "https://naver.worksmobile.com/kr/pricing",
+        "guideLinkUrl": ""
+      }
+    ],
+    "modYmdt": "Dec 13, 2024, 8:32:29 PM",
+    "deployYmdt": "Dec 30, 2025, 2:38:41 PM"
+  },
+  {
+    "serviceCode": "SV_0206",
+    "upperServiceCode": "BIZAP",
+    "serviceName": "Ncloud Chat",
+    "upperServiceName": "businessApplication",
+    "serviceDesc": "실시간 채팅 및 메시지 시스템, 다자 간 대화 채널 구성할 수 있는 비즈니스 전용 채팅 솔루션",
+    "iconUrl": "https://portal.gcdn.ntruss.com/image/prod-businessApplication-ncloudChat_1719765714845.svg+xml",
+    "detailLinkUrl": "ncloudChat",
+    "calcLinkUrl": "businessApplication#ncloudChat",
+    "inquiryUrl": "",
+    "keywords": [],
+    "labels": [],
+    "regionCodes": [
+      "KR"
+    ],
+    "platformTypeCode": "COMMON",
+    "metaTitle": "Ncloud Chat - Business Applications",
+    "metaDesc": "모든 비즈니스에서 사용 가능한 Business 전용 채팅 솔루션 입니다. ",
+    "metaKeyword": [],
+    "eventContents": [],
+    "cmsPath": "/service-product/cms/cms_1754273231502.json",
+    "cmsVersion": "v1",
+    "sortOrder": 35,
+    "servicePlatforms": [
+      {
+        "serviceCode": "SV_0206",
+        "platformVersion": 2,
+        "consoleLinkUrl": "/ncloudchat/projects",
+        "guideLinkUrl": ""
+      }
+    ],
+    "modYmdt": "Aug 4, 2025, 11:07:11 AM",
+    "deployYmdt": "Dec 30, 2025, 2:38:41 PM"
+  },
+  {
+    "serviceCode": "SV_0181",
+    "upperServiceCode": "BLCHN",
+    "serviceName": "Blockchain Service",
+    "upperServiceName": "blockChain",
+    "serviceDesc": "Hyperledger Fabric을 이용하여 프라이빗, 컨소시엄 방식의 블록체인 네트워크를 구성하는 서비스",
+    "iconUrl": "https://portal.gcdn.ntruss.com/image/ico-blockchain-blockchainService_1719765631342.svg+xml",
+    "detailLinkUrl": "blockchainService",
+    "calcLinkUrl": "blockChain#blockchainService",
+    "inquiryUrl": "",
+    "keywords": [],
+    "labels": [],
+    "regionCodes": [
+      "KR",
+      "SGN"
+    ],
+    "platformTypeCode": "VPC",
+    "metaTitle": "Blockchain Service - Blockchain",
+    "metaDesc": "",
+    "metaKeyword": [],
+    "eventContents": [
+      "<span class='title'>Blockchain Service 신규 가입 제한 안내</span><br>\n싱가포르 리전의 Blockchain Service는 2024년 6월 20일 서비스 종료 예정으로, 5월 9일부터 신규 가입이 제한됩니다. 고객님의 양해 부탁드립니다.</br>\n(한국 리전의 Blockchain Service는 계속 이용하실 수 있습니다)"
+    ],
+    "cmsPath": "/service-product/cms/cms_1721205537122.json",
+    "cmsVersion": "v1",
+    "sortOrder": 1,
+    "servicePlatforms": [
+      {
+        "serviceCode": "SV_0181",
+        "platformVersion": 2,
+        "consoleLinkUrl": "/blockchain-service/dashboard?platform=vpc",
+        "guideLinkUrl": ""
+      }
+    ],
+    "modYmdt": "Jul 17, 2024, 5:38:57 PM",
+    "deployYmdt": "Dec 30, 2025, 2:38:41 PM"
+  },
+  {
+    "serviceCode": "SV_0099",
+    "upperServiceCode": "CNTR",
+    "serviceName": "Container Registry",
+    "upperServiceName": "containers",
+    "serviceDesc": "도커 컨테이너 이미지를 간편하게 저장, 관리, 배포할 수 있는 서비스",
+    "iconUrl": "https://portal.gcdn.ntruss.com/image/prod-compute-containerRegistry_1719759758952.svg+xml",
+    "detailLinkUrl": "containerRegistry",
+    "keywords": [],
+    "labels": [],
+    "regionCodes": [
+      "KR",
+      "SGN",
+      "USWN",
+      "JP",
+      "DEN"
+    ],
+    "platformTypeCode": "VPC",
+    "metaTitle": "Container Registry - Containers",
+    "metaDesc": "",
+    "metaKeyword": [],
+    "eventContents": [],
+    "cmsPath": "/service-product/cms/cms_1720717450541.json",
+    "cmsVersion": "v1",
+    "sortOrder": 1,
+    "servicePlatforms": [
+      {
+        "serviceCode": "SV_0099",
+        "platformVersion": 1,
+        "consoleLinkUrl": "",
+        "guideLinkUrl": ""
+      },
+      {
+        "serviceCode": "SV_0099",
+        "platformVersion": 2,
+        "consoleLinkUrl": "/ncr/registries?platform=vpc",
+        "guideLinkUrl": "/container/ncr-1-1.html"
+      }
+    ],
+    "modYmdt": "Jul 12, 2024, 2:04:10 AM",
+    "deployYmdt": "Dec 30, 2025, 2:38:41 PM"
+  },
+  {
+    "serviceCode": "SV_0109",
+    "upperServiceCode": "CNTR",
+    "serviceName": "Ncloud Kubernetes Service",
+    "upperServiceName": "containers",
+    "serviceDesc": "Kubernetes를 기반으로 컨테이너화된 애플리케이션을 배포하고 관리할 수 있는 서비스",
+    "iconUrl": "https://portal.gcdn.ntruss.com/image/prod-compute-kubernetesService_1719759772321.svg+xml",
+    "detailLinkUrl": "nks",
+    "calcLinkUrl": "containers#kubernetes",
+    "keywords": [],
+    "labels": [
+      "UPDATE"
+    ],
+    "regionCodes": [
+      "KR",
+      "SGN",
+      "JP"
+    ],
+    "platformTypeCode": "VPC",
+    "metaTitle": "Kubernetes Service - Containers",
+    "metaDesc": "네이버 쿠버네티스 서비스. 빠르고 간편한 Kubernetes 컨테이너 배포 및 관리. 표준 Kubernetes 환경에서 관리하는 애플리케이션과 호환 가능.",
+    "metaKeyword": [
+      "쿠버네티스",
+      "쿠버네티스서비스",
+      "컨테이너",
+      "컨테이너오케스트레이션",
+      "네이버쿠버네티스",
+      "네이버쿠버네티스서비스",
+      "네이버컨테이너",
+      "네이버컨테이너서비스",
+      "네이버클라우드쿠버네티스",
+      "네이버클라우드플랫폼쿠버네티스"
+    ],
+    "eventContents": [
+      "<span class=\"title\"> Managed 유형은 CBT로 제공중에 있으며, 8월 1일 정식으로 제공할 예정입니다. </span><br>\nCBT 이용을 희망하시는 고객께서는 고객센터로 문의 바랍니다. <br>"
+    ],
+    "cmsPath": "/service-product/cms/cms_1756700286026.json",
+    "cmsVersion": "v1",
+    "sortOrder": 2,
+    "servicePlatforms": [
+      {
+        "serviceCode": "SV_0109",
+        "platformVersion": 1,
+        "consoleLinkUrl": "",
+        "guideLinkUrl": ""
+      },
+      {
+        "serviceCode": "SV_0109",
+        "platformVersion": 2,
+        "consoleLinkUrl": "/vnks/clusters?platform=vpc",
+        "guideLinkUrl": "/nks/nks-1-1.html"
+      }
+    ],
+    "modYmdt": "Nov 19, 2025, 7:06:03 PM",
+    "deployYmdt": "Dec 30, 2025, 2:38:41 PM"
+  },
+  {
+    "serviceCode": "SV_0021",
+    "upperServiceCode": "CTDVR",
+    "serviceName": "CDN+ (Deprecated)",
+    "upperServiceName": "contentDelivery",
+    "serviceDesc": "여러 사용자에게 콘텐츠를 빠르고 안전하게 전달하는 서비스",
+    "iconUrl": "https://portal.gcdn.ntruss.com/image/prod-networking-cdn_1719765818030.svg+xml",
+    "detailLinkUrl": "cdn",
+    "calcLinkUrl": "contentDelivery#cdn",
+    "keywords": [
+      "네이버CDN",
+      "CDN서버",
+      "동영상CDN",
+      "이미지CDN",
+      "콘텐츠전송네트워크",
+      "미디어전송플랫폼",
+      "고화질영상전송",
+      "캐시서버플랫폼",
+      "CDN캐싱",
+      "NAVER CDN",
+      "NAVER Content Delivery Network",
+      "CDN server",
+      "CDN서비스",
+      "Video CDN",
+      "Image CDN",
+      "Content delivery network",
+      "Media delivery platform",
+      "High definition video transmission",
+      "Cache server platform",
+      "CDN caching"
+    ],
+    "labels": [],
+    "regionCodes": [
+      "KR"
+    ],
+    "platformTypeCode": "COMMON",
+    "metaTitle": "CDN+ - Content Delivery",
+    "metaDesc": "고해상도 이미지, 고화질 영상 등 대용량 미디어 파일 고속 전송 네트워크. 초고속 다운로드와 끊김없는 스트리밍.",
+    "metaKeyword": [
+      "네이버CDN",
+      "CDN서버",
+      "CDN서비스",
+      "동영상CDN",
+      "이미지CDN",
+      "콘텐츠전송네트워크",
+      "미디어전송플랫폼",
+      "고화질영상전송",
+      "캐시서버플랫폼",
+      "CDN캐싱"
+    ],
+    "eventContents": [],
+    "cmsPath": "/service-product/cms/cms_1740464591378.json",
+    "cmsVersion": "v1",
+    "sortOrder": 1,
+    "servicePlatforms": [
+      {
+        "serviceCode": "SV_0021",
+        "platformVersion": 1,
+        "consoleLinkUrl": "",
+        "guideLinkUrl": ""
+      },
+      {
+        "serviceCode": "SV_0021",
+        "platformVersion": 2,
+        "consoleLinkUrl": "/cdn-plus/list",
+        "guideLinkUrl": "/networking/networking-8-1.html"
+      }
+    ],
+    "modYmdt": "Mar 14, 2025, 5:36:49 PM",
+    "deployYmdt": "Dec 30, 2025, 2:38:41 PM"
+  },
+  {
+    "serviceCode": "SV_0022",
+    "upperServiceCode": "CTDVR",
+    "serviceName": "Global CDN",
+    "upperServiceName": "contentDelivery",
+    "serviceDesc": "세계 어느 곳에서나 콘텐츠를 빠르고 안정적으로 전송할 수 있는 서비스",
+    "iconUrl": "https://portal.gcdn.ntruss.com/image/prod-networking-globalCdn_1719765840607.svg+xml",
+    "detailLinkUrl": "globalCdn",
+    "calcLinkUrl": "contentDelivery#globalCdn",
+    "keywords": [
+      "글로벌콘텐츠전송",
+      "글로벌CDN",
+      "글로벌전송",
+      "해외콘텐츠전송",
+      "미디어전송서비스",
+      "해외전송서비스",
+      "캐시서버구축",
+      "클라우드프론트",
+      "아카마이",
+      "네이버글로벌CDN",
+      "Global content delivery",
+      "Global CDN",
+      "Global content transmission",
+      "International content delivery",
+      "Media delivery service",
+      "Global content delivery service",
+      "Cache server architecture",
+      "Cloudfront",
+      "Akamai",
+      "NAVER global CDN"
+    ],
+    "labels": [],
+    "regionCodes": [
+      "KR",
+      "USWN",
+      "SGN",
+      "HK",
+      "JP",
+      "DEN"
+    ],
+    "platformTypeCode": "COMMON",
+    "metaTitle": "Global CDN - Content Delivery",
+    "metaDesc": "해외 사용자에게 콘텐츠 전송. 120여개국 분산 캐시 서버로 동영상, 음악, 대용량 파일 전송 시 트래픽 분산.",
+    "metaKeyword": [
+      "글로벌콘텐츠전송",
+      "글로벌CDN",
+      "글로벌전송",
+      "해외콘텐츠전송",
+      "미디어전송서비스",
+      "해외전송서비스",
+      "캐시서버구축",
+      "클라우드프론트",
+      "아카마이",
+      "네이버글로벌CDN"
+    ],
+    "eventContents": [],
+    "cmsPath": "/service-product/cms/cms_1720717463060.json",
+    "cmsVersion": "v1",
+    "sortOrder": 2,
+    "servicePlatforms": [
+      {
+        "serviceCode": "SV_0022",
+        "platformVersion": 1,
+        "consoleLinkUrl": "",
+        "guideLinkUrl": ""
+      },
+      {
+        "serviceCode": "SV_0022",
+        "platformVersion": 2,
+        "consoleLinkUrl": "/global-cdn/list",
+        "guideLinkUrl": "/networking/networking-7-1.html"
+      }
+    ],
+    "modYmdt": "Jul 12, 2024, 2:04:23 AM",
+    "deployYmdt": "Dec 30, 2025, 2:38:41 PM"
+  },
+  {
+    "serviceCode": "SV_0217",
+    "upperServiceCode": "CTDVR",
+    "serviceName": "Global Edge",
+    "upperServiceName": "contentDelivery",
+    "serviceDesc": "대규모 글로벌 네트워크를 사용하여 전 세계의 콘텐츠를 안정적이고 빠르게 전송하는 CDN 서비스",
+    "iconUrl": "https://portal.gcdn.ntruss.com/image/prod-contentDelivery-globalEdge_1719765870279.svg+xml",
+    "detailLinkUrl": "globalEdge",
+    "calcLinkUrl": "contentDelivery#globalEdge",
+    "inquiryUrl": "",
+    "keywords": [],
+    "labels": [],
+    "regionCodes": [
+      "KR",
+      "USWN",
+      "SGN",
+      "HK",
+      "JP",
+      "DEN"
+    ],
+    "platformTypeCode": "COMMON",
+    "metaTitle": "Global Edge - Content Delivery",
+    "metaDesc": "대규모 글로벌 네트워크로 전세계의 콘텐츠를 안정적이고 빠르게 전송하는 CDN 서비스",
+    "metaKeyword": [],
+    "eventContents": [],
+    "cmsPath": "/service-product/cms/cms_1763375421603.json",
+    "cmsVersion": "v1",
+    "sortOrder": 3,
+    "servicePlatforms": [
+      {
+        "serviceCode": "SV_0217",
+        "platformVersion": 2,
+        "consoleLinkUrl": "/global-edge/management",
+        "guideLinkUrl": ""
+      }
+    ],
+    "modYmdt": "Nov 19, 2025, 7:06:02 PM",
+    "deployYmdt": "Dec 30, 2025, 2:38:41 PM"
+  },
+  {
+    "serviceCode": "SV_0288",
+    "upperServiceCode": "DB",
+    "serviceName": "Cloud DB Serverless",
+    "upperServiceName": "database",
+    "serviceDesc": "이용 패턴에 따라 자동으로 스펙과 용량을 최적화하는 대용량 데이터베이스",
+    "detailLinkUrl": "cloudDbServerless",
+    "keywords": [
+      "Cloud DB",
+      "클라우드디비",
+      "Cloud DB Serverless",
+      " 클라우드디비서버리스",
+      " Serverless",
+      " RDBMS",
+      " MySQL",
+      " Database",
+      " 데이터베이스",
+      " 마이에스큐엘",
+      "관계형 데이터베이스"
+    ],
+    "labels": [
+      "BETA"
+    ],
+    "regionCodes": [
+      "KR"
+    ],
+    "platformTypeCode": "VPC",
+    "metaTitle": "Cloud DB Serverless - Database",
+    "metaDesc": "이용 패턴에 따라 자동으로 스펙과 용량을 최적화하는 대용량 데이터베이스",
+    "metaKeyword": [
+      "Cloud DB",
+      "클라우드디비",
+      "Cloud DB Serverless",
+      " 클라우드디비서버리스",
+      " Serverless",
+      " RDBMS",
+      " MySQL",
+      " Database",
+      " 데이터베이스",
+      " 마이에스큐엘",
+      "관계형 데이터베이스"
+    ],
+    "cmsPath": "/service-product/cms/cms_1766385543041.json",
+    "cmsVersion": "v1",
+    "sortOrder": 1,
+    "servicePlatforms": [
+      {
+        "serviceCode": "SV_0288",
+        "platformVersion": 2,
+        "consoleLinkUrl": "/cdbServerless/cluster?platform=vpc"
+      }
+    ],
+    "modYmdt": "Dec 22, 2025, 3:39:03 PM",
+    "deployYmdt": "Dec 30, 2025, 2:38:41 PM"
+  },
+  {
+    "serviceCode": "SV_0203",
+    "upperServiceCode": "DB",
+    "serviceName": "Cloud DB for PostgreSQL",
+    "upperServiceName": "database",
+    "serviceDesc": "PostgreSQL를 손쉽게 구축하고 자동으로 관리하는 서비스",
+    "iconUrl": "https://portal.gcdn.ntruss.com/image/prod-database-cloudDbPostgresql_1719760078658.svg+xml",
+    "detailLinkUrl": "cloudDbPostgresql",
+    "calcLinkUrl": "database#cloudDbPostgreSql",
+    "inquiryUrl": "",
+    "keywords": [
+      "Cloud DB",
+      "클라우드디비",
+      "Cloud DB for PostgreSQL",
+      "클라우드디비 포스트그레에스큐엘",
+      "PostgreSQL",
+      "RDBMS",
+      "Database",
+      "데이터베이스",
+      "포스트그레스큐엘",
+      "관계형 데이터베이스"
+    ],
+    "labels": [
+      "UPDATE"
+    ],
+    "regionCodes": [
+      "KR",
+      "SGN",
+      "JP"
+    ],
+    "platformTypeCode": "VPC",
+    "metaTitle": "Cloud DB for PostgreSQL - Database",
+    "metaDesc": "PostgreSQL 데이터베이스를 쉽고 간편하게 구축하고 관리",
+    "metaKeyword": [
+      "Cloud DB",
+      "클라우드디비",
+      "Cloud DB for PstgreSQL",
+      "PostgreSQL",
+      "RDBMS",
+      "Database",
+      "데이터베이스",
+      "포스트그레스큐엘",
+      "클라우드디비 포스트그레스큐엘",
+      "관계형 데이터베이스"
+    ],
+    "eventContents": [],
+    "cmsPath": "/service-product/cms/cms_1762425561300.json",
+    "cmsVersion": "v1",
+    "sortOrder": 2,
+    "servicePlatforms": [
+      {
+        "serviceCode": "SV_0203",
+        "platformVersion": 2,
+        "consoleLinkUrl": "/vpcCloudPostgresql/server?platform=vpc",
+        "guideLinkUrl": ""
+      }
+    ],
+    "modYmdt": "Nov 19, 2025, 7:06:03 PM",
+    "deployYmdt": "Dec 30, 2025, 2:38:41 PM"
+  },
+  {
+    "serviceCode": "SV_0027",
+    "upperServiceCode": "DB",
+    "serviceName": "Cloud DB for MySQL",
+    "upperServiceName": "database",
+    "serviceDesc": "MySQL 데이터베이스를 손쉽게 구축하고 자동으로 관리하는 서비스",
+    "iconUrl": "https://portal.gcdn.ntruss.com/image/prod-database-cloudDbMysql_1719760111358.svg+xml",
+    "detailLinkUrl": "cloudDbMysql",
+    "calcLinkUrl": "database#cloudDbMysql",
+    "inquiryUrl": "",
+    "keywords": [
+      "데이터베이스서버",
+      "DB서버",
+      "MySQL데이터베이스",
+      "MySQL백업",
+      "MySQL서버",
+      "네이버MySQL",
+      "네이버클라우드플랫폼DB",
+      "데이터베이스관리",
+      "DB관리",
+      "클라우드데이터베이스",
+      "클라우드DB",
+      "MySQL데이터베이스구축",
+      "MySQL DB구축",
+      "MySQL서버구축",
+      "Database server",
+      "DB server",
+      "MySQL database",
+      "MySQL DB",
+      "MySQL backup",
+      "MySQL server",
+      "NAVER MySQL",
+      "NAVER CLOUD PLATFORM DB",
+      "Database management",
+      "DB management",
+      "Cloud database",
+      "Cloud DB",
+      "MySQL database development",
+      "MySQL DB development",
+      "MySQL server development",
+      "MySQL development",
+      "MySQL구축"
+    ],
+    "labels": [
+      "UPDATE"
+    ],
+    "regionCodes": [
+      "KR",
+      "USWN",
+      "SGN",
+      "JP"
+    ],
+    "platformTypeCode": "VPC",
+    "metaTitle": "Cloud DB for MySQL - Database",
+    "metaDesc": "완전 관리형 MySQL 데이터베이스 구축, 운영 서비스. 네이버 서비스 검증 최적화 설정.",
+    "metaKeyword": [
+      "데이터베이스서버",
+      "DB서버",
+      "MySQL데이터베이스",
+      "MySQL DB",
+      "MySQL백업",
+      "MySQL서버",
+      "네이버MySQL",
+      "네이버클라우드플랫폼MySQL",
+      "데이터베이스관리",
+      "DB관리",
+      "클라우드데이터베이스",
+      "클라우드DB",
+      "MySQL데이터베이스구축",
+      "MySQL DB구축",
+      "MySQL서버구축"
+    ],
+    "eventContents": [],
+    "cmsPath": "/service-product/cms/cms_1754145364261.json",
+    "cmsVersion": "v1",
+    "sortOrder": 3,
+    "servicePlatforms": [
+      {
+        "serviceCode": "SV_0027",
+        "platformVersion": 1,
+        "consoleLinkUrl": "",
+        "guideLinkUrl": ""
+      },
+      {
+        "serviceCode": "SV_0027",
+        "platformVersion": 2,
+        "consoleLinkUrl": "/vpcCloudMysql/server?platform=vpc",
+        "guideLinkUrl": "/database/database-5-1.html"
+      }
+    ],
+    "modYmdt": "Nov 19, 2025, 7:06:03 PM",
+    "deployYmdt": "Dec 30, 2025, 2:38:41 PM"
+  },
+  {
+    "serviceCode": "SV_0028",
+    "upperServiceCode": "DB",
+    "serviceName": "Cloud DB for Cache",
+    "upperServiceName": "database",
+    "serviceDesc": "인 메모리 캐시를 클라우드 상에서 간편하게 구축하고 안정적으로 운영하는 서비스",
+    "iconUrl": "https://portal.gcdn.ntruss.com/image/prod-database-cloudDbRedis_1719760140364.svg+xml",
+    "detailLinkUrl": "cloudDbCache",
+    "calcLinkUrl": "database#cloudDbRedis",
+    "inquiryUrl": "",
+    "keywords": [
+      "레디스캐시",
+      "레디스캐시서버",
+      "네이버레디스",
+      "네이버캐시서버",
+      "레디스클러스터",
+      "레디스운영",
+      "레디스서버",
+      "비관계형DBMS",
+      "클라우드레디스",
+      "레디스구축",
+      "Redis cache",
+      "Redis cache server",
+      "NAVER redis",
+      "NAVER cache server",
+      "Redis cluster",
+      "Redis operation",
+      "Redis server",
+      "Remote Dictionary Server",
+      "Non-relational DBMS",
+      "Cloud redis",
+      "Redis development"
+    ],
+    "labels": [],
+    "regionCodes": [
+      "KR",
+      "SGN",
+      "JP"
+    ],
+    "platformTypeCode": "VPC",
+    "metaTitle": "Cloud DB for Cache - Database",
+    "metaDesc": "완전 관리형 클라우드 인 메모리 캐시 구축, 관리 서비스. 네이버 서비스 검증 최적화 설정.",
+    "metaKeyword": [
+      "레디스캐시",
+      "레디스캐시서버",
+      "네이버레디스",
+      "네이버캐시서버",
+      "레디스클러스터",
+      "레디스운영",
+      "레디스서버",
+      "비관계형DBMS",
+      "클라우드레디스",
+      "레디스구축"
+    ],
+    "eventContents": [],
+    "cmsPath": "/service-product/cms/cms_1756537624661.json",
+    "cmsVersion": "v1",
+    "sortOrder": 4,
+    "servicePlatforms": [
+      {
+        "serviceCode": "SV_0028",
+        "platformVersion": 1,
+        "consoleLinkUrl": "",
+        "guideLinkUrl": ""
+      },
+      {
+        "serviceCode": "SV_0028",
+        "platformVersion": 2,
+        "consoleLinkUrl": "/vpcCloudCache/server?platform=vpc",
+        "guideLinkUrl": "/database/database-8-1.html"
+      }
+    ],
+    "modYmdt": "Nov 19, 2025, 7:06:02 PM",
+    "deployYmdt": "Dec 30, 2025, 2:38:41 PM"
+  },
+  {
+    "serviceCode": "SV_0029",
+    "upperServiceCode": "DB",
+    "serviceName": "Cloud DB for MSSQL",
+    "upperServiceName": "database",
+    "serviceDesc": "MSSQL 데이터베이스를 클라우드 상에서 간편하게 구축하고 안정적으로 운영하는 서비스",
+    "iconUrl": "https://portal.gcdn.ntruss.com/image/prod-database-cloudDbMssql_1719760155094.svg+xml",
+    "detailLinkUrl": "cloudDbMssql",
+    "calcLinkUrl": "database#cloudDbMssql",
+    "inquiryUrl": "",
+    "keywords": [
+      "데이터베이스서버",
+      "DB서버",
+      "MSSQL데이터베이스",
+      "MSSQL백업",
+      "MSSQL서버",
+      "네이버MSSQL",
+      "데이터베이스관리",
+      "DB관리",
+      "클라우드데이터베이스",
+      "클라우드DB",
+      "MSSQL데이터베이스구축",
+      "MSSQL DB구축",
+      "MSSQL서버구축",
+      "Database server",
+      "DB server",
+      "MSSQL database",
+      "MSSQL DB",
+      "MSSQL backup",
+      "MSSQL server",
+      "NAVER MSSQL",
+      "Database management",
+      "DB management",
+      "Cloud database",
+      "Cloud DB",
+      "MSSQL database development",
+      "MSSQL DB development",
+      "MSSQL server development"
+    ],
+    "labels": [],
+    "regionCodes": [
+      "KR",
+      "SGN",
+      "JP"
+    ],
+    "platformTypeCode": "VPC",
+    "metaTitle": "Cloud DB for MSSQL - Database",
+    "metaDesc": "완전 관리형 클라우드 MSSQL 데이터베이스 구축, 관리 서비스. 네이버 서비스 검증 최적화 설정.",
+    "metaKeyword": [
+      "데이터베이스서버",
+      "DB서버",
+      "MSSQL데이터베이스",
+      "MSSQL DB",
+      "MSSQL백업",
+      "MSSQL서버",
+      "네이버MSSQL",
+      "네이버클라우드플랫폼MSSQL",
+      "데이터베이스관리",
+      "DB관리",
+      "클라우드데이터베이스",
+      "클라우드DB",
+      "MSSQL데이터베이스구축",
+      "MSSQL DB구축",
+      "MSSQL서버구축"
+    ],
+    "eventContents": [],
+    "cmsPath": "/service-product/cms/cms_1754144560075.json",
+    "cmsVersion": "v1",
+    "sortOrder": 5,
+    "servicePlatforms": [
+      {
+        "serviceCode": "SV_0029",
+        "platformVersion": 1,
+        "consoleLinkUrl": "",
+        "guideLinkUrl": ""
+      },
+      {
+        "serviceCode": "SV_0029",
+        "platformVersion": 2,
+        "consoleLinkUrl": "/vpcCloudMSSQL/server?platform=vpc",
+        "guideLinkUrl": "/database/database-9-1.html"
+      }
+    ],
+    "modYmdt": "Nov 19, 2025, 7:06:02 PM",
+    "deployYmdt": "Dec 30, 2025, 2:38:41 PM"
+  },
+  {
+    "serviceCode": "SV_0182",
+    "upperServiceCode": "DB",
+    "serviceName": "Cloud DB for MongoDB",
+    "upperServiceName": "database",
+    "serviceDesc": "MongoDB 서비스를 손쉽게 구축하고 자동으로 관리하는 서비스",
+    "iconUrl": "https://portal.gcdn.ntruss.com/image/prod-database-cloud-db-mongo-db_1719760167243.svg+xml",
+    "detailLinkUrl": "cloudDbMongoDB",
+    "calcLinkUrl": "database#cloudDbMongo",
+    "inquiryUrl": "",
+    "keywords": [],
+    "labels": [
+      "UPDATE"
+    ],
+    "regionCodes": [
+      "KR",
+      "SGN",
+      "JP"
+    ],
+    "platformTypeCode": "VPC",
+    "metaTitle": "Cloud DB for MongoDB - Database",
+    "metaDesc": "MongoDB 서비스를 손쉽게 구축하고 자동으로 관리합니다.",
+    "metaKeyword": [],
+    "eventContents": [],
+    "cmsPath": "/service-product/cms/cms_1761811948642.json",
+    "cmsVersion": "v1",
+    "sortOrder": 6,
+    "servicePlatforms": [
+      {
+        "serviceCode": "SV_0182",
+        "platformVersion": 2,
+        "consoleLinkUrl": "/vpcCloudMongoDB/server?platform=vpc",
+        "guideLinkUrl": "/database/clouddbformongodb-overview"
+      }
+    ],
+    "modYmdt": "Nov 19, 2025, 7:06:03 PM",
+    "deployYmdt": "Dec 30, 2025, 2:38:41 PM"
+  },
+  {
+    "serviceCode": "SV_0219",
+    "upperServiceCode": "DB",
+    "serviceName": "Database Migration Service",
+    "upperServiceName": "database",
+    "serviceDesc": "데이터베이스를 클라우드 환경으로 손쉽게 마이그레이션하는 서비스",
+    "iconUrl": "https://portal.gcdn.ntruss.com/image/prod-database-dbMigrationService_1719760184350.svg+xml",
+    "detailLinkUrl": "dbMigrationService",
+    "calcLinkUrl": "",
+    "inquiryUrl": "",
+    "keywords": [],
+    "labels": [],
+    "regionCodes": [
+      "KR"
+    ],
+    "platformTypeCode": "VPC",
+    "metaTitle": "",
+    "metaDesc": "",
+    "metaKeyword": [],
+    "eventContents": [],
+    "cmsPath": "/service-product/cms/cms_1721117535012.json",
+    "cmsVersion": "v1",
+    "sortOrder": 15,
+    "servicePlatforms": [
+      {
+        "serviceCode": "SV_0219",
+        "platformVersion": 2,
+        "consoleLinkUrl": "/vpcMigService/migration?platform=vpc",
+        "guideLinkUrl": ""
+      }
+    ],
+    "modYmdt": "Sep 18, 2025, 10:04:33 AM",
+    "deployYmdt": "Dec 30, 2025, 2:38:41 PM"
+  },
+  {
+    "serviceCode": "SV_0242",
+    "upperServiceCode": "DB",
+    "serviceName": "Tibero",
+    "upperServiceName": "database",
+    "serviceDesc": "차별화된 아키텍쳐와 다양한 기능이 반영된 DBMS인 Tibero를 Server 설치형으로 제공합니다.",
+    "iconUrl": "https://portal.gcdn.ntruss.com/image/ico-prod-database-tibero_1719760209109.svg+xml",
+    "detailLinkUrl": "tibero",
+    "calcLinkUrl": "compute#server",
+    "inquiryUrl": "",
+    "keywords": [],
+    "labels": [],
+    "regionCodes": [],
+    "platformTypeCode": "VPC",
+    "metaTitle": "Tibero - Database",
+    "metaDesc": "",
+    "metaKeyword": [],
+    "eventContents": [],
+    "cmsPath": "/service-product/cms/cms_1754011046050.json",
+    "cmsVersion": "v1",
+    "sortOrder": 16,
+    "servicePlatforms": [
+      {
+        "serviceCode": "SV_0242",
+        "platformVersion": 2,
+        "consoleLinkUrl": ""
+      }
+    ],
+    "modYmdt": "Sep 1, 2025, 2:43:35 PM",
+    "deployYmdt": "Dec 30, 2025, 2:38:41 PM"
+  },
+  {
+    "serviceCode": "SV_0235",
+    "upperServiceCode": "DEVTL",
+    "serviceName": "SourceBand",
+    "upperServiceName": "devTools",
+    "serviceDesc": "IT 서비스 팀 및 DevOps 팀의 프로젝트 관리 및 운영을 도와주는 대화형 시각화 도구 ",
+    "iconUrl": "https://portal.gcdn.ntruss.com/image/prod-devTools-sourceBand_1719765898972.svg+xml",
+    "detailLinkUrl": "sourceBand",
+    "calcLinkUrl": "devTools#sourceBand",
+    "inquiryUrl": "",
+    "keywords": [
+      "개발자도구",
+      "개발자툴",
+      "개발도구",
+      "개발툴",
+      "네이버 소스파이프라인",
+      "네이버 파이프라인",
+      "네이버클라우드플랫폼개발자툴",
+      "네이버클라우드플랫폼 개발자도구",
+      "네이버개발자도구",
+      "네이버개발자툴",
+      "DevTools",
+      "Developer Tools",
+      "DevOps",
+      "AWS CodeCatalyst",
+      "Kanban",
+      "Kanban Board",
+      "칸반보드",
+      "프로젝트관리도구",
+      "소스밴드",
+      "Naver Cloud Platform kanbanboard",
+      "SourceBand",
+      "Naver Source Band",
+      "프로젝트관리"
+    ],
+    "labels": [
+      "UPDATE"
+    ],
+    "regionCodes": [
+      "KR"
+    ],
+    "platformTypeCode": "VPC",
+    "metaTitle": "",
+    "metaDesc": "",
+    "metaKeyword": [],
+    "eventContents": [],
+    "cmsPath": "/service-product/cms/cms_1749622276356.json",
+    "cmsVersion": "v1",
+    "sortOrder": 1,
+    "servicePlatforms": [
+      {
+        "serviceCode": "SV_0235",
+        "platformVersion": 2,
+        "consoleLinkUrl": "/source-band/organization?platform=vpc"
+      }
+    ],
+    "modYmdt": "Nov 19, 2025, 7:06:03 PM",
+    "deployYmdt": "Dec 30, 2025, 2:38:41 PM"
+  },
+  {
+    "serviceCode": "SV_0089",
+    "upperServiceCode": "DEVTL",
+    "serviceName": "SourceCommit",
+    "upperServiceName": "devTools",
+    "serviceDesc": "개발에 필요한 모든 형태의 파일을 안전하게 저장하고 관리할 수 있는 프라이빗 Git 리포지토리",
+    "iconUrl": "https://portal.gcdn.ntruss.com/image/prod-devTools-sourceCommit_1719765915508.svg+xml",
+    "detailLinkUrl": "sourceCommit",
+    "calcLinkUrl": "devTools#sourceCommit",
+    "keywords": [
+      "소스커밋",
+      "소스코드보관",
+      "소스코드저장",
+      "네이버소스커밋",
+      "스크립트저장",
+      "소스관리툴",
+      "소스관리",
+      "장기소스코드보관",
+      "소스리파지토리",
+      "소스리포지토리",
+      "클라우드소스리파지토리",
+      "클라우드소스리포지토리",
+      "깃툴",
+      "깃허브",
+      "Source commit",
+      "Source code reposit",
+      "Save source code",
+      "Source code backup",
+      "NAVER source commit",
+      "Save script",
+      "Source control",
+      "Source control tool",
+      "Long-term source code reposit",
+      "Source repository",
+      "Cloud source repository",
+      "Git tools",
+      "Git hub"
+    ],
+    "labels": [
+      "UPDATE"
+    ],
+    "regionCodes": [
+      "KR",
+      "SGN"
+    ],
+    "platformTypeCode": "COMMON",
+    "metaTitle": "SourceCommit - Developer Tools",
+    "metaDesc": "개발 소스코드 및 파일 저장/관리 이중화 프라이빗 Git 리파지토리. 모든 깃 클라이언트와 연동.",
+    "metaKeyword": [
+      "소스커밋",
+      "소스코드보관",
+      "소스코드저장",
+      "네이버소스커밋",
+      "스크립트저장",
+      "소스관리툴",
+      "장기소스코드보관",
+      "클라우드소스리파지토리",
+      "클라우드소스리포지토리",
+      "깃툴",
+      "깃허브"
+    ],
+    "eventContents": [],
+    "cmsPath": "/service-product/cms/cms_1729838672919.json",
+    "cmsVersion": "v1",
+    "sortOrder": 2,
+    "servicePlatforms": [
+      {
+        "serviceCode": "SV_0089",
+        "platformVersion": 1,
+        "consoleLinkUrl": "",
+        "guideLinkUrl": ""
+      },
+      {
+        "serviceCode": "SV_0089",
+        "platformVersion": 2,
+        "consoleLinkUrl": "/source-commit/management",
+        "guideLinkUrl": "/devtools/devtools-2-1.html"
+      }
+    ],
+    "modYmdt": "Nov 19, 2025, 7:06:03 PM",
+    "deployYmdt": "Dec 30, 2025, 2:38:41 PM"
+  },
+  {
+    "serviceCode": "SV_0107",
+    "upperServiceCode": "DEVTL",
+    "serviceName": "SourceBuild",
+    "upperServiceName": "devTools",
+    "serviceDesc": "다양한 언어의 소스 코드를 손쉽게 빌드하는 완전 관리형 병렬 빌드 서비스",
+    "iconUrl": "https://portal.gcdn.ntruss.com/image/prod-devTools-sourceBuild_1719765940665.svg+xml",
+    "detailLinkUrl": "sourceBuild",
+    "calcLinkUrl": "devTools#sourceBuild",
+    "keywords": [
+      "개발자도구",
+      "개발자툴",
+      "데브옵스",
+      "소스디플로이",
+      "소프트웨어빌드",
+      "소스빌드",
+      "소스코드컴파일",
+      "컴포넌트패키징",
+      "소스코드관리",
+      "네이버클라우드플랫폼개발자툴",
+      "네이버클라우드플랫폼 개발자도구",
+      "네이버개발자도구",
+      "네이버개발자툴",
+      "DevTools",
+      "Developer Tools",
+      "DevOps",
+      "Software build",
+      "SW build",
+      "SourceDeploy",
+      "Source build",
+      "Compiling Source Code",
+      "source code compile",
+      "Component Packaging",
+      "Source Code Management",
+      "Source Code build"
+    ],
+    "labels": [
+      "UPDATE"
+    ],
+    "regionCodes": [
+      "KR",
+      "SGN"
+    ],
+    "platformTypeCode": "COMMON",
+    "metaTitle": "SourceBuild - Developer Tools",
+    "metaDesc": "빠른 빌드 환경 구성을 위한 완전 관리형 소스코드 빌드 서비스. 소스코드 컴파일 및 컴포넌트 패키징 지원",
+    "metaKeyword": [
+      "개발자도구",
+      "개발자툴",
+      "데브옵스",
+      "소스디플로이",
+      "소프트웨어빌드",
+      "소스빌드",
+      "소스코드컴파일",
+      "컴포넌트패키징",
+      "소스코드관리",
+      "소스코드빌드",
+      "네이버클라우드플랫폼 개발자도구",
+      "네이버클라우드플랫폼개발자툴",
+      "네이버개발자툴",
+      "네이버개발자도구"
+    ],
+    "eventContents": [],
+    "cmsPath": "/service-product/cms/cms_1729837123662.json",
+    "cmsVersion": "v1",
+    "sortOrder": 3,
+    "servicePlatforms": [
+      {
+        "serviceCode": "SV_0107",
+        "platformVersion": 1,
+        "consoleLinkUrl": "",
+        "guideLinkUrl": ""
+      },
+      {
+        "serviceCode": "SV_0107",
+        "platformVersion": 2,
+        "consoleLinkUrl": "/source-build/management",
+        "guideLinkUrl": "/devtools/devtools-3-1.html"
+      }
+    ],
+    "modYmdt": "Nov 19, 2025, 7:06:03 PM",
+    "deployYmdt": "Dec 30, 2025, 2:38:41 PM"
+  },
+  {
+    "serviceCode": "SV_0106",
+    "upperServiceCode": "DEVTL",
+    "serviceName": "SourceDeploy",
+    "upperServiceName": "devTools",
+    "serviceDesc": "새로 작성됐거나 업데이트된 소스를 서버에 자동으로 배포하고 적용하는 자동화 배포 서비스",
+    "iconUrl": "https://portal.gcdn.ntruss.com/image/prod-devTools-sourceDeploy_1719765961300.svg+xml",
+    "detailLinkUrl": "sourceDeploy",
+    "keywords": [
+      "개발자도구",
+      "개발자툴",
+      "데브옵스",
+      "소프트웨어배포",
+      "배포도구",
+      "SourceDeploy",
+      "소스디플로이",
+      "네이버클라우드플랫폼개발자툴",
+      "네이버클라우드플랫폼 개발자도구",
+      "네이버개발자도구",
+      "네이버개발자툴",
+      "DevTools",
+      "Developer Tools",
+      "DevOps",
+      "Software build",
+      "SW build",
+      "Software distribution",
+      "SW distribution",
+      "Source Deploy",
+      "Automate Deployment",
+      "AWS Code Deploy"
+    ],
+    "labels": [
+      "UPDATE"
+    ],
+    "regionCodes": [
+      "KR"
+    ],
+    "platformTypeCode": "VPC",
+    "metaTitle": "SourceDeploy - Developer Tools",
+    "metaDesc": "서버 그룹에 대한 배포 자동화 서비스. 소스 배포/ 실행 / 검증 프로세스 자동화",
+    "metaKeyword": [
+      "개발자도구",
+      "개발자툴",
+      "데브옵스",
+      "소프트웨어배포",
+      "배포도구",
+      "SourceDeploy",
+      "소스디플로이",
+      "네이버클라우드플랫폼개발자툴",
+      "네이버클라우드플랫폼 개발자도구",
+      "네이버개발자도구",
+      "네이버개발자툴"
+    ],
+    "eventContents": [],
+    "cmsPath": "/service-product/cms/cms_1729839089155.json",
+    "cmsVersion": "v1",
+    "sortOrder": 4,
+    "servicePlatforms": [
+      {
+        "serviceCode": "SV_0106",
+        "platformVersion": 1,
+        "consoleLinkUrl": "",
+        "guideLinkUrl": ""
+      },
+      {
+        "serviceCode": "SV_0106",
+        "platformVersion": 2,
+        "consoleLinkUrl": "/vpc-source-deploy/management?platform=vpc",
+        "guideLinkUrl": "/devtools/devtools-4-1.html"
+      }
+    ],
+    "modYmdt": "Nov 19, 2025, 7:06:03 PM",
+    "deployYmdt": "Dec 30, 2025, 2:38:41 PM"
+  },
+  {
+    "serviceCode": "SV_0105",
+    "upperServiceCode": "DEVTL",
+    "serviceName": "SourcePipeline",
+    "upperServiceName": "devTools",
+    "serviceDesc": "리포지토리, 빌드, 배포 프로세스를 통합하여 소프트웨어 출시를 자동화하는 서비스",
+    "iconUrl": "https://portal.gcdn.ntruss.com/image/prod-devTools-sourcePipeline_1719765976408.svg+xml",
+    "detailLinkUrl": "sourcePipeline",
+    "calcLinkUrl": "devTools#sourcePipeline",
+    "keywords": [
+      "개발자도구",
+      "개발자툴",
+      "개발도구",
+      "개발툴",
+      "소스파이프라인",
+      "네이버 소스파이프라인",
+      "네이버 파이프라인",
+      "네이버클라우드플랫폼개발자툴",
+      "네이버클라우드플랫폼 개발자도구",
+      "네이버개발자도구",
+      "네이버개발자툴",
+      "DevTools",
+      "Developer Tools",
+      "DevOps",
+      "SourceCommit",
+      "SourceBuild",
+      "SourceDeploy",
+      "Naver Cloud Platform Pipeline",
+      "Naver Cloud Pipeline",
+      "Naver Pipeline",
+      "Source Pipeline",
+      "Naver Source Pipeline"
+    ],
+    "labels": [
+      "UPDATE"
+    ],
+    "regionCodes": [
+      "KR",
+      "SGN"
+    ],
+    "platformTypeCode": "VPC",
+    "metaTitle": "SourcePipeline - Developer Tools",
+    "metaDesc": "리파지토리, 빌드, 배포 프로세스를 통합해 빠르고 안정적인 소프트웨어 출시 지원. 파이프라인 자동화 서비스",
+    "metaKeyword": [
+      "개발자도구",
+      "개발자툴",
+      "개발도구",
+      "개발툴",
+      "소스파이프라인",
+      "네이버 소스파이프라인",
+      "네이버 파이프라인",
+      "네이버클라우드플랫폼개발자툴",
+      "네이버클라우드플랫폼 개발자도구",
+      "네이버개발자도구",
+      "네이버개발자툴"
+    ],
+    "eventContents": [],
+    "cmsPath": "/service-product/cms/cms_1755062850138.json",
+    "cmsVersion": "v1",
+    "sortOrder": 5,
+    "servicePlatforms": [
+      {
+        "serviceCode": "SV_0105",
+        "platformVersion": 1,
+        "consoleLinkUrl": "",
+        "guideLinkUrl": ""
+      },
+      {
+        "serviceCode": "SV_0105",
+        "platformVersion": 2,
+        "consoleLinkUrl": "/vpc-source-pipeline/management?platform=vpc",
+        "guideLinkUrl": "/devtools/devtools-5-1.html"
+      }
+    ],
+    "modYmdt": "Nov 19, 2025, 7:06:03 PM",
+    "deployYmdt": "Dec 30, 2025, 2:38:41 PM"
+  },
+  {
+    "serviceCode": "SV_0218",
+    "upperServiceCode": "DITW",
+    "serviceName": "ARC eye",
+    "upperServiceName": "digitalTwin",
+    "serviceDesc": "실내외 디지털 트윈을 구축하고 AR·로봇·스마트 빌딩 등에 활용할 수 있는 측위 API 제공",
+    "iconUrl": "https://portal.gcdn.ntruss.com/image/prod-digitalTwin-arcEye_1719766014654.svg+xml",
+    "detailLinkUrl": "arcEye",
+    "calcLinkUrl": "digitalTwin#arcEye",
+    "inquiryUrl": "/support/question/service?parentCode=O2O_DITW&code=O2O_DITW_001",
+    "keywords": [],
+    "labels": [],
+    "regionCodes": [
+      "KR",
+      "JP"
+    ],
+    "platformTypeCode": "VPC",
+    "metaTitle": "ARC eye - Digital Twin",
+    "metaDesc": "",
+    "metaKeyword": [],
+    "eventContents": [],
+    "cmsPath": "/service-product/cms/cms_1766725466813.json",
+    "cmsVersion": "v1",
+    "sortOrder": 1,
+    "servicePlatforms": [
+      {
+        "serviceCode": "SV_0218",
+        "platformVersion": 2,
+        "consoleLinkUrl": "/arc-eye/dashboard?platform=vpc",
+        "guideLinkUrl": ""
+      }
+    ],
+    "modYmdt": "Dec 26, 2025, 2:04:27 PM",
+    "deployYmdt": "Dec 30, 2025, 2:38:41 PM"
+  },
+  {
+    "serviceCode": "SV_0103",
+    "upperServiceCode": "GAME",
+    "serviceName": "GAMEPOT",
+    "upperServiceName": "game",
+    "serviceDesc": "개발부터 운영까지 게임에 필요한 기능을 통합하여 제공하는 서비스",
+    "iconUrl": "https://portal.gcdn.ntruss.com/image/prod-game-gamepot_1719766043925.svg+xml",
+    "detailLinkUrl": "gamepot",
+    "calcLinkUrl": "game#gamePot",
+    "keywords": [],
+    "labels": [],
+    "regionCodes": [
+      "KR",
+      "SGN",
+      "JP"
+    ],
+    "platformTypeCode": "COMMON",
+    "metaTitle": "GAMEPOT - Gaming",
+    "metaDesc": "고품질 게임 SDK 제공. 인증, 결제, 통계, 모니터링, 푸시(PUSH), 이벤트 쿠폰 등 게임 개발 및 운영에 필수적인 기능들 손쉽게 적용 가능.",
+    "metaKeyword": [
+      "네이버게임SDK",
+      "네이버게임팟",
+      "게임팟",
+      "gamepot",
+      "네이버클라우드게임팟",
+      "네이버클라우드게임SDK",
+      "ncp게임",
+      "네이버클라우드플랫폼게임",
+      "네이버클라우드게임",
+      "ncp게임팟",
+      "ncpgamepot",
+      "네이버클라우드플랫폼gamepot",
+      "네이버gamepot",
+      "네이버클라우드gamepot"
+    ],
+    "eventContents": [],
+    "cmsPath": "/service-product/cms/cms_1720717502785.json",
+    "cmsVersion": "v1",
+    "sortOrder": 1,
+    "servicePlatforms": [
+      {
+        "serviceCode": "SV_0103",
+        "platformVersion": 1,
+        "consoleLinkUrl": "",
+        "guideLinkUrl": ""
+      },
+      {
+        "serviceCode": "SV_0103",
+        "platformVersion": 2,
+        "consoleLinkUrl": "/gamepot/management",
+        "guideLinkUrl": "/game/gamepot_console.html"
+      }
+    ],
+    "modYmdt": "Sep 18, 2025, 10:04:33 AM",
+    "deployYmdt": "Dec 30, 2025, 2:38:41 PM"
+  },
+  {
+    "serviceCode": "SV_0234",
+    "upperServiceCode": "HBRD",
+    "serviceName": "Neurocloud",
+    "upperServiceName": "hybridPrivateCloud",
+    "serviceDesc": "NAVER Cloud의 플랫폼을 이용한 고객 전용 사설 클라우드",
+    "iconUrl": "https://portal.gcdn.ntruss.com/image/ico-hybrid-cloud-caas_1719766203980.svg+xml",
+    "detailLinkUrl": "neurocloud",
+    "calcLinkUrl": "",
+    "inquiryUrl": "",
+    "keywords": [],
+    "labels": [],
+    "regionCodes": [],
+    "platformTypeCode": "COMMON",
+    "metaTitle": "Neurocloud - Hybrid & Private Cloud",
+    "metaDesc": "",
+    "metaKeyword": [],
+    "eventContents": [
+      "초대규모 AI를 위한 하이브리드 클라우드 Neurocloud for HyperCLOVA X는 연내 공개될 예정입니다. <br>"
+    ],
+    "cmsPath": "/service-product/cms/cms_1753407475121.json",
+    "cmsVersion": "v1",
+    "sortOrder": 3,
+    "servicePlatforms": [
+      {
+        "serviceCode": "SV_0234",
+        "platformVersion": 2,
+        "consoleLinkUrl": ""
+      }
+    ],
+    "modYmdt": "Jul 25, 2025, 10:37:55 AM",
+    "deployYmdt": "Dec 30, 2025, 2:38:41 PM"
+  },
+  {
+    "serviceCode": "SV_0075",
+    "upperServiceCode": "MEDIA",
+    "serviceName": "Image Optimizer",
+    "upperServiceName": "media",
+    "serviceDesc": "원본 이미지를 다양한 해상도로 변환하여 배포할 수 있는 이미지 변환 서비스",
+    "iconUrl": "https://portal.gcdn.ntruss.com/image/prod-media-imageOptimizer_1719766725205.svg+xml",
+    "detailLinkUrl": "imageOptimizer",
+    "calcLinkUrl": "media#imageOptimizer",
+    "keywords": [
+      "썸네일편집기",
+      "섬네일편집기",
+      "이미지변환API",
+      "이미지리사이징",
+      "네이버이미지편집기",
+      "클라우드이미지편집",
+      "워드프레스썸네일",
+      "워드프레스섬네일",
+      "이미지크롭",
+      "네이버이미지크롭",
+      "네이버이미지변환API",
+      "이미지사이즈변경",
+      "이미지해상도변경",
+      "썸네일자동편집",
+      "섬네일자동편집",
+      "썸네일크롭",
+      "섬네일크롭",
+      "썸네일사이즈",
+      "섬네일사이즈",
+      "Thumbnail editor",
+      "Image conversion API",
+      "NAVER image editor",
+      "Cloud image editor",
+      "Wordpress thumbnail",
+      "NAVER image crop",
+      "image crop",
+      "NAVER image conversion API",
+      "Image resolution changer",
+      "Automatic thumbnail crop",
+      "Thumbnail size",
+      "Thumbnail crop"
+    ],
+    "labels": [],
+    "regionCodes": [
+      "KR"
+    ],
+    "platformTypeCode": "COMMON",
+    "metaTitle": "Image Optimizer - Media",
+    "metaDesc": "모바일, 태블릿, PC 맞춤형 섬네일 크기/방향/해상도 변환. 스토리지, CDN, 로그분석 서비스 연동.",
+    "metaKeyword": [
+      "썸네일편집기",
+      "섬네일편집기",
+      "이미지변환API",
+      "이미지리사이징",
+      "네이버이미지편집기",
+      "클라우드이미지편집",
+      "워드프레스썸네일",
+      "워드프레스섬네일",
+      "네이버이미지크롭",
+      "네이버이미지변환API",
+      "이미지사이즈변경",
+      "이미지해상도변경"
+    ],
+    "eventContents": [],
+    "cmsPath": "/service-product/cms/cms_1762166691153.json",
+    "cmsVersion": "v1",
+    "sortOrder": 3,
+    "servicePlatforms": [
+      {
+        "serviceCode": "SV_0075",
+        "platformVersion": 1,
+        "consoleLinkUrl": "",
+        "guideLinkUrl": ""
+      },
+      {
+        "serviceCode": "SV_0075",
+        "platformVersion": 2,
+        "consoleLinkUrl": "/image-optimizer/management",
+        "guideLinkUrl": "/media/media-3-1.html"
+      }
+    ],
+    "modYmdt": "Nov 3, 2025, 7:44:51 PM",
+    "deployYmdt": "Dec 30, 2025, 2:38:41 PM"
+  },
+  {
+    "serviceCode": "SV_0114",
+    "upperServiceCode": "MEDIA",
+    "serviceName": "Live Station",
+    "upperServiceName": "media",
+    "serviceDesc": "실시간 방송에 필요한 필수 기능을 강력한 인코딩 엔진 기반으로 제공하는 서비스",
+    "iconUrl": "https://portal.gcdn.ntruss.com/image/ico_liveconnect_1719766745313.svg+xml",
+    "detailLinkUrl": "liveStation",
+    "calcLinkUrl": "media#liveStation",
+    "keywords": [
+      "실시간방송",
+      "온라인방송플랫폼",
+      "라이브스트리밍",
+      "네이버스트리밍CDN",
+      "고화질라이브영상",
+      "라이브 브로드캐스팅",
+      "라이브트랜스코딩",
+      "썸네일 자동 추출",
+      "실시간 영상 변환",
+      "고품질 라이브 스트리밍",
+      "CDN 최적화",
+      "온라인생중계",
+      "Real-time broadcast",
+      "Online broadcast platform",
+      "Live streaming",
+      "NAVER streaming CDN",
+      "HD live video",
+      "Live broadcasting",
+      "Live transcoding",
+      "Thumbnail extraction",
+      "Real time video conversion",
+      "HD live streaming",
+      "CDN optimization",
+      "Online broadcast live"
+    ],
+    "labels": [],
+    "regionCodes": [
+      "KR"
+    ],
+    "platformTypeCode": "COMMON",
+    "metaTitle": "Live Station - Media",
+    "metaDesc": "라이브 방송에 필요한 모든 기능 제공. 강력한 인코딩 엔진, 다양한 미디어 플랫폼으로의 동시 송출(Re-Stream), 실시간 DVR, 타임 시프트, 실시간 섬네일 추출",
+    "metaKeyword": [
+      "실시간방송",
+      "온라인방송플랫폼",
+      "라이브스트리밍",
+      "네이버스트리밍CDN",
+      "고화질라이브영상",
+      "라이브 브로드캐스팅",
+      "라이브트랜스코딩",
+      "썸네일 자동 추출",
+      "실시간 영상 변환",
+      "고품질 라이브 스트리밍",
+      "CDN 최적화",
+      "온라인생중계"
+    ],
+    "eventContents": [],
+    "cmsPath": "/service-product/cms/cms_1740116111071.json",
+    "cmsVersion": "v1",
+    "sortOrder": 4,
+    "servicePlatforms": [
+      {
+        "serviceCode": "SV_0114",
+        "platformVersion": 1,
+        "consoleLinkUrl": "",
+        "guideLinkUrl": ""
+      },
+      {
+        "serviceCode": "SV_0114",
+        "platformVersion": 2,
+        "consoleLinkUrl": "/liveStationPlus/ChannelManagement",
+        "guideLinkUrl": "/media/livestation/livestation-introduction.html"
+      }
+    ],
+    "modYmdt": "Sep 18, 2025, 10:04:33 AM",
+    "deployYmdt": "Dec 30, 2025, 2:38:41 PM"
+  },
+  {
+    "serviceCode": "SV_0195",
+    "upperServiceCode": "MEDIA",
+    "serviceName": "VOD Station",
+    "upperServiceName": "media",
+    "serviceDesc": "VOD 동영상을 다양한 시청 환경에 맞게 변환하여 송출할 수 있는 서비스",
+    "iconUrl": "https://portal.gcdn.ntruss.com/image/prod-media-vodStation-new_1719766780325.svg+xml",
+    "detailLinkUrl": "newVodStation",
+    "calcLinkUrl": "media#newVodStation",
+    "inquiryUrl": "",
+    "keywords": [
+      "미디어",
+      " 인코딩",
+      " 송출",
+      " VOD",
+      " 통합VOD",
+      " 네이버미디어",
+      " 해상도",
+      " 스트리밍",
+      " 미디어솔루션",
+      " 클라우드미디어"
+    ],
+    "labels": [],
+    "regionCodes": [
+      "KR"
+    ],
+    "platformTypeCode": "COMMON",
+    "metaTitle": "VOD Station - Media",
+    "metaDesc": "VOD Station 서비스는 하나의 상품에서 인코딩과 송출을 제공하여 통합 VOD 서비스 환경을 제공합니다. 저장된 영상을 다양한 디바이스에서 높은 품질로 시청할 수 있도록 필수적인 기능으로 이루어진 서비스입니다. 이제 VOD 서비스를 위한 여러 상품을 고민할 필요없이 VOD Station에서 제공하는 워크플로우를 이용해보세요.",
+    "metaKeyword": [
+      "미디어",
+      " 인코딩",
+      " 송출",
+      " VOD",
+      " 통합VOD",
+      " 네이버미디어",
+      " 해상도",
+      " 스트리밍",
+      " 미디어솔루션",
+      " 클라우드미디어"
+    ],
+    "eventContents": [],
+    "cmsPath": "/service-product/cms/cms_1740117506355.json",
+    "cmsVersion": "v1",
+    "sortOrder": 7,
+    "servicePlatforms": [
+      {
+        "serviceCode": "SV_0195",
+        "platformVersion": 2,
+        "consoleLinkUrl": "/vodStation2/category",
+        "guideLinkUrl": ""
+      }
+    ],
+    "modYmdt": "Feb 21, 2025, 2:58:26 PM",
+    "deployYmdt": "Dec 30, 2025, 2:38:41 PM"
+  },
+  {
+    "serviceCode": "SV_0198",
+    "upperServiceCode": "MEDIA",
+    "serviceName": "Media Connect Center",
+    "upperServiceName": "media",
+    "serviceDesc": "미디어 관련 서비스를 한 화면에서 통합하여 관리할 수 있는 서비스",
+    "iconUrl": "https://portal.gcdn.ntruss.com/image/prod-media-connectCenter_1719766795462.svg+xml",
+    "detailLinkUrl": "mediaConnectCenter",
+    "calcLinkUrl": "media#mediaConnectCenter",
+    "inquiryUrl": "",
+    "keywords": [
+      "Media Connect Center",
+      "MCC"
+    ],
+    "labels": [],
+    "regionCodes": [
+      "KR"
+    ],
+    "platformTypeCode": "COMMON",
+    "metaTitle": "Media Connect Center - Media",
+    "metaDesc": "",
+    "metaKeyword": [
+      "Media Connect Center",
+      "MCC"
+    ],
+    "eventContents": [],
+    "cmsPath": "/service-product/cms/cms_1752225906239.json",
+    "cmsVersion": "v1",
+    "sortOrder": 8,
+    "servicePlatforms": [
+      {
+        "serviceCode": "SV_0198",
+        "platformVersion": 2,
+        "consoleLinkUrl": "/cms/main",
+        "guideLinkUrl": ""
+      }
+    ],
+    "modYmdt": "Jul 11, 2025, 6:25:06 PM",
+    "deployYmdt": "Dec 30, 2025, 2:38:41 PM"
+  },
+  {
+    "serviceCode": "SV_0228",
+    "upperServiceCode": "MEDIA",
+    "serviceName": "Video Player Enhancement",
+    "upperServiceName": "media",
+    "serviceDesc": "커스터마이징할 수 있는 우수한 성능의 SaaS 기반 비디오 플레이어 서비스",
+    "iconUrl": "https://portal.gcdn.ntruss.com/image/ico-video-player_1719766813916.svg+xml",
+    "detailLinkUrl": "videoPlayerEnhancement",
+    "calcLinkUrl": "media#videoPlayerEnhancement",
+    "inquiryUrl": "",
+    "keywords": [],
+    "labels": [
+      "UPDATE"
+    ],
+    "regionCodes": [
+      "KR",
+      "USWN",
+      "SGN",
+      "HK",
+      "JP",
+      "DEN"
+    ],
+    "platformTypeCode": "COMMON",
+    "metaTitle": "Video Player Enhancement - Media",
+    "metaDesc": "",
+    "metaKeyword": [],
+    "eventContents": [],
+    "cmsPath": "/service-product/cms/cms_1763432028347.json",
+    "cmsVersion": "v1",
+    "sortOrder": 9,
+    "servicePlatforms": [
+      {
+        "serviceCode": "SV_0228",
+        "platformVersion": 2,
+        "consoleLinkUrl": "/vpe/playerManagement",
+        "guideLinkUrl": ""
+      }
+    ],
+    "modYmdt": "Nov 19, 2025, 7:06:03 PM",
+    "deployYmdt": "Dec 30, 2025, 2:38:41 PM"
+  },
+  {
+    "serviceCode": "SV_0239",
+    "upperServiceCode": "MEDIA",
+    "serviceName": "One Click Multi DRM",
+    "upperServiceName": "media",
+    "serviceDesc": "운영 체제나 플랫폼의 장벽 없이 디지털 콘텐츠의 저작권을 보호해주는 멀티 DRM 서비스",
+    "iconUrl": "https://portal.gcdn.ntruss.com/image/prod-media-oneClickMultiDrm_1719766831192.svg+xml",
+    "detailLinkUrl": "multiDRM",
+    "calcLinkUrl": "media#multiDRM",
+    "inquiryUrl": "/support/question/service?parentCode=O2O_MEDIA&code=O2O_MEDIA_010",
+    "keywords": [],
+    "labels": [],
+    "regionCodes": [
+      "KR"
+    ],
+    "platformTypeCode": "COMMON",
+    "metaTitle": "Multi DRM",
+    "metaDesc": "",
+    "metaKeyword": [],
+    "eventContents": [],
+    "cmsPath": "/service-product/cms/cms_1741918085636.json",
+    "cmsVersion": "v1",
+    "sortOrder": 10,
+    "servicePlatforms": [
+      {
+        "serviceCode": "SV_0239",
+        "platformVersion": 2,
+        "consoleLinkUrl": ""
+      }
+    ],
+    "modYmdt": "Mar 14, 2025, 11:08:05 AM",
+    "deployYmdt": "Dec 30, 2025, 2:38:41 PM"
+  },
+  {
+    "serviceCode": "SV_0240",
+    "upperServiceCode": "MEDIA",
+    "serviceName": "B2B PRISM Live Studio",
+    "upperServiceName": "media",
+    "serviceDesc": "세계적인 수준의 실시간 방송 서비스 PRISM Live Studio를 기업 향으로 제공하는 서비스",
+    "iconUrl": "https://portal.gcdn.ntruss.com/image/prod-media-b2bPrismLiveStudio_1719766843312.svg+xml",
+    "detailLinkUrl": "B2BPrismLiveStudio",
+    "calcLinkUrl": "media#b2bPRLVS",
+    "inquiryUrl": "/support/question/service?parentCode=O2O_MEDIA&code=O2O_MEDIA_011",
+    "keywords": [],
+    "labels": [],
+    "regionCodes": [
+      "KR"
+    ],
+    "platformTypeCode": "COMMON",
+    "metaTitle": "B2B PRISM Live Studio - Media",
+    "metaDesc": "",
+    "metaKeyword": [],
+    "eventContents": [],
+    "cmsPath": "/service-product/cms/cms_1740126214704.json",
+    "cmsVersion": "v1",
+    "sortOrder": 11,
+    "servicePlatforms": [
+      {
+        "serviceCode": "SV_0240",
+        "platformVersion": 2,
+        "consoleLinkUrl": ""
+      }
+    ],
+    "modYmdt": "Feb 21, 2025, 5:23:34 PM",
+    "deployYmdt": "Dec 30, 2025, 2:38:41 PM"
+  },
+  {
+    "serviceCode": "SV_0274",
+    "upperServiceCode": "MEDIA",
+    "serviceName": "Media Intelligence",
+    "upperServiceName": "media",
+    "serviceDesc": "영상을 이해하여 인사이트를 추출하고 검색하는 미디어 AI 영상 분석 서비스\n(기존 Media AI Understanding)",
+    "detailLinkUrl": "mediaAIUnderstanding",
+    "keywords": [],
+    "labels": [
+      "UPDATE"
+    ],
+    "regionCodes": [
+      "KR"
+    ],
+    "platformTypeCode": "VPC",
+    "metaTitle": "Media Intelligence",
+    "cmsPath": "/service-product/cms/cms_1763549827579.json",
+    "cmsVersion": "v1",
+    "sortOrder": 12,
+    "servicePlatforms": [
+      {
+        "serviceCode": "SV_0274",
+        "platformVersion": 2,
+        "consoleLinkUrl": "/maiu/products?platform=vpc"
+      }
+    ],
+    "modYmdt": "Nov 19, 2025, 7:57:07 PM",
+    "deployYmdt": "Dec 30, 2025, 2:38:41 PM"
+  },
+  {
+    "serviceCode": "SV_0083",
+    "upperServiceCode": "MGMT",
+    "serviceName": "Cloud Log Analytics",
+    "upperServiceName": "management",
+    "serviceDesc": "클라우드에서 생성되는 다양한 로그를 효과적으로 관리할 수 있는 서비스",
+    "iconUrl": "https://portal.gcdn.ntruss.com/image/prod-analytics-cloudLogAnalytics_1719766360097.svg+xml",
+    "detailLinkUrl": "cloudLogAnalytics",
+    "calcLinkUrl": "management#cloudLogAnalytics",
+    "keywords": [
+      "클라우드로그분석",
+      "로그분석서비스",
+      "로그애널리틱스",
+      "로그관리시스템",
+      "로그관리솔루션",
+      "로그관리대시보드",
+      "사용자로그조회",
+      "네이버로그분석툴",
+      "로그분석솔루션",
+      "실시간로그조회",
+      "Cloud log analytics",
+      "Log analysis service",
+      "Log analytics",
+      "Log management system",
+      "Log management solution",
+      "Log dashboard",
+      "User log lookup",
+      "NAVER log analytics tool",
+      "Log analytics solution",
+      "Real-time log lookup"
+    ],
+    "labels": [],
+    "regionCodes": [
+      "KR",
+      "USWN",
+      "SGN",
+      "HK",
+      "JP",
+      "DEN"
+    ],
+    "platformTypeCode": "VPC",
+    "metaTitle": "Cloud Log Analytics - Management & Governance",
+    "metaDesc": "네이버 클라우드 플랫폼 대용량 전체 활동 로그 수집, 분석, 관리.",
+    "metaKeyword": [
+      "클라우드로그분석",
+      "로그분석서비스",
+      "로그애널리틱스",
+      "로그관리시스템",
+      "로그관리솔루션",
+      "로그관리대시보드",
+      "사용자로그조회",
+      "네이버로그분석툴",
+      "로그분석솔루션",
+      "실시간로그조회"
+    ],
+    "eventContents": [],
+    "cmsPath": "/service-product/cms/cms_1747380317377.json",
+    "cmsVersion": "v1",
+    "sortOrder": 1,
+    "servicePlatforms": [
+      {
+        "serviceCode": "SV_0083",
+        "platformVersion": 1,
+        "consoleLinkUrl": "",
+        "guideLinkUrl": ""
+      },
+      {
+        "serviceCode": "SV_0083",
+        "platformVersion": 2,
+        "consoleLinkUrl": "/cla/dashboard?platform=vpc",
+        "guideLinkUrl": "/cla/cla-1-1.html"
+      }
+    ],
+    "modYmdt": "May 16, 2025, 4:25:17 PM",
+    "deployYmdt": "Dec 30, 2025, 2:38:41 PM"
+  },
+  {
+    "serviceCode": "SV_0078",
+    "upperServiceCode": "MGMT",
+    "serviceName": "Sub Account",
+    "upperServiceName": "management",
+    "serviceDesc": "대표 계정 하위에 서브 계정을 생성하여 사용자의 작업별로 접근 권한을 관리할 수 있는 서비스",
+    "iconUrl": "https://portal.gcdn.ntruss.com/image/prod-management-subAccount_1719766373756.svg+xml",
+    "detailLinkUrl": "subAccount",
+    "keywords": [
+      "서브계정만들기",
+      "역할기반접근제어",
+      "클라우드권한부여",
+      "클라우드권한관리",
+      "클라우드액세스관리",
+      "서브계정관리",
+      "접근권한계정관리",
+      "네이버IAM",
+      "클라우드IAM",
+      "Creating sub account",
+      "RBAC",
+      "Role-Based Access Control",
+      "Cloud authorization",
+      "Cloud authorization management",
+      "Cloud access control",
+      "Sub account management",
+      "IAM",
+      "Identity Access Management",
+      "NAVER IAM",
+      "Cloud IAM"
+    ],
+    "labels": [],
+    "regionCodes": [
+      "KR",
+      "USWN",
+      "SGN",
+      "HK",
+      "JP",
+      "DEN"
+    ],
+    "platformTypeCode": "COMMON",
+    "metaTitle": "Sub Account - Management & Governance",
+    "metaDesc": "무료 클라우드 서브 계정 생성, 역할 기반 권한 관리.",
+    "metaKeyword": [
+      "서브계정만들기",
+      "역할기반접근제어",
+      "클라우드권한부여",
+      "클라우드권한관리",
+      "클라우드액세스관리",
+      "서브계정관리",
+      "접근권한계정관리",
+      "네이버IAM",
+      "클라우드IAM"
+    ],
+    "eventContents": [],
+    "cmsPath": "/service-product/cms/cms_1731573602952.json",
+    "cmsVersion": "v1",
+    "sortOrder": 2,
+    "servicePlatforms": [
+      {
+        "serviceCode": "SV_0078",
+        "platformVersion": 1,
+        "consoleLinkUrl": "",
+        "guideLinkUrl": ""
+      },
+      {
+        "serviceCode": "SV_0078",
+        "platformVersion": 2,
+        "consoleLinkUrl": "/iam/dashboard",
+        "guideLinkUrl": "/management/management-4-1.html"
+      }
+    ],
+    "modYmdt": "Jul 16, 2025, 3:23:02 PM",
+    "deployYmdt": "Dec 30, 2025, 2:38:41 PM"
+  },
+  {
+    "serviceCode": "SV_0085",
+    "upperServiceCode": "MGMT",
+    "serviceName": "Effective Log Search & Analytics",
+    "upperServiceName": "management",
+    "serviceDesc": "서비스 운영 시 발생하는 애플리케이션 로그를 저장하고 분석할 수 있는 로깅 및 관리 서비스",
+    "iconUrl": "https://portal.gcdn.ntruss.com/image/prod-analytics-elsa_1719766462109.svg+xml",
+    "detailLinkUrl": "elsa",
+    "calcLinkUrl": "management#elsa",
+    "keywords": [
+      "애플리케이션로그분석",
+      "어플리케이션로그분석",
+      "앱로그분석",
+      "네이버엘사API",
+      "네이버클라우드엘사",
+      "앱크래시분석툴",
+      "모바일앱크래시분석",
+      "앱로그분석API",
+      "모바일앱애널리틱스",
+      "로그분석툴",
+      "클라우드로그분석",
+      "구글애널리틱스",
+      "Application log analytics",
+      "App log analytics",
+      "NAVER ELSA API",
+      "NAVER cloud ELSA",
+      "App crash analysis tool",
+      "Mobile app crash analysis",
+      "App log analytics API",
+      "Mobile app analytics",
+      "Log analytics tool",
+      "Cloud log analytics ",
+      "Google Analytics"
+    ],
+    "labels": [],
+    "regionCodes": [
+      "KR",
+      "USWN",
+      "SGN",
+      "HK",
+      "JP",
+      "DEN"
+    ],
+    "platformTypeCode": "CLASSIC",
+    "metaTitle": "Effective Log Search & Analytics - Management & Governance",
+    "metaDesc": "애플리케이션 전체 로그/활동이력 저장, 관리, 실시간 대시보드 SDK 및 API.",
+    "metaKeyword": [
+      "애플리케이션로그분석",
+      "어플리케이션로그분석",
+      "앱로그분석",
+      "네이버엘사API",
+      "네이버클라우드엘사",
+      "앱크래시분석툴",
+      "모바일앱크래시분석",
+      "앱로그분석API",
+      "모바일앱애널리틱스",
+      "로그분석툴",
+      "클라우드로그분석",
+      "구글애널리틱스"
+    ],
+    "eventContents": [],
+    "cmsPath": "/service-product/cms/cms_1730799055596.json",
+    "cmsVersion": "v1",
+    "sortOrder": 3,
+    "servicePlatforms": [
+      {
+        "serviceCode": "SV_0085",
+        "platformVersion": 1,
+        "consoleLinkUrl": "",
+        "guideLinkUrl": ""
+      },
+      {
+        "serviceCode": "SV_0085",
+        "platformVersion": 2,
+        "consoleLinkUrl": "/elsa/subscription?platform=classic",
+        "guideLinkUrl": "/elsa/elsa-1-1.html"
+      }
+    ],
+    "modYmdt": "Jul 16, 2025, 3:23:02 PM",
+    "deployYmdt": "Dec 30, 2025, 2:38:41 PM"
+  },
+  {
+    "serviceCode": "SV_0079",
+    "upperServiceCode": "MGMT",
+    "serviceName": "Web service Monitoring System",
+    "upperServiceName": "management",
+    "serviceDesc": "웹 서비스의 정상 동작 여부와 응답 속도를 모니터링하는 서비스",
+    "iconUrl": "https://portal.gcdn.ntruss.com/image/prod-management-wms_1719766425957.svg+xml",
+    "detailLinkUrl": "wms",
+    "calcLinkUrl": "management#wms",
+    "keywords": [
+      "웹서비스모니터링",
+      "웹서비스모니터링시스템",
+      "웹사이트모니터링",
+      "웹페이지모니터링",
+      "웹모니터링시스템",
+      "웹속도측정",
+      "웹서비스측정",
+      "응답속도측정",
+      "웹분석",
+      "웹사이트오류측정",
+      "웹사이트오류분석",
+      "Web service monitoring",
+      "Web service Monitoring System",
+      "Web site monitoring",
+      "Web page monitoring",
+      "Web monitoring system",
+      "Web speed test",
+      "Web service testing",
+      "Response speed test",
+      "Web analytics",
+      "Website error checker",
+      "Website error analysis"
+    ],
+    "labels": [],
+    "regionCodes": [
+      "KR",
+      "USWN",
+      "SGN",
+      "HK",
+      "JP",
+      "DEN"
+    ],
+    "platformTypeCode": "COMMON",
+    "metaTitle": "Web service Monitoring System - Management & Governance",
+    "metaDesc": "웹 서비스 페이지 응답 속도, 세부 콘텐츠 오류 발생 여부 모니터링. ",
+    "metaKeyword": [
+      "웹서비스모니터링",
+      "웹서비스모니터링시스템",
+      "웹사이트모니터링",
+      "웹페이지모니터링",
+      "웹모니터링시스템",
+      "웹속도측정",
+      "웹서비스측정",
+      "응답속도측정",
+      "웹분석",
+      "웹사이트오류측정",
+      "웹사이트오류분석"
+    ],
+    "eventContents": [],
+    "cmsPath": "/service-product/cms/cms_1754975443246.json",
+    "cmsVersion": "v1",
+    "sortOrder": 3,
+    "servicePlatforms": [
+      {
+        "serviceCode": "SV_0079",
+        "platformVersion": 1,
+        "consoleLinkUrl": "",
+        "guideLinkUrl": ""
+      },
+      {
+        "serviceCode": "SV_0079",
+        "platformVersion": 2,
+        "consoleLinkUrl": "/wms/monitoring",
+        "guideLinkUrl": "/management/management-3-1.html"
+      }
+    ],
+    "modYmdt": "Aug 12, 2025, 2:10:43 PM",
+    "deployYmdt": "Dec 30, 2025, 2:38:41 PM"
+  },
+  {
+    "serviceCode": "SV_0081",
+    "upperServiceCode": "MGMT",
+    "serviceName": "Cloud Activity Tracer",
+    "upperServiceName": "management",
+    "serviceDesc": "네이버 클라우드 플랫폼의 서비스를 사용하면서 발생한 계정 활동 기록(접근 기록) 정보를 제공하는 서비스",
+    "iconUrl": "https://portal.gcdn.ntruss.com/image/prod-management-cloudActivityTracer_1719766502998.svg+xml",
+    "detailLinkUrl": "cloudActivityTracer",
+    "keywords": [
+      "로그관리시스템",
+      "작업이력관리",
+      "계정활동관리",
+      "작업히스토리",
+      "계정활동이력",
+      "로그분석",
+      "로그관리솔루션",
+      "클라우드로그분석",
+      "네이버로그분석툴",
+      "로그수집툴",
+      "Log management system",
+      "Task history management",
+      "Account activity management",
+      "Task history",
+      "Account activity history",
+      "Log analytics",
+      "Log management solutions",
+      "Cloud log analytics",
+      "NAVER log analytics tool",
+      "Open source log analytics"
+    ],
+    "labels": [
+      "BETA"
+    ],
+    "regionCodes": [
+      "KR",
+      "USWN",
+      "SGN",
+      "HK",
+      "JP",
+      "DEN"
+    ],
+    "platformTypeCode": "COMMON",
+    "metaTitle": "Cloud Activity Tracer - Management & Governance",
+    "metaDesc": "(Cloud Log Analytics 연동) 네이버 클라우드 플랫폼 로그인 계정 활동 이력 수집, 분석, 열람. ",
+    "metaKeyword": [
+      "로그관리시스템",
+      "작업이력관리",
+      "계정활동관리",
+      "작업히스토리",
+      "계정활동이력",
+      "로그분석",
+      "로그관리솔루션",
+      "클라우드로그분석",
+      "네이버로그분석툴",
+      "로그수집툴"
+    ],
+    "eventContents": [],
+    "cmsPath": "/service-product/cms/cms_1731909562587.json",
+    "cmsVersion": "v1",
+    "sortOrder": 5,
+    "servicePlatforms": [
+      {
+        "serviceCode": "SV_0081",
+        "platformVersion": 1,
+        "consoleLinkUrl": "",
+        "guideLinkUrl": ""
+      },
+      {
+        "serviceCode": "SV_0081",
+        "platformVersion": 2,
+        "consoleLinkUrl": "/cat/home",
+        "guideLinkUrl": "/cat/cloudactivitytracer_overview.html"
+      }
+    ],
+    "modYmdt": "Nov 18, 2024, 2:59:22 PM",
+    "deployYmdt": "Dec 30, 2025, 2:38:41 PM"
+  },
+  {
+    "serviceCode": "SV_0102",
+    "upperServiceCode": "MGMT",
+    "serviceName": "Ncloud Tools & SDK",
+    "upperServiceName": "management",
+    "serviceDesc": " 네이버 클라우드 플랫폼과 연동하여 편리하고 효율적으로 서비스를 운영 및 관리할 수 있는 다양한 도구",
+    "iconUrl": "https://portal.gcdn.ntruss.com/image/prod-management-tools_1719766525395.svg+xml",
+    "detailLinkUrl": "tools",
+    "inquiryUrl": "",
+    "keywords": [],
+    "labels": [],
+    "regionCodes": [
+      "KR"
+    ],
+    "platformTypeCode": "CLASSIC",
+    "metaTitle": "Ncloud Tools & SDK - Management & Governance",
+    "metaDesc": "",
+    "metaKeyword": [],
+    "eventContents": [],
+    "cmsPath": "/service-product/cms/cms_1728280146961.json",
+    "cmsVersion": "v1",
+    "sortOrder": 6,
+    "servicePlatforms": [
+      {
+        "serviceCode": "SV_0102",
+        "platformVersion": 2,
+        "consoleLinkUrl": "",
+        "guideLinkUrl": ""
+      }
+    ],
+    "modYmdt": "Oct 7, 2024, 2:49:07 PM",
+    "deployYmdt": "Dec 30, 2025, 2:38:41 PM"
+  },
+  {
+    "serviceCode": "SV_0115",
+    "upperServiceCode": "MGMT",
+    "serviceName": "Resource Manager",
+    "upperServiceName": "management",
+    "serviceDesc": "네이버 클라우드 플랫폼 내 모든 리소스(Resource)들을 통합적으로 관리할 수 있는 서비스",
+    "iconUrl": "https://portal.gcdn.ntruss.com/image/ResourceManager_1719766544017.svg+xml",
+    "detailLinkUrl": "resourceManager",
+    "keywords": [],
+    "labels": [
+      "UPDATE"
+    ],
+    "regionCodes": [
+      "KR",
+      "USWN",
+      "SGN",
+      "HK",
+      "JP",
+      "DEN"
+    ],
+    "platformTypeCode": "COMMON",
+    "metaTitle": "Resource Manager - Management & Governance",
+    "metaDesc": "",
+    "metaKeyword": [],
+    "eventContents": [],
+    "cmsPath": "/service-product/cms/cms_1720717565449.json",
+    "cmsVersion": "v1",
+    "sortOrder": 7,
+    "servicePlatforms": [
+      {
+        "serviceCode": "SV_0115",
+        "platformVersion": 1,
+        "consoleLinkUrl": "",
+        "guideLinkUrl": ""
+      },
+      {
+        "serviceCode": "SV_0115",
+        "platformVersion": 2,
+        "consoleLinkUrl": "/ResourceManager/resource",
+        "guideLinkUrl": "/management/rmgr-1-1.html"
+      }
+    ],
+    "modYmdt": "Nov 19, 2025, 7:06:03 PM",
+    "deployYmdt": "Dec 30, 2025, 2:38:41 PM"
+  },
+  {
+    "serviceCode": "SV_0124",
+    "upperServiceCode": "MGMT",
+    "serviceName": "Cloud Insight",
+    "upperServiceName": "management",
+    "serviceDesc": "클라우드 환경의 서비스 및 애플리케이션을 모니터링하고 성능/지표를 통합 관리할 수 있는 서비스",
+    "iconUrl": "https://portal.gcdn.ntruss.com/image/prod-management-cloudWatch_1719766573991.svg+xml",
+    "detailLinkUrl": "cloudInsight",
+    "calcLinkUrl": "",
+    "inquiryUrl": "",
+    "keywords": [
+      "클라우드관리도구",
+      "클라우드관리플랫폼",
+      "클라우드 성능 모니터링",
+      "클라우드 성능 대시보드",
+      "운영 데이터 수집",
+      "클라우드 운영 지표",
+      "애플리케이션 성능 지표",
+      "앱 성능 지표",
+      "애플리케이션 운영 지표",
+      "앱 운영 지표",
+      "Cloud management tool",
+      "CMP",
+      "Cloud management platform",
+      "Cloud performance monitoring",
+      "Cloud performance dashboard",
+      "Management data collection",
+      "Cloud management indicator",
+      "Application performance indicator",
+      "Application management indicator"
+    ],
+    "labels": [],
+    "regionCodes": [
+      "KR",
+      "USWN",
+      "SGN",
+      "HK",
+      "JP",
+      "DEN"
+    ],
+    "platformTypeCode": "CLASSIC",
+    "metaTitle": "Cloud Insight - Management & Governance",
+    "metaDesc": "",
+    "metaKeyword": [
+      "클라우드관리도구",
+      "클라우드관리플랫폼",
+      "클라우드 성능 모니터링",
+      "클라우드 성능 대시보드",
+      "운영 데이터 수집",
+      "클라우드 운영 지표",
+      "애플리케이션 성능 지표",
+      "앱 성능 지표",
+      "애플리케이션 운영 지표",
+      "앱 운영 지표"
+    ],
+    "eventContents": [],
+    "cmsPath": "/service-product/cms/cms_1720717568131.json",
+    "cmsVersion": "v1",
+    "sortOrder": 8,
+    "servicePlatforms": [
+      {
+        "serviceCode": "SV_0124",
+        "platformVersion": 2,
+        "consoleLinkUrl": "/ci/home?platform=classic",
+        "guideLinkUrl": "/management/cloudinsight/cloudinsight_overview.html"
+      }
+    ],
+    "modYmdt": "Mar 19, 2025, 7:09:53 PM",
+    "deployYmdt": "Dec 30, 2025, 2:38:41 PM"
+  },
+  {
+    "serviceCode": "SV_0150",
+    "upperServiceCode": "MGMT",
+    "serviceName": "Pinpoint Cloud",
+    "upperServiceName": "management",
+    "serviceDesc": "분산 서비스 및 시스템의 성능을 분석, 진단, 추적하는 Pinpoint를 클라우드 상에서 제공하는 서비스",
+    "iconUrl": "https://portal.gcdn.ntruss.com/image/ico_pinpoint_cloud_1719766624842.svg+xml",
+    "detailLinkUrl": "pinpointCloud",
+    "calcLinkUrl": "management#pinpointCloud",
+    "inquiryUrl": "",
+    "keywords": [
+      "대규모 분산 시스템 ",
+      "애플리케이션 성능 분석",
+      "오픈소스 핀포인트",
+      "오픈소스 Pinpoint",
+      "분산 추적 플랫폼",
+      "마이크로서비스 아키텍처",
+      "분산 트랜잭션 추적",
+      "분산 시스템 추적 플랫폼",
+      "마이크로서비스 모니터링",
+      "네이버 핀포인트",
+      "트랜잭션 분석",
+      "Large scale distributed system",
+      "Application performance management",
+      "Open source pinpoint",
+      "Distributed tracing platform",
+      "Microservice architecture",
+      "Distributed transaction tracing",
+      "Distributed system tracing platform",
+      "microservice monitoring",
+      "NAVER pinpoint",
+      "Transaction analysis"
+    ],
+    "labels": [],
+    "regionCodes": [
+      "KR",
+      "USWN",
+      "SGN",
+      "HK",
+      "JP",
+      "DEN"
+    ],
+    "platformTypeCode": "COMMON",
+    "metaTitle": "Pinpoint Cloud - Management & Governance",
+    "metaDesc": "네이버 오픈소스 분산 추적 플랫폼 클라우드 설치형 제공. 서비스 아키텍처 구조 파악 및 구성 요소간 트랜잭션 분석. APM",
+    "metaKeyword": [
+      "대규모 분산 시스템 ",
+      "애플리케이션 성능 분석",
+      "오픈소스 핀포인트",
+      "오픈소스 Pinpoint",
+      "분산 추적 플랫폼",
+      "마이크로서비스 아키텍처",
+      "분산 트랜잭션 추적",
+      "분산 시스템 추적 플랫폼",
+      "마이크로서비스 모니터링",
+      "네이버 핀포인트",
+      "트랜잭션 분석"
+    ],
+    "eventContents": [],
+    "cmsPath": "/service-product/cms/cms_1720717572464.json",
+    "cmsVersion": "v1",
+    "sortOrder": 9,
+    "servicePlatforms": [
+      {
+        "serviceCode": "SV_0150",
+        "platformVersion": 2,
+        "consoleLinkUrl": "/pinpoint/repository",
+        "guideLinkUrl": ""
+      }
+    ],
+    "modYmdt": "Nov 19, 2024, 9:40:28 PM",
+    "deployYmdt": "Dec 30, 2025, 2:38:41 PM"
+  },
+  {
+    "serviceCode": "SV_0157",
+    "upperServiceCode": "MGMT",
+    "serviceName": "Cloud Advisor",
+    "upperServiceName": "management",
+    "serviceDesc": "네이버 클라우드 플랫폼의 노하우를 바탕으로 사용자에게 다양한 카테고리별 점검 리포트를 제공하는 서비스",
+    "iconUrl": "https://portal.gcdn.ntruss.com/image/ico-CloudAdvisor_1719766650883.svg+xml",
+    "detailLinkUrl": "cloudAdvisor",
+    "calcLinkUrl": "",
+    "inquiryUrl": "",
+    "keywords": [],
+    "labels": [],
+    "regionCodes": [
+      "KR"
+    ],
+    "platformTypeCode": "VPC",
+    "metaTitle": "Cloud Advisor - Management & Governance",
+    "metaDesc": "",
+    "metaKeyword": [],
+    "eventContents": [],
+    "cmsPath": "/service-product/cms/cms_1720717575621.json",
+    "cmsVersion": "v1",
+    "sortOrder": 10,
+    "servicePlatforms": [
+      {
+        "serviceCode": "SV_0157",
+        "platformVersion": 2,
+        "consoleLinkUrl": "/cloud-advisor/dashboard?platform=vpc",
+        "guideLinkUrl": "/cloud_advisor/ca_guide_ko.html"
+      }
+    ],
+    "modYmdt": "Jul 12, 2024, 2:06:15 AM",
+    "deployYmdt": "Dec 30, 2025, 2:38:41 PM"
+  },
+  {
+    "serviceCode": "SV_0153",
+    "upperServiceCode": "MGMT",
+    "serviceName": "Organization",
+    "upperServiceName": "management",
+    "serviceDesc": "사용하고 있는 모든 네이버 클라우드 플랫폼 계정의 사용 자원과 비용을 통합 관리할 수 있는 서비스",
+    "iconUrl": "https://portal.gcdn.ntruss.com/image/ico-management-organization_1719766664573.svg+xml",
+    "detailLinkUrl": "organization",
+    "calcLinkUrl": "",
+    "inquiryUrl": "",
+    "keywords": [],
+    "labels": [],
+    "regionCodes": [
+      "KR",
+      "USWN",
+      "SGN",
+      "HK",
+      "JP",
+      "DEN"
+    ],
+    "platformTypeCode": "COMMON",
+    "metaTitle": "Organization - Management & Governance",
+    "metaDesc": "",
+    "metaKeyword": [],
+    "eventContents": [],
+    "cmsPath": "/service-product/cms/cms_1731910000696.json",
+    "cmsVersion": "v1",
+    "sortOrder": 11,
+    "servicePlatforms": [
+      {
+        "serviceCode": "SV_0153",
+        "platformVersion": 2,
+        "consoleLinkUrl": "/organization/subscription",
+        "guideLinkUrl": "/management/organization/organization_overview.html"
+      }
+    ],
+    "modYmdt": "Nov 18, 2024, 3:06:40 PM",
+    "deployYmdt": "Dec 30, 2025, 2:38:41 PM"
+  },
+  {
+    "serviceCode": "SV_0201",
+    "upperServiceCode": "MGMT",
+    "serviceName": "API Workflow",
+    "upperServiceName": "management",
+    "serviceDesc": "API를 조합하여 마이크로서비스를 구축하고 업무 및 모니터링 자동화를 구현할 수 있는 서비스",
+    "iconUrl": "https://portal.gcdn.ntruss.com/image/prod-management-apiWorkflow_1719766684652.svg+xml",
+    "detailLinkUrl": "apiWorkflow",
+    "calcLinkUrl": "management#apiWorkflow",
+    "inquiryUrl": "/support/question/service?parentCode=O2O_MGMT&code=O2O_MGMT_013",
+    "keywords": [],
+    "labels": [],
+    "regionCodes": [
+      "KR"
+    ],
+    "platformTypeCode": "COMMON",
+    "metaTitle": "API Workflow - Management & Governance",
+    "metaDesc": "",
+    "metaKeyword": [],
+    "eventContents": [],
+    "cmsPath": "/service-product/cms/cms_1754363587669.json",
+    "cmsVersion": "v1",
+    "sortOrder": 12,
+    "servicePlatforms": [
+      {
+        "serviceCode": "SV_0201",
+        "platformVersion": 2,
+        "consoleLinkUrl": "/api-workflow/template",
+        "guideLinkUrl": ""
+      }
+    ],
+    "modYmdt": "Aug 5, 2025, 12:13:07 PM",
+    "deployYmdt": "Dec 30, 2025, 2:38:41 PM"
+  },
+  {
+    "serviceCode": "SV_0210",
+    "upperServiceCode": "MGMT",
+    "serviceName": "Ncloud Single Sign-On",
+    "upperServiceName": "management",
+    "serviceDesc": "하나의 계정으로 네이버 클라우드 플랫폼을 비롯한 다양한 애플리케이션에 접속할 수 있는 보안 응용 솔루션",
+    "iconUrl": "https://portal.gcdn.ntruss.com/image/prod-management-singleSignon_1719766699576.svg+xml",
+    "detailLinkUrl": "NcloudSingleSignon",
+    "calcLinkUrl": "management#singleSignon",
+    "inquiryUrl": "",
+    "keywords": [],
+    "labels": [
+      "UPDATE"
+    ],
+    "regionCodes": [
+      "KR",
+      "USWN",
+      "SGN",
+      "HK",
+      "JP",
+      "DEN"
+    ],
+    "platformTypeCode": "COMMON",
+    "metaTitle": "Ncloud Single Sign-On - Management & Governance",
+    "metaDesc": "",
+    "metaKeyword": [],
+    "eventContents": [],
+    "cmsPath": "/service-product/cms/cms_1721742892188.json",
+    "cmsVersion": "v1",
+    "sortOrder": 13,
+    "servicePlatforms": [
+      {
+        "serviceCode": "SV_0210",
+        "platformVersion": 2,
+        "consoleLinkUrl": "/ncloud-sso/application",
+        "guideLinkUrl": ""
+      }
+    ],
+    "modYmdt": "Nov 19, 2025, 7:06:03 PM",
+    "deployYmdt": "Dec 30, 2025, 2:38:41 PM"
+  },
+  {
+    "serviceCode": "SV_0271",
+    "upperServiceCode": "MGMT",
+    "serviceName": "Cost Explorer",
+    "upperServiceName": "management",
+    "serviceDesc": "네이버 클라우드 플랫폼에서 발생한 금액을 상세 분석하여 클라우드 비용을 최적화합니다.",
+    "detailLinkUrl": "costExplorer",
+    "keywords": [],
+    "labels": [
+      "UPDATE"
+    ],
+    "regionCodes": [],
+    "platformTypeCode": "COMMON",
+    "cmsPath": "/service-product/cms/cms_1763538878676.json",
+    "cmsVersion": "v1",
+    "sortOrder": 14,
+    "servicePlatforms": [
+      {
+        "serviceCode": "SV_0271",
+        "platformVersion": 2,
+        "consoleLinkUrl": "/cost-explorer/dashboard"
+      }
+    ],
+    "modYmdt": "Nov 19, 2025, 7:06:03 PM",
+    "deployYmdt": "Dec 30, 2025, 2:38:41 PM"
+  },
+  {
+    "serviceCode": "SV_0270",
+    "upperServiceCode": "MGMT",
+    "serviceName": "Service Quota",
+    "upperServiceName": "management",
+    "serviceDesc": "서비스별 한도 및 사용량을 확인하고 필요 시 한도를 상향할 수 있는 서비스",
+    "detailLinkUrl": "serviceQuota",
+    "keywords": [
+      "service quota",
+      "quota",
+      "resource",
+      "resource quota"
+    ],
+    "labels": [],
+    "regionCodes": [
+      "KR",
+      "USWN",
+      "SGN",
+      "JP",
+      "DEN"
+    ],
+    "platformTypeCode": "",
+    "metaTitle": "Service Quota",
+    "cmsPath": "/service-product/cms/cms_1756718604069.json",
+    "cmsVersion": "v1",
+    "sortOrder": 14,
+    "servicePlatforms": [
+      {
+        "serviceCode": "SV_0270",
+        "platformVersion": 2,
+        "consoleLinkUrl": "/product/management/Service%20Quota"
+      }
+    ],
+    "modYmdt": "Sep 1, 2025, 6:23:24 PM",
+    "deployYmdt": "Dec 30, 2025, 2:38:41 PM"
+  },
+  {
+    "serviceCode": "SV_0016",
+    "upperServiceCode": "MIG",
+    "serviceName": "Data Teleporter",
+    "upperServiceName": "migration",
+    "serviceDesc": "전용 어플라이언스를 사용하여 대용량 데이터를 빠르게 이전할 수 있는 서비스",
+    "iconUrl": "https://portal.gcdn.ntruss.com/image/prod-storage-dataImport_1719766947661.svg+xml",
+    "detailLinkUrl": "dataTeleporter",
+    "calcLinkUrl": "migration#dataTeleporter",
+    "keywords": [
+      "데이터베이스마이그레이션",
+      "DB마이그레이션",
+      "데이터마이그레이션",
+      "클라우드마이그레이션",
+      "데이터이전",
+      "데이터전송",
+      "데이터어플라이언스",
+      "백업어플라이언스",
+      "백업디바이스",
+      "네이버어플라이언스",
+      "네이버마이그레이션",
+      "Database migration",
+      "DB migration",
+      "Data migration",
+      "Cloud migration",
+      "Data relocation",
+      "Data transfer",
+      "Data appliance",
+      "Backup appliance",
+      "Backup device",
+      "NAVER appliance",
+      "NAVER migration"
+    ],
+    "labels": [],
+    "regionCodes": [
+      "KR"
+    ],
+    "platformTypeCode": "CLASSIC",
+    "metaTitle": "Data Teleporter - Migration",
+    "metaDesc": "수십 TB 대용량 데이터베이스 클라우드 이전 서비스. ",
+    "metaKeyword": [
+      "데이터베이스마이그레이션",
+      "DB마이그레이션",
+      "데이터마이그레이션",
+      "클라우드마이그레이션",
+      "데이터이전",
+      "데이터전송",
+      "데이터어플라이언스",
+      "백업어플라이언스",
+      "백업디바이스",
+      "네이버어플라이언스",
+      "네이버마이그레이션"
+    ],
+    "eventContents": [],
+    "cmsPath": "/service-product/cms/cms_1724232101625.json",
+    "cmsVersion": "v1",
+    "sortOrder": 1,
+    "servicePlatforms": [
+      {
+        "serviceCode": "SV_0016",
+        "platformVersion": 1,
+        "consoleLinkUrl": "",
+        "guideLinkUrl": ""
+      },
+      {
+        "serviceCode": "SV_0016",
+        "platformVersion": 2,
+        "consoleLinkUrl": "/data-teleporter/view?platform=classic",
+        "guideLinkUrl": "/storage/storage-9-1.html"
+      }
+    ],
+    "modYmdt": "Aug 21, 2024, 6:21:41 PM",
+    "deployYmdt": "Dec 30, 2025, 2:38:41 PM"
+  },
+  {
+    "serviceCode": "SV_0189",
+    "upperServiceCode": "MIG",
+    "serviceName": "Object Migration",
+    "upperServiceName": "migration",
+    "serviceDesc": "다른 클라우드에 있는 데이터를 네이버 클라우드 플랫폼 환경으로 마이그레이션할 수 있는 서비스",
+    "iconUrl": "https://portal.gcdn.ntruss.com/image/prod-migration-objectMigration_1719766963389.svg+xml",
+    "detailLinkUrl": "objectMigration",
+    "calcLinkUrl": "",
+    "inquiryUrl": "",
+    "keywords": [],
+    "labels": [],
+    "regionCodes": [
+      "KR"
+    ],
+    "platformTypeCode": "CLASSIC",
+    "metaTitle": "Object Migration - Migration",
+    "metaDesc": "",
+    "metaKeyword": [],
+    "eventContents": [],
+    "cmsPath": "/service-product/cms/cms_1749735825671.json",
+    "cmsVersion": "v1",
+    "sortOrder": 2,
+    "servicePlatforms": [
+      {
+        "serviceCode": "SV_0189",
+        "platformVersion": 2,
+        "consoleLinkUrl": "/ObjectMigration/objectMigration?platform=classic",
+        "guideLinkUrl": ""
+      }
+    ],
+    "modYmdt": "Jun 12, 2025, 10:43:46 PM",
+    "deployYmdt": "Dec 30, 2025, 2:38:41 PM"
+  },
+  {
+    "serviceCode": "SV_0155",
+    "upperServiceCode": "NET",
+    "serviceName": "VPC (Virtual Private Cloud)",
+    "upperServiceName": "networking",
+    "serviceDesc": "퍼블릭 클라우드 상에서 제공되는 고객 전용 사설 네트워크 공간",
+    "iconUrl": "https://portal.gcdn.ntruss.com/image/ico-vpc_1719759834484.svg+xml",
+    "detailLinkUrl": "vpc",
+    "calcLinkUrl": "networking#vpc",
+    "inquiryUrl": "",
+    "keywords": [],
+    "labels": [],
+    "regionCodes": [
+      "KR",
+      "SGN",
+      "JP"
+    ],
+    "platformTypeCode": "VPC",
+    "metaTitle": "VPC (Virtual Private Cloud) - Networking",
+    "metaDesc": "",
+    "metaKeyword": [],
+    "eventContents": [],
+    "cmsPath": "/service-product/cms/cms_1764899986619.json",
+    "cmsVersion": "v1",
+    "sortOrder": 1,
+    "servicePlatforms": [
+      {
+        "serviceCode": "SV_0155",
+        "platformVersion": 2,
+        "consoleLinkUrl": "/vpc-network/vpc?platform=vpc",
+        "guideLinkUrl": "/networking/vpc/vpc_overview.html"
+      }
+    ],
+    "modYmdt": "Dec 5, 2025, 10:59:47 AM",
+    "deployYmdt": "Dec 30, 2025, 2:38:41 PM"
+  },
+  {
+    "serviceCode": "SV_0018",
+    "upperServiceCode": "NET",
+    "serviceName": "Load Balancer",
+    "upperServiceName": "networking",
+    "serviceDesc": "서버 성능과 부하량을 고려하여 네트워크 트래픽을 다수의 서버로 분산해 주는 서비스",
+    "iconUrl": "https://portal.gcdn.ntruss.com/image/prod-networking-loadBalancer_1719759867618.svg+xml",
+    "detailLinkUrl": "loadBalancer",
+    "calcLinkUrl": "networking#loadBalancer",
+    "keywords": [
+      "로드밸런싱",
+      "로드밸런서",
+      "로드밸런서종류",
+      "로드밸런서추천",
+      "서버부하분산",
+      "트래픽분산",
+      "분산서버구축",
+      "L4스위치",
+      "분산처리",
+      "네이버로드밸런서",
+      "Load balancing",
+      "Load balancer",
+      "Load balancer type",
+      "Load balancer recommendation",
+      "Server distribution",
+      "Traffic distribution",
+      "Distributed server architecture",
+      "ELB",
+      "Elastic Load Balancing",
+      "L4 switch",
+      "Distributed processing",
+      "NAVER load balancer"
+    ],
+    "labels": [],
+    "regionCodes": [
+      "KR",
+      "USWN",
+      "SGN",
+      "HK",
+      "JP",
+      "DEN"
+    ],
+    "platformTypeCode": "CLASSIC",
+    "metaTitle": "Load Balancer - Networking",
+    "metaDesc": "네트워크 트래픽 분산, 서버 부하 경감, 서버 장애 대응, 서비스 무정지 운영.",
+    "metaKeyword": [
+      "로드밸런싱",
+      "로드밸런서",
+      "로드밸런서종류",
+      "로드밸런서추천",
+      "서버부하분산",
+      "트래픽분산",
+      "분산서버구축",
+      "ELB",
+      "Elastic Load Balancing",
+      "L4스위치",
+      "분산처리",
+      "네이버로드밸런서"
+    ],
+    "eventContents": [],
+    "cmsPath": "/service-product/cms/cms_1749775381048.json",
+    "cmsVersion": "v1",
+    "sortOrder": 2,
+    "servicePlatforms": [
+      {
+        "serviceCode": "SV_0018",
+        "platformVersion": 1,
+        "consoleLinkUrl": "/mc/nserver/loadBalancer/loadBalancerList",
+        "guideLinkUrl": "/networking/networking-3-1-v1.html"
+      },
+      {
+        "serviceCode": "SV_0018",
+        "platformVersion": 2,
+        "consoleLinkUrl": "/load-balancer/loadBalancer?platform=classic",
+        "guideLinkUrl": "/networking/networking-3-1-v2.html"
+      }
+    ],
+    "modYmdt": "Sep 18, 2025, 10:04:33 AM",
+    "deployYmdt": "Dec 30, 2025, 2:38:41 PM"
+  },
+  {
+    "serviceCode": "SV_0098",
+    "upperServiceCode": "NET",
+    "serviceName": "Cloud Connect",
+    "upperServiceName": "networking",
+    "serviceDesc": "온 프레미스와 네이버 클라우드 플랫폼을 전용 사설 네트워크로 연결하는 서비스",
+    "iconUrl": "https://portal.gcdn.ntruss.com/image/prod-hybridPrivateCloud-CloudConnect_1719759885669.svg+xml",
+    "detailLinkUrl": "cloudConnect",
+    "calcLinkUrl": "networking#cloudConnect",
+    "inquiryUrl": "/support/question/sales?parentCode=SALES_INVOC&code=SALES_INVOC_005",
+    "keywords": [
+      "하이브리드클라우드",
+      "네이버하이브리드클라우드",
+      "네이버클라우드연결",
+      "데이터센터서버",
+      "IDC서버",
+      "프라이빗호스팅",
+      "라우팅연결",
+      "클라우드커넥트",
+      "클라우드연결서비스",
+      "데이터센터연결",
+      "데이터센터인터커넥트",
+      "네이버데이터센터",
+      "네이버IDC",
+      "Hybrid cloud",
+      "NAVER hybrid cloud",
+      "NAVER cloud connection",
+      "Data center server",
+      "IDC server",
+      "Private hosting",
+      "Routing connect",
+      "Cloud connect",
+      "Cloud connect service",
+      "DCI",
+      "Data Center Interconnect",
+      "NAVER data center",
+      "NAVER IDC"
+    ],
+    "labels": [],
+    "regionCodes": [
+      "KR"
+    ],
+    "platformTypeCode": "CLASSIC",
+    "metaTitle": "Cloud Connect - Networking",
+    "metaDesc": "온프레미스(on-premise) 환경 - 네이버 클라우드 플랫폼 서버 간 데이터 전송 간소화 프라이빗 연결 서비스.",
+    "metaKeyword": [
+      "하이브리드클라우드",
+      "네이버하이브리드클라우드",
+      "네이버클라우드연결",
+      "데이터센터서버",
+      "IDC서버",
+      "프라이빗호스팅",
+      "라우팅연결",
+      "클라우드커넥트",
+      "클라우드연결서비스",
+      "데이터센터연결",
+      "데이터센터인터커넥트",
+      "네이버데이터센터",
+      "네이버IDC"
+    ],
+    "eventContents": [],
+    "cmsPath": "/service-product/cms/cms_1755047552815.json",
+    "cmsVersion": "v1",
+    "sortOrder": 2,
+    "servicePlatforms": [
+      {
+        "serviceCode": "SV_0098",
+        "platformVersion": 1,
+        "consoleLinkUrl": "",
+        "guideLinkUrl": ""
+      },
+      {
+        "serviceCode": "SV_0098",
+        "platformVersion": 2,
+        "consoleLinkUrl": "",
+        "guideLinkUrl": "/cloudconnect/cloudconnect-1-1.html"
+      }
+    ],
+    "modYmdt": "Aug 13, 2025, 10:12:32 AM",
+    "deployYmdt": "Dec 30, 2025, 2:38:41 PM"
+  },
+  {
+    "serviceCode": "SV_0151",
+    "upperServiceCode": "NET",
+    "serviceName": "Global DNS",
+    "upperServiceName": "networking",
+    "serviceDesc": "서비스 운영에 필요한 도메인을 간편하게 설정하고 관리할 수 있는 서비스",
+    "iconUrl": "https://portal.gcdn.ntruss.com/image/prod-networking-dns_1719759947257.svg+xml",
+    "detailLinkUrl": "globalDns",
+    "calcLinkUrl": "networking#globalDns",
+    "inquiryUrl": "",
+    "keywords": [],
+    "labels": [],
+    "regionCodes": [
+      "KR",
+      "USWN",
+      "SGN",
+      "HK",
+      "JP",
+      "DEN"
+    ],
+    "platformTypeCode": "COMMON",
+    "metaTitle": "Global DNS - Networking",
+    "metaDesc": "도메인 이름 - 접속용 IP 자체 변환 서버 구축. 한시 무료.",
+    "metaKeyword": [
+      "도메인네임시스템",
+      "네임서버",
+      "DNS서버",
+      "도메인이름서버",
+      "도메인서버관리",
+      "네임서버관리",
+      "DNS관리",
+      "무료DNS",
+      "무료네임서버",
+      "KT DNS서버"
+    ],
+    "eventContents": [],
+    "cmsPath": "/service-product/cms/cms_1756456308977.json",
+    "cmsVersion": "v1",
+    "sortOrder": 3,
+    "servicePlatforms": [
+      {
+        "serviceCode": "SV_0151",
+        "platformVersion": 2,
+        "consoleLinkUrl": "/dns/record",
+        "guideLinkUrl": ""
+      }
+    ],
+    "modYmdt": "Sep 18, 2025, 10:04:33 AM",
+    "deployYmdt": "Dec 30, 2025, 2:38:41 PM"
+  },
+  {
+    "serviceCode": "SV_0023",
+    "upperServiceCode": "NET",
+    "serviceName": "IPsec VPN",
+    "upperServiceName": "networking",
+    "serviceDesc": "외부에 있는 고객의 네트워크와의 연결을 암호화하여 보호하는 서비스",
+    "iconUrl": "https://portal.gcdn.ntruss.com/image/prod-networking-ipsecVpn_1719759964376.svg+xml",
+    "detailLinkUrl": "ipsecVpn",
+    "calcLinkUrl": "networking#ipsecVpn",
+    "keywords": [
+      "가상사설망",
+      "SSL VPN",
+      "IPsec VPN",
+      "네이버SSL",
+      "네이버VPN",
+      "네이버가상서버",
+      "터널링VPN",
+      "클라우드VPN",
+      "클라우드연결",
+      "VPN게이트웨이",
+      "VPN",
+      "Virtual Private Network",
+      "NAVER SSL",
+      "NAVER VPN",
+      "NAVER virtual server",
+      "Tunneling VPN",
+      "Cloud VPN",
+      "Cloud connection",
+      "VPN gateway"
+    ],
+    "labels": [],
+    "regionCodes": [
+      "KR",
+      "USWN",
+      "SGN",
+      "JP",
+      "DEN"
+    ],
+    "platformTypeCode": "VPC",
+    "metaTitle": "IPsec VPN - Networking",
+    "metaDesc": "고객 네트워크 - 네이버 클라우드 플랫폼 네트워크 연결 암호화 터널링 통신 방식 가상 사설 네트워크.",
+    "metaKeyword": [
+      "가상사설망",
+      "SSL VPN",
+      "IPsec VPN",
+      "네이버SSL",
+      "네이버VPN",
+      "네이버가상서버",
+      "터널링VPN",
+      "클라우드VPN",
+      "클라우드연결",
+      "VPN게이트웨이"
+    ],
+    "eventContents": [],
+    "cmsPath": "/service-product/cms/cms_1756445455500.json",
+    "cmsVersion": "v1",
+    "sortOrder": 7,
+    "servicePlatforms": [
+      {
+        "serviceCode": "SV_0023",
+        "platformVersion": 1,
+        "consoleLinkUrl": "",
+        "guideLinkUrl": ""
+      },
+      {
+        "serviceCode": "SV_0023",
+        "platformVersion": 2,
+        "consoleLinkUrl": "/vpc-ipsec-vpn/gateway?platform=vpc",
+        "guideLinkUrl": "/networking/networking-9-1.html"
+      }
+    ],
+    "modYmdt": "Aug 29, 2025, 2:30:55 PM",
+    "deployYmdt": "Dec 30, 2025, 2:38:41 PM"
+  },
+  {
+    "serviceCode": "SV_0024",
+    "upperServiceCode": "NET",
+    "serviceName": "NAT Gateway",
+    "upperServiceName": "networking",
+    "serviceDesc": "다수의 IP를 하나의 IP로 변환하는데 필요한 서비스",
+    "iconUrl": "https://portal.gcdn.ntruss.com/image/prod-networking-natGateway_1719760026294.svg+xml",
+    "detailLinkUrl": "natGateway",
+    "calcLinkUrl": "networking#natGateway",
+    "keywords": [
+      "NAT게이트웨이",
+      "네이버NAT",
+      "고정IP가격",
+      "고정IP서비스",
+      "비공인IP접속",
+      "공인IP구매",
+      "고정아이피설정",
+      "공인IP생성",
+      "공인IP설정",
+      "네이버클라우드공인IP",
+      "NAT Gateway",
+      "NAVER NAT",
+      "Static IP price",
+      "Static IP service",
+      "Unauthorized IP access",
+      "Buy public IP",
+      "Static IP setup",
+      "Public IP information",
+      "Public IP setup",
+      "NAVER cloud public IP"
+    ],
+    "labels": [],
+    "regionCodes": [
+      "KR",
+      "SGN",
+      "JP"
+    ],
+    "platformTypeCode": "CLASSIC",
+    "metaTitle": "NAT Gateway - Networking",
+    "metaDesc": "대표 공인IP 이용 우회 외부접속.",
+    "metaKeyword": [
+      "NAT게이트웨이",
+      "네이버NAT",
+      "고정IP가격",
+      "고정IP서비스",
+      "비공인IP접속",
+      "공인IP구매",
+      "고정아이피설정",
+      "공인IP생성",
+      "공인IP설정",
+      "네이버클라우드공인IP"
+    ],
+    "eventContents": [],
+    "cmsPath": "/service-product/cms/cms_1756954013606.json",
+    "cmsVersion": "v1",
+    "sortOrder": 8,
+    "servicePlatforms": [
+      {
+        "serviceCode": "SV_0024",
+        "platformVersion": 1,
+        "consoleLinkUrl": "",
+        "guideLinkUrl": ""
+      },
+      {
+        "serviceCode": "SV_0024",
+        "platformVersion": 2,
+        "consoleLinkUrl": "/nat-gateway/natgw?platform=classic",
+        "guideLinkUrl": "/networking/networking-10-1.html"
+      }
+    ],
+    "modYmdt": "Sep 4, 2025, 11:46:54 AM",
+    "deployYmdt": "Dec 30, 2025, 2:38:41 PM"
+  },
+  {
+    "serviceCode": "SV_0221",
+    "upperServiceCode": "NET",
+    "serviceName": "Global Traffic Manager ",
+    "upperServiceName": "networking",
+    "serviceDesc": "DNS를 기반으로 네트워크 트래픽을 다수의 서버로 분산(로드밸런싱)해 주는 서비스",
+    "iconUrl": "https://portal.gcdn.ntruss.com/image/prod-networking-globalTrafficManager_1719760044302.svg+xml",
+    "detailLinkUrl": "globalTrafficManager",
+    "calcLinkUrl": "networking#globalTrafficManager",
+    "inquiryUrl": "",
+    "keywords": [],
+    "labels": [],
+    "regionCodes": [
+      "KR",
+      "USWN",
+      "SGN",
+      "HK",
+      "JP",
+      "DEN"
+    ],
+    "platformTypeCode": "CLASSIC",
+    "metaTitle": "Global Traffic Manager  - Networking",
+    "metaDesc": "",
+    "metaKeyword": [],
+    "eventContents": [],
+    "cmsPath": "/service-product/cms/cms_1720717605520.json",
+    "cmsVersion": "v1",
+    "sortOrder": 11,
+    "servicePlatforms": [
+      {
+        "serviceCode": "SV_0221",
+        "platformVersion": 2,
+        "consoleLinkUrl": "/global-traffic-manager/policy?platform=classic",
+        "guideLinkUrl": ""
+      }
+    ],
+    "modYmdt": "Jul 12, 2024, 2:06:45 AM",
+    "deployYmdt": "Dec 30, 2025, 2:38:41 PM"
+  },
+  {
+    "serviceCode": "SV_0261",
+    "upperServiceCode": "NET",
+    "serviceName": "Classic Path",
+    "upperServiceName": "networking",
+    "serviceDesc": "Classic 플랫폼에서 VPC 플랫폼으로 연결하여 마이그레이션을 지원하는 네트워크 서비스 ",
+    "detailLinkUrl": "classicPath",
+    "keywords": [],
+    "labels": [],
+    "regionCodes": [
+      "KR"
+    ],
+    "platformTypeCode": "",
+    "cmsPath": "/service-product/cms/cms_1755048858530.json",
+    "cmsVersion": "v1",
+    "sortOrder": 13,
+    "servicePlatforms": [
+      {
+        "serviceCode": "SV_0261",
+        "platformVersion": 2,
+        "consoleLinkUrl": "/classic-path/home"
+      }
+    ],
+    "modYmdt": "Aug 13, 2025, 10:34:18 AM",
+    "deployYmdt": "Dec 30, 2025, 2:38:41 PM"
+  },
+  {
+    "serviceCode": "SV_0038",
+    "upperServiceCode": "SEC",
+    "serviceName": "Basic Security",
+    "upperServiceName": "security",
+    "serviceDesc": "네이버 클라우드 플랫폼에서 기본으로 제공하는 무료 보안 서비스",
+    "iconUrl": "https://portal.gcdn.ntruss.com/image/prod-security-basicSecurity_1719760414219.svg+xml",
+    "detailLinkUrl": "basicSecurity",
+    "keywords": [
+      "무료보안서비스",
+      "무료보안솔루션",
+      "클라우드무료보안",
+      "클라우드보안서비스",
+      "네이버무료보안서비스",
+      "네이버클라우드보안",
+      "보안취약점진단",
+      "Free security service",
+      "Free security solution",
+      "Free cloud security service",
+      "Cloud security service",
+      "NAVER free security service",
+      "NAVER cloud security",
+      "Security vulnerability scan"
+    ],
+    "labels": [],
+    "regionCodes": [
+      "KR",
+      "USWN",
+      "SGN",
+      "HK",
+      "JP",
+      "DEN"
+    ],
+    "platformTypeCode": "COMMON",
+    "metaTitle": "Basic Security - Security",
+    "metaDesc": "네이버 클라우드 플랫폼 기본 제공 무료 클라우드 보안 서비스. 24시간 365일 관제 침입탐지 시스템.",
+    "metaKeyword": [
+      "무료보안서비스",
+      "무료보안솔루션",
+      "클라우드무료보안",
+      "클라우드보안서비스",
+      "네이버무료보안서비스",
+      "네이버클라우드보안",
+      "보안취약점진단"
+    ],
+    "eventContents": [],
+    "cmsPath": "/service-product/cms/cms_1720717610105.json",
+    "cmsVersion": "v1",
+    "sortOrder": 2,
+    "servicePlatforms": [
+      {
+        "serviceCode": "SV_0038",
+        "platformVersion": 2,
+        "consoleLinkUrl": "",
+        "guideLinkUrl": ""
+      }
+    ],
+    "modYmdt": "Jul 12, 2024, 2:06:50 AM",
+    "deployYmdt": "Dec 30, 2025, 2:38:41 PM"
+  },
+  {
+    "serviceCode": "SV_0039",
+    "upperServiceCode": "SEC",
+    "serviceName": "ACG",
+    "upperServiceName": "security",
+    "serviceDesc": "IP 기반 필터링 기능으로 서버로의 네트워크 접근을 관리하는 서비스",
+    "iconUrl": "https://portal.gcdn.ntruss.com/image/prod-security-acg_1719760423766.svg+xml",
+    "detailLinkUrl": "acg",
+    "keywords": [
+      "방화벽ACG",
+      "ACG설정",
+      "네이버클라우드플랫폼ACG",
+      "네이버클라우드플랫폼방화벽",
+      "네트워크접근제어",
+      "서버접근제어",
+      "서버방화벽",
+      "클라우드방화벽",
+      "무료클라우드방화벽",
+      "네이버클라우드방화벽",
+      "Firewall ACG",
+      "ACG setup",
+      "NAVER CLOUD PLATFORM ACG",
+      "NAVER CLOUD PLATFORM Firewall",
+      "Network access control",
+      "Server access control",
+      "Server firewall",
+      "Cloud firewall",
+      "Free cloud firewall",
+      "NAVER cloud firewall"
+    ],
+    "labels": [],
+    "regionCodes": [
+      "KR"
+    ],
+    "platformTypeCode": "CLASSIC",
+    "metaTitle": "ACG - Security",
+    "metaDesc": "IP/포트 기반 필터링 무료 네트워크 접근 제어 관리, 서버 그룹별 방화벽 규칙 일괄 적용. ",
+    "metaKeyword": [
+      "방화벽ACG",
+      "ACG설정",
+      "네이버클라우드플랫폼ACG",
+      "네이버클라우드플랫폼방화벽",
+      "네트워크접근제어",
+      "서버접근제어",
+      "서버방화벽",
+      "클라우드방화벽",
+      "무료클라우드방화벽",
+      "네이버클라우드방화벽"
+    ],
+    "eventContents": [],
+    "cmsPath": "/service-product/cms/cms_1754966682038.json",
+    "cmsVersion": "v1",
+    "sortOrder": 3,
+    "servicePlatforms": [
+      {
+        "serviceCode": "SV_0039",
+        "platformVersion": 1,
+        "consoleLinkUrl": "",
+        "guideLinkUrl": ""
+      },
+      {
+        "serviceCode": "SV_0039",
+        "platformVersion": 2,
+        "consoleLinkUrl": "/server/acg?platform=classic",
+        "guideLinkUrl": "/compute/compute-2-3.html"
+      }
+    ],
+    "modYmdt": "Aug 12, 2025, 11:44:42 AM",
+    "deployYmdt": "Dec 30, 2025, 2:38:41 PM"
+  },
+  {
+    "serviceCode": "SV_0040",
+    "upperServiceCode": "SEC",
+    "serviceName": "App Safer",
+    "upperServiceName": "security",
+    "serviceDesc": "모바일 기기에서 앱이 실행될 때 실시간으로 보안 위협을 탐지하는 서비스",
+    "iconUrl": "https://portal.gcdn.ntruss.com/image/prod-security-appSafer_1719760444479.svg+xml",
+    "detailLinkUrl": "appSafer",
+    "calcLinkUrl": "security#appSafer",
+    "keywords": [
+      "앱보호솔루션",
+      "모바일앱보안툴",
+      "모바일보안서비스",
+      "애플리케이션보안",
+      "앱보안",
+      "악성앱탐지",
+      "악성어플탐지",
+      "네이버애플리케이션보안",
+      "네이버앱보안",
+      "네이버모바일보안툴",
+      "네이버클라우드앱보안",
+      "아이폰탈옥탐지",
+      "안드로이드루팅탐지",
+      "탈옥탐지",
+      "루팅탐지",
+      "Application protection tool",
+      "App protection tool",
+      "Mobile application security tool",
+      "Mobile app security security tool",
+      "Mobile security service",
+      "Application security",
+      "App security",
+      "Detect dangerous applications",
+      "Detect dangerous apps",
+      "NAVER application security",
+      "NAVER app security",
+      "NAVER mobile security tool",
+      "NAVER cloud app security",
+      "iPhone jailbreak detection",
+      "Android root detection",
+      "Jailbreak detection",
+      "Rooting detection"
+    ],
+    "labels": [],
+    "regionCodes": [
+      "KR",
+      "USWN",
+      "SGN",
+      "HK",
+      "JP",
+      "DEN"
+    ],
+    "platformTypeCode": "COMMON",
+    "metaTitle": "App Safer - Security",
+    "metaDesc": "변조 앱, 모바일 환경 보안 위협 탐지 및 실시간 대응. ",
+    "metaKeyword": [
+      "앱보호솔루션",
+      "모바일앱보안툴",
+      "모바일보안서비스",
+      "애플리케이션보안",
+      "앱보안",
+      "악성앱탐지",
+      "악성어플탐지",
+      "네이버애플리케이션보안",
+      "네이버앱보안",
+      "네이버모바일보안툴",
+      "네이버클라우드앱보안",
+      "아이폰탈옥탐지",
+      "안드로이드루팅탐지"
+    ],
+    "eventContents": [],
+    "cmsPath": "/service-product/cms/cms_1731981828391.json",
+    "cmsVersion": "v1",
+    "sortOrder": 4,
+    "servicePlatforms": [
+      {
+        "serviceCode": "SV_0040",
+        "platformVersion": 1,
+        "consoleLinkUrl": "",
+        "guideLinkUrl": ""
+      },
+      {
+        "serviceCode": "SV_0040",
+        "platformVersion": 2,
+        "consoleLinkUrl": "/app-security-safer/management",
+        "guideLinkUrl": "/security/security-1-1.html"
+      }
+    ],
+    "modYmdt": "Nov 19, 2024, 11:03:48 AM",
+    "deployYmdt": "Dec 30, 2025, 2:38:41 PM"
+  },
+  {
+    "serviceCode": "SV_0042",
+    "upperServiceCode": "SEC",
+    "serviceName": "File Safer",
+    "upperServiceName": "security",
+    "serviceDesc": "웹사이트에서 제공하는 파일과 아웃링크의 악성코드 여부를 검사하는 서비스",
+    "iconUrl": "https://portal.gcdn.ntruss.com/image/prod-security-fileSafer_1719760472754.svg+xml",
+    "detailLinkUrl": "fileSafer",
+    "calcLinkUrl": "security#fileSafer",
+    "keywords": [
+      "파일악성코드검사",
+      "파일바이러스검사",
+      "파일검사",
+      "악성코드검사",
+      "네이버파일검사",
+      "클라우드파일보안",
+      "악성코드필터링",
+      "File malicious code test",
+      "File virus test",
+      "File security check",
+      "Malicious code test",
+      "NAVER file security check",
+      "Cloud file security",
+      "Malicious code filtering"
+    ],
+    "labels": [],
+    "regionCodes": [
+      "KR",
+      "USWN",
+      "SGN",
+      "HK",
+      "JP",
+      "DEN"
+    ],
+    "platformTypeCode": "COMMON",
+    "metaTitle": "File Safer - Security",
+    "metaDesc": "웹사이트 업/다운로드 파일 및 아웃링크 악성코드 여부 검사.",
+    "metaKeyword": [
+      "파일악성코드검사",
+      "파일바이러스검사",
+      "파일검사",
+      "악성코드검사",
+      "네이버파일검사",
+      "클라우드파일보안",
+      "악성코드필터링"
+    ],
+    "eventContents": [],
+    "cmsPath": "/service-product/cms/cms_1731981861670.json",
+    "cmsVersion": "v1",
+    "sortOrder": 6,
+    "servicePlatforms": [
+      {
+        "serviceCode": "SV_0042",
+        "platformVersion": 1,
+        "consoleLinkUrl": "",
+        "guideLinkUrl": ""
+      },
+      {
+        "serviceCode": "SV_0042",
+        "platformVersion": 2,
+        "consoleLinkUrl": "/security-file-safer/hashFilter",
+        "guideLinkUrl": "/security/security-6-2.html"
+      }
+    ],
+    "modYmdt": "Nov 19, 2024, 11:04:21 AM",
+    "deployYmdt": "Dec 30, 2025, 2:38:41 PM"
+  },
+  {
+    "serviceCode": "SV_0043",
+    "upperServiceCode": "SEC",
+    "serviceName": "Security Monitoring",
+    "upperServiceName": "security",
+    "serviceDesc": "사용자의 서비스를 다양한 보안 위협에서 안전하게 보호하는 서비스",
+    "iconUrl": "https://portal.gcdn.ntruss.com/image/prod-security-securityMonitoring_1719760487076.svg+xml",
+    "detailLinkUrl": "securityMonitoring",
+    "inquiryUrl": "/support/question/service?parentCode=O2O_SEC&code=O2O_SEC_003",
+    "keywords": [
+      "보안모니터링",
+      "클라우드모니터링",
+      "DDoS방어",
+      "침입탐지서비스",
+      "네트워크공격탐지",
+      "웹방화벽서비스",
+      "서버용백신",
+      "클라우드보안솔루션",
+      "네이버클라우드보안툴",
+      "웹공격방어",
+      "Security monitoring",
+      "Cloud monitoring",
+      "DDoS defence",
+      "IDS",
+      "Intrusion Detection System",
+      "Network attack detection",
+      "Web firewall service",
+      "Server vaccine",
+      "Cloud security solution",
+      "NAVER cloud security tool",
+      "Web attack defence"
+    ],
+    "labels": [
+      "UPDATE"
+    ],
+    "regionCodes": [
+      "KR",
+      "USWN",
+      "SGN",
+      "HK",
+      "JP",
+      "DEN"
+    ],
+    "platformTypeCode": "CLASSIC",
+    "metaTitle": "Security Monitoring - Security",
+    "metaDesc": "DDoS, 악성코드 등 최신 웹 공격 24시간 365일 실시간 감시, 자동 이벤트 통보, 분석 리포트 및 대응 가이드 제공.",
+    "metaKeyword": [
+      "보안모니터링",
+      "클라우드모니터링",
+      "DDoS방어",
+      "침입탐지서비스",
+      "네트워크공격탐지",
+      "웹방화벽서비스",
+      "서버용백신",
+      "클라우드보안솔루션",
+      "네이버클라우드보안툴",
+      "웹공격방어"
+    ],
+    "eventContents": [],
+    "cmsPath": "/service-product/cms/cms_1752045816126.json",
+    "cmsVersion": "v1",
+    "sortOrder": 7,
+    "servicePlatforms": [
+      {
+        "serviceCode": "SV_0043",
+        "platformVersion": 1,
+        "consoleLinkUrl": "",
+        "guideLinkUrl": ""
+      },
+      {
+        "serviceCode": "SV_0043",
+        "platformVersion": 2,
+        "consoleLinkUrl": "",
+        "guideLinkUrl": "/security/security-8-1.html"
+      }
+    ],
+    "modYmdt": "Nov 19, 2025, 7:06:03 PM",
+    "deployYmdt": "Dec 30, 2025, 2:38:41 PM"
+  },
+  {
+    "serviceCode": "SV_0044",
+    "upperServiceCode": "SEC",
+    "serviceName": "SSL VPN",
+    "upperServiceName": "security",
+    "serviceDesc": "시공간 제약 없이 내부 네트워크로 안전하게 접근할 수 있는 SSL 가상 사설망을 제공하는 서비스",
+    "iconUrl": "https://portal.gcdn.ntruss.com/image/prod-security-sslVpn_1719760498855.svg+xml",
+    "detailLinkUrl": "sslVpn",
+    "calcLinkUrl": "security#sslVpn",
+    "keywords": [
+      "사설망외부접속",
+      "사설IP외부접속",
+      "외부IP접속허용",
+      "SSL VPN",
+      "SSL보안서버",
+      "SSL터널링",
+      "VPN터널링",
+      "VPN서버구축",
+      "네이버클라우드VPN",
+      "네이버클라우드SSL",
+      "Access private network from outside",
+      "Access private IP from outside",
+      "Allow IP access from outside",
+      "SSL security server",
+      "SSL tunneling",
+      "VPN tunneling",
+      "Create VPN server",
+      "NAVER cloud VPN",
+      "NAVER cloud SSL"
+    ],
+    "labels": [],
+    "regionCodes": [
+      "KR",
+      "SGN"
+    ],
+    "platformTypeCode": "CLASSIC",
+    "metaTitle": "SSL VPN - Networking",
+    "metaDesc": "네트워크 외부 접속시 암호화 터널링 통신 SSL 가상사설망 구축.",
+    "metaKeyword": [
+      "사설망외부접속",
+      "사설IP외부접속",
+      "외부IP접속허용",
+      "SSL VPN",
+      "SSL보안서버",
+      "SSL터널링",
+      "VPN터널링",
+      "VPN서버구축",
+      "네이버클라우드VPN",
+      "네이버클라우드SSL"
+    ],
+    "eventContents": [],
+    "cmsPath": "/service-product/cms/cms_1731981549341.json",
+    "cmsVersion": "v1",
+    "sortOrder": 8,
+    "servicePlatforms": [
+      {
+        "serviceCode": "SV_0044",
+        "platformVersion": 1,
+        "consoleLinkUrl": "",
+        "guideLinkUrl": ""
+      },
+      {
+        "serviceCode": "SV_0044",
+        "platformVersion": 2,
+        "consoleLinkUrl": "/ssl-vpn?platform=classic",
+        "guideLinkUrl": "/security/security-5-1.html"
+      }
+    ],
+    "modYmdt": "Jul 16, 2025, 3:23:02 PM",
+    "deployYmdt": "Dec 30, 2025, 2:38:41 PM"
+  },
+  {
+    "serviceCode": "SV_0045",
+    "upperServiceCode": "SEC",
+    "serviceName": "Web Security Checker",
+    "upperServiceName": "security",
+    "serviceDesc": "사용자의 웹 서비스가 지닌 주요 취약점을 자동으로 진단하는 서비스",
+    "iconUrl": "https://portal.gcdn.ntruss.com/image/prod-security-webSecurityChecker_1719760521958.svg+xml",
+    "detailLinkUrl": "webSecurityChecker",
+    "calcLinkUrl": "security#webSecurityChecker",
+    "keywords": [],
+    "labels": [],
+    "regionCodes": [
+      "KR",
+      "USWN",
+      "SGN",
+      "HK",
+      "JP",
+      "DEN"
+    ],
+    "platformTypeCode": "COMMON",
+    "metaTitle": "Web Security Checker - Security",
+    "metaDesc": "웹 서비스 잠재 보안 취약점 신속 진단, 취약점 대응 가이드 제공.",
+    "metaKeyword": [
+      "웹보안진단도구",
+      "웹서비스보안",
+      "웹서비스진단",
+      "웹취약점점검",
+      "취약점진단솔루션",
+      "보안취약점분석",
+      "웹취약점분석도구",
+      "웹스캐너",
+      "네이버웹스캐너",
+      "웹취약점점검사이트"
+    ],
+    "eventContents": [],
+    "cmsPath": "/service-product/cms/cms_1731981963967.json",
+    "cmsVersion": "v1",
+    "sortOrder": 9,
+    "servicePlatforms": [
+      {
+        "serviceCode": "SV_0045",
+        "platformVersion": 1,
+        "consoleLinkUrl": "/mc/nserver/server/server_list"
+      },
+      {
+        "serviceCode": "SV_0045",
+        "platformVersion": 2,
+        "consoleLinkUrl": "/vpc-compute/server",
+        "guideLinkUrl": "/tibero/tibero-1-1.html"
+      }
+    ],
+    "modYmdt": "Jan 15, 2025, 11:57:40 AM",
+    "deployYmdt": "Dec 30, 2025, 2:38:41 PM"
+  },
+  {
+    "serviceCode": "SV_0046",
+    "upperServiceCode": "SEC",
+    "serviceName": "System Security Checker",
+    "upperServiceName": "security",
+    "serviceDesc": "서버 운영 체제 및 WAS 보안 설정의 적합 여부를 점검하는 서비스",
+    "iconUrl": "https://portal.gcdn.ntruss.com/image/prod-security-systemSecurityChecker_1719760539553.svg+xml",
+    "detailLinkUrl": "systemSecurityChecker",
+    "calcLinkUrl": "security#systemSecurityChecker",
+    "keywords": [
+      "서버보안점검",
+      "서버보안솔루션",
+      "서버보안취약점점검",
+      "리눅스취약점점검",
+      "윈도우취약점점검",
+      "웹애플리케이션서버보안점검",
+      "WAS보안점검",
+      "서버보안설정",
+      "WAS보안설정",
+      "네이버서버보안점검",
+      "클라우드서버보안",
+      "Server security check",
+      "Server security solution",
+      "Server security vulnerability check",
+      "Linux vulnerability check",
+      "Windows vulnerability check",
+      "Web application server security check",
+      "WAS security check",
+      "Server security setup",
+      "WAS security setup",
+      "NAVER server security check",
+      "Cloud server security"
+    ],
+    "labels": [],
+    "regionCodes": [
+      "KR",
+      "USWN",
+      "SGN",
+      "HK",
+      "JP",
+      "DEN"
+    ],
+    "platformTypeCode": "CLASSIC",
+    "metaTitle": "System Security Checker - Security",
+    "metaDesc": "간단한 설정으로 서버의 보안성을 향상시켜 보세요.",
+    "metaKeyword": [
+      "서버보안점검",
+      "서버보안솔루션",
+      "서버보안취약점점검",
+      "리눅스취약점점검",
+      "윈도우취약점점검",
+      "웹애플리케이션서버보안점검",
+      "WAS보안점검",
+      "서버보안설정",
+      "WAS보안설정",
+      "네이버서버보안점검",
+      "클라우드서버보안"
+    ],
+    "eventContents": [],
+    "cmsPath": "/service-product/cms/cms_1731982003085.json",
+    "cmsVersion": "v1",
+    "sortOrder": 10,
+    "servicePlatforms": [
+      {
+        "serviceCode": "SV_0046",
+        "platformVersion": 1,
+        "consoleLinkUrl": "",
+        "guideLinkUrl": ""
+      },
+      {
+        "serviceCode": "SV_0046",
+        "platformVersion": 2,
+        "consoleLinkUrl": "/system-security-checker/osChecker?platform=classic",
+        "guideLinkUrl": "/security/security-9-1.html"
+      }
+    ],
+    "modYmdt": "Jan 15, 2025, 11:57:40 AM",
+    "deployYmdt": "Dec 30, 2025, 2:38:41 PM"
+  },
+  {
+    "serviceCode": "SV_0049",
+    "upperServiceCode": "SEC",
+    "serviceName": "Key Management Service",
+    "upperServiceName": "security",
+    "serviceDesc": "사용자의 중요한 정보를 암호화하는 데 사용한 키를 엄격하고 안전한 정책 하에 보호하는 서비스",
+    "iconUrl": "https://portal.gcdn.ntruss.com/image/prod-security-kms_1719760667089.svg+xml",
+    "detailLinkUrl": "kms",
+    "calcLinkUrl": "security#kms",
+    "keywords": [
+      "키관리시스템",
+      "암호화키관리",
+      "데이터암호화",
+      "암호화키보호",
+      "데이터베이스마스터키",
+      "DB마스터키",
+      "암호화접근제어",
+      "키관리솔루션",
+      "암호화키관리솔루션",
+      "네이버키관리",
+      "네이버암호화키관리",
+      "KMS",
+      "Key Management Service",
+      "Encryption key management",
+      "Encryption KMS",
+      "Data encryption",
+      "Encryption key protection",
+      "Database master key",
+      "DB master key",
+      "Encryption access control",
+      "Key management solution",
+      "Encryption key management solution",
+      "NAVER key management",
+      "NAVER encryption key management"
+    ],
+    "labels": [
+      "UPDATE"
+    ],
+    "regionCodes": [
+      "KR",
+      "USWN",
+      "SGN",
+      "HK",
+      "JP",
+      "DEN"
+    ],
+    "platformTypeCode": "COMMON",
+    "metaTitle": "Key Management Service - Security",
+    "metaDesc": "국내외 암호화 표준 적용, 최대 32KB 기밀 데이터 보호, 사용자 보안 설정 암호화 키 관리.",
+    "metaKeyword": [
+      "키관리시스템",
+      "암호화키관리",
+      "데이터암호화",
+      "암호화키보호",
+      "데이터베이스마스터키",
+      "DB마스터키",
+      "암호화접근제어",
+      "키관리솔루션",
+      "암호화키관리솔루션",
+      "네이버키관리",
+      "네이버암호화키관리"
+    ],
+    "eventContents": [],
+    "cmsPath": "/service-product/cms/cms_1731982076490.json",
+    "cmsVersion": "v1",
+    "sortOrder": 13,
+    "servicePlatforms": [
+      {
+        "serviceCode": "SV_0049",
+        "platformVersion": 1,
+        "consoleLinkUrl": "",
+        "guideLinkUrl": ""
+      },
+      {
+        "serviceCode": "SV_0049",
+        "platformVersion": 2,
+        "consoleLinkUrl": "/security-kms/management",
+        "guideLinkUrl": "/kms/kms-1-1.html"
+      }
+    ],
+    "modYmdt": "Nov 19, 2025, 7:06:03 PM",
+    "deployYmdt": "Dec 30, 2025, 2:38:41 PM"
+  },
+  {
+    "serviceCode": "SV_0110",
+    "upperServiceCode": "SEC",
+    "serviceName": "Certificate Manager",
+    "upperServiceName": "security",
+    "serviceDesc": "SSL 인증서를 손쉽게 등록, 발급하고 관리할 수 있는 서비스",
+    "iconUrl": "https://portal.gcdn.ntruss.com/image/ico-secure-zone_1719763781918.svg+xml",
+    "detailLinkUrl": "certificateManager",
+    "calcLinkUrl": "",
+    "keywords": [
+      "공인 SSL 인증서 관리",
+      "SSL 인증서 관리",
+      "SSL 인증 관리",
+      "SSL 관리",
+      "클라우드 SSL",
+      "클라우드 CDN",
+      "클라우드 Image Optimizer",
+      "네이버 클라우드 공인 인증서",
+      "SSL 인증서 정보",
+      "SSL 인증서 통합",
+      "Certificate Manager",
+      "authentication Manager",
+      "SSL certificate",
+      "SSL certificate check",
+      "SSL certificate checker",
+      "SSL checker",
+      "SSL certificate information",
+      "SSL certificate integration",
+      "SSL certificate management",
+      "NAVER cloud SSL Certificate"
+    ],
+    "labels": [],
+    "regionCodes": [
+      "KR",
+      "USWN",
+      "SGN",
+      "HK",
+      "JP",
+      "DEN"
+    ],
+    "platformTypeCode": "CLASSIC",
+    "metaTitle": "Certificate Manager - Security",
+    "metaDesc": "SSL 인증서를 등록하여 사용하고 인증서 생명주기 알람 발송 등 통합 관리 제공. 손쉽게 발급하고 사용할 수 있는 SSL 인증서 발급 서비스 제공",
+    "metaKeyword": [
+      "공인 SSL 인증서 관리",
+      "SSL 인증서 관리",
+      "SSL 인증 관리",
+      "SSL 관리",
+      "클라우드SSL",
+      "클라우드CDN",
+      "클라우드 Image Optimizer",
+      "네이버 클라우드 공인 인증서",
+      "SSL 인증서 정보",
+      "SSL 인증서 통합"
+    ],
+    "eventContents": [],
+    "cmsPath": "/service-product/cms/cms_1752042837829.json",
+    "cmsVersion": "v1",
+    "sortOrder": 14,
+    "servicePlatforms": [
+      {
+        "serviceCode": "SV_0110",
+        "platformVersion": 1,
+        "consoleLinkUrl": "",
+        "guideLinkUrl": ""
+      },
+      {
+        "serviceCode": "SV_0110",
+        "platformVersion": 2,
+        "consoleLinkUrl": "/certificate-manager/subscription?platform=classic",
+        "guideLinkUrl": "/security/security-15-1.html"
+      }
+    ],
+    "modYmdt": "Sep 18, 2025, 10:04:33 AM",
+    "deployYmdt": "Dec 30, 2025, 2:38:41 PM"
+  },
+  {
+    "serviceCode": "SV_0129",
+    "upperServiceCode": "SEC",
+    "serviceName": "Private CA",
+    "upperServiceName": "security",
+    "serviceDesc": "표준에 기반한 사설 인증 기관을 운영하고 사설 인증서를 발급 및 관리할 수 있는 서비스",
+    "iconUrl": "https://portal.gcdn.ntruss.com/image/ico-security-pca_1719761874427.svg+xml",
+    "detailLinkUrl": "privateCA",
+    "calcLinkUrl": "security#privateCA",
+    "inquiryUrl": "",
+    "keywords": [
+      "사설 인증서 관리",
+      "사설 인증서",
+      "사설인증 서비스",
+      "사설 인증기관",
+      "사설 CA",
+      "인증서 관리",
+      "사설 인증 체계",
+      "인증서 폐기 목록",
+      "CRL",
+      "네이버 클라우드 사설 인증",
+      "클라우드 인증서",
+      "인증서 발급",
+      "Private certificate manager",
+      "Authentication manager",
+      "Private certificate",
+      "Private certification service",
+      "Private certifier",
+      "Private certification system",
+      "CRL management",
+      "Certificate revocation",
+      "NAVER cloud private certificate",
+      "Cloud certificate",
+      "Certificate issuance"
+    ],
+    "labels": [],
+    "regionCodes": [
+      "KR",
+      "USWN",
+      "SGN",
+      "HK",
+      "JP",
+      "DEN"
+    ],
+    "platformTypeCode": "COMMON",
+    "metaTitle": "Private CA - Security",
+    "metaDesc": "인증기관 표준에 의거한 사설 인증기관 운영, 사설 인증서 발급 서비스. 인증서 폐기 시 CRL 자동 구성.",
+    "metaKeyword": [
+      "사설 인증서 관리",
+      "사설 인증서",
+      "사설 인증 서비스",
+      "사설 인증기관 ",
+      "사설 CA",
+      "인증서 관리",
+      "사설 인증 체계",
+      "인증서 폐기 목록",
+      "CRL",
+      "네이버 클라우드 사설 인증",
+      "클라우드 인증서",
+      "인증서 발급"
+    ],
+    "eventContents": [],
+    "cmsPath": "/service-product/cms/cms_1731982133800.json",
+    "cmsVersion": "v1",
+    "sortOrder": 15,
+    "servicePlatforms": [
+      {
+        "serviceCode": "SV_0129",
+        "platformVersion": 2,
+        "consoleLinkUrl": "/private-ca/ca",
+        "guideLinkUrl": "test"
+      }
+    ],
+    "modYmdt": "Jan 15, 2025, 11:57:40 AM",
+    "deployYmdt": "Dec 30, 2025, 2:38:41 PM"
+  },
+  {
+    "serviceCode": "SV_0170",
+    "upperServiceCode": "SEC",
+    "serviceName": "Webshell Behavior Detector",
+    "upperServiceName": "security",
+    "serviceDesc": "웹 서비스를 공격하는 웹쉘을 행위 기반으로 실시간 탐지하는 서비스",
+    "iconUrl": "https://portal.gcdn.ntruss.com/image/icon-webshell-behavior-detector_1719760905975.svg+xml",
+    "detailLinkUrl": "webshellBehaviorDetector",
+    "calcLinkUrl": "security#webshell",
+    "inquiryUrl": "",
+    "keywords": [],
+    "labels": [],
+    "regionCodes": [
+      "KR",
+      "USWN",
+      "SGN",
+      "HK",
+      "JP",
+      "DEN"
+    ],
+    "platformTypeCode": "VPC",
+    "metaTitle": "Webshell Behavior Detector - Security",
+    "metaDesc": "",
+    "metaKeyword": [],
+    "eventContents": [],
+    "cmsPath": "/service-product/cms/cms_1731982163180.json",
+    "cmsVersion": "v1",
+    "sortOrder": 16,
+    "servicePlatforms": [
+      {
+        "serviceCode": "SV_0170",
+        "platformVersion": 2,
+        "consoleLinkUrl": "/web-shell/dashboard?platform=vpc",
+        "guideLinkUrl": ""
+      }
+    ],
+    "modYmdt": "Nov 19, 2024, 11:09:23 AM",
+    "deployYmdt": "Dec 30, 2025, 2:38:41 PM"
+  },
+  {
+    "serviceCode": "SV_0223",
+    "upperServiceCode": "SEC",
+    "serviceName": "Cloud Security Watcher",
+    "upperServiceName": "security",
+    "serviceDesc": "보안 프레임워크 준수 현황 점검, 리소스 현황 식별, 자산 변경 감시를 지원하는 클라우드 보안 형상 관리 서비스",
+    "iconUrl": "https://portal.gcdn.ntruss.com/image/prod-security-cloudSecurityWatcher_1719760926628.svg+xml",
+    "detailLinkUrl": "cloudSecurityWatcher",
+    "calcLinkUrl": "security#cloudSecurityWatcher",
+    "inquiryUrl": "",
+    "keywords": [],
+    "labels": [],
+    "regionCodes": [
+      "KR"
+    ],
+    "platformTypeCode": "VPC",
+    "metaTitle": "",
+    "metaDesc": "",
+    "metaKeyword": [],
+    "eventContents": [],
+    "cmsPath": "/service-product/cms/cms_1731982195655.json",
+    "cmsVersion": "v1",
+    "sortOrder": 18,
+    "servicePlatforms": [
+      {
+        "serviceCode": "SV_0223",
+        "platformVersion": 2,
+        "consoleLinkUrl": "/cloudSecurityWatcher/subscription?platform=vpc",
+        "guideLinkUrl": ""
+      }
+    ],
+    "modYmdt": "Nov 19, 2024, 11:09:55 AM",
+    "deployYmdt": "Dec 30, 2025, 2:38:41 PM"
+  },
+  {
+    "serviceCode": "SV_0257",
+    "upperServiceCode": "SEC",
+    "serviceName": "Secret Manager",
+    "upperServiceName": "security",
+    "serviceDesc": "보안 암호를 안전하게 저장, 교체, 관리할 수 있는 서비스",
+    "detailLinkUrl": "secretManager",
+    "keywords": [],
+    "labels": [],
+    "regionCodes": [
+      "KR"
+    ],
+    "platformTypeCode": "VPC",
+    "cmsPath": "/service-product/cms/cms_1737025136560.json",
+    "cmsVersion": "v1",
+    "sortOrder": 19,
+    "servicePlatforms": [
+      {
+        "serviceCode": "SV_0257",
+        "platformVersion": 2,
+        "consoleLinkUrl": "/secret-manager/secret?platform=vpc"
+      }
+    ],
+    "modYmdt": "Jan 16, 2025, 7:58:56 PM",
+    "deployYmdt": "Dec 30, 2025, 2:38:41 PM"
+  },
+  {
+    "serviceCode": "SV_0011",
+    "upperServiceCode": "STRG",
+    "serviceName": "Object Storage",
+    "upperServiceName": "storage",
+    "serviceDesc": "모든 종류의 데이터를 인터넷상에 저장하고 검색할 수 있는 객체 스토리지",
+    "iconUrl": "https://portal.gcdn.ntruss.com/image/prod-storage-objectStorage_1719702332734.svg+xml",
+    "detailLinkUrl": "objectStorage",
+    "calcLinkUrl": "storage#objectStorageKo",
+    "keywords": [
+      "오브젝트스토리지",
+      "객체스토리지",
+      "클라우드스토리지",
+      "오브젝트스토리지API",
+      "클라우드스토리지API",
+      "백업스토리지",
+      "데이터스토리지",
+      "대용량데이터백업",
+      "네이버객체스토리지",
+      "서버스토리지",
+      "Object storage",
+      "Cloud storage",
+      "Object storage API",
+      "Cloud storage API",
+      "Backup storage",
+      "Data storage",
+      "Backup large data",
+      "NAVER object storage",
+      "Server storage"
+    ],
+    "labels": [],
+    "regionCodes": [
+      "KR",
+      "USWN",
+      "SGN",
+      "JP",
+      "DEN"
+    ],
+    "platformTypeCode": "COMMON",
+    "metaTitle": "Object Storage - Storage",
+    "metaDesc": "타사 대비 최대 45% 저렴한 네트워크 전송 비용. 모든 형태 데이터 저장 가능 객체 스토리지. Amazon S3 연동 API 지원.",
+    "metaKeyword": [
+      "오브젝트스토리지",
+      "객체스토리지",
+      "클라우드스토리지",
+      "오브젝트스토리지API",
+      "클라우드스토리지API",
+      "백업스토리지",
+      "데이터스토리지",
+      "대용량데이터백업",
+      "네이버객체스토리지",
+      "서버스토리지"
+    ],
+    "eventContents": [],
+    "cmsPath": "/service-product/cms/cms_1765447908660.json",
+    "cmsVersion": "v1",
+    "sortOrder": 1,
+    "servicePlatforms": [
+      {
+        "serviceCode": "SV_0011",
+        "platformVersion": 1,
+        "consoleLinkUrl": "",
+        "guideLinkUrl": ""
+      },
+      {
+        "serviceCode": "SV_0011",
+        "platformVersion": 2,
+        "consoleLinkUrl": "/objectStorage/objectStorageList",
+        "guideLinkUrl": "/storage/storage-6-1.html"
+      }
+    ],
+    "modYmdt": "Dec 11, 2025, 7:11:48 PM",
+    "deployYmdt": "Dec 30, 2025, 2:38:41 PM"
+  },
+  {
+    "serviceCode": "SV_0100",
+    "upperServiceCode": "STRG",
+    "serviceName": "Archive Storage",
+    "upperServiceName": "storage",
+    "serviceDesc": "데이터 아카이빙 및 장기 백업에 최적화된 스토리지",
+    "iconUrl": "https://portal.gcdn.ntruss.com/image/prod-storage-archiveStorage_1719702344159.svg+xml",
+    "detailLinkUrl": "archiveStorage",
+    "calcLinkUrl": "storage#archiveStorage",
+    "keywords": [],
+    "labels": [],
+    "regionCodes": [
+      "KR"
+    ],
+    "platformTypeCode": "COMMON",
+    "metaTitle": "Archive Storage - Storage",
+    "metaDesc": "",
+    "metaKeyword": [],
+    "eventContents": [],
+    "cmsPath": "/service-product/cms/cms_1720717649772.json",
+    "cmsVersion": "v1",
+    "sortOrder": 2,
+    "servicePlatforms": [
+      {
+        "serviceCode": "SV_0100",
+        "platformVersion": 1,
+        "consoleLinkUrl": "",
+        "guideLinkUrl": ""
+      },
+      {
+        "serviceCode": "SV_0100",
+        "platformVersion": 2,
+        "consoleLinkUrl": "/archiveStorage/archiveStorageList",
+        "guideLinkUrl": "/storage/storage-10-1.html"
+      }
+    ],
+    "modYmdt": "Mar 19, 2025, 7:09:53 PM",
+    "deployYmdt": "Dec 30, 2025, 2:38:41 PM"
+  },
+  {
+    "serviceCode": "SV_0013",
+    "upperServiceCode": "STRG",
+    "serviceName": "Block Storage",
+    "upperServiceName": "storage",
+    "serviceDesc": "빠르게 생성하여 사용하고 반납하는 효율적인 스토리지",
+    "iconUrl": "https://portal.gcdn.ntruss.com/image/prod-storage-blockStorage_1719702352536.svg+xml",
+    "detailLinkUrl": "blockStorage",
+    "calcLinkUrl": "storage#blockStorage",
+    "keywords": [
+      "블록스토리지",
+      "네이버블록스토리지",
+      "네이버스토리지",
+      "블록스토리지추천",
+      "HDD스토리지",
+      "SSD스토리지",
+      "고성능SSD스토리지",
+      "스토리지서버",
+      "스토리지임대",
+      "스토리지렌탈",
+      "Block storage",
+      "NAVER block storage",
+      "NAVER storage",
+      "Block storage recommendation",
+      "HDD storage",
+      "SSD storage",
+      "High performance SSD storage",
+      "Storage server",
+      "Storage hosting",
+      "Storage rental"
+    ],
+    "labels": [],
+    "regionCodes": [
+      "KR",
+      "USWN",
+      "SGN",
+      "HK",
+      "JP",
+      "DEN"
+    ],
+    "platformTypeCode": "CLASSIC",
+    "metaTitle": "Block Storage - Storage",
+    "metaDesc": "요청 즉시 서버 1대당 최대 16개, 2,000GB 스토리지 할당. HDD, SSD 타입 블록 스토리지. ",
+    "metaKeyword": [
+      "블록스토리지",
+      "네이버블록스토리지",
+      "네이버스토리지",
+      "블록스토리지추천",
+      "HDD스토리지",
+      "SSD스토리지",
+      "고성능SSD스토리지",
+      "스토리지서버",
+      "스토리지임대",
+      "스토리지렌탈"
+    ],
+    "eventContents": [],
+    "cmsPath": "/service-product/cms/cms_1767072982914.json",
+    "cmsVersion": "v1",
+    "sortOrder": 4,
+    "servicePlatforms": [
+      {
+        "serviceCode": "SV_0013",
+        "platformVersion": 1,
+        "consoleLinkUrl": "/mc/nserver/storage/storage_list",
+        "guideLinkUrl": "/compute/compute-4-1-v1.html"
+      },
+      {
+        "serviceCode": "SV_0013",
+        "platformVersion": 2,
+        "consoleLinkUrl": "/server/storage?platform=classic",
+        "guideLinkUrl": "/compute/compute-4-1-v2.html"
+      }
+    ],
+    "modYmdt": "Dec 30, 2025, 2:36:23 PM",
+    "deployYmdt": "Dec 30, 2025, 2:38:41 PM"
+  },
+  {
+    "serviceCode": "SV_0014",
+    "upperServiceCode": "STRG",
+    "serviceName": "NAS",
+    "upperServiceName": "storage",
+    "serviceDesc": "다수의 서버를 네트워크에 연결하여 사용할 수 있는 스토리지",
+    "iconUrl": "https://portal.gcdn.ntruss.com/image/prod-storage-nas_1719702361785.svg+xml",
+    "detailLinkUrl": "nas",
+    "calcLinkUrl": "storage#nas",
+    "keywords": [
+      "나스스토리지",
+      "네이버NAS",
+      "네이버클라우드플랫폼NAS",
+      "네이버스토리지",
+      "네트워크스토리지",
+      "NAS추천",
+      "대용량NAS",
+      "NAS서버",
+      "클라우드NAS",
+      "NAS구축비용",
+      "NAS",
+      "Network Attached Storage",
+      "NAVER NAS",
+      "NAVER CLOUD PLATFORM NAS",
+      "NAVER storage",
+      "Network storage",
+      "NAS recoomendation",
+      "Large NAS",
+      "NAS server",
+      "Cloud NAS",
+      "Low cost NAS"
+    ],
+    "labels": [],
+    "regionCodes": [
+      "KR",
+      "USWN",
+      "SGN",
+      "JP",
+      "DEN"
+    ],
+    "platformTypeCode": "CLASSIC",
+    "metaTitle": "NAS - Storage",
+    "metaDesc": "서버 간 데이터 공유, 대용량 스토리지, 유연한 용량 확대 및 축소, 스냅샷 백업 가능 네트워크 연결 스토리지.",
+    "metaKeyword": [
+      "나스스토리지",
+      "네이버NAS",
+      "네이버클라우드플랫폼NAS",
+      "네이버스토리지",
+      "네트워크스토리지",
+      "NAS추천",
+      "대용량NAS",
+      "NAS서버",
+      "클라우드NAS",
+      "NAS구축비용"
+    ],
+    "eventContents": [],
+    "cmsPath": "/service-product/cms/cms_1736841499049.json",
+    "cmsVersion": "v1",
+    "sortOrder": 5,
+    "servicePlatforms": [
+      {
+        "serviceCode": "SV_0014",
+        "platformVersion": 1,
+        "consoleLinkUrl": "/mc/nas/nas_list",
+        "guideLinkUrl": "/storage/storage-4-1.html"
+      },
+      {
+        "serviceCode": "SV_0014",
+        "platformVersion": 2,
+        "consoleLinkUrl": "/nas/volume?platform=classic",
+        "guideLinkUrl": "/storage/storage-4-1.html"
+      }
+    ],
+    "modYmdt": "Jul 16, 2025, 3:23:02 PM",
+    "deployYmdt": "Dec 30, 2025, 2:38:41 PM"
+  },
+  {
+    "serviceCode": "SV_0015",
+    "upperServiceCode": "STRG",
+    "serviceName": "Backup",
+    "upperServiceName": "storage",
+    "serviceDesc": "정책기반으로 데이터를 쉽고 안전하게 백업하고 복구할 수 있는 서비스",
+    "iconUrl": "https://portal.gcdn.ntruss.com/image/prod-storage-backup_1719702372833.svg+xml",
+    "detailLinkUrl": "backup",
+    "calcLinkUrl": "storage#backupNew",
+    "inquiryUrl": "",
+    "keywords": [
+      "백업솔루션",
+      "네이버클라우드백업",
+      "네이버클라우드플랫폼백업",
+      "클라우드백업",
+      "데이터백업서비스",
+      "데이터백업저장소",
+      "기업용백업",
+      "소산백업",
+      "테이프소산",
+      "소산서비스",
+      "Backup solution",
+      "NAVER cloud backup",
+      "NAVER CLOUD PLATFORM backup",
+      "Cloud backup",
+      "Data backup service",
+      "Data backup repository",
+      "Enterprise backup",
+      "Dispersed backup",
+      "Tape backup service",
+      "Backup tape custody service"
+    ],
+    "labels": [],
+    "regionCodes": [
+      "KR"
+    ],
+    "platformTypeCode": "VPC",
+    "metaTitle": "Backup - Storage",
+    "metaDesc": "유사 시 데이터 손실 방지 서버 데이터 정기 백업 보관 서비스. ",
+    "metaKeyword": [
+      "백업솔루션",
+      "네이버클라우드백업",
+      "네이버클라우드플랫폼백업",
+      "클라우드백업",
+      "데이터백업서비스",
+      "데이터백업저장소",
+      "기업용백업",
+      "소산백업",
+      "테이프소산",
+      "소산서비스"
+    ],
+    "eventContents": [
+      "Backup 상품이 기존 신청서 기반의 Managed Backup 상품에서 콘솔기반의 자동화된 Backup 상품으로 변경되었습니다. <br class=\"hidden-lg-down\"/>\n기존 Managed Backup 사용자의 한해 해지 및 복구 신청이 가능하며 신규 가입은 상품성이 개선된 Backup 상품을 이용하시기 바랍니다. <br class=\"hidden-lg-down\"/>\n새로운 Backup 상품에 대한 자세한 정보를 확인하고 싶으시면\n<a target=\"_blank\" href=\"https://guide.ncloud-docs.com/docs/backup-overview\" style=\"color: #14adea;font-weight:500\">[Backup 설명서]</a>\n를 참고해 주시기 바랍니다. "
+    ],
+    "cmsPath": "/service-product/cms/cms_1720717660871.json",
+    "cmsVersion": "v1",
+    "sortOrder": 6,
+    "servicePlatforms": [
+      {
+        "serviceCode": "SV_0015",
+        "platformVersion": 1,
+        "consoleLinkUrl": "",
+        "guideLinkUrl": ""
+      },
+      {
+        "serviceCode": "SV_0015",
+        "platformVersion": 2,
+        "consoleLinkUrl": "/vpc-cloud-backup/dashboard?platform=vpc",
+        "guideLinkUrl": "/storage/storage-5-1.html"
+      }
+    ],
+    "modYmdt": "Apr 16, 2025, 11:27:45 AM",
+    "deployYmdt": "Dec 30, 2025, 2:38:41 PM"
+  },
+  {
+    "serviceCode": "SV_0269",
+    "upperServiceCode": "STRG",
+    "serviceName": "Ncloud Storage",
+    "upperServiceName": "storage",
+    "serviceDesc": "뛰어난 확장성과 가용성, 데이터 내구성을 보장하며 언제든 데이터를 저장, 검색할 수 있는 오브젝트 스토리지 ",
+    "detailLinkUrl": "ncloudStorage",
+    "keywords": [
+      "NcloudStorage"
+    ],
+    "labels": [],
+    "regionCodes": [
+      "KR"
+    ],
+    "platformTypeCode": "COMMON",
+    "metaTitle": "Ncloud Storage",
+    "cmsPath": "/service-product/cms/cms_1764898085729.json",
+    "cmsVersion": "v1",
+    "sortOrder": 8,
+    "servicePlatforms": [
+      {
+        "serviceCode": "SV_0269",
+        "platformVersion": 2,
+        "consoleLinkUrl": "/ncloud-storage/management"
+      }
+    ],
+    "modYmdt": "Dec 5, 2025, 10:28:05 AM",
+    "deployYmdt": "Dec 30, 2025, 2:38:41 PM"
+  },
+  {
+    "serviceCode": "SV_0002",
+    "upperServiceCode": "SVR",
+    "serviceName": "Server",
+    "upperServiceName": "compute",
+    "serviceDesc": "클라우드 상에서 서버를 생성하고 확장할 수 있는 서비스",
+    "iconUrl": "https://portal.gcdn.ntruss.com/image/prod-compute-server_1719702228822.svg+xml",
+    "detailLinkUrl": "server",
+    "calcLinkUrl": "compute#server",
+    "keywords": [
+      "클라우드서버",
+      "네이버클라우드서버",
+      "무료클라우드서버",
+      "무료서버",
+      "서버호스팅",
+      "서버임대",
+      "클라우드서버생성",
+      "서버구축",
+      "네이버클라우드플랫폼서버",
+      "오픈소스서버",
+      "네이버서버",
+      "윈도우서버",
+      "리눅스서버",
+      "마이크로서버",
+      "Cloud server",
+      "NAVER cloud server",
+      "Free cloud server",
+      "Free server",
+      "Server hosting",
+      "Server leasing",
+      "Cloud server hosting",
+      "Server development",
+      "NAVER CLOUD PLATFORM server",
+      "Open source server"
+    ],
+    "labels": [],
+    "regionCodes": [
+      "KR",
+      "USWN",
+      "SGN",
+      "HK",
+      "JP",
+      "DEN"
+    ],
+    "platformTypeCode": "CLASSIC",
+    "metaTitle": "Server  - Compute",
+    "metaDesc": "다양한 클라우드 서버 타입 및 이미지 제공. 빠른 생성. 모니터링 및 보안 기능 적용. 무료 서버.",
+    "metaKeyword": [
+      "클라우드서버",
+      "네이버클라우드서버",
+      "무료클라우드서버",
+      "무료서버",
+      "서버호스팅",
+      "서버임대",
+      "클라우드서버생성",
+      "서버구축",
+      "네이버클라우드플랫폼서버",
+      "오픈소스서버"
+    ],
+    "eventContents": [],
+    "cmsPath": "/service-product/cms/cms_1762855191216.json",
+    "cmsVersion": "v1",
+    "sortOrder": 1,
+    "servicePlatforms": [
+      {
+        "serviceCode": "SV_0002",
+        "platformVersion": 1,
+        "consoleLinkUrl": "/mc/nserver/server/server_list",
+        "guideLinkUrl": "/compute/compute-1-1-v1.html"
+      },
+      {
+        "serviceCode": "SV_0002",
+        "platformVersion": 2,
+        "consoleLinkUrl": "/server/server?platform=classic",
+        "guideLinkUrl": "/compute/compute-1-1-v2.html"
+      }
+    ],
+    "modYmdt": "Nov 19, 2025, 7:06:02 PM",
+    "deployYmdt": "Dec 30, 2025, 2:38:41 PM"
+  },
+  {
+    "serviceCode": "SV_0003",
+    "upperServiceCode": "SVR",
+    "serviceName": "SSD Server",
+    "upperServiceName": "compute",
+    "serviceDesc": "빠른 입출력(I/O) 처리가 가능한 SSD가 장착된 서버를 제공하는 서비스",
+    "iconUrl": "https://portal.gcdn.ntruss.com/image/prod-compute-ssdServer_1719702243196.svg+xml",
+    "detailLinkUrl": "ssdServer",
+    "calcLinkUrl": "compute#server",
+    "inquiryUrl": "",
+    "keywords": [
+      "SSD서버",
+      "네이버SSD서버",
+      "클라우드SSD",
+      "고성능서버",
+      "데이터센터SSD",
+      "데이터베이스서버SSD",
+      "DB서버SSD",
+      "서버용SSD",
+      "SSD안정성",
+      "SSD비교",
+      "SSD추천",
+      "SSD server",
+      "NAVER SSD server",
+      "Cloud SSD",
+      "High performance server",
+      "Data center SSD",
+      "Database server SSD",
+      "DB server SSD",
+      "Server use SSD",
+      "SSD stability",
+      "SSD comparison",
+      "SSD recommendation"
+    ],
+    "labels": [],
+    "regionCodes": [
+      "KR",
+      "USWN",
+      "SGN",
+      "JP",
+      "DEN"
+    ],
+    "platformTypeCode": "CLASSIC",
+    "metaTitle": "SSD Server - Compute",
+    "metaDesc": "SSD 디스크 장착 클라우드 서버. HDD, SSD 스토리지. 무료 시작.",
+    "metaKeyword": [
+      "SSD서버",
+      "네이버SSD서버",
+      "클라우드SSD",
+      "고성능서버",
+      "데이터센터SSD",
+      "데이터베이스서버SSD",
+      "DB서버SSD",
+      "서버용SSD",
+      "SSD안정성",
+      "SSD비교",
+      "SSD추천"
+    ],
+    "eventContents": [],
+    "cmsPath": "/service-product/cms/cms_1749661614998.json",
+    "cmsVersion": "v1",
+    "sortOrder": 2,
+    "servicePlatforms": [
+      {
+        "serviceCode": "SV_0003",
+        "platformVersion": 1,
+        "consoleLinkUrl": "",
+        "guideLinkUrl": ""
+      },
+      {
+        "serviceCode": "SV_0003",
+        "platformVersion": 2,
+        "consoleLinkUrl": "/server/server?platform=classic",
+        "guideLinkUrl": "/compute/compute-1-1-v2.html"
+      }
+    ],
+    "modYmdt": "Jul 16, 2025, 3:23:02 PM",
+    "deployYmdt": "Dec 30, 2025, 2:38:41 PM"
+  },
+  {
+    "serviceCode": "SV_0004",
+    "upperServiceCode": "SVR",
+    "serviceName": "GPU Server",
+    "upperServiceName": "compute",
+    "serviceDesc": "병렬 연산에 최적화된 GPU 서버의 고성능 컴퓨팅 파워를 제공하는 서비스",
+    "iconUrl": "https://portal.gcdn.ntruss.com/image/prod-compute-gpuServer_1719702257564.svg+xml",
+    "detailLinkUrl": "gpuServer",
+    "calcLinkUrl": "compute#server",
+    "inquiryUrl": "",
+    "keywords": [
+      "GPU서버",
+      "GPU병렬처리",
+      "GPU렌더링",
+      "GPU비교",
+      "쿠다",
+      "엔비디아GPU",
+      "GPU드라이버",
+      "멀티GPU",
+      "네이버클라우드GPU",
+      "네이버GPU",
+      "클라우드GPU",
+      "GPU클라우드",
+      "지피유클라우드",
+      "클라우드지피유",
+      "네이버클라우드플랫폼GPU",
+      "딥러닝",
+      "머신러닝",
+      "고성능서버",
+      "GPU server",
+      " NAVER GPU",
+      "GPU parallel computing",
+      "GPU rendering",
+      "GPU comparison",
+      "Compute Unified Device Architecture",
+      "CUDA",
+      "NVIDIA GPU",
+      "GPU driver",
+      "Multi-GPU",
+      "NAVER cloud GPU",
+      "NAVER GPU",
+      "Cloud GPU",
+      "GPU cloud",
+      "NCP GPU",
+      "NAVER CLOUD PLATFORM GPU"
+    ],
+    "labels": [],
+    "regionCodes": [
+      "KR",
+      "SGN",
+      "JP"
+    ],
+    "platformTypeCode": "CLASSIC",
+    "metaTitle": "GPU Server - Compute",
+    "metaDesc": "최신 TESLA 아키텍처 적용된 GPU 서버. 고성능 병렬 컴퓨팅 파워 제공. 딥러닝, 머신러닝, AI, 빅데이터 분석 활용.",
+    "metaKeyword": [
+      "GPU서버",
+      "GPU병렬처리",
+      "GPU렌더링",
+      "GPU비교",
+      "쿠다",
+      "엔비디아GPU",
+      "GPU드라이버",
+      "멀티GPU",
+      "네이버클라우드GPU",
+      "네이버GPU",
+      "클라우드GPU",
+      "GPU클라우드",
+      "GPUcloud",
+      "지피유클라우드",
+      "NCPGPU",
+      "클라우드지피유",
+      "네이버클라우드플랫폼GPU"
+    ],
+    "eventContents": [],
+    "cmsPath": "/service-product/cms/cms_1742362731127.json",
+    "cmsVersion": "v1",
+    "sortOrder": 3,
+    "servicePlatforms": [
+      {
+        "serviceCode": "SV_0004",
+        "platformVersion": 1,
+        "consoleLinkUrl": "",
+        "guideLinkUrl": ""
+      },
+      {
+        "serviceCode": "SV_0004",
+        "platformVersion": 2,
+        "consoleLinkUrl": "/server/server?platform=classic",
+        "guideLinkUrl": "/compute/compute-1-1-v2.html"
+      }
+    ],
+    "modYmdt": "Mar 19, 2025, 2:38:51 PM",
+    "deployYmdt": "Dec 30, 2025, 2:38:41 PM"
+  },
+  {
+    "serviceCode": "SV_0006",
+    "upperServiceCode": "SVR",
+    "serviceName": "Bare Metal Server",
+    "upperServiceName": "compute",
+    "serviceDesc": "가상화되지 않은 고성능의 물리 서버를 클라우드에서 사용할 수 있는 서비스",
+    "iconUrl": "https://portal.gcdn.ntruss.com/image/prod-compute-baremetal_1719702268836.svg+xml",
+    "detailLinkUrl": "baremetal",
+    "calcLinkUrl": "compute#server",
+    "keywords": [
+      "베어메탈서버",
+      "네이버베어메탈",
+      "베어메탈",
+      "클라우드물리서버",
+      "단독서버호스팅",
+      "단독물리서버",
+      "고성능클라우드서버",
+      "고성능베어메탈",
+      "무료베어메탈",
+      "베어메탈클라우드",
+      "Bare metal server",
+      "NAVER bare metal",
+      "Bare metal",
+      "Cloud physical server",
+      "Dedicated server hosting",
+      "Dedicated physical server",
+      "High performance cloud server",
+      "High performance bare metal",
+      "Free bare metal",
+      "Bare metal cloud"
+    ],
+    "labels": [],
+    "regionCodes": [
+      "KR",
+      "USWN",
+      "SGN",
+      "JP",
+      "DEN"
+    ],
+    "platformTypeCode": "CLASSIC",
+    "metaTitle": "Bare Metal Server - Compute",
+    "metaDesc": "클라우드에서 가상화되지 않은 고성능의 물리 서버를 사용할 수 있는 서비스",
+    "metaKeyword": [
+      "베어메탈서버",
+      "네이버베어메탈",
+      "베어메탈",
+      "클라우드물리서버",
+      "단독서버호스팅",
+      "단독물리서버",
+      "고성능클라우드서버",
+      "고성능베어메탈",
+      "무료베어메탈",
+      "베어메탈클라우드"
+    ],
+    "eventContents": [],
+    "cmsPath": "/service-product/cms/cms_1741770914807.json",
+    "cmsVersion": "v1",
+    "sortOrder": 5,
+    "servicePlatforms": [
+      {
+        "serviceCode": "SV_0006",
+        "platformVersion": 1,
+        "consoleLinkUrl": "",
+        "guideLinkUrl": ""
+      },
+      {
+        "serviceCode": "SV_0006",
+        "platformVersion": 2,
+        "consoleLinkUrl": "/server/bareMetalServer?platform=classic",
+        "guideLinkUrl": "/compute/compute-1-2-v2.html"
+      }
+    ],
+    "modYmdt": "Mar 12, 2025, 6:15:15 PM",
+    "deployYmdt": "Dec 30, 2025, 2:38:41 PM"
+  },
+  {
+    "serviceCode": "SV_0007",
+    "upperServiceCode": "SVR",
+    "serviceName": "Auto Scaling",
+    "upperServiceName": "compute",
+    "serviceDesc": "사전 설정에 따라 서버 수를 자동으로 조절해 주는 서비스",
+    "iconUrl": "https://portal.gcdn.ntruss.com/image/prod-compute-autoScaling_1719702279422.svg+xml",
+    "detailLinkUrl": "autoScaling",
+    "keywords": [
+      "오토스케일링",
+      "네이버오토스케일링",
+      "자동서버확장",
+      "트래픽자동확장",
+      "서버모니터링",
+      "오토스케일링API",
+      "서버관리솔루션",
+      "네이버서버관리",
+      "클라우드오토스케일링",
+      "무료오토스케일링",
+      "Autoscaling",
+      "NAVER autoscaling",
+      "Server autoscaling",
+      "Traffic auto-respond",
+      "Traffic auto-expand",
+      "Server monitoring",
+      "Autoscaling API",
+      "Server management solution",
+      "NAVER server management",
+      "Cloud autoscaling",
+      "Free autoscaling"
+    ],
+    "labels": [],
+    "regionCodes": [
+      "KR",
+      "USWN",
+      "SGN",
+      "JP",
+      "DEN"
+    ],
+    "platformTypeCode": "CLASSIC",
+    "metaTitle": "Auto Scaling - Compute",
+    "metaDesc": "무료 오토스켈링. 사용자 설정 이벤트에 따른 서버 자동 증설 및 감축. ",
+    "metaKeyword": [
+      "오토스케일링",
+      "네이버오토스케일링",
+      "자동서버확장",
+      "트래픽자동대응",
+      "서버모니터링",
+      "오토스케일링API",
+      "서버관리솔루션",
+      "네이버서버관리",
+      "클라우드오토스케일링",
+      "무료오토스케일링"
+    ],
+    "eventContents": [],
+    "cmsPath": "/service-product/cms/cms_1720717674500.json",
+    "cmsVersion": "v1",
+    "sortOrder": 6,
+    "servicePlatforms": [
+      {
+        "serviceCode": "SV_0007",
+        "platformVersion": 1,
+        "consoleLinkUrl": "",
+        "guideLinkUrl": ""
+      },
+      {
+        "serviceCode": "SV_0007",
+        "platformVersion": 2,
+        "consoleLinkUrl": "/auto-scaling/autoScalingGroup?platform=classic",
+        "guideLinkUrl": "/compute/compute-9-1.html"
+      }
+    ],
+    "modYmdt": "Jul 17, 2024, 9:13:56 AM",
+    "deployYmdt": "Dec 30, 2025, 2:38:41 PM"
+  },
+  {
+    "serviceCode": "SV_0008",
+    "upperServiceCode": "SVR",
+    "serviceName": "Cloud Functions",
+    "upperServiceName": "compute",
+    "serviceDesc": "서버 관리나 프로비저닝 필요 없이 비즈니스 로직을 실행할 수 있는 서비스",
+    "iconUrl": "https://portal.gcdn.ntruss.com/image/prod-compute-cloudFunctions_1719702297064.svg+xml",
+    "detailLinkUrl": "cloudFunctions",
+    "calcLinkUrl": "compute#cloudFunctions",
+    "keywords": [
+      "서버리스컴퓨팅",
+      "네이버서버리스",
+      "네이버서버리스컴퓨팅",
+      "네이버람다",
+      "클라우드펑션",
+      "클라우드함수",
+      "서버리스아키텍처",
+      "서버리스플랫폼",
+      "오픈소스서버리스",
+      "서버리스람다",
+      "Serverless computing",
+      "Serverless programming",
+      "NAVER serverless",
+      "NAVER serverless computing",
+      "NAVER Lambda",
+      "Cloud functions",
+      "Serverless architecture",
+      "Serverless platform",
+      "Open source serverless",
+      "Serverless Lambda"
+    ],
+    "labels": [],
+    "regionCodes": [
+      "KR",
+      "SGN",
+      "JP"
+    ],
+    "platformTypeCode": "CLASSIC",
+    "metaTitle": "Cloud Functions - Compute",
+    "metaDesc": "별도 배포, 서버 프로비저닝 필요 없는 비즈니스 로직 코드 작성. 무료 시작.",
+    "metaKeyword": [
+      "서버리스컴퓨팅",
+      "네이버서버리스",
+      "네이버서버리스컴퓨팅",
+      "네이버람다",
+      "클라우드펑션",
+      "클라우드함수",
+      "서버리스아키텍처",
+      "서버리스플랫폼",
+      "오픈소스서버리스",
+      "서버리스람다"
+    ],
+    "eventContents": [],
+    "cmsPath": "/service-product/cms/cms_1754285829545.json",
+    "cmsVersion": "v1",
+    "sortOrder": 7,
+    "servicePlatforms": [
+      {
+        "serviceCode": "SV_0008",
+        "platformVersion": 1,
+        "consoleLinkUrl": "",
+        "guideLinkUrl": ""
+      },
+      {
+        "serviceCode": "SV_0008",
+        "platformVersion": 2,
+        "consoleLinkUrl": "/cloudFunctions/dashboard?platform=classic",
+        "guideLinkUrl": "/compute/compute-15-1.html"
+      }
+    ],
+    "modYmdt": "Nov 19, 2025, 7:06:02 PM",
+    "deployYmdt": "Dec 30, 2025, 2:38:41 PM"
+  }
+]

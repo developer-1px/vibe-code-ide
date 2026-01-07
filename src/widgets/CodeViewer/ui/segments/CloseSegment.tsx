@@ -4,10 +4,10 @@
 
 import { useAtomValue, useSetAtom } from 'jotai';
 import type React from 'react';
-import { fullNodeMapAtom } from '../../../../app/model/atoms';
+import { fullNodeMapAtom } from '@/entities/AppView/model/atoms';
+import { visibleNodeIdsAtom } from '@/widgets/MainContents/PipelineCanvas/model/atoms';
+import { pruneDetachedNodes } from '@/widgets/MainContents/PipelineCanvas/utils';
 import type { CanvasNode } from '../../../../entities/CanvasNode/model/types';
-import { visibleNodeIdsAtom } from '../../../PipelineCanvas/model/atoms';
-import { pruneDetachedNodes } from '../../../PipelineCanvas/utils';
 import type { CodeSegment, SegmentStyle } from '../../core/types';
 
 interface CloseSegmentProps {

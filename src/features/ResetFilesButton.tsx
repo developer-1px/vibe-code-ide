@@ -1,8 +1,8 @@
 import { useSetAtom } from 'jotai';
 import { Eraser as IconEraser } from 'lucide-react';
 import type React from 'react';
+import { filesAtom } from '@/entities/AppView/model/atoms';
 import { activeTabAtom, openedTabsAtom } from '@/features/File/OpenFiles/model/atoms';
-import { filesAtom } from '../app/model/atoms';
 import { DEFAULT_ENTRY_FILE, DEFAULT_FILES } from '../constants';
 
 const ResetFilesButton: React.FC = () => {

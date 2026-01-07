@@ -5,11 +5,11 @@
 
 import { useAtomValue } from 'jotai';
 import { useMemo } from 'react';
+import { useEditorTheme } from '@/entities/AppTheme/EditorThemeProvider';
 import { activeLocalVariablesAtom } from '@/features/Code/FocusMode/model/atoms';
 import { LocalVariableSegment } from '@/features/Code/FocusMode/ui/LocalVariableSegment';
-import { useEditorTheme } from '../../../app/theme/EditorThemeProvider';
+import { visibleNodeIdsAtom } from '@/widgets/MainContents/PipelineCanvas/model/atoms';
 import type { CanvasNode } from '../../../entities/CanvasNode/model/types';
-import { visibleNodeIdsAtom } from '../../PipelineCanvas/model/atoms';
 import { buildSegmentStyle } from '../core/styler/styleBuilder';
 import type { CodeLine, CodeSegment, SegmentKind } from '../core/types/codeLine';
 import { DependencyTokenSegment } from './segments/DependencyTokenSegment';
@@ -38,7 +38,7 @@ export const SegmentRenderer = ({
   node,
   line,
   isFolded = false,
-  foldedCount,
+  foldedCount: _foldedCount,
 }: {
   segment: CodeSegment;
   segIdx: number;

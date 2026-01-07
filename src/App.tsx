@@ -2,10 +2,12 @@ import { Provider, useAtomValue, useSetAtom } from 'jotai';
 import type React from 'react';
 import { useEffect, useMemo, useRef } from 'react';
 import { HotkeysProvider } from 'react-hotkeys-hook';
-import { UnifiedSearchModal } from '@/features/Search/UnifiedSearch/ui/UnifiedSearchModal';
 import * as ts from 'typescript';
-import type { SourceFileNode } from './entities/SourceFileNode/model/types';
-import AppSidebar from '@/widgets/AppSidebar/AppSidebar';
+import { AppActivityBar } from '@/app/ui/AppActivityBar/AppActivityBar';
+import AppSidebar from '@/app/ui/AppSidebar/AppSidebar';
+import { AppStatusBar } from '@/app/ui/AppStatusBar/AppStatusBar';
+import { AppTitleBar } from '@/app/ui/AppTitleBar/AppTitleBar';
+import { ThemeProvider } from '@/entities/AppTheme/ThemeProvider';
 import {
   filesAtom,
   fullNodeMapAtom,
@@ -15,22 +17,21 @@ import {
   rightPanelOpenAtom,
   rightPanelTypeAtom,
   viewModeAtom,
-} from './app/model/atoms';
-import { store } from './app/model/store';
-import { ThemeProvider } from './app/theme/ThemeProvider';
-import { DefinitionPanel } from './widgets/Panels/DefinitionPanel/DefinitionPanel.tsx';
-import { RelatedPanel } from './widgets/Panels/RelatedPanel/RelatedPanel.tsx';
+} from '@/entities/AppView/model/atoms';
+import { store } from '@/entities/AppView/model/store';
+import { UnifiedSearchModal } from '@/features/Search/UnifiedSearch/ui/UnifiedSearchModal';
+import { JsonExplorer } from '@/pages/JsonExplorer/JsonExplorer';
+import { deadCodePanelOpenAtom } from '@/pages/PageAnalysis/DeadCodePanel/model/atoms';
+import { PageAnalysis } from '@/pages/PageAnalysis/PageAnalysis';
+import IDEScrollView from '@/widgets/MainContents/IDEScrollView/IDEScrollView';
+import PipelineCanvas from '@/widgets/MainContents/PipelineCanvas/PipelineCanvas.tsx';
+import { getFileMetadata } from './entities/SourceFileNode/lib/metadata';
+import type { SourceFileNode } from './entities/SourceFileNode/model/types';
 import { activeTabAtom } from './features/File/OpenFiles/model/atoms';
 import { KeyboardShortcuts } from './features/KeyboardShortcuts/KeyboardShortcuts';
-import { getFileMetadata } from './entities/SourceFileNode/lib/metadata';
-import { AppActivityBar } from './widgets/AppActivityBar/AppActivityBar';
-import { AppStatusBar } from './widgets/AppStatusBar/AppStatusBar';
-import { AppTitleBar } from './widgets/AppTitleBar/AppTitleBar';
 import CodeDocView from './widgets/CodeDocView/CodeDocView';
-import { DeadCodePanel } from './widgets/DeadCodePanel/DeadCodePanel';
-import { deadCodePanelOpenAtom } from './widgets/DeadCodePanel/model/atoms';
-import IDEScrollView from './widgets/IDEScrollView/IDEScrollView';
-import PipelineCanvas from './widgets/PipelineCanvas/PipelineCanvas.tsx';
+import { DefinitionPanel } from './widgets/Panels/DefinitionPanel/DefinitionPanel.tsx';
+import { RelatedPanel } from './widgets/Panels/RelatedPanel/RelatedPanel.tsx';
 
 const AppContent: React.FC = () => {
   // Parse project when files change
@@ -51,10 +52,7 @@ const AppContent: React.FC = () => {
     console.log('[App] Files changed, starting Worker-based parsing');
 
     // Create Worker
-    const worker = new Worker(
-      new URL('./workers/parseProject.worker.ts', import.meta.url),
-      { type: 'module' }
-    );
+    const worker = new Worker(new URL('./workers/parseProject.worker.ts', import.meta.url), { type: 'module' });
     workerRef.current = worker;
 
     // Set loading state
@@ -84,31 +82,32 @@ const AppContent: React.FC = () => {
         console.log(`[App] Worker parsing complete: ${nodes.length} nodes in ${parseTime.toFixed(2)}ms`);
 
         // Reconstruct SourceFileNode[] with ts.SourceFile
-        const reconstructedNodes: SourceFileNode[] = nodes.map((serializedNode: any) => {
+        const reconstructedNodes: SourceFileNode[] = nodes.map((serializedNode: unknown) => {
+          const node = serializedNode as Partial<SourceFileNode>;
           // Symbol 노드는 sourceFile 재구성 불필요 (type/interface/function/const 등)
-          if (serializedNode.type !== 'file') {
-            return serializedNode as SourceFileNode;
+          if (node.type !== 'file') {
+            return node as SourceFileNode;
           }
 
           // 파일 노드만 sourceFile 재구성
-          const scriptKind = serializedNode.filePath.endsWith('.tsx')
+          const scriptKind = node.filePath?.endsWith('.tsx')
             ? ts.ScriptKind.TSX
-            : serializedNode.filePath.endsWith('.jsx')
+            : node.filePath?.endsWith('.jsx')
               ? ts.ScriptKind.JSX
               : ts.ScriptKind.TS;
 
           const sourceFile = ts.createSourceFile(
-            serializedNode.filePath,
-            serializedNode.codeSnippet,
+            node.filePath || '',
+            node.codeSnippet || '',
             ts.ScriptTarget.Latest,
             true,
             scriptKind
           );
 
           return {
-            ...serializedNode,
+            ...node,
             sourceFile,
-          };
+          } as SourceFileNode;
         });
 
         setGraphData({ nodes: reconstructedNodes });
@@ -175,21 +174,31 @@ const AppContent: React.FC = () => {
         {/* Activity Bar */}
         <AppActivityBar />
 
-        {/* Left Sidebar Area: DeadCodePanel or AppSidebar (File Explorer) */}
-        {deadCodePanelOpen ? <DeadCodePanel /> : <AppSidebar />}
+        {/* 독립 페이지 모드 (자체 레이아웃): PageAnalysis, JsonExplorer */}
+        {viewMode === 'jsonExplorer' && <JsonExplorer />}
+        {deadCodePanelOpen && <PageAnalysis />}
 
-        {/* Main Content Area: Canvas or IDEScrollView or CodeDocView */}
-        <div className="flex-1 relative overflow-hidden">
-          {viewMode === 'canvas' && <PipelineCanvas />}
-          {viewMode === 'ide' && <IDEScrollView />}
-          {viewMode === 'codeDoc' && <CodeDocView />}
-        </div>
+        {/* 기본 IDE 레이아웃 (Sidebar + Main Content + Right Panel) */}
+        {!deadCodePanelOpen && viewMode !== 'jsonExplorer' && (
+          <>
+            {/* Left Sidebar: File Explorer */}
+            <AppSidebar />
 
-        {/* Right Sidebar: DefinitionPanel or RelatedPanel */}
-        {rightPanelOpen && (
-          rightPanelType === 'definition'
-            ? <DefinitionPanel symbols={definitions} />
-            : <RelatedPanel currentFilePath={activeTab} />
+            {/* Main Content Area: Canvas or IDEScrollView or CodeDocView */}
+            <div className="flex-1 relative overflow-hidden">
+              {viewMode === 'canvas' && <PipelineCanvas />}
+              {viewMode === 'ide' && <IDEScrollView />}
+              {viewMode === 'codeDoc' && <CodeDocView />}
+            </div>
+
+            {/* Right Sidebar: DefinitionPanel or RelatedPanel */}
+            {rightPanelOpen &&
+              (rightPanelType === 'definition' ? (
+                <DefinitionPanel symbols={definitions} />
+              ) : (
+                <RelatedPanel currentFilePath={activeTab} />
+              ))}
+          </>
         )}
       </div>
 

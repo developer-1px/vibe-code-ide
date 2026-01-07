@@ -1,11 +1,9 @@
 import { useAtomValue } from 'jotai';
-import { ChevronDown, ChevronRight, GripVertical } from 'lucide-react';
-import { useEffect, useMemo, useRef, useState } from 'react';
-import { graphDataAtom } from '@/app/model/atoms';
+import { ChevronDown, ChevronRight, Folder, GripVertical } from 'lucide-react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { graphDataAtom } from '@/entities/AppView/model/atoms';
 import { analyzeDependencies, type DependencyItem } from '@/shared/dependencyAnalyzer';
-import { FileIcon } from '@/entities/SourceFileNode/ui/FileIcon';
 import { RelatedPanelItem } from './RelatedPanelItem';
-import { EntityItem } from './EntityItem';
 
 export interface RelatedPanelProps {
   /** 현재 파일 경로 (이 파일의 의존성을 분석) */
@@ -23,12 +21,13 @@ export function RelatedPanel({ currentFilePath }: RelatedPanelProps) {
   const graphData = useAtomValue(graphDataAtom);
   const [width, setWidth] = useState(400);
   const [isResizing, setIsResizing] = useState(false);
-  const [entitiesSectionCollapsed, setEntitiesSectionCollapsed] = useState(false); // ENTITIES 섹션 기본 펼쳐진 상태
-  const [entityFileCollapseStates, setEntityFileCollapseStates] = useState<Map<string, boolean>>(new Map()); // 파일별 접기/펼치기
+  const [_entitiesSectionCollapsed, _setEntitiesSectionCollapsed] = useState(false); // ENTITIES 섹션 기본 펼쳐진 상태
+  const [_entityFileCollapseStates, setEntityFileCollapseStates] = useState<Map<string, boolean>>(new Map()); // 파일별 접기/펼치기
+  const [localFilesSectionCollapsed, setLocalFilesSectionCollapsed] = useState(false); // LOCAL FILES 섹션 기본 펼쳐진 상태
+  const [localFilesFolderCollapseStates, setLocalFilesFolderCollapseStates] = useState<Map<string, boolean>>(new Map()); // LOCAL FILES 폴더별 접기/펼치기
   const [npmSectionCollapsed, setNpmSectionCollapsed] = useState(true); // NPM 섹션 기본 접힌 상태
   const [importedBySectionCollapsed, setImportedBySectionCollapsed] = useState(false); // IMPORTED BY 섹션
-  const [importedByDirectSubsectionCollapsed, setImportedByDirectSubsectionCollapsed] = useState(false); // Imported By Direct
-  const [importedByIndirectSubsectionCollapsed, setImportedByIndirectSubsectionCollapsed] = useState(true); // Imported By Indirect 기본 접힘
+  const [importedByFolderCollapseStates, setImportedByFolderCollapseStates] = useState<Map<string, boolean>>(new Map()); // IMPORTED BY 폴더별 접기/펼치기
   const resizeRef = useRef<HTMLDivElement>(null);
 
   const MIN_WIDTH = 180;
@@ -39,24 +38,102 @@ export function RelatedPanel({ currentFilePath }: RelatedPanelProps) {
     return analyzeDependencies(currentFilePath, graphData);
   }, [currentFilePath, graphData]);
 
-  // Entities를 파일별로 그룹핑
-  const entitiesGroupedByFile = useMemo(() => {
-    const groups = new Map<string, DependencyItem[]>();
-    dependencies.entities.forEach((entity) => {
-      if (!groups.has(entity.filePath)) {
-        groups.set(entity.filePath, []);
-      }
-      groups.get(entity.filePath)!.push(entity);
+  // Direct import 경로 추출 (현재 파일이 직접 import하는 파일들)
+  const directImportPaths = useMemo(() => {
+    if (!currentFilePath) return new Set<string>();
+    const currentNode = graphData.nodes.find((n) => n.filePath === currentFilePath);
+    if (!currentNode || !currentNode.dependencies) return new Set<string>();
+    return new Set(currentNode.dependencies);
+  }, [currentFilePath, graphData]);
+
+  // Direct import 폴더 경로 추출 (LOCAL FILES용)
+  const directLocalFolders = useMemo(() => {
+    const folders = new Set<string>();
+    directImportPaths.forEach((filePath) => {
+      const folderPath = filePath.substring(0, filePath.lastIndexOf('/'));
+      folders.add(folderPath);
     });
-    // 파일 경로순으로 정렬
+    return folders;
+  }, [directImportPaths]);
+
+  // Direct imported by 파일 경로 (현재 파일을 직접 import하는 파일들)
+  const directImportedByPaths = useMemo(() => {
+    return new Set(dependencies.importedBy.map((item) => item.filePath));
+  }, [dependencies.importedBy]);
+
+  // Direct imported by 폴더 경로
+  const directImportedByFolders = useMemo(() => {
+    const folders = new Set<string>();
+    directImportedByPaths.forEach((filePath) => {
+      const folderPath = filePath.substring(0, filePath.lastIndexOf('/'));
+      folders.add(folderPath);
+    });
+    return folders;
+  }, [directImportedByPaths]);
+
+  // 파일별 그룹핑 헬퍼 함수
+  const groupByFilePath = useCallback((items: DependencyItem[]) => {
+    const groups = new Map<string, DependencyItem[]>();
+    items.forEach((item) => {
+      if (!groups.has(item.filePath)) {
+        groups.set(item.filePath, []);
+      }
+      groups.get(item.filePath)!.push(item);
+    });
     return Array.from(groups.entries()).sort((a, b) => a[0].localeCompare(b[0]));
-  }, [dependencies.entities]);
+  }, []);
+
+  // 폴더별 그룹핑 헬퍼 함수
+  const groupByFolder = useCallback((items: DependencyItem[]) => {
+    const groups = new Map<string, DependencyItem[]>();
+    items.forEach((item) => {
+      const folderPath = item.filePath.substring(0, item.filePath.lastIndexOf('/'));
+      if (!groups.has(folderPath)) {
+        groups.set(folderPath, []);
+      }
+      groups.get(folderPath)!.push(item);
+    });
+    return Array.from(groups.entries()).sort((a, b) => a[0].localeCompare(b[0]));
+  }, []);
+
+  // Entities를 파일별로 그룹핑
+  const _entitiesGroupedByFile = useMemo(() => {
+    return groupByFilePath(dependencies.entities);
+  }, [dependencies.entities, groupByFilePath]);
+
+  // Local Files를 폴더별로 그룹핑
+  const localFilesGroupedByFolder = useMemo(() => {
+    return groupByFolder(dependencies.localFiles);
+  }, [dependencies.localFiles, groupByFolder]);
+
+  // Imported By (Direct + Indirect) 통합하여 폴더별로 그룹핑
+  const importedByGroupedByFolder = useMemo(() => {
+    const allImportedBy = [...dependencies.importedBy, ...dependencies.importedByIndirect];
+    return groupByFolder(allImportedBy);
+  }, [dependencies.importedBy, dependencies.importedByIndirect, groupByFolder]);
 
   // 파일별 collapse toggle
-  const toggleFileCollapse = (filePath: string) => {
+  const _toggleFileCollapse = (filePath: string) => {
     setEntityFileCollapseStates((prev) => {
       const newMap = new Map(prev);
       newMap.set(filePath, !prev.get(filePath));
+      return newMap;
+    });
+  };
+
+  // 폴더별 collapse toggle 함수들
+  const toggleLocalFilesFolder = (folderPath: string) => {
+    setLocalFilesFolderCollapseStates((prev) => {
+      const newMap = new Map(prev);
+      newMap.set(folderPath, !prev.get(folderPath));
+      return newMap;
+    });
+  };
+
+  const toggleImportedByFolder = (folderPath: string) => {
+    setImportedByFolderCollapseStates((prev) => {
+      const newMap = new Map(prev);
+      newMap.set(folderPath, !prev.get(folderPath));
       return newMap;
     });
   };
@@ -126,14 +203,12 @@ export function RelatedPanel({ currentFilePath }: RelatedPanelProps) {
       {/* Content */}
       <div className="flex-1 overflow-y-auto py-1">
         {!currentFilePath ? (
-          <div className="flex items-center justify-center h-full text-text-tertiary text-xs">
-            No file selected
-          </div>
+          <div className="flex items-center justify-center h-full text-text-tertiary text-xs">No file selected</div>
         ) : dependencies.localFiles.length === 0 &&
-           dependencies.npmModules.length === 0 &&
-           dependencies.entities.length === 0 &&
-           dependencies.importedBy.length === 0 &&
-           dependencies.importedByIndirect.length === 0 ? (
+          dependencies.npmModules.length === 0 &&
+          dependencies.entities.length === 0 &&
+          dependencies.importedBy.length === 0 &&
+          dependencies.importedByIndirect.length === 0 ? (
           <div className="flex items-center justify-center h-full text-text-tertiary text-xs">
             No dependencies found
           </div>
@@ -156,72 +231,52 @@ export function RelatedPanel({ currentFilePath }: RelatedPanelProps) {
               </div>
             )}
 
-            {/* ENTITIES Section (Types/Interfaces) - 파일별 그룹핑 */}
-            {dependencies.entities.length > 0 && (
-              <div className="mb-2">
-                {/* Main ENTITIES Header */}
-                <div
-                  className="flex items-center gap-1 px-2 py-1 text-3xs font-semibold text-text-faint uppercase tracking-label cursor-pointer hover:bg-bg-deep/50 transition-colors"
-                  onClick={() => setEntitiesSectionCollapsed(!entitiesSectionCollapsed)}
-                >
-                  {entitiesSectionCollapsed ? <ChevronRight size={12} /> : <ChevronDown size={12} />}
-                  <span>ENTITIES ({dependencies.entities.length})</span>
-                </div>
-
-                {!entitiesSectionCollapsed && (
-                  <>
-                    {/* 파일별 그룹핑 */}
-                    {entitiesGroupedByFile.map(([filePath, entities]) => {
-                      const fileName = filePath.split('/').pop() || filePath;
-                      // src/ 이후 경로만 추출 (상대 경로)
-                      const displayPath = filePath.includes('src/')
-                        ? filePath.split('src/')[1]
-                        : filePath;
-                      const isCollapsed = entityFileCollapseStates.get(filePath) ?? false;
-
-                      return (
-                        <div key={filePath} className="mb-1">
-                          {/* 파일 헤더 */}
-                          <div
-                            className="flex items-center gap-2 px-2 py-1 text-2xs text-text-tertiary cursor-pointer hover:bg-bg-deep/30 transition-colors"
-                            onClick={() => toggleFileCollapse(filePath)}
-                            title={filePath}
-                          >
-                            {isCollapsed ? <ChevronRight size={10} /> : <ChevronDown size={10} />}
-                            <FileIcon fileName={fileName} size={11} className="text-text-tertiary" />
-                            <span className="font-medium truncate font-mono">{displayPath}</span>
-                            <span className="text-3xs text-text-faint ml-auto shrink-0">({entities.length})</span>
-                          </div>
-
-                          {/* Entity 리스트 (flat) */}
-                          {!isCollapsed &&
-                            entities.map((item, idx) => (
-                              <EntityItem
-                                key={`entity-${filePath}-${item.exportName}-${idx}`}
-                                item={item}
-                              />
-                            ))}
-                        </div>
-                      );
-                    })}
-                  </>
-                )}
-              </div>
-            )}
-
-            {/* Local Files Section */}
+            {/* Local Files Section - Folder/File Flat Structure */}
             {dependencies.localFiles.length > 0 && (
               <div className="mb-2">
-                <div className="px-2 py-1 text-3xs font-semibold text-text-faint uppercase tracking-label">
-                  Local Files ({dependencies.localFiles.length})
+                <div
+                  className="flex items-center gap-1 px-2 py-1 text-3xs font-semibold text-text-faint uppercase tracking-label cursor-pointer hover:bg-bg-deep/50 transition-colors"
+                  onClick={() => setLocalFilesSectionCollapsed(!localFilesSectionCollapsed)}
+                >
+                  {localFilesSectionCollapsed ? <ChevronRight size={12} /> : <ChevronDown size={12} />}
+                  <span>Local Files ({dependencies.localFiles.length})</span>
                 </div>
-                {dependencies.localFiles.map((item, idx) => (
-                  <RelatedPanelItem key={`local-${item.filePath}-${idx}`} item={item} depth={item.depth} />
-                ))}
+                {!localFilesSectionCollapsed &&
+                  localFilesGroupedByFolder.map(([folderPath, files]) => {
+                    const displayFolder = folderPath.includes('src/') ? folderPath.split('src/')[1] : folderPath;
+                    const isCollapsed = localFilesFolderCollapseStates.get(folderPath) ?? true;
+                    const isDirect = directLocalFolders.has(folderPath);
+
+                    return (
+                      <div key={folderPath} className="mb-0.5">
+                        {/* Folder header */}
+                        <div
+                          className="flex items-center gap-2 px-2 py-0.5 text-2xs text-text-tertiary cursor-pointer hover:bg-bg-deep/30 transition-colors"
+                          onClick={() => toggleLocalFilesFolder(folderPath)}
+                          title={folderPath}
+                        >
+                          {isCollapsed ? <ChevronRight size={10} /> : <ChevronDown size={10} />}
+                          <Folder
+                            size={11}
+                            className={`shrink-0 ${isDirect ? 'text-blue-400' : 'text-text-tertiary'}`}
+                          />
+                          <span className="font-medium truncate font-mono">
+                            {displayFolder} <span className="text-3xs text-text-faint">({files.length})</span>
+                          </span>
+                        </div>
+
+                        {/* File list (flat) */}
+                        {!isCollapsed &&
+                          files.map((item, idx) => (
+                            <RelatedPanelItem key={`local-${item.filePath}-${idx}`} item={item} depth={0} />
+                          ))}
+                      </div>
+                    );
+                  })}
               </div>
             )}
 
-            {/* Imported By Section (역방향 의존성) - 2 Subsections */}
+            {/* Imported By Section (역방향 의존성) */}
             {(dependencies.importedBy.length > 0 || dependencies.importedByIndirect.length > 0) && (
               <div className="mb-2">
                 {/* Main IMPORTED BY Header */}
@@ -235,47 +290,38 @@ export function RelatedPanel({ currentFilePath }: RelatedPanelProps) {
 
                 {!importedBySectionCollapsed && (
                   <>
-                    {/* Subsection 1: Direct */}
-                    {dependencies.importedBy.length > 0 && (
-                      <div className="ml-2">
-                        <div
-                          className="flex items-center gap-1 px-2 py-0.5 text-3xs font-medium text-text-tertiary cursor-pointer hover:bg-bg-deep/30 transition-colors"
-                          onClick={() => setImportedByDirectSubsectionCollapsed(!importedByDirectSubsectionCollapsed)}
-                        >
-                          {importedByDirectSubsectionCollapsed ? <ChevronRight size={10} /> : <ChevronDown size={10} />}
-                          <span>📍 Direct ({dependencies.importedBy.length})</span>
-                        </div>
-                        {!importedByDirectSubsectionCollapsed &&
-                          dependencies.importedBy.map((item, idx) => (
-                            <RelatedPanelItem
-                              key={`importedby-direct-${item.filePath}-${idx}`}
-                              item={item}
-                              depth={0}
-                            />
-                          ))}
-                      </div>
-                    )}
+                    {/* Folder/File Structure */}
+                    {importedByGroupedByFolder.map(([folderPath, files]) => {
+                      const displayFolder = folderPath.includes('src/') ? folderPath.split('src/')[1] : folderPath;
+                      const isCollapsed = importedByFolderCollapseStates.get(folderPath) ?? true;
+                      const isDirect = directImportedByFolders.has(folderPath);
 
-                    {/* Subsection 2: Indirect */}
-                    {dependencies.importedByIndirect.length > 0 && (
-                      <div className="ml-2">
-                        <div
-                          className="flex items-center gap-1 px-2 py-0.5 text-3xs font-medium text-text-tertiary cursor-pointer hover:bg-bg-deep/30 transition-colors"
-                          onClick={() => setImportedByIndirectSubsectionCollapsed(!importedByIndirectSubsectionCollapsed)}
-                        >
-                          {importedByIndirectSubsectionCollapsed ? <ChevronRight size={10} /> : <ChevronDown size={10} />}
-                          <span>🔗 Indirect ({dependencies.importedByIndirect.length})</span>
-                        </div>
-                        {!importedByIndirectSubsectionCollapsed &&
-                          dependencies.importedByIndirect.map((item, idx) => (
-                            <RelatedPanelItem
-                              key={`importedby-indirect-${item.filePath}-${idx}`}
-                              item={item}
-                              depth={item.depth}
+                      return (
+                        <div key={folderPath} className="mb-0.5">
+                          {/* Folder header */}
+                          <div
+                            className="flex items-center gap-2 px-2 py-0.5 text-2xs text-text-tertiary cursor-pointer hover:bg-bg-deep/30 transition-colors"
+                            onClick={() => toggleImportedByFolder(folderPath)}
+                            title={folderPath}
+                          >
+                            {isCollapsed ? <ChevronRight size={10} /> : <ChevronDown size={10} />}
+                            <Folder
+                              size={11}
+                              className={`shrink-0 ${isDirect ? 'text-blue-400' : 'text-text-tertiary'}`}
                             />
-                          ))}
-                      </div>
-                    )}
+                            <span className="font-medium truncate font-mono">
+                              {displayFolder} <span className="text-3xs text-text-faint">({files.length})</span>
+                            </span>
+                          </div>
+
+                          {/* File list (flat) */}
+                          {!isCollapsed &&
+                            files.map((item, idx) => (
+                              <RelatedPanelItem key={`importedby-${item.filePath}-${idx}`} item={item} depth={0} />
+                            ))}
+                        </div>
+                      );
+                    })}
                   </>
                 )}
               </div>

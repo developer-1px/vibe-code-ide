@@ -6,11 +6,15 @@
 
 import { useAtomValue, useSetAtom } from 'jotai';
 import type React from 'react';
+import { fullNodeMapAtom, hoveredIdentifierAtom, viewModeAtom } from '@/entities/AppView/model/atoms';
 import { useOpenFile } from '@/features/File/OpenFiles/lib/useOpenFile';
-import { fullNodeMapAtom, hoveredIdentifierAtom, viewModeAtom } from '../../../../app/model/atoms';
+import { focusedNodeIdAtom } from '@/widgets/MainContents/IDEScrollView/model/atoms.ts';
+import {
+  cardPositionsAtom,
+  transformAtom,
+  visibleNodeIdsAtom,
+} from '@/widgets/MainContents/PipelineCanvas/model/atoms';
 import type { CanvasNode } from '../../../../entities/CanvasNode/model/types';
-import { focusedNodeIdAtom } from '../../../IDEView/model/atoms';
-import { cardPositionsAtom, transformAtom, visibleNodeIdsAtom } from '../../../PipelineCanvas/model/atoms';
 import type { CodeSegment, SegmentStyle } from '../../core/types';
 
 interface ExternalSegmentProps {

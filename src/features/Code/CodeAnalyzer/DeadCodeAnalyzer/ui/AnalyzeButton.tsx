@@ -5,7 +5,7 @@
 import { useAtomValue } from 'jotai';
 import { AlertTriangle, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/Button.tsx';
-import { graphDataAtom } from '../../../../../app/model/atoms.ts';
+import { graphDataAtom } from '@/entities/AppView/model/atoms';
 import { useDeadCodeAnalysis } from '../lib/useDeadCodeAnalysis.ts';
 
 export function AnalyzeButton() {

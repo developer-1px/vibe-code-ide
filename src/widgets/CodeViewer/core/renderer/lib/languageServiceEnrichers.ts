@@ -3,9 +3,8 @@
  */
 
 import * as ts from 'typescript';
-import type { CodeLine } from '../../types/codeLine';
-import { getParameterHintsForCall } from '../../../../../shared/tsParser/utils/languageService';
 import { createLanguageService } from '../../../../../shared/tsParser/utils/languageService';
+import type { CodeLine } from '../../types/codeLine';
 import { findDefinitionLocation, getQuickInfoAtPosition } from '../tsLanguageService';
 
 // Development mode flag
@@ -150,7 +149,7 @@ export const enrichWithLanguageService = (
  */
 export const addInlayHints = (
   lines: CodeLine[],
-  codeSnippet: string,
+  _codeSnippet: string,
   filePath: string,
   files: Record<string, string>
 ): CodeLine[] => {
@@ -197,7 +196,7 @@ export const addInlayHints = (
               }
             });
           }
-        } catch (error) {
+        } catch (_error) {
           // Signature help 실패해도 계속 진행
           console.debug('[addInlayHints] Signature help failed for:', node.expression.getText(sourceFile));
         }

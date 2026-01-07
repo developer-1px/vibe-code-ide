@@ -1,15 +1,15 @@
 import { useAtomValue } from 'jotai';
 import { useEffect, useMemo, useRef } from 'react';
+import { useEditorTheme } from '@/entities/AppTheme/EditorThemeProvider';
 import { getFoldedCount, isLineFolded, isLineInsideFold } from '@/features/Code/CodeFold/lib/foldUtils';
 import { foldedLinesAtom } from '@/features/Code/CodeFold/model/atoms';
 import FoldBadge from '@/features/Code/CodeFold/ui/FoldBadge';
 import FoldButton from '@/features/Code/CodeFold/ui/FoldButton';
 import { targetLineAtom } from '@/features/File/Navigation/model/atoms';
-import { useEditorTheme } from '../../../app/theme/EditorThemeProvider';
+import { layoutNodesAtom } from '@/widgets/MainContents/PipelineCanvas/model/atoms';
 import type { CanvasNode } from '../../../entities/CanvasNode/model/types';
-import type { SourceFileNode } from '../../../entities/SourceFileNode/model/types';
 import { getSymbolUsages } from '../../../entities/SourceFileNode/lib/metadata';
-import { layoutNodesAtom } from '../../PipelineCanvas/model/atoms';
+import type { SourceFileNode } from '../../../entities/SourceFileNode/model/types';
 import type { CodeLine } from '../core/types';
 import CodeLineExportSlots from './CodeLineExportSlots';
 import CodeLineSegment from './CodeLineSegment';
@@ -46,7 +46,7 @@ const CodeLineView = ({
   node,
   foldRanges,
   isHighlighted = false,
-  allLines,
+  allLines: _allLines,
   options = {
     showFoldButton: true,
     showSlots: true,
@@ -65,7 +65,7 @@ const CodeLineView = ({
   const theme = useEditorTheme();
   const targetLine = useAtomValue(targetLineAtom);
   const foldedLinesMap = useAtomValue(foldedLinesAtom);
-  const layoutNodes = useAtomValue(layoutNodesAtom);
+  const _layoutNodes = useAtomValue(layoutNodesAtom);
   const lineRef = useRef<HTMLDivElement>(null);
 
   // 사용자에게 이 라인이 export 선언임을 시각적으로 표시하기 위함
