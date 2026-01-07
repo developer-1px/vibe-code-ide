@@ -14,7 +14,7 @@ import {
   selectedDeadCodeItemsAtom,
 } from '@/features/Code/CodeAnalyzer/DeadCodeAnalyzer/model/atoms.ts';
 import { activeTabAtom, openedTabsAtom } from '@/features/File/OpenFiles/model/atoms.ts';
-import { filesAtom, fullNodeMapAtom } from '../../../app/model/atoms.ts';
+import { filesAtom, fullNodeMapAtom } from '@/entities/AppView/model/atoms';
 import type { DeadCodeItem } from '../../../features/Code/CodeAnalyzer/DeadCodeAnalyzer/lib/deadCodeAnalyzer.ts';
 import { useScrollNavigation } from './lib/useScrollNavigation.ts';
 import FileSection from './ui/FileSection.tsx';

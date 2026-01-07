@@ -1,6 +1,6 @@
 import { useAtomValue, useSetAtom } from 'jotai';
 import { useEffect, useState } from 'react';
-import { fullNodeMapAtom } from '../../../app/model/atoms.ts';
+import { fullNodeMapAtom } from '@/entities/AppView/model/atoms';
 import type { CanvasNode } from '../../../entities/CanvasNode/model/types.ts';
 import type { GraphData } from '../../../entities/SourceFileNode/model/types.ts';
 import { layoutLinksAtom, layoutNodesAtom } from './model/atoms.ts';

@@ -7,7 +7,7 @@ import { useAtomValue } from 'jotai';
 import type React from 'react';
 import { useMemo } from 'react';
 import { deadCodeResultsAtom } from '@/features/Code/CodeAnalyzer/DeadCodeAnalyzer/model/atoms.ts';
-import { filesAtom } from '../../../../app/model/atoms.ts';
+import { filesAtom } from '@/entities/AppView/model/atoms';
 import type { CanvasNode } from '../../../../entities/CanvasNode/model/types.ts';
 import { renderCodeLinesDirect } from '../../../../widgets/CodeViewer/core/renderer/renderCodeLinesDirect.ts';
 import { renderVueFile } from '../../../../widgets/CodeViewer/core/renderer/renderVueFile.ts';

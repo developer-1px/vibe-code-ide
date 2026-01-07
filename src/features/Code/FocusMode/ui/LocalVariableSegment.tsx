@@ -6,7 +6,7 @@
 
 import { useAtomValue, useSetAtom } from 'jotai';
 import type React from 'react';
-import { hoveredIdentifierAtom } from '@/app/model/atoms';
+import { hoveredIdentifierAtom } from '@/entities/AppView/model/atoms';
 import { useGotoDefinition } from '@/features/File/GotoDefinition/lib/useGotoDefinition.ts';
 import type { CanvasNode } from '../../../../entities/CanvasNode/model/types.ts';
 import type { CodeSegment, SegmentStyle } from '../../../../widgets/CodeViewer/core/types/codeLine.ts';

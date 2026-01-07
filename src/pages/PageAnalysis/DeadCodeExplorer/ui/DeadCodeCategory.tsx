@@ -19,7 +19,7 @@ import { useDeadCodeSelection } from '@/features/Code/CodeAnalyzer/DeadCodeSelec
 import { CategoryCheckbox } from '@/features/Code/CodeAnalyzer/DeadCodeSelection/ui/CategoryCheckbox.tsx';
 import { targetLineAtom } from '@/features/File/Navigation/model/atoms.ts';
 import { useOpenFile } from '@/features/File/OpenFiles/lib/useOpenFile.ts';
-import { filesAtom, viewModeAtom } from '../../../../app/model/atoms.ts';
+import { filesAtom, viewModeAtom } from '@/entities/AppView/model/atoms';
 import { FileIcon } from '../../../../entities/SourceFileNode/ui/FileIcon.tsx';
 import type { DeadCodeItem } from '../../../../features/Code/CodeAnalyzer/DeadCodeAnalyzer/lib/deadCodeAnalyzer.ts';
 import { TreeView } from '../../../../shared/ui/TreeView/TreeView.tsx';
@@ -167,7 +167,7 @@ export function DeadCodeCategory({
                       )}
                     </div>
                     <Checkbox
-                      checked={isSelected}
+                      checked={isSelected}샐
                       onCheckedChange={() => toggleItemSelection(item)}
                       className="shrink-0 mr-2 border-border-hover"
                       onClick={(e) => e.stopPropagation()}

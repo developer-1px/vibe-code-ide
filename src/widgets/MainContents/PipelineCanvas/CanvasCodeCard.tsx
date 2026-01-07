@@ -7,7 +7,7 @@ import { useDrag } from '@use-gesture/react';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import type React from 'react';
 import { useMemo, useRef } from 'react';
-import { focusedPaneAtom } from '../../../app/model/atoms.ts';
+import { focusedPaneAtom } from '@/entities/AppView/model/atoms';
 import type { CanvasNode } from '../../../entities/CanvasNode/model/types.ts';
 import CodeCard from '../../CodeCard/CodeCard.tsx';
 import { cardPositionsAtom, selectedNodeIdsAtom, transformAtom } from './model/atoms.ts';

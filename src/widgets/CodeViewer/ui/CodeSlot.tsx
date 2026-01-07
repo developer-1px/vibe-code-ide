@@ -7,7 +7,7 @@ import {
   layoutLinksAtom,
   visibleNodeIdsAtom,
 } from '@/widgets/MainContents/PipelineCanvas/model/atoms';
-import { useEditorTheme } from '../../../app/theme/EditorThemeProvider';
+import { useEditorTheme } from '@/entities/AppTheme/EditorThemeProvider';
 import { getSlotColor } from '../../../entities/SourceFileNode/lib/styleUtils';
 import type { SourceFileNode } from '../../../entities/SourceFileNode/model/types';
 

@@ -6,7 +6,7 @@
 import { useAtom } from 'jotai';
 import { ListTree, Network, X } from 'lucide-react';
 import { TitleBar } from '@/components/ide/TitleBar.tsx';
-import { rightPanelOpenAtom, rightPanelTypeAtom } from '../../model/atoms.ts';
+import { rightPanelOpenAtom, rightPanelTypeAtom } from '@/entities/AppView/model/atoms';
 
 export function AppTitleBar() {
   const [rightPanelOpen, setRightPanelOpen] = useAtom(rightPanelOpenAtom);

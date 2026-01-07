@@ -6,7 +6,7 @@ import FoldBadge from '@/features/Code/CodeFold/ui/FoldBadge';
 import FoldButton from '@/features/Code/CodeFold/ui/FoldButton';
 import { targetLineAtom } from '@/features/File/Navigation/model/atoms';
 import { layoutNodesAtom } from '@/widgets/MainContents/PipelineCanvas/model/atoms';
-import { useEditorTheme } from '../../../app/theme/EditorThemeProvider';
+import { useEditorTheme } from '@/entities/AppTheme/EditorThemeProvider';
 import type { CanvasNode } from '../../../entities/CanvasNode/model/types';
 import { getSymbolUsages } from '../../../entities/SourceFileNode/lib/metadata';
 import type { SourceFileNode } from '../../../entities/SourceFileNode/model/types';
@@ -65,7 +65,7 @@ const CodeLineView = ({
   const theme = useEditorTheme();
   const targetLine = useAtomValue(targetLineAtom);
   const foldedLinesMap = useAtomValue(foldedLinesAtom);
-  const layoutNodes = useAtomValue(layoutNodesAtom);
+  const _layoutNodes = useAtomValue(layoutNodesAtom);
   const lineRef = useRef<HTMLDivElement>(null);
 
   // 사용자에게 이 라인이 export 선언임을 시각적으로 표시하기 위함

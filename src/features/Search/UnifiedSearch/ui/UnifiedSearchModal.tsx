@@ -8,7 +8,7 @@ import type React from 'react';
 import { useCallback, useEffect, useMemo } from 'react';
 import { CommandPalette } from '@/components/ui/CommandPalette.tsx';
 import { useOpenFile } from '@/features/File/OpenFiles/lib/useOpenFile.ts';
-import { filesAtom, focusedPaneAtom, fullNodeMapAtom } from '../../../../app/model/atoms.ts';
+import { filesAtom, focusedPaneAtom, fullNodeMapAtom } from '@/entities/AppView/model/atoms';
 import { searchResultsFuzzy } from '../lib/searchService.ts';
 import { getAllSearchableItems } from '../lib/symbolExtractor.ts';
 import {

@@ -95,11 +95,10 @@ export const FileTreeItem = React.forwardRef<HTMLDivElement, FileTreeItemProps>(
         ref={ref}
         className={cn(
           'group flex flex-nowrap h-[var(--limn-file-item-height)] items-center gap-1 border-l-2 px-2 text-xs cursor-pointer',
-          active
-            ? 'border-transparent text-text-primary'
-            : focused
-              ? 'border-warm-300/50 bg-white/8 text-text-primary'
-              : 'border-transparent text-text-secondary'
+          // Border and background (focused state)
+          focused ? 'border-warm-300/50 bg-white/8' : 'border-transparent',
+          // Text color (active or focused)
+          active || focused ? 'text-text-primary' : 'text-text-secondary'
         )}
         style={{
           paddingLeft: `calc(12px + ${indent} * var(--limn-indent) + ${isFolder ? '0px' : '15px'})`,

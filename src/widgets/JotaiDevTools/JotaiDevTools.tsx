@@ -14,9 +14,9 @@ import * as filesAtoms from '@/features/File/OpenFiles/model/atoms';
 import * as searchAtoms from '@/features/Search/UnifiedSearch/model/atoms';
 import * as deadCodePanelAtoms from '@/pages/PageAnalysis/DeadCodePanel/model/atoms';
 import * as canvasAtoms from '@/widgets/MainContents/PipelineCanvas/model/atoms';
-import * as appAtoms from '../../app/model/atoms';
-import { store } from '../../app/model/store';
-import * as themeAtoms from '../../app/theme/atoms';
+import * as appAtoms from '@/entities/AppView/model/atoms';
+import { store } from '@/entities/AppView/model/store';
+import * as themeAtoms from '@/entities/AppTheme/atoms';
 
 // Combine all atoms for DevTools tracking
 const atoms = {

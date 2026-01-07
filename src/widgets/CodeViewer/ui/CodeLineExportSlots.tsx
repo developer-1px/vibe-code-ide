@@ -5,7 +5,7 @@
 
 import { useAtomValue } from 'jotai';
 import type React from 'react';
-import { fullNodeMapAtom } from '../../../app/model/atoms';
+import { fullNodeMapAtom } from '@/entities/AppView/model/atoms';
 import type { CodeLine } from '../core/types';
 import CodeSlot from './CodeSlot';
 

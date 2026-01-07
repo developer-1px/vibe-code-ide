@@ -5,7 +5,7 @@ import { useHotkeys } from 'react-hotkeys-hook';
 import { symbolMetadataAtom } from '@/features/Search/UnifiedSearch/model/atoms.ts';
 import { extractSymbolMetadata } from '@/shared/symbolMetadataExtractor.ts';
 // Atoms & Hooks
-import { filesAtom, focusedPaneAtom, fullNodeMapAtom, graphDataAtom } from '../../../app/model/atoms.ts';
+import { filesAtom, focusedPaneAtom, fullNodeMapAtom, graphDataAtom } from '@/entities/AppView/model/atoms';
 import CopyAllCodeButton from '../../../features/CopyAllCodeButton.tsx';
 import ResetViewButton from '../../../features/ResetViewButton.tsx';
 import { CanvasCodeCard } from './CanvasCodeCard.tsx';

@@ -4,13 +4,22 @@
  */
 
 import { useAtom, useSetAtom } from 'jotai';
-import { BookOpenText, Files, GitBranch, LucideMap, SearchAlertIcon, Settings, Sparkles } from 'lucide-react';
+import {
+  BookOpenText,
+  FileJson,
+  Files,
+  GitBranch,
+  LucideMap,
+  SearchAlertIcon,
+  Settings,
+  Sparkles,
+} from 'lucide-react';
 import { useState } from 'react';
-import { ActivityBar, ActivityBarItem } from '@/components/ide/ActivityBar.tsx';
+import { ActivityBar, ActivityBarItem, ActivityBarSeparator } from '@/components/ide/ActivityBar.tsx';
 import { DocumentModeToggle } from '@/features/DocumentMode/DocumentModeToggle.tsx';
 import UploadFolderButton from '@/features/UploadFolderButton.tsx';
 import { deadCodePanelOpenAtom } from '@/pages/PageAnalysis/DeadCodePanel/model/atoms.ts';
-import { rightPanelOpenAtom, viewModeAtom } from '../../model/atoms.ts';
+import { rightPanelOpenAtom, viewModeAtom } from '@/entities/AppView/model/atoms';
 
 export function AppActivityBar() {
   const [viewMode, setViewMode] = useAtom(viewModeAtom);
@@ -49,6 +58,10 @@ export function AppActivityBar() {
           setViewMode('canvas');
         }}
       />
+
+      {/* Separator: 위는 기본 IDE 뷰, 아래는 독립 페이지 */}
+      <ActivityBarSeparator />
+
       <ActivityBarItem
         icon={SearchAlertIcon}
         label="Dead Code"
@@ -57,6 +70,15 @@ export function AppActivityBar() {
           setActiveView(2);
           setDeadCodePanelOpen(true);
           setViewMode('ide');
+        }}
+      />
+      <ActivityBarItem
+        icon={FileJson}
+        label="JSON Explorer"
+        active={viewMode === 'jsonExplorer'}
+        onClick={() => {
+          setViewMode('jsonExplorer');
+          setDeadCodePanelOpen(false);
         }}
       />
       <ActivityBarItem

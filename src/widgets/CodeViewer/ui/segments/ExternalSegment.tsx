@@ -13,7 +13,7 @@ import {
   transformAtom,
   visibleNodeIdsAtom,
 } from '@/widgets/MainContents/PipelineCanvas/model/atoms';
-import { fullNodeMapAtom, hoveredIdentifierAtom, viewModeAtom } from '../../../../app/model/atoms';
+import { fullNodeMapAtom, hoveredIdentifierAtom, viewModeAtom } from '@/entities/AppView/model/atoms';
 import type { CanvasNode } from '../../../../entities/CanvasNode/model/types';
 import type { CodeSegment, SegmentStyle } from '../../core/types';
 

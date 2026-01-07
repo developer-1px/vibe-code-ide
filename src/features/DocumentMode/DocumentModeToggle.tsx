@@ -5,7 +5,7 @@
 
 import { useAtom } from 'jotai';
 import { Moon, Sun } from 'lucide-react';
-import { documentModeAtom } from '../../app/model/atoms';
+import { documentModeAtom } from '@/entities/AppView/model/atoms';
 
 export const DocumentModeToggle = () => {
   const [documentMode, setDocumentMode] = useAtom(documentModeAtom);

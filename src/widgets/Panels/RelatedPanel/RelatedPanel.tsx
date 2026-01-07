@@ -1,10 +1,8 @@
 import { useAtomValue } from 'jotai';
 import { ChevronDown, ChevronRight, Folder, GripVertical } from 'lucide-react';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { graphDataAtom } from '@/app/model/atoms';
-import { FileIcon } from '@/entities/SourceFileNode/ui/FileIcon';
+import { graphDataAtom } from '@/entities/AppView/model/atoms';
 import { analyzeDependencies, type DependencyItem } from '@/shared/dependencyAnalyzer';
-import { EntityItem } from './EntityItem';
 import { RelatedPanelItem } from './RelatedPanelItem';
 
 export interface RelatedPanelProps {
@@ -23,8 +21,8 @@ export function RelatedPanel({ currentFilePath }: RelatedPanelProps) {
   const graphData = useAtomValue(graphDataAtom);
   const [width, setWidth] = useState(400);
   const [isResizing, setIsResizing] = useState(false);
-  const [entitiesSectionCollapsed, setEntitiesSectionCollapsed] = useState(false); // ENTITIES 섹션 기본 펼쳐진 상태
-  const [entityFileCollapseStates, setEntityFileCollapseStates] = useState<Map<string, boolean>>(new Map()); // 파일별 접기/펼치기
+  const [_entitiesSectionCollapsed, _setEntitiesSectionCollapsed] = useState(false); // ENTITIES 섹션 기본 펼쳐진 상태
+  const [_entityFileCollapseStates, setEntityFileCollapseStates] = useState<Map<string, boolean>>(new Map()); // 파일별 접기/펼치기
   const [localFilesSectionCollapsed, setLocalFilesSectionCollapsed] = useState(false); // LOCAL FILES 섹션 기본 펼쳐진 상태
   const [localFilesFolderCollapseStates, setLocalFilesFolderCollapseStates] = useState<Map<string, boolean>>(new Map()); // LOCAL FILES 폴더별 접기/펼치기
   const [npmSectionCollapsed, setNpmSectionCollapsed] = useState(true); // NPM 섹션 기본 접힌 상태
@@ -99,23 +97,23 @@ export function RelatedPanel({ currentFilePath }: RelatedPanelProps) {
   }, []);
 
   // Entities를 파일별로 그룹핑
-  const entitiesGroupedByFile = useMemo(() => {
+  const _entitiesGroupedByFile = useMemo(() => {
     return groupByFilePath(dependencies.entities);
-  }, [dependencies.entities]);
+  }, [dependencies.entities, groupByFilePath]);
 
   // Local Files를 폴더별로 그룹핑
   const localFilesGroupedByFolder = useMemo(() => {
     return groupByFolder(dependencies.localFiles);
-  }, [dependencies.localFiles]);
+  }, [dependencies.localFiles, groupByFolder]);
 
   // Imported By (Direct + Indirect) 통합하여 폴더별로 그룹핑
   const importedByGroupedByFolder = useMemo(() => {
     const allImportedBy = [...dependencies.importedBy, ...dependencies.importedByIndirect];
     return groupByFolder(allImportedBy);
-  }, [dependencies.importedBy, dependencies.importedByIndirect]);
+  }, [dependencies.importedBy, dependencies.importedByIndirect, groupByFolder]);
 
   // 파일별 collapse toggle
-  const toggleFileCollapse = (filePath: string) => {
+  const _toggleFileCollapse = (filePath: string) => {
     setEntityFileCollapseStates((prev) => {
       const newMap = new Map(prev);
       newMap.set(filePath, !prev.get(filePath));

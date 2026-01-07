@@ -3,7 +3,7 @@ import { Upload as IconUpload } from 'lucide-react';
 import type React from 'react';
 import { useRef } from 'react';
 import { activeTabAtom, openedTabsAtom } from '@/features/File/OpenFiles/model/atoms';
-import { filesAtom } from '../app/model/atoms';
+import { filesAtom } from '@/entities/AppView/model/atoms';
 
 const UploadFolderButton: React.FC = () => {
   const setFiles = useSetAtom(filesAtom);

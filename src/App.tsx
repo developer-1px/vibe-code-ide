@@ -8,8 +8,9 @@ import AppSidebar from '@/app/ui/AppSidebar/AppSidebar';
 import { AppStatusBar } from '@/app/ui/AppStatusBar/AppStatusBar';
 import { AppTitleBar } from '@/app/ui/AppTitleBar/AppTitleBar';
 import { UnifiedSearchModal } from '@/features/Search/UnifiedSearch/ui/UnifiedSearchModal';
-import { DeadCodePanel } from '@/pages/PageAnalysis/DeadCodePanel/DeadCodePanel';
+import { PageAnalysis } from '@/pages/PageAnalysis/PageAnalysis';
 import { deadCodePanelOpenAtom } from '@/pages/PageAnalysis/DeadCodePanel/model/atoms';
+import { JsonExplorer } from '@/pages/JsonExplorer/JsonExplorer';
 import IDEScrollView from '@/widgets/MainContents/IDEScrollView/IDEScrollView';
 import PipelineCanvas from '@/widgets/MainContents/PipelineCanvas/PipelineCanvas.tsx';
 import {
@@ -21,9 +22,9 @@ import {
   rightPanelOpenAtom,
   rightPanelTypeAtom,
   viewModeAtom,
-} from './app/model/atoms';
-import { store } from './app/model/store';
-import { ThemeProvider } from './app/theme/ThemeProvider';
+} from '@/entities/AppView/model/atoms';
+import { store } from '@/entities/AppView/model/store';
+import { ThemeProvider } from '@/entities/AppTheme/ThemeProvider';
 import { getFileMetadata } from './entities/SourceFileNode/lib/metadata';
 import type { SourceFileNode } from './entities/SourceFileNode/model/types';
 import { activeTabAtom } from './features/File/OpenFiles/model/atoms';
@@ -173,23 +174,32 @@ const AppContent: React.FC = () => {
         {/* Activity Bar */}
         <AppActivityBar />
 
-        {/* Left Sidebar Area: DeadCodePanel or AppSidebar (File Explorer) */}
-        {deadCodePanelOpen ? <DeadCodePanel /> : <AppSidebar />}
+        {/* 독립 페이지 모드 (자체 레이아웃): PageAnalysis, JsonExplorer */}
+        {viewMode === 'jsonExplorer' && <JsonExplorer />}
+        {deadCodePanelOpen && <PageAnalysis />}
 
-        {/* Main Content Area: Canvas or IDEScrollView or CodeDocView */}
-        <div className="flex-1 relative overflow-hidden">
-          {viewMode === 'canvas' && <PipelineCanvas />}
-          {viewMode === 'ide' && <IDEScrollView />}
-          {viewMode === 'codeDoc' && <CodeDocView />}
-        </div>
+        {/* 기본 IDE 레이아웃 (Sidebar + Main Content + Right Panel) */}
+        {!deadCodePanelOpen && viewMode !== 'jsonExplorer' && (
+          <>
+            {/* Left Sidebar: File Explorer */}
+            <AppSidebar />
 
-        {/* Right Sidebar: DefinitionPanel or RelatedPanel */}
-        {rightPanelOpen &&
-          (rightPanelType === 'definition' ? (
-            <DefinitionPanel symbols={definitions} />
-          ) : (
-            <RelatedPanel currentFilePath={activeTab} />
-          ))}
+            {/* Main Content Area: Canvas or IDEScrollView or CodeDocView */}
+            <div className="flex-1 relative overflow-hidden">
+              {viewMode === 'canvas' && <PipelineCanvas />}
+              {viewMode === 'ide' && <IDEScrollView />}
+              {viewMode === 'codeDoc' && <CodeDocView />}
+            </div>
+
+            {/* Right Sidebar: DefinitionPanel or RelatedPanel */}
+            {rightPanelOpen &&
+              (rightPanelType === 'definition' ? (
+                <DefinitionPanel symbols={definitions} />
+              ) : (
+                <RelatedPanel currentFilePath={activeTab} />
+              ))}
+          </>
+        )}
       </div>
 
       {/* Status Bar */}

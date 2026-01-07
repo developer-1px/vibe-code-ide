@@ -13,7 +13,7 @@ import { activeTabAtom, openedTabsAtom } from '@/features/File/OpenFiles/model/a
 import { FileIcon } from '../../../entities/SourceFileNode/ui/FileIcon.tsx';
 import { getFileName } from '../../../shared/pathUtils.ts';
 import { FileExplorer } from '../../../widgets/FileExplorer/FileExplorer.tsx';
-import { viewModeAtom } from '../../model/atoms.ts';
+import { viewModeAtom } from '@/entities/AppView/model/atoms';
 import { isSidebarOpenAtom } from './model/atoms.ts';
 
 export const AppSidebar: React.FC = () => {

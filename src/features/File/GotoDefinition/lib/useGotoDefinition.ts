@@ -6,7 +6,7 @@
 
 import { useAtomValue } from 'jotai';
 import { useOpenFile } from '@/features/File/OpenFiles/lib/useOpenFile.ts';
-import { fullNodeMapAtom } from '../../../../app/model/atoms.ts';
+import { fullNodeMapAtom } from '@/entities/AppView/model/atoms';
 import { type DefinitionLocation, findDefinitionLocation, isModifierKeyPressed } from './gotoDefinitionUtils.ts';
 
 export function useGotoDefinition() {

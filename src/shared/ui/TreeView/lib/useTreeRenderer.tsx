@@ -52,6 +52,9 @@ export function useTreeRenderer<TNode>({
         itemRef: (el: HTMLElement | null) => {
           if (el) {
             itemRefs.current.set(itemIndex, el);
+          } else {
+            // Cleanup: remove ref when element unmounts
+            itemRefs.current.delete(itemIndex);
           }
         },
         handleFocus: () => {

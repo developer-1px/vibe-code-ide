@@ -10,7 +10,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { FileTreeItem } from '@/components/ide/FileTreeItem';
 import { useOpenFile } from '@/features/File/OpenFiles/lib/useOpenFile';
 import { activeTabAtom, openedTabsAtom } from '@/features/File/OpenFiles/model/atoms';
-import { filesAtom, focusedFolderAtom } from '../../app/model/atoms';
+import { filesAtom, focusedFolderAtom } from '@/entities/AppView/model/atoms';
 import { FileIcon } from '../../entities/SourceFileNode/ui/FileIcon.tsx';
 import { useTreeKeyboardNavigation } from '../../shared/hooks/useTreeKeyboardNavigation';
 import { TreeView } from '../../shared/ui/TreeView/TreeView';
@@ -85,7 +85,8 @@ export function FileExplorer({ containerRef }: { containerRef: React.RefObject<H
   // Reset focusedIndex when focusedFolder changes
   useEffect(() => {
     setFocusedIndex(0);
-  }, [setFocusedIndex]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [focusedFolder]);
 
   if (fileTree.length === 0) {
     return <div className="px-3 py-6 text-xs text-text-secondary text-center">No files</div>;

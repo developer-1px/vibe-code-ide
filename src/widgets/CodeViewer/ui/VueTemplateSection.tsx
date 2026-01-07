@@ -10,8 +10,8 @@ import type React from 'react';
 import { useMemo } from 'react';
 import { extractTemplateComponents, extractTemplateVariables } from '@/shared/tsParser/utils/vueTemplateParser';
 import { lastExpandedIdAtom, visibleNodeIdsAtom } from '@/widgets/MainContents/PipelineCanvas/model/atoms';
-import { filesAtom, fullNodeMapAtom } from '../../../app/model/atoms';
-import { useEditorTheme } from '../../../app/theme/EditorThemeProvider';
+import { filesAtom, fullNodeMapAtom } from '@/entities/AppView/model/atoms';
+import { useEditorTheme } from '@/entities/AppTheme/EditorThemeProvider';
 import type { CanvasNode } from '../../../entities/CanvasNode/model/types';
 
 const VueTemplateSection = ({

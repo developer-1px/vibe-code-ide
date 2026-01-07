@@ -6,7 +6,7 @@
 import { useAtomValue } from 'jotai';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { activeTabAtom, openedTabsAtom } from '@/features/File/OpenFiles/model/atoms';
-import { fullNodeMapAtom } from '../../app/model/atoms';
+import { fullNodeMapAtom } from '@/entities/AppView/model/atoms';
 import { convertToDocData } from './lib/tsAdapter';
 import type { DocData } from './model/types';
 import { DocViewer } from './ui/DocViewer';

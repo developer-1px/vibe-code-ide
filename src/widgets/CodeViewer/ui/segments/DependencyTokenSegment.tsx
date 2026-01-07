@@ -5,7 +5,7 @@
 
 import { useAtomValue, useSetAtom } from 'jotai';
 import type React from 'react';
-import { hoveredIdentifierAtom } from '@/app/model/atoms';
+import { hoveredIdentifierAtom } from '@/entities/AppView/model/atoms';
 import { useOpenFile } from '@/features/File/OpenFiles/lib/useOpenFile';
 import type { CanvasNode } from '../../../../entities/CanvasNode/model/types';
 import { getTokenStyle } from '../../../../entities/SourceFileNode/lib/styleUtils';

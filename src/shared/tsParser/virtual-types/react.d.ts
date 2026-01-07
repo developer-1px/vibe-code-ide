@@ -40,8 +40,8 @@ declare const UNDEFINED_VOID_ONLY: unique symbol;
  *
  * @see {@link https://react.dev/reference/react/useEffect React Docs}
  */
-type Destructor = () => void | { [UNDEFINED_VOID_ONLY]: never };
-type VoidOrUndefinedOnly = void | { [UNDEFINED_VOID_ONLY]: never };
+type Destructor = () => undefined | { [UNDEFINED_VOID_ONLY]: never };
+type VoidOrUndefinedOnly = undefined | { [UNDEFINED_VOID_ONLY]: never };
 
 // eslint-disable-next-line @definitelytyped/export-just-namespace
 export = React;
@@ -173,7 +173,7 @@ declare namespace React {
     bivarianceHack(
       instance: T | null
     ):
-      | void
+      | undefined
       | DO_NOT_USE_OR_YOU_WILL_BE_FIRED_CALLBACK_REF_RETURN_VALUES[keyof DO_NOT_USE_OR_YOU_WILL_BE_FIRED_CALLBACK_REF_RETURN_VALUES];
   }['bivarianceHack'];
 
@@ -1394,7 +1394,7 @@ declare namespace React {
      */
     (nextProps: Readonly<P>, prevState: S) => Partial<S> | null;
 
-  type GetDerivedStateFromError<P, S> =
+  type GetDerivedStateFromError<_P, S> =
     /**
      * This lifecycle is invoked after an error has been thrown by a descendant component.
      * It receives the error that was thrown as a parameter and should return a value to update state.
@@ -1848,7 +1848,7 @@ declare namespace React {
   type DependencyList = readonly unknown[];
 
   // NOTE: callbacks are _only_ allowed to return either void, or a destructor.
-  type EffectCallback = () => void | Destructor;
+  type EffectCallback = () => undefined | Destructor;
 
   interface MutableRefObject<T> {
     current: T;

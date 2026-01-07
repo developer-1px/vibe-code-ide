@@ -5,7 +5,7 @@
 
 import { useAtomValue } from 'jotai';
 import { StatusBar } from '@/components/ide/StatusBar.tsx';
-import { parseProgressAtom } from '../../model/atoms.ts';
+import { parseProgressAtom } from '@/entities/AppView/model/atoms';
 
 export function AppStatusBar() {
   const parseProgress = useAtomValue(parseProgressAtom);

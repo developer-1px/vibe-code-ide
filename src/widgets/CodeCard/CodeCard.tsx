@@ -6,7 +6,7 @@ import { getFoldableLinesByMaxDepth } from '@/features/Code/CodeFold/lib/foldUti
 import { foldedLinesAtom } from '@/features/Code/CodeFold/model/atoms';
 import { activeTabAtom } from '@/features/File/OpenFiles/model/atoms';
 import { hoveredFilePathAtom } from '@/widgets/MainContents/IDEScrollView/model/atoms';
-import { filesAtom } from '../../app/model/atoms';
+import { filesAtom } from '@/entities/AppView/model/atoms';
 import type { CanvasNode } from '../../entities/CanvasNode/model/types';
 import { getNodeBorderColor } from '../../entities/SourceFileNode/lib/styleUtils';
 import CodeViewer from '../CodeViewer/CodeViewer';

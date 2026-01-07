@@ -6,7 +6,7 @@ import { useAtomValue, useSetAtom } from 'jotai';
 import type React from 'react';
 import { visibleNodeIdsAtom } from '@/widgets/MainContents/PipelineCanvas/model/atoms';
 import { pruneDetachedNodes } from '@/widgets/MainContents/PipelineCanvas/utils';
-import { fullNodeMapAtom } from '../../../../app/model/atoms';
+import { fullNodeMapAtom } from '@/entities/AppView/model/atoms';
 import type { CanvasNode } from '../../../../entities/CanvasNode/model/types';
 import type { CodeSegment, SegmentStyle } from '../../core/types';
 
