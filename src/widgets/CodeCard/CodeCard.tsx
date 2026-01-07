@@ -1,12 +1,12 @@
 import { useAtomValue, useSetAtom } from 'jotai';
 import { useEffect, useMemo, useRef } from 'react';
+import { filesAtom } from '@/entities/AppView/model/atoms';
 import { deadCodeResultsAtom } from '@/features/Code/CodeAnalyzer/DeadCodeAnalyzer/model/atoms';
 import { getFoldableLinesByMaxDepth } from '@/features/Code/CodeFold/lib/foldUtils';
 // Atoms
 import { foldedLinesAtom } from '@/features/Code/CodeFold/model/atoms';
 import { activeTabAtom } from '@/features/File/OpenFiles/model/atoms';
 import { hoveredFilePathAtom } from '@/widgets/MainContents/IDEScrollView/model/atoms';
-import { filesAtom } from '@/entities/AppView/model/atoms';
 import type { CanvasNode } from '../../entities/CanvasNode/model/types';
 import { getNodeBorderColor } from '../../entities/SourceFileNode/lib/styleUtils';
 import CodeViewer from '../CodeViewer/CodeViewer';

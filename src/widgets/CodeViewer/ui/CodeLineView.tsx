@@ -1,12 +1,12 @@
 import { useAtomValue } from 'jotai';
 import { useEffect, useMemo, useRef } from 'react';
+import { useEditorTheme } from '@/entities/AppTheme/EditorThemeProvider';
 import { getFoldedCount, isLineFolded, isLineInsideFold } from '@/features/Code/CodeFold/lib/foldUtils';
 import { foldedLinesAtom } from '@/features/Code/CodeFold/model/atoms';
 import FoldBadge from '@/features/Code/CodeFold/ui/FoldBadge';
 import FoldButton from '@/features/Code/CodeFold/ui/FoldButton';
 import { targetLineAtom } from '@/features/File/Navigation/model/atoms';
 import { layoutNodesAtom } from '@/widgets/MainContents/PipelineCanvas/model/atoms';
-import { useEditorTheme } from '@/entities/AppTheme/EditorThemeProvider';
 import type { CanvasNode } from '../../../entities/CanvasNode/model/types';
 import { getSymbolUsages } from '../../../entities/SourceFileNode/lib/metadata';
 import type { SourceFileNode } from '../../../entities/SourceFileNode/model/types';

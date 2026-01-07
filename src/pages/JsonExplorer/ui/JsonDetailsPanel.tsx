@@ -112,10 +112,7 @@ function JsonHighlighter({ json }: { json: string }) {
             </span>
 
             {/* Code */}
-            <div
-              className="flex-1 whitespace-pre"
-              dangerouslySetInnerHTML={{ __html: highlightedText }}
-            />
+            <div className="flex-1 whitespace-pre" dangerouslySetInnerHTML={{ __html: highlightedText }} />
 
             {/* Copy path button */}
             {line.path && (

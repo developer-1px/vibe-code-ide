@@ -6,12 +6,12 @@
 
 import {
   type ColumnDef,
+  type ColumnResizeMode,
   flexRender,
   getCoreRowModel,
   getSortedRowModel,
   type SortingState,
   useReactTable,
-  type ColumnResizeMode,
 } from '@tanstack/react-table';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import type Fuse from 'fuse.js';
@@ -104,11 +104,7 @@ function renderCellValue(value: unknown, matchIndices?: readonly [number, number
   }
 
   if (typeof value === 'boolean') {
-    return (
-      <span className={`text-3xs ${value ? 'text-green-400' : 'text-red-400'}`}>
-        {value ? 'true' : 'false'}
-      </span>
-    );
+    return <span className={`text-3xs ${value ? 'text-green-400' : 'text-red-400'}`}>{value ? 'true' : 'false'}</span>;
   }
 
   if (typeof value === 'number') {
@@ -211,7 +207,7 @@ export function DataTable({
     // visibleColumns가 제공되면 해당 컬럼만, 아니면 모든 컬럼
     const keys = visibleColumns || allKeys;
 
-    return keys.map((key, index) => ({
+    return keys.map((key, _index) => ({
       accessorKey: key,
       header: formatHeaders ? formatHeader(key) : key, // 포맷팅 옵션 적용
       size: columnWidths.get(key) || 150, // 계산된 너비 적용
@@ -298,7 +294,7 @@ export function DataTable({
     if (onScrollToColumn) {
       onScrollToColumn(scrollToColumn);
     }
-  }, [onScrollToColumn]);
+  }, [onScrollToColumn, scrollToColumn]);
 
   // 가로 스크롤 위치 저장 및 복원
   useEffect(() => {

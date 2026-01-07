@@ -3,7 +3,7 @@
  * 사용자가 직접 JSON 텍스트를 입력하여 데이터를 로드할 수 있음
  */
 
-import { X, Check, AlertCircle } from 'lucide-react';
+import { AlertCircle, Check, X } from 'lucide-react';
 import { useState } from 'react';
 
 interface CustomJsonModalProps {
@@ -81,7 +81,11 @@ export function CustomJsonModal({ isOpen, onClose, onSubmit }: CustomJsonModalPr
           {/* Header */}
           <div className="flex items-center justify-between px-4 py-3 border-b border-border-DEFAULT bg-bg-deep">
             <h2 className="text-sm font-semibold text-text-primary">Custom JSON Input</h2>
-            <button onClick={handleCancel} className="p-1 hover:bg-bg-elevated rounded transition-colors" aria-label="Close">
+            <button
+              onClick={handleCancel}
+              className="p-1 hover:bg-bg-elevated rounded transition-colors"
+              aria-label="Close"
+            >
               <X size={16} className="text-text-tertiary" />
             </button>
           </div>

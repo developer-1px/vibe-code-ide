@@ -7,12 +7,7 @@ import { AppActivityBar } from '@/app/ui/AppActivityBar/AppActivityBar';
 import AppSidebar from '@/app/ui/AppSidebar/AppSidebar';
 import { AppStatusBar } from '@/app/ui/AppStatusBar/AppStatusBar';
 import { AppTitleBar } from '@/app/ui/AppTitleBar/AppTitleBar';
-import { UnifiedSearchModal } from '@/features/Search/UnifiedSearch/ui/UnifiedSearchModal';
-import { PageAnalysis } from '@/pages/PageAnalysis/PageAnalysis';
-import { deadCodePanelOpenAtom } from '@/pages/PageAnalysis/DeadCodePanel/model/atoms';
-import { JsonExplorer } from '@/pages/JsonExplorer/JsonExplorer';
-import IDEScrollView from '@/widgets/MainContents/IDEScrollView/IDEScrollView';
-import PipelineCanvas from '@/widgets/MainContents/PipelineCanvas/PipelineCanvas.tsx';
+import { ThemeProvider } from '@/entities/AppTheme/ThemeProvider';
 import {
   filesAtom,
   fullNodeMapAtom,
@@ -24,7 +19,12 @@ import {
   viewModeAtom,
 } from '@/entities/AppView/model/atoms';
 import { store } from '@/entities/AppView/model/store';
-import { ThemeProvider } from '@/entities/AppTheme/ThemeProvider';
+import { UnifiedSearchModal } from '@/features/Search/UnifiedSearch/ui/UnifiedSearchModal';
+import { JsonExplorer } from '@/pages/JsonExplorer/JsonExplorer';
+import { deadCodePanelOpenAtom } from '@/pages/PageAnalysis/DeadCodePanel/model/atoms';
+import { PageAnalysis } from '@/pages/PageAnalysis/PageAnalysis';
+import IDEScrollView from '@/widgets/MainContents/IDEScrollView/IDEScrollView';
+import PipelineCanvas from '@/widgets/MainContents/PipelineCanvas/PipelineCanvas.tsx';
 import { getFileMetadata } from './entities/SourceFileNode/lib/metadata';
 import type { SourceFileNode } from './entities/SourceFileNode/model/types';
 import { activeTabAtom } from './features/File/OpenFiles/model/atoms';

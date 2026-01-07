@@ -6,6 +6,9 @@ import type { Atom } from 'jotai';
 import { ChevronDown } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import * as sidebarAtoms from '@/app/ui/AppSidebar/model/atoms';
+import * as themeAtoms from '@/entities/AppTheme/atoms';
+import * as appAtoms from '@/entities/AppView/model/atoms';
+import { store } from '@/entities/AppView/model/store';
 import * as deadCodeAtoms from '@/features/Code/CodeAnalyzer/DeadCodeAnalyzer/model/atoms';
 import * as codeFoldAtoms from '@/features/Code/CodeFold/model/atoms';
 import * as focusModeAtoms from '@/features/Code/FocusMode/model/atoms';
@@ -14,9 +17,6 @@ import * as filesAtoms from '@/features/File/OpenFiles/model/atoms';
 import * as searchAtoms from '@/features/Search/UnifiedSearch/model/atoms';
 import * as deadCodePanelAtoms from '@/pages/PageAnalysis/DeadCodePanel/model/atoms';
 import * as canvasAtoms from '@/widgets/MainContents/PipelineCanvas/model/atoms';
-import * as appAtoms from '@/entities/AppView/model/atoms';
-import { store } from '@/entities/AppView/model/store';
-import * as themeAtoms from '@/entities/AppTheme/atoms';
 
 // Combine all atoms for DevTools tracking
 const atoms = {

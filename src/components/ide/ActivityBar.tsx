@@ -58,14 +58,7 @@ ActivityBar.displayName = 'ActivityBar';
 // Separator for dividing activity bar sections
 const ActivityBarSeparator = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
   ({ className, ...props }, ref) => {
-    return (
-      <div
-        ref={ref}
-        className={cn('w-8 h-px bg-border-DEFAULT my-1', className)}
-        role="separator"
-        {...props}
-      />
-    );
+    return <div ref={ref} className={cn('w-8 h-px bg-border-DEFAULT my-1', className)} role="separator" {...props} />;
   }
 );
 ActivityBarSeparator.displayName = 'ActivityBarSeparator';

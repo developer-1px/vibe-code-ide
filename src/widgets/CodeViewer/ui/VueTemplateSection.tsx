@@ -8,10 +8,10 @@
 import { useAtomValue, useSetAtom } from 'jotai';
 import type React from 'react';
 import { useMemo } from 'react';
+import { useEditorTheme } from '@/entities/AppTheme/EditorThemeProvider';
+import { filesAtom, fullNodeMapAtom } from '@/entities/AppView/model/atoms';
 import { extractTemplateComponents, extractTemplateVariables } from '@/shared/tsParser/utils/vueTemplateParser';
 import { lastExpandedIdAtom, visibleNodeIdsAtom } from '@/widgets/MainContents/PipelineCanvas/model/atoms';
-import { filesAtom, fullNodeMapAtom } from '@/entities/AppView/model/atoms';
-import { useEditorTheme } from '@/entities/AppTheme/EditorThemeProvider';
 import type { CanvasNode } from '../../../entities/CanvasNode/model/types';
 
 const VueTemplateSection = ({

@@ -5,13 +5,13 @@
 
 import { useAtomValue } from 'jotai';
 import { useMemo } from 'react';
-import { calculateFoldRanges } from '@/features/Code/CodeFold/lib/foldUtils';
-import { foldedLinesAtom } from '@/features/Code/CodeFold/model/atoms';
 import { currentThemeAtom } from '@/entities/AppTheme/atoms';
 import { defaultEditorTheme } from '@/entities/AppTheme/default/editor';
 import { EditorThemeProvider } from '@/entities/AppTheme/EditorThemeProvider';
 import { jetbrainsEditorTheme } from '@/entities/AppTheme/jetbrains/editor';
 import { vscodeEditorTheme } from '@/entities/AppTheme/vscode/editor';
+import { calculateFoldRanges } from '@/features/Code/CodeFold/lib/foldUtils';
+import { foldedLinesAtom } from '@/features/Code/CodeFold/model/atoms';
 import type { CanvasNode } from '../../entities/CanvasNode/model/types';
 import type { SourceFileNode } from '../../entities/SourceFileNode/model/types';
 import type { CodeLine } from './core/types';

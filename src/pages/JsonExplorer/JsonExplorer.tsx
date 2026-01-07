@@ -4,18 +4,18 @@
  * 자체 Left/Right Panel을 가진 독립적인 레이아웃
  */
 
-import { useCallback, useMemo, useState } from 'react';
 import Fuse from 'fuse.js';
-import { PanelRightOpen, PanelRightClose } from 'lucide-react';
+import { PanelRightClose, PanelRightOpen } from 'lucide-react';
+import { useCallback, useMemo, useState } from 'react';
 import { Checkbox } from '@/components/ui/Checkbox';
 import { extractAllKeyPaths } from './lib/extractKeyPaths';
-import { getLimitedData, getTotalCount, type DataSource } from './lib/loadTestData';
+import { type DataSource, getLimitedData, getTotalCount } from './lib/loadTestData';
+import { CustomJsonModal } from './ui/CustomJsonModal';
 import { DataTable } from './ui/DataTable';
-import { JsonExplorerSidebar } from './ui/JsonExplorerSidebar';
-import { SearchBar } from './ui/SearchBar';
 import { ExportButton } from './ui/ExportButton';
 import { JsonDetailsPanel } from './ui/JsonDetailsPanel';
-import { CustomJsonModal } from './ui/CustomJsonModal';
+import { JsonExplorerSidebar } from './ui/JsonExplorerSidebar';
+import { SearchBar } from './ui/SearchBar';
 
 export function JsonExplorer() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -40,7 +40,10 @@ export function JsonExplorer() {
   }, []);
 
   // 로드된 만큼의 데이터
-  const allProducts = useMemo(() => getLimitedData(dataSource, loadedCount, customData), [dataSource, loadedCount, customData]);
+  const allProducts = useMemo(
+    () => getLimitedData(dataSource, loadedCount, customData),
+    [dataSource, loadedCount, customData]
+  );
   const totalCount = useMemo(() => getTotalCount(dataSource, customData), [dataSource, customData]);
 
   // 데이터 소스 변경 핸들러
@@ -319,7 +322,11 @@ export function JsonExplorer() {
       {rightPanelOpen && <JsonDetailsPanel data={selectedRowData} onClose={handleClosePanel} />}
 
       {/* Custom JSON Modal */}
-      <CustomJsonModal isOpen={customJsonModalOpen} onClose={() => setCustomJsonModalOpen(false)} onSubmit={handleCustomJsonSubmit} />
+      <CustomJsonModal
+        isOpen={customJsonModalOpen}
+        onClose={() => setCustomJsonModalOpen(false)}
+        onSubmit={handleCustomJsonSubmit}
+      />
     </div>
   );
 }

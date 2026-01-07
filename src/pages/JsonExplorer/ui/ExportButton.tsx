@@ -2,7 +2,7 @@
  * ExportButton - 데이터 내보내기 버튼 (드롭다운)
  */
 
-import { Download, FileJson, FileSpreadsheet, Copy } from 'lucide-react';
+import { Copy, Download, FileJson, FileSpreadsheet } from 'lucide-react';
 import { useState } from 'react';
 import { copyToClipboard, downloadCsv, downloadJson } from '../lib/exportData';
 

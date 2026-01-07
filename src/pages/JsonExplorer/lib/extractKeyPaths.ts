@@ -7,12 +7,7 @@
  * @example
  * { a: 1, b: { c: 2, d: 3 } } → ['a', 'b', 'b.c', 'b.d']
  */
-function extractKeyPathsFromObject(
-  obj: unknown,
-  prefix = '',
-  maxDepth = 3,
-  currentDepth = 0
-): Set<string> {
+function extractKeyPathsFromObject(obj: unknown, prefix = '', maxDepth = 3, currentDepth = 0): Set<string> {
   const paths = new Set<string>();
 
   if (currentDepth >= maxDepth) {
@@ -232,7 +227,7 @@ export function extractSchemaInterfaces(data: Record<string, unknown>[]): Schema
       }
 
       // 기존 필드 찾기
-      const existingField = interfaceNode!.fields.find(f => f.name === key);
+      const existingField = interfaceNode!.fields.find((f) => f.name === key);
 
       if (existingField) {
         // 타입이 다르면 Union type으로 병합
@@ -299,7 +294,7 @@ export function extractSchemaInterfaces(data: Record<string, unknown>[]): Schema
 
     // 필드명 정렬하여 시그니처 생성
     interfaceNode.fieldSignature = interfaceNode.fields
-      .map(f => f.name)
+      .map((f) => f.name)
       .sort()
       .join(',');
   });

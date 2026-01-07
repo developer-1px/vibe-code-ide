@@ -17,7 +17,10 @@ const PARENT_KEY_PATH_TEST2 = 'serviceList';
 /**
  * Get all data from specified source
  */
-export function getDataFromSource(source: DataSource, customData?: Record<string, unknown>[]): {
+export function getDataFromSource(
+  source: DataSource,
+  customData?: Record<string, unknown>[]
+): {
   data: Record<string, unknown>[];
   parentKeyPath: string;
 } {

@@ -6,10 +6,10 @@ import { useSetAtom } from 'jotai';
 import React from 'react';
 import { FileTreeItem } from '@/components/ide/FileTreeItem.tsx';
 import { Checkbox } from '@/components/ui/Checkbox.tsx';
+import { viewModeAtom } from '@/entities/AppView/model/atoms';
 import { useDeadCodeSelection } from '@/features/Code/CodeAnalyzer/DeadCodeSelection/lib/useDeadCodeSelection.ts';
 import { targetLineAtom } from '@/features/File/Navigation/model/atoms.ts';
 import { useOpenFile } from '@/features/File/OpenFiles/lib/useOpenFile.ts';
-import { viewModeAtom } from '@/entities/AppView/model/atoms';
 import { FileIcon } from '../../../../entities/SourceFileNode/ui/FileIcon.tsx';
 import type { DeadCodeItem } from '../../../../features/Code/CodeAnalyzer/DeadCodeAnalyzer/lib/deadCodeAnalyzer.ts';
 

@@ -1,5 +1,6 @@
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import type React from 'react';
+import { fullNodeMapAtom } from '@/entities/AppView/model/atoms';
 import { activeLocalVariablesAtom } from '@/features/Code/FocusMode/model/atoms';
 import { useGotoDefinition } from '@/features/File/GotoDefinition/lib/useGotoDefinition';
 import {
@@ -8,7 +9,6 @@ import {
   visibleNodeIdsAtom,
 } from '@/widgets/MainContents/PipelineCanvas/model/atoms';
 import { pruneDetachedNodes } from '@/widgets/MainContents/PipelineCanvas/utils';
-import { fullNodeMapAtom } from '@/entities/AppView/model/atoms';
 import { getTokenStyle } from '../../../entities/SourceFileNode/lib/styleUtils';
 
 const CodeToken = ({

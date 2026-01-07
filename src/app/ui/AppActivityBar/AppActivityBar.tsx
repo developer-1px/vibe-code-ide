@@ -4,22 +4,13 @@
  */
 
 import { useAtom, useSetAtom } from 'jotai';
-import {
-  BookOpenText,
-  FileJson,
-  Files,
-  GitBranch,
-  LucideMap,
-  SearchAlertIcon,
-  Settings,
-  Sparkles,
-} from 'lucide-react';
+import { BookOpenText, FileJson, Files, GitBranch, LucideMap, SearchAlertIcon, Settings, Sparkles } from 'lucide-react';
 import { useState } from 'react';
 import { ActivityBar, ActivityBarItem, ActivityBarSeparator } from '@/components/ide/ActivityBar.tsx';
+import { rightPanelOpenAtom, viewModeAtom } from '@/entities/AppView/model/atoms';
 import { DocumentModeToggle } from '@/features/DocumentMode/DocumentModeToggle.tsx';
 import UploadFolderButton from '@/features/UploadFolderButton.tsx';
 import { deadCodePanelOpenAtom } from '@/pages/PageAnalysis/DeadCodePanel/model/atoms.ts';
-import { rightPanelOpenAtom, viewModeAtom } from '@/entities/AppView/model/atoms';
 
 export function AppActivityBar() {
   const [viewMode, setViewMode] = useAtom(viewModeAtom);

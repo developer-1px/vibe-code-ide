@@ -8,12 +8,12 @@ import { ChevronDown, ChevronRight } from 'lucide-react';
 import type React from 'react';
 import { useRef, useState } from 'react';
 import { Sidebar } from '@/components/ide/Sidebar.tsx';
+import { viewModeAtom } from '@/entities/AppView/model/atoms';
 import { useOpenFile } from '@/features/File/OpenFiles/lib/useOpenFile.ts';
 import { activeTabAtom, openedTabsAtom } from '@/features/File/OpenFiles/model/atoms.ts';
 import { FileIcon } from '../../../entities/SourceFileNode/ui/FileIcon.tsx';
 import { getFileName } from '../../../shared/pathUtils.ts';
 import { FileExplorer } from '../../../widgets/FileExplorer/FileExplorer.tsx';
-import { viewModeAtom } from '@/entities/AppView/model/atoms';
 import { isSidebarOpenAtom } from './model/atoms.ts';
 
 export const AppSidebar: React.FC = () => {

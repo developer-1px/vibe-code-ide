@@ -13,9 +13,9 @@
 
 import { useAtomValue, useSetAtom } from 'jotai';
 import { useCallback, useMemo } from 'react';
+import { filesAtom, viewModeAtom } from '@/entities/AppView/model/atoms';
 import { deadCodeResultsAtom } from '@/features/Code/CodeAnalyzer/DeadCodeAnalyzer/model/atoms';
 import { focusedNodeIdAtom } from '@/widgets/MainContents/IDEScrollView/model/atoms.ts';
-import { filesAtom, viewModeAtom } from '@/entities/AppView/model/atoms';
 import type { CanvasNode } from '../../../entities/CanvasNode/model/types';
 import { renderCodeLinesDirect } from '../../CodeViewer/core/renderer/renderCodeLinesDirect';
 import { renderVueFile } from '../../CodeViewer/core/renderer/renderVueFile';
