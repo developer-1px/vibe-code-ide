@@ -1,8 +1,7 @@
 import { ChevronRight, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import type { OutlineNode } from '../../shared/outlineExtractor';
-import { DefinitionPanel } from '../../widgets/Panels/DefinitionPanel/DefinitionPanel.tsx';
-import type { DefinitionSymbol } from '../../widgets/Panels/DefinitionPanel/definitionExtractor.ts';
+import type { DefinitionSymbol } from '../../entities/SourceFileNode/lib/definitionExtractor';
 import { OutlinePanelItem } from './OutlinePanelItem';
 
 export interface OutlinePanelProps {
@@ -28,7 +27,7 @@ export interface OutlinePanelProps {
  * - Functions
  * - Classes with methods and properties
  */
-export function OutlinePanel({ defaultOpen = true, onNodeClick, nodes = [], definitions = [] }: OutlinePanelProps) {
+export function OutlinePanel({ defaultOpen = true, onNodeClick, nodes = [] }: OutlinePanelProps) {
   const [isOpen, setIsOpen] = useState(defaultOpen);
 
   // Initialize expandedNodes to expand all nodes with children by default
@@ -88,10 +87,7 @@ export function OutlinePanel({ defaultOpen = true, onNodeClick, nodes = [], defi
 
   return (
     <div className="flex-1 bg-bg-elevated flex">
-      {/* Left: Definition Panel */}
-      <DefinitionPanel symbols={definitions} onSymbolClick={handleNodeClick} />
-
-      {/* Right: Outline Panel */}
+      {/* Outline Panel */}
       <div className="flex-1 flex flex-col">
         {/* Header */}
         <div className="flex h-8 items-center justify-between border-b border-border-DEFAULT px-2 flex-shrink-0">
