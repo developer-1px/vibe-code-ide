@@ -18,6 +18,7 @@ import {
   viewModeAtom,
 } from '@/entities/AppView/model/atoms';
 import { store } from '@/entities/AppView/model/store';
+import { ContentSearchModal } from '@/features/Search/ContentSearch/ui/ContentSearchModal';
 import { UnifiedSearchModal } from '@/features/Search/UnifiedSearch/ui/UnifiedSearchModal';
 import { JsonExplorer } from '@/pages/JsonExplorer/JsonExplorer';
 import { deadCodePanelOpenAtom } from '@/pages/PageAnalysis/DeadCodePanel/model/atoms';
@@ -191,6 +192,9 @@ const AppContent: React.FC = () => {
 
       {/* Unified Search Modal (Shift+Shift) */}
       <UnifiedSearchModal />
+
+      {/* Content Search Modal (Cmd+Shift+F) */}
+      <ContentSearchModal />
     </div>
   );
 };
