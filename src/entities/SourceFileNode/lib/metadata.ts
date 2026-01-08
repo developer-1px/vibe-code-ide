@@ -927,8 +927,8 @@ function extractFunctionArgumentsFromAST(sourceFile: ts.SourceFile): FunctionArg
 
 import type { OutlineNode } from '../../../shared/outlineExtractor';
 import { extractOutlineStructure } from '../../../shared/outlineExtractor';
-import type { DefinitionSymbol } from '../../../widgets/Panels/DefinitionPanel/definitionExtractor.ts';
-import { extractDefinitions } from '../../../widgets/Panels/DefinitionPanel/definitionExtractor.ts';
+import type { DefinitionSymbol } from './definitionExtractor';
+import { extractDefinitions } from './definitionExtractor';
 
 export interface FileMetadata {
   definitions: DefinitionSymbol[];

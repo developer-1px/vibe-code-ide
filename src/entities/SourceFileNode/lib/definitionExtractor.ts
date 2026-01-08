@@ -5,7 +5,7 @@
  */
 
 import ts from 'typescript';
-import type { SourceFileNode } from '../../../entities/SourceFileNode/model/types';
+import type { SourceFileNode } from '../model/types';
 import { createLanguageService } from '../../../shared/tsParser/utils/languageService';
 
 // Re-export OutlinePanel types (from LIMN component)
