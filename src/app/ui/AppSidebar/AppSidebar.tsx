@@ -3,7 +3,7 @@
  * Provides resizable sidebar layout for file navigation
  */
 
-import { useAtomValue } from 'jotai';
+import { useAtom, useAtomValue } from 'jotai';
 import { ChevronDown, ChevronRight } from 'lucide-react';
 import type React from 'react';
 import { useRef, useState } from 'react';
@@ -14,13 +14,15 @@ import { activeTabAtom, openedTabsAtom } from '@/features/File/OpenFiles/model/a
 import { FileIcon } from '../../../entities/SourceFileNode/ui/FileIcon.tsx';
 import { getFileName } from '../../../shared/pathUtils.ts';
 import { FileExplorer } from '../../../widgets/FileExplorer/FileExplorer.tsx';
-import { isSidebarOpenAtom } from './model/atoms.ts';
+import { RelatedFilesView } from '../../../widgets/RelatedFilesView/RelatedFilesView.tsx';
+import { fileTreeModeAtom, isSidebarOpenAtom } from './model/atoms.ts';
 
 export const AppSidebar: React.FC = () => {
   const isSidebarOpen = useAtomValue(isSidebarOpenAtom);
   const _viewMode = useAtomValue(viewModeAtom);
   const openedTabs = useAtomValue(openedTabsAtom);
   const activeTab = useAtomValue(activeTabAtom);
+  const [fileTreeMode, setFileTreeMode] = useAtom(fileTreeModeAtom);
   const { openFile } = useOpenFile();
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -90,7 +92,40 @@ export const AppSidebar: React.FC = () => {
               <ChevronDown className="w-3 h-3 text-text-muted" />
             )}
           </button>
-          {!isFileExplorerCollapsed && <FileExplorer containerRef={containerRef} />}
+
+          {!isFileExplorerCollapsed && (
+            <>
+              {/* Mode Tabs */}
+              <div className="flex border-b border-border-DEFAULT">
+                <button
+                  onClick={() => setFileTreeMode('all')}
+                  className={`flex-1 px-2 py-1.5 text-2xs font-medium transition-colors ${
+                    fileTreeMode === 'all'
+                      ? 'bg-bg-deep text-text-primary border-b-2 border-warm-300'
+                      : 'text-text-tertiary hover:text-text-secondary'
+                  }`}
+                >
+                  All Files
+                </button>
+                <button
+                  onClick={() => setFileTreeMode('related')}
+                  className={`flex-1 px-2 py-1.5 text-2xs font-medium transition-colors ${
+                    fileTreeMode === 'related'
+                      ? 'bg-bg-deep text-text-primary border-b-2 border-warm-300'
+                      : 'text-text-tertiary hover:text-text-secondary'
+                  }`}
+                >
+                  Related
+                </button>
+              </div>
+
+              {fileTreeMode === 'all' ? (
+                <FileExplorer containerRef={containerRef} />
+              ) : (
+                <RelatedFilesView containerRef={containerRef} />
+              )}
+            </>
+          )}
         </div>
       </Sidebar>
     </div>
