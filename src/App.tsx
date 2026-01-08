@@ -18,11 +18,11 @@ import {
   viewModeAtom,
 } from '@/entities/AppView/model/atoms';
 import { store } from '@/entities/AppView/model/store';
-import { ContentSearchModal } from '@/features/Search/ContentSearch/ui/ContentSearchModal';
 import { UnifiedSearchModal } from '@/features/Search/UnifiedSearch/ui/UnifiedSearchModal';
 import { JsonExplorer } from '@/pages/JsonExplorer/JsonExplorer';
 import { deadCodePanelOpenAtom } from '@/pages/PageAnalysis/DeadCodePanel/model/atoms';
 import { PageAnalysis } from '@/pages/PageAnalysis/PageAnalysis';
+import { ContentSearchView } from '@/widgets/MainContents/ContentSearchView/ContentSearchView';
 import IDEScrollView from '@/widgets/MainContents/IDEScrollView/IDEScrollView';
 import PipelineCanvas from '@/widgets/MainContents/PipelineCanvas/PipelineCanvas.tsx';
 import type { SourceFileNode } from './entities/SourceFileNode/model/types';
@@ -169,11 +169,12 @@ const AppContent: React.FC = () => {
             {/* Left Sidebar: File Explorer */}
             <AppSidebar />
 
-            {/* Main Content Area: Canvas or IDEScrollView or CodeDocView */}
+            {/* Main Content Area: Canvas or IDEScrollView or CodeDocView or ContentSearchView */}
             <div className="flex-1 relative overflow-hidden">
               {viewMode === 'canvas' && <PipelineCanvas />}
               {viewMode === 'ide' && <IDEScrollView />}
               {viewMode === 'codeDoc' && <CodeDocView />}
+              {viewMode === 'contentSearch' && <ContentSearchView />}
             </div>
 
             {/* Right Panel: Workspace */}
@@ -192,9 +193,6 @@ const AppContent: React.FC = () => {
 
       {/* Unified Search Modal (Shift+Shift) */}
       <UnifiedSearchModal />
-
-      {/* Content Search Modal (Cmd+Shift+F) */}
-      <ContentSearchModal />
     </div>
   );
 };

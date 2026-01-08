@@ -10,7 +10,6 @@ import { useHotkeys } from 'react-hotkeys-hook';
 import { isSidebarOpenAtom } from '@/app/ui/AppSidebar/model/atoms';
 import { viewModeAtom } from '@/entities/AppView/model/atoms';
 import { useOpenFile } from '@/features/File/OpenFiles/lib/useOpenFile';
-import { contentSearchModalOpenAtom } from '@/features/Search/ContentSearch/model/atoms';
 import { searchModalOpenAtom } from '@/features/Search/UnifiedSearch/model/atoms';
 
 const GLOBAL_HOTKEYS = {
@@ -24,7 +23,6 @@ const GLOBAL_HOTKEYS = {
 export const KeyboardShortcuts = () => {
   const setIsSidebarOpen = useSetAtom(isSidebarOpenAtom);
   const setSearchModalOpen = useSetAtom(searchModalOpenAtom);
-  const setContentSearchModalOpen = useSetAtom(contentSearchModalOpenAtom);
   const viewMode = useAtomValue(viewModeAtom);
   const setViewMode = useSetAtom(viewModeAtom);
   const { closeFile } = useOpenFile();
@@ -51,13 +49,13 @@ export const KeyboardShortcuts = () => {
           console.log('[KeyboardShortcuts] Close current file');
           break;
         case GLOBAL_HOTKEYS.CONTENT_SEARCH:
-          setContentSearchModalOpen(true);
-          console.log('[KeyboardShortcuts] Content search modal opened');
+          setViewMode('contentSearch');
+          console.log('[KeyboardShortcuts] Content search view opened');
           break;
       }
     },
     { enableOnFormTags: true },
-    [setIsSidebarOpen, setViewMode, viewMode, closeFile, setContentSearchModalOpen]
+    [setIsSidebarOpen, setViewMode, viewMode, closeFile]
   );
 
   // Shift+Shift (더블탭) - 검색 모달 열기
