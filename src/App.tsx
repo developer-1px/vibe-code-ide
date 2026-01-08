@@ -22,9 +22,8 @@ import { UnifiedSearchModal } from '@/features/Search/UnifiedSearch/ui/UnifiedSe
 import { JsonExplorer } from '@/pages/JsonExplorer/JsonExplorer';
 import { deadCodePanelOpenAtom } from '@/pages/PageAnalysis/DeadCodePanel/model/atoms';
 import { PageAnalysis } from '@/pages/PageAnalysis/PageAnalysis';
-import { ContentSearchView } from '@/widgets/MainContents/ContentSearchView/ContentSearchView';
-import IDEScrollView from '@/widgets/MainContents/IDEScrollView/IDEScrollView';
 import PipelineCanvas from '@/widgets/MainContents/PipelineCanvas/PipelineCanvas.tsx';
+import { TabContainer } from '@/widgets/MainContents/TabContainer';
 import type { SourceFileNode } from './entities/SourceFileNode/model/types';
 import { KeyboardShortcuts } from './features/KeyboardShortcuts/KeyboardShortcuts';
 import CodeDocView from './widgets/CodeDocView/CodeDocView';
@@ -169,12 +168,11 @@ const AppContent: React.FC = () => {
             {/* Left Sidebar: File Explorer */}
             <AppSidebar />
 
-            {/* Main Content Area: Canvas or IDEScrollView or CodeDocView or ContentSearchView */}
+            {/* Main Content Area: Canvas or TabContainer (IDE/Search) or CodeDocView */}
             <div className="flex-1 relative overflow-hidden">
               {viewMode === 'canvas' && <PipelineCanvas />}
-              {viewMode === 'ide' && <IDEScrollView />}
+              {(viewMode === 'ide' || viewMode === 'contentSearch') && <TabContainer />}
               {viewMode === 'codeDoc' && <CodeDocView />}
-              {viewMode === 'contentSearch' && <ContentSearchView />}
             </div>
 
             {/* Right Panel: Workspace */}

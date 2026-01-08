@@ -126,7 +126,7 @@ export function ContentSearchView() {
   let currentFlatIndex = 0;
 
   return (
-    <div className="flex-1 flex flex-col h-full overflow-hidden bg-bg-deep">
+    <div className="flex-1 flex flex-col overflow-hidden bg-bg-deep">
       {/* Header */}
       <div className="flex items-center gap-2 px-4 py-3 border-b border-border-DEFAULT bg-bg-elevated flex-shrink-0">
         <Search size={16} className="text-text-tertiary" />
