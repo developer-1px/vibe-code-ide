@@ -44,7 +44,7 @@ export const ExternalSegment: React.FC<ExternalSegmentProps> = ({ segment, node,
 
   const isHovered = hoveredIdentifier === segment.text;
 
-  const handleClick = (e: React.MouseEvent) => {
+  function handleClick(e: React.MouseEvent) {
     console.log('[ExternalSegment] Clicked:', {
       text: segment.text,
       definedIn: segment.definedIn,
@@ -148,15 +148,15 @@ export const ExternalSegment: React.FC<ExternalSegmentProps> = ({ segment, node,
         });
       }
     }
-  };
+  }
 
-  const handleMouseEnter = () => {
+  function handleMouseEnter() {
     setHoveredIdentifier(segment.text);
-  };
+  }
 
-  const handleMouseLeave = () => {
+  function handleMouseLeave() {
     setHoveredIdentifier(null);
-  };
+  }
 
   const className = isFocused
     ? `${style.className} bg-cyan-500/30 rounded`

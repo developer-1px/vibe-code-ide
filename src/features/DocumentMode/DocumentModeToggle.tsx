@@ -10,13 +10,13 @@ import { documentModeAtom } from '@/entities/AppView/model/atoms';
 export const DocumentModeToggle = () => {
   const [documentMode, setDocumentMode] = useAtom(documentModeAtom);
 
-  const toggleMode = () => {
+  function handleToggleMode() {
     setDocumentMode(documentMode === 'dark' ? 'light' : 'dark');
-  };
+  }
 
   return (
     <button
-      onClick={toggleMode}
+      onClick={handleToggleMode}
       className="flex items-center justify-center w-10 h-10 rounded-md hover:bg-warm-active-hover transition-colors"
       title={`Switch to ${documentMode === 'dark' ? 'Light' : 'Dark'} Mode`}
     >

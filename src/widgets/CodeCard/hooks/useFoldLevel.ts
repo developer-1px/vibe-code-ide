@@ -118,21 +118,27 @@ export function useFoldLevel(node: CanvasNode, processedLines: CodeLine[]): UseF
           const linesToFold = getFoldableLinesByMaxDepth(processedLines, 1);
           console.log(`[${node.label}] Level 0: Fold imports only:`, linesToFold);
           const nodeFolds = new Set<number>();
-          linesToFold.forEach((lineNum) => nodeFolds.add(lineNum));
+          linesToFold.forEach((lineNum) => {
+            nodeFolds.add(lineNum);
+          });
           next.set(node.id, nodeFolds);
         } else if (nextLevel === 1) {
           // Level 1 (Compact): depth 2만 펼치고 나머지 접기
           const linesToFold = getFoldableLinesExcludingDepth(processedLines, 2);
           console.log(`[${node.label}] Level 1: Fold all except depth 2:`, linesToFold);
           const nodeFolds = new Set<number>();
-          linesToFold.forEach((lineNum) => nodeFolds.add(lineNum));
+          linesToFold.forEach((lineNum) => {
+            nodeFolds.add(lineNum);
+          });
           next.set(node.id, nodeFolds);
         } else if (nextLevel === 2) {
           // Level 2 (Minimal): 모든 foldable 라인 접기
           const linesToFold = getFoldableLinesByMaxDepth(processedLines, 999);
           console.log(`[${node.label}] Level 2: Fold all:`, linesToFold);
           const nodeFolds = new Set<number>();
-          linesToFold.forEach((lineNum) => nodeFolds.add(lineNum));
+          linesToFold.forEach((lineNum) => {
+            nodeFolds.add(lineNum);
+          });
           next.set(node.id, nodeFolds);
         }
 

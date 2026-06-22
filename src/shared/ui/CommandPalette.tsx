@@ -47,11 +47,19 @@ export function CommandPalette({
 }: CommandPaletteProps) {
   const inputRef = React.useRef<HTMLInputElement>(null);
 
+  function handleSelectResult(result: SearchResult) {
+    onSelectResult(result);
+  }
+
+  function handleClose() {
+    onOpenChange(false);
+  }
+
   // Headless keyboard navigation with auto-scroll
   const { focusedIndex, itemRefs, scrollContainerRef } = useListKeyboardNavigation({
     items: results,
-    onSelect: (result) => onSelectResult(result),
-    onClose: () => onOpenChange(false),
+    onSelect: handleSelectResult,
+    onClose: handleClose,
     scope: 'search',
     enabled: open,
     enableOnFormTags: true,
@@ -266,6 +274,99 @@ export function CommandPalette({
     return null;
   };
 
+  function handleQueryChange(e: React.ChangeEvent<HTMLInputElement>) {
+    onQueryChange(e.target.value);
+  }
+
+  function CommandPaletteResultItem({
+    result,
+    index,
+    isSelected,
+  }: {
+    result: SearchResult;
+    index: number;
+    isSelected: boolean;
+  }) {
+    const Icon = getIcon(result);
+
+    function handleItemRef(el: HTMLDivElement | null) {
+      if (el) {
+        itemRefs.current.set(index, el);
+      } else {
+        itemRefs.current.delete(index);
+      }
+    }
+
+    function handleClick() {
+      handleSelectResult(result);
+    }
+
+    function handleKeyDown(e: React.KeyboardEvent) {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        handleSelectResult(result);
+      }
+    }
+
+    return (
+      <div
+        role="button"
+        tabIndex={-1}
+        ref={handleItemRef}
+        className={cn(
+          'group flex cursor-pointer items-center gap-2 rounded-md px-2 py-1',
+          isSelected ? 'bg-warm-glow/30 border border-warm-300/20' : 'border border-transparent hover:bg-white/5'
+        )}
+        onClick={handleClick}
+        onKeyDown={handleKeyDown}
+      >
+        <div
+          className={cn(
+            'flex h-5 w-5 shrink-0 items-center justify-center rounded',
+            isSelected ? 'bg-warm-glow/30' : 'bg-bg-surface group-hover:bg-bg-base'
+          )}
+        >
+          <Icon size={11} strokeWidth={1.5} className={getIconColor(result, isSelected)} />
+        </div>
+
+        {/* Content */}
+        {result.type === 'file' ||
+        result.type === 'folder' ||
+        result.nodeType === 'type' ||
+        result.nodeType === 'interface' ? (
+          // FILE/FOLDER/TYPE/INTERFACE: Name → full path
+          <>
+            <div className="flex-1 min-w-0 flex items-center gap-2">
+              <span
+                className={cn(
+                  'text-sm font-semibold truncate',
+                  isSelected ? 'text-text-primary' : 'text-text-secondary'
+                )}
+              >
+                {highlightText(result.name, 'name', result, isSelected)}
+              </span>
+            </div>
+            <span className="text-2xs text-text-muted truncate">{renderSubtitle(result, isSelected)}</span>
+          </>
+        ) : (
+          // SYMBOL: Code snippet with symbol name highlighted
+          <>
+            <div className="flex-1 min-w-0 text-2xs text-text-muted truncate">
+              {renderSubtitle(result, isSelected) || (
+                <span className={cn('font-semibold', isSelected ? 'text-warm-300' : 'text-text-secondary')}>
+                  {highlightText(result.name, 'name', result, isSelected)}
+                </span>
+              )}
+            </div>
+            {renderLocation(result)}
+          </>
+        )}
+
+        {isSelected && <CornerDownLeft size={12} className="shrink-0 text-text-muted" />}
+      </div>
+    );
+  }
+
   if (!open) return null;
 
   return (
@@ -280,7 +381,7 @@ export function CommandPalette({
               ref={inputRef}
               type="text"
               value={query}
-              onChange={(e) => onQueryChange(e.target.value)}
+              onChange={handleQueryChange}
               placeholder="Search files, symbols, and folders..."
               className="flex-1 bg-transparent text-sm text-text-primary outline-none placeholder:text-text-muted"
             />
@@ -294,82 +395,14 @@ export function CommandPalette({
             {results.length === 0 ? (
               <div className="px-4 py-8 text-center text-text-secondary text-xs">No results found</div>
             ) : (
-              results.map((result, index) => {
-                const Icon = getIcon(result);
-                const isSelected = index === focusedIndex;
-
-                return (
-                  <div
-                    key={result.id}
-                    role="button"
-                    tabIndex={-1}
-                    ref={(el) => {
-                      if (el) {
-                        itemRefs.current.set(index, el);
-                      } else {
-                        itemRefs.current.delete(index);
-                      }
-                    }}
-                    className={cn(
-                      'group flex cursor-pointer items-center gap-2 rounded-md px-2 py-1',
-                      isSelected
-                        ? 'bg-warm-glow/30 border border-warm-300/20'
-                        : 'border border-transparent hover:bg-white/5'
-                    )}
-                    onClick={() => onSelectResult(result)}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter' || e.key === ' ') {
-                        e.preventDefault();
-                        onSelectResult(result);
-                      }
-                    }}
-                  >
-                    <div
-                      className={cn(
-                        'flex h-5 w-5 shrink-0 items-center justify-center rounded',
-                        isSelected ? 'bg-warm-glow/30' : 'bg-bg-surface group-hover:bg-bg-base'
-                      )}
-                    >
-                      <Icon size={11} strokeWidth={1.5} className={getIconColor(result, isSelected)} />
-                    </div>
-
-                    {/* Content */}
-                    {result.type === 'file' ||
-                    result.type === 'folder' ||
-                    result.nodeType === 'type' ||
-                    result.nodeType === 'interface' ? (
-                      // FILE/FOLDER/TYPE/INTERFACE: Name → full path
-                      <>
-                        <div className="flex-1 min-w-0 flex items-center gap-2">
-                          <span
-                            className={cn(
-                              'text-sm font-semibold truncate',
-                              isSelected ? 'text-text-primary' : 'text-text-secondary'
-                            )}
-                          >
-                            {highlightText(result.name, 'name', result, isSelected)}
-                          </span>
-                        </div>
-                        <span className="text-2xs text-text-muted truncate">{renderSubtitle(result, isSelected)}</span>
-                      </>
-                    ) : (
-                      // SYMBOL: Code snippet with symbol name highlighted
-                      <>
-                        <div className="flex-1 min-w-0 text-2xs text-text-muted truncate">
-                          {renderSubtitle(result, isSelected) || (
-                            <span className={cn('font-semibold', isSelected ? 'text-warm-300' : 'text-text-secondary')}>
-                              {highlightText(result.name, 'name', result, isSelected)}
-                            </span>
-                          )}
-                        </div>
-                        {renderLocation(result)}
-                      </>
-                    )}
-
-                    {isSelected && <CornerDownLeft size={12} className="shrink-0 text-text-muted" />}
-                  </div>
-                );
-              })
+              results.map((result, index) => (
+                <CommandPaletteResultItem
+                  key={result.id}
+                  result={result}
+                  index={index}
+                  isSelected={index === focusedIndex}
+                />
+              ))
             )}
           </div>
 

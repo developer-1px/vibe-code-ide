@@ -18,7 +18,7 @@ export const DefinitionSegment: React.FC<DefinitionSegmentProps> = ({ segment, n
   const { handleGotoDefinitionByLocation } = useGotoDefinition();
   const [showTooltip, setShowTooltip] = useState(false);
 
-  const handleClick = (e: React.MouseEvent) => {
+  function handleClick(e: React.MouseEvent) {
     e.stopPropagation();
 
     if (!segment.definitionLocation) return;
@@ -26,13 +26,21 @@ export const DefinitionSegment: React.FC<DefinitionSegmentProps> = ({ segment, n
     // 일반 클릭도 정의로 이동 (DefinitionSegment는 항상 이동)
     // Cmd 키 없이도 동작하도록 강제 실행
     handleGotoDefinitionByLocation({ ...e, metaKey: true } as React.MouseEvent, segment.definitionLocation);
-  };
+  }
+
+  function handleMouseEnter() {
+    setShowTooltip(true);
+  }
+
+  function handleMouseLeave() {
+    setShowTooltip(false);
+  }
 
   return (
     <span
       onClick={handleClick}
-      onMouseEnter={style.hoverTooltip ? () => setShowTooltip(true) : undefined}
-      onMouseLeave={style.hoverTooltip ? () => setShowTooltip(false) : undefined}
+      onMouseEnter={style.hoverTooltip ? handleMouseEnter : undefined}
+      onMouseLeave={style.hoverTooltip ? handleMouseLeave : undefined}
       className={style.className}
       title={style.title}
     >

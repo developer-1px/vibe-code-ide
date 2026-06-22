@@ -6,7 +6,7 @@
 
 import Fuse, { type FuseResultMatch } from 'fuse.js';
 import { PanelRightClose, PanelRightOpen } from 'lucide-react';
-import { useCallback, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Checkbox } from '@/shared/ui/Checkbox';
 import { extractAllKeyPaths } from './lib/extractKeyPaths';
 import { type DataSource, getLimitedData, getTotalCount } from './lib/loadTestData';
@@ -35,9 +35,9 @@ export function JsonExplorer() {
   const [selectedSchema, setSelectedSchema] = useState<string | null>(null);
 
   // onScrollToColumn 핸들러를 useCallback으로 안정화
-  const handleSetScrollToColumn = useCallback((fn: (columnKey: string) => void) => {
+  function handleSetScrollToColumn(fn: (columnKey: string) => void) {
     setScrollToColumnFn(() => fn);
-  }, []);
+  }
 
   // 로드된 만큼의 데이터
   const allProducts = useMemo(
@@ -47,23 +47,23 @@ export function JsonExplorer() {
   const totalCount = useMemo(() => getTotalCount(dataSource, customData), [dataSource, customData]);
 
   // 데이터 소스 변경 핸들러
-  const handleDataSourceChange = (newSource: DataSource) => {
+  function handleDataSourceChange(newSource: DataSource) {
     setDataSource(newSource);
     setLoadedCount(100); // 초기 로드 개수로 리셋
     setSearchQuery(''); // 검색어 초기화
     setSelectedRowIndex(null); // 선택 초기화
     setSelectedRowData(null);
-  };
+  }
 
   // 커스텀 JSON 제출 핸들러
-  const handleCustomJsonSubmit = (data: Record<string, unknown>[]) => {
+  function handleCustomJsonSubmit(data: Record<string, unknown>[]) {
     setCustomData(data);
     setDataSource('custom');
     setLoadedCount(100);
     setSearchQuery('');
     setSelectedRowIndex(null);
     setSelectedRowData(null);
-  };
+  }
 
   // 1depth 컬럼 목록 추출 (__parentKeyPath 제외)
   const allColumns = useMemo(() => {
@@ -194,37 +194,61 @@ export function JsonExplorer() {
     };
   }, [allProducts, searchQuery, fuse, schemaFilteredColumns]);
 
-  const handleSelectPath = (path: string) => {
+  function handleSelectPath(path: string) {
     console.log('Selected key path:', path);
-  };
+  }
 
   // 무한 스크롤: 100개씩 추가 로드
-  const handleLoadMore = () => {
+  function handleLoadMore() {
     if (loadedCount < totalCount) {
       setLoadedCount((prev) => Math.min(prev + 100, totalCount));
     }
-  };
+  }
 
   // 행 선택 핸들러
-  const handleRowSelect = (index: number, data: Record<string, unknown>) => {
+  function handleRowSelect(index: number, data: Record<string, unknown>) {
     setSelectedRowIndex(index);
     setSelectedRowData(data);
     if (!rightPanelOpen) {
       setRightPanelOpen(true);
     }
-  };
+  }
 
   // 우측 패널 닫기
-  const handleClosePanel = () => {
+  function handleClosePanel() {
     setRightPanelOpen(false);
     setSelectedRowIndex(null);
     setSelectedRowData(null);
-  };
+  }
 
   // 컬럼 스크롤 핸들러
-  const handleScrollToColumn = (columnKey: string) => {
+  function handleScrollToColumn(columnKey: string) {
     scrollToColumnFn?.(columnKey);
-  };
+  }
+
+  function handleCustomJsonClick() {
+    setCustomJsonModalOpen(true);
+  }
+
+  function handleSchemaSelect(schemaPath: string | null) {
+    setSelectedSchema(schemaPath);
+  }
+
+  function handleFormatHeadersCheckedChange(checked: boolean | 'indeterminate') {
+    setFormatHeaders(checked === true);
+  }
+
+  function handleRightPanelToggle() {
+    setRightPanelOpen(!rightPanelOpen);
+  }
+
+  function handleSearchQueryChange(nextQuery: string) {
+    setSearchQuery(nextQuery);
+  }
+
+  function handleCustomJsonModalClose() {
+    setCustomJsonModalOpen(false);
+  }
 
   return (
     <div className="flex h-full w-full overflow-hidden">
@@ -236,9 +260,9 @@ export function JsonExplorer() {
         onScrollToColumn={handleScrollToColumn}
         dataSource={dataSource}
         onDataSourceChange={handleDataSourceChange}
-        onCustomJsonClick={() => setCustomJsonModalOpen(true)}
+        onCustomJsonClick={handleCustomJsonClick}
         selectedSchema={selectedSchema}
-        onSchemaSelect={setSelectedSchema}
+        onSchemaSelect={handleSchemaSelect}
       />
 
       {/* Main Content */}
@@ -258,7 +282,7 @@ export function JsonExplorer() {
                 <Checkbox
                   id="format-headers"
                   checked={formatHeaders}
-                  onCheckedChange={(checked) => setFormatHeaders(checked === true)}
+                  onCheckedChange={handleFormatHeadersCheckedChange}
                 />
                 <label
                   htmlFor="format-headers"
@@ -273,7 +297,7 @@ export function JsonExplorer() {
 
               {/* Right Panel Toggle */}
               <button
-                onClick={() => setRightPanelOpen(!rightPanelOpen)}
+                onClick={handleRightPanelToggle}
                 className="p-1.5 hover:bg-bg-elevated rounded transition-colors"
                 aria-label="Toggle details panel"
                 title={rightPanelOpen ? 'Close details panel' : 'Open details panel'}
@@ -292,7 +316,7 @@ export function JsonExplorer() {
         <div className="shrink-0">
           <SearchBar
             value={searchQuery}
-            onChange={setSearchQuery}
+            onChange={handleSearchQueryChange}
             placeholder="Search by code, name, or generation..."
           />
         </div>
@@ -320,7 +344,7 @@ export function JsonExplorer() {
       {/* Custom JSON Modal */}
       <CustomJsonModal
         isOpen={customJsonModalOpen}
-        onClose={() => setCustomJsonModalOpen(false)}
+        onClose={handleCustomJsonModalClose}
         onSubmit={handleCustomJsonSubmit}
       />
     </div>

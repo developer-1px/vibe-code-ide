@@ -69,6 +69,14 @@ const CodeCard = ({ node }: { node: CanvasNode }) => {
   // Card ref for ID assignment
   const cardRef = useRef<HTMLDivElement>(null);
 
+  function handleMouseEnter() {
+    setHoveredFilePath(node.filePath);
+  }
+
+  function handleMouseLeave() {
+    setHoveredFilePath(null);
+  }
+
   return (
     <div
       ref={cardRef}
@@ -79,8 +87,8 @@ const CodeCard = ({ node }: { node: CanvasNode }) => {
         ${!isActive ? 'grayscale transition-all duration-[2000ms] ease-in-out' : 'transition-none'}
         min-w-[420px] max-w-[700px] w-fit cursor-default
       `}
-      onMouseEnter={() => setHoveredFilePath(node.filePath)}
-      onMouseLeave={() => setHoveredFilePath(null)}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
     >
       {/* Header */}
       <CodeCardHeader node={node} />

@@ -36,7 +36,7 @@ function SchemaInterfaceItem({
   const [isExpanded, setIsExpanded] = useState(false);
   const [copiedPath, setCopiedPath] = useState<string | null>(null);
 
-  const handleCopyPath = async (path: string, e: React.MouseEvent) => {
+  async function handleCopyPath(path: string, e: React.MouseEvent) {
     e.stopPropagation();
     try {
       await navigator.clipboard.writeText(path);
@@ -45,9 +45,9 @@ function SchemaInterfaceItem({
     } catch (error) {
       console.error('Failed to copy path:', error);
     }
-  };
+  }
 
-  const handleCopyInterface = async (e: React.MouseEvent) => {
+  async function handleCopyInterface(e: React.MouseEvent) {
     e.stopPropagation();
     try {
       // TypeScript interface 코드 생성
@@ -64,9 +64,9 @@ function SchemaInterfaceItem({
     } catch (error) {
       console.error('Failed to copy interface:', error);
     }
-  };
+  }
 
-  const handleToggle = () => {
+  function handleToggle() {
     if (isSelected) {
       // 이미 선택된 상태면 선택 해제
       onSelect(null);
@@ -76,7 +76,11 @@ function SchemaInterfaceItem({
       onSelect(node.path);
       setIsExpanded(true);
     }
-  };
+  }
+
+  function handleFieldCopyPath(path: string, e: React.MouseEvent) {
+    handleCopyPath(path, e);
+  }
 
   return (
     <div className="mb-2">
@@ -130,21 +134,16 @@ function SchemaInterfaceItem({
             const typeColor = isPrimitive ? 'text-text-secondary' : 'text-cyan-400';
 
             return (
-              <div key={field.name} className="flex items-center gap-1.5 py-0.5 hover:bg-warm-500/5 group">
-                <span className="text-2xs font-mono text-warm-400 pl-2">
-                  {field.name}
-                  {optional}:
-                </span>
-                <span className={`text-2xs font-mono ${typeColor}`}>{displayType};</span>
-                <button
-                  onClick={(e) => handleCopyPath(field.fullPath, e)}
-                  className="ml-auto opacity-0 group-hover:opacity-100 transition-opacity p-0.5 hover:bg-bg-elevated rounded shrink-0"
-                  title={`Copy path: ${field.fullPath}`}
-                  aria-label="Copy path"
-                >
-                  <Copy size={9} className={copiedPath === field.fullPath ? 'text-green-400' : 'text-text-tertiary'} />
-                </button>
-              </div>
+              <SchemaFieldRow
+                key={field.name}
+                fieldName={field.name}
+                fullPath={field.fullPath}
+                optional={optional}
+                displayType={displayType}
+                typeColor={typeColor}
+                copiedPath={copiedPath}
+                onCopyPath={handleFieldCopyPath}
+              />
             );
           })}
 
@@ -158,6 +157,62 @@ function SchemaInterfaceItem({
           </div>
         </div>
       )}
+    </div>
+  );
+}
+
+function SchemaFieldRow({
+  fieldName,
+  fullPath,
+  optional,
+  displayType,
+  typeColor,
+  copiedPath,
+  onCopyPath,
+}: {
+  fieldName: string;
+  fullPath: string;
+  optional: string;
+  displayType: string;
+  typeColor: string;
+  copiedPath: string | null;
+  onCopyPath: (path: string, e: React.MouseEvent) => void;
+}) {
+  function handleCopyPathClick(e: React.MouseEvent) {
+    onCopyPath(fullPath, e);
+  }
+
+  return (
+    <div className="flex items-center gap-1.5 py-0.5 hover:bg-warm-500/5 group">
+      <span className="text-2xs font-mono text-warm-400 pl-2">
+        {fieldName}
+        {optional}:
+      </span>
+      <span className={`text-2xs font-mono ${typeColor}`}>{displayType};</span>
+      <button
+        onClick={handleCopyPathClick}
+        className="ml-auto opacity-0 group-hover:opacity-100 transition-opacity p-0.5 hover:bg-bg-elevated rounded shrink-0"
+        title={`Copy path: ${fullPath}`}
+        aria-label="Copy path"
+      >
+        <Copy size={9} className={copiedPath === fullPath ? 'text-green-400' : 'text-text-tertiary'} />
+      </button>
+    </div>
+  );
+}
+
+function ColumnItem({ column, onSelectColumn }: { column: string; onSelectColumn: (column: string) => void }) {
+  function handleClick() {
+    onSelectColumn(column);
+  }
+
+  return (
+    <div
+      className="flex items-center gap-2 px-3 py-0.5 text-2xs cursor-pointer hover:bg-warm-500/10 transition-colors"
+      onClick={handleClick}
+    >
+      <div className="w-1 h-1 rounded-full bg-warm-300 shrink-0" />
+      <span className="font-mono text-text-secondary truncate">{column}</span>
     </div>
   );
 }
@@ -182,10 +237,38 @@ export function JsonExplorerSidebar({
   const [schemaExpanded, setSchemaExpanded] = useState(true);
   const [columnsExpanded, setColumnsExpanded] = useState(true);
 
-  const handleColumnClick = (columnKey: string) => {
+  function handleColumnClick(columnKey: string) {
     onSelectPath?.(columnKey);
     onScrollToColumn?.(columnKey);
-  };
+  }
+
+  function handleDataSourceToggle() {
+    setDataSourceExpanded(!dataSourceExpanded);
+  }
+
+  function handleTestJsonClick() {
+    onDataSourceChange('test.json');
+  }
+
+  function handleTest2JsonClick() {
+    onDataSourceChange('test2.json');
+  }
+
+  function handleCustomJsonClick() {
+    onCustomJsonClick();
+  }
+
+  function handleSchemaToggle() {
+    setSchemaExpanded(!schemaExpanded);
+  }
+
+  function handleSchemaSelect(schemaPath: string | null) {
+    onSchemaSelect(schemaPath);
+  }
+
+  function handleColumnsToggle() {
+    setColumnsExpanded(!columnsExpanded);
+  }
 
   return (
     <div className="w-64 border-r border-border-DEFAULT bg-bg-elevated flex flex-col h-full">
@@ -194,7 +277,7 @@ export function JsonExplorerSidebar({
         {/* Section Header */}
         <div
           className="flex items-center gap-2 px-3 py-2 bg-bg-deep cursor-pointer hover:bg-bg-deep/80 transition-colors"
-          onClick={() => setDataSourceExpanded(!dataSourceExpanded)}
+          onClick={handleDataSourceToggle}
         >
           {dataSourceExpanded ? <ChevronDown size={12} /> : <ChevronRight size={12} />}
           <Database size={12} className="text-warm-300" />
@@ -211,7 +294,7 @@ export function JsonExplorerSidebar({
                   ? 'bg-warm-500/20 text-text-primary'
                   : 'text-text-secondary hover:bg-warm-500/10'
               }`}
-              onClick={() => onDataSourceChange('test.json')}
+              onClick={handleTestJsonClick}
             >
               <div
                 className={`w-1 h-1 rounded-full shrink-0 ${dataSource === 'test.json' ? 'bg-warm-400' : 'bg-text-tertiary'}`}
@@ -227,7 +310,7 @@ export function JsonExplorerSidebar({
                   ? 'bg-warm-500/20 text-text-primary'
                   : 'text-text-secondary hover:bg-warm-500/10'
               }`}
-              onClick={() => onDataSourceChange('test2.json')}
+              onClick={handleTest2JsonClick}
             >
               <div
                 className={`w-1 h-1 rounded-full shrink-0 ${dataSource === 'test2.json' ? 'bg-warm-400' : 'bg-text-tertiary'}`}
@@ -243,7 +326,7 @@ export function JsonExplorerSidebar({
                   ? 'bg-warm-500/20 text-text-primary'
                   : 'text-text-secondary hover:bg-warm-500/10'
               }`}
-              onClick={onCustomJsonClick}
+              onClick={handleCustomJsonClick}
             >
               <div
                 className={`w-1 h-1 rounded-full shrink-0 ${dataSource === 'custom' ? 'bg-warm-400' : 'bg-text-tertiary'}`}
@@ -260,7 +343,7 @@ export function JsonExplorerSidebar({
         {/* Section Header */}
         <div
           className="flex items-center gap-2 px-3 py-2 bg-bg-deep cursor-pointer hover:bg-bg-deep/80 transition-colors shrink-0"
-          onClick={() => setSchemaExpanded(!schemaExpanded)}
+          onClick={handleSchemaToggle}
         >
           {schemaExpanded ? <ChevronDown size={12} /> : <ChevronRight size={12} />}
           <GitBranch size={12} className="text-warm-300" />
@@ -277,7 +360,7 @@ export function JsonExplorerSidebar({
                   key={interfaceNode.path}
                   node={interfaceNode}
                   isSelected={selectedSchema === interfaceNode.path}
-                  onSelect={onSchemaSelect}
+                  onSelect={handleSchemaSelect}
                 />
               ))}
             </div>
@@ -290,7 +373,7 @@ export function JsonExplorerSidebar({
         {/* Section Header */}
         <div
           className="flex items-center gap-2 px-3 py-2 bg-bg-deep border-b border-border-DEFAULT cursor-pointer hover:bg-bg-deep/80 transition-colors shrink-0"
-          onClick={() => setColumnsExpanded(!columnsExpanded)}
+          onClick={handleColumnsToggle}
         >
           {columnsExpanded ? <ChevronDown size={12} /> : <ChevronRight size={12} />}
           <Columns size={12} className="text-warm-300" />
@@ -303,14 +386,7 @@ export function JsonExplorerSidebar({
           <ScrollArea className="flex-1">
             <div className="py-1">
               {columns.map((col) => (
-                <div
-                  key={col}
-                  className="flex items-center gap-2 px-3 py-0.5 text-2xs cursor-pointer hover:bg-warm-500/10 transition-colors"
-                  onClick={() => handleColumnClick(col)}
-                >
-                  <div className="w-1 h-1 rounded-full bg-warm-300 shrink-0" />
-                  <span className="font-mono text-text-secondary truncate">{col}</span>
-                </div>
+                <ColumnItem key={col} column={col} onSelectColumn={handleColumnClick} />
               ))}
             </div>
           </ScrollArea>

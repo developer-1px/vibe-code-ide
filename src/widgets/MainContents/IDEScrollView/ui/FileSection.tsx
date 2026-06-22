@@ -128,6 +128,14 @@ const FileSection = forwardRef<
     scrollContainerRef.current = scrollContainer;
   }, []);
 
+  function handleMouseEnter() {
+    setHoveredFilePath(node.filePath);
+  }
+
+  function handleMouseLeave() {
+    setHoveredFilePath(null);
+  }
+
   return (
     <div
       ref={ref}
@@ -137,8 +145,8 @@ const FileSection = forwardRef<
         border-b border-border-DEFAULT mb-8
         ${!isActive ? 'grayscale opacity-50' : ''}
       `}
-      onMouseEnter={() => setHoveredFilePath(node.filePath)}
-      onMouseLeave={() => setHoveredFilePath(null)}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
     >
       {/* 파일 헤더 + Sticky Stack (함께 sticky) */}
       <div ref={headerRef} className="sticky top-0 z-10 bg-bg-elevated shadow-sm">

@@ -49,11 +49,15 @@ function getFoldTooltip(level: FoldLevel): string {
  * />
  */
 export function FoldLevelButton({ currentLevel, onToggle, disabled = false }: FoldLevelButtonProps) {
+  function handleClick(e: React.MouseEvent) {
+    onToggle(e);
+  }
+
   if (disabled) return null;
 
   return (
     <button
-      onClick={onToggle}
+      onClick={handleClick}
       className="p-1 rounded transition-colors text-slate-400 hover:bg-white/10 hover:text-slate-200"
       title={getFoldTooltip(currentLevel)}
     >

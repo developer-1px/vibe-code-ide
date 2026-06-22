@@ -62,9 +62,17 @@ export function DeadCodeExplorer({ containerRef: _containerRef }: { containerRef
   const { focusedIndex, setFocusedIndex, itemRefs } = useTreeKeyboardNavigation({
     flatItemList,
     collapsedFolders: new Set(), // No folders
-    onToggleFolder: () => {}, // No folders
-    onItemAction: () => {}, // Handled by item itself
+    onToggleFolder: handleToggleFolder, // No folders
+    onItemAction: handleItemAction, // Handled by item itself
   });
+
+  function handleToggleFolder() {}
+
+  function handleItemAction() {}
+
+  function handleFocusChange(nextFocusedIndex: number) {
+    setFocusedIndex(nextFocusedIndex);
+  }
 
   if (!deadCodeResults || isAnalyzing) {
     return null;
@@ -82,9 +90,9 @@ export function DeadCodeExplorer({ containerRef: _containerRef }: { containerRef
       getNodePath={(node) => node.path}
       getNodeChildren={(node) => node.children || []}
       collapsedPaths={new Set()}
-      onToggleCollapse={() => {}}
+      onToggleCollapse={handleToggleFolder}
       focusedIndex={focusedIndex}
-      onFocusChange={setFocusedIndex}
+      onFocusChange={handleFocusChange}
       itemRefs={itemRefs}
     >
       {({ node, depth, isFocused, itemRef, handleFocus }) => {

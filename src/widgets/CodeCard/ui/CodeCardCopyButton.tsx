@@ -4,7 +4,7 @@ import { useState } from 'react';
 const CodeCardCopyButton = ({ codeSnippet }: { codeSnippet: string }) => {
   const [isCopied, setIsCopied] = useState(false);
 
-  const handleCopyCode = async () => {
+  async function handleCopyCode() {
     try {
       await navigator.clipboard.writeText(codeSnippet);
       setIsCopied(true);
@@ -12,7 +12,7 @@ const CodeCardCopyButton = ({ codeSnippet }: { codeSnippet: string }) => {
     } catch (err) {
       console.error('Failed to copy code:', err);
     }
-  };
+  }
 
   return (
     <button

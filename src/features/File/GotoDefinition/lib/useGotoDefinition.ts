@@ -35,7 +35,7 @@ export function useGotoDefinition() {
    * @param tokenId - 이동할 대상 토큰의 nodeId
    * @returns 처리 여부 (true면 기본 클릭 동작 방지)
    */
-  const handleGotoDefinition = (e: React.MouseEvent, tokenId: string): boolean => {
+  function handleGotoDefinition(e: React.MouseEvent, tokenId: string): boolean {
     // Cmd(Mac) 또는 Ctrl(Win) 키가 눌렸는지 확인
     if (!isModifierKeyPressed(e)) {
       return false; // 일반 클릭은 기존 동작 수행
@@ -54,7 +54,7 @@ export function useGotoDefinition() {
 
     navigateToLocation(location);
     return true; // 처리됨 (기본 동작 방지)
-  };
+  }
 
   /**
    * Cmd+Click 핸들러 (definitionLocation 직접 제공)
@@ -63,10 +63,10 @@ export function useGotoDefinition() {
    * @param definitionLocation - 정의 위치 (filePath, line)
    * @returns 처리 여부 (true면 기본 클릭 동작 방지)
    */
-  const handleGotoDefinitionByLocation = (
+  function handleGotoDefinitionByLocation(
     e: React.MouseEvent,
     definitionLocation: { filePath: string; line: number }
-  ): boolean => {
+  ): boolean {
     // Cmd(Mac) 또는 Ctrl(Win) 키가 눌렸는지 확인
     if (!isModifierKeyPressed(e)) {
       return false; // 일반 클릭은 기존 동작 수행
@@ -106,7 +106,7 @@ export function useGotoDefinition() {
     });
 
     return true; // 처리됨 (기본 동작 방지)
-  };
+  }
 
   return { handleGotoDefinition, handleGotoDefinitionByLocation };
 }

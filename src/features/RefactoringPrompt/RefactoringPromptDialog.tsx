@@ -35,7 +35,7 @@ export function RefactoringPromptDialog({
     }
   }, [open, selectedItemKeys, deadCodeResults]);
 
-  const handleCopy = async () => {
+  async function handleCopy() {
     if (!refactoringPrompt) return;
 
     try {
@@ -45,20 +45,28 @@ export function RefactoringPromptDialog({
     } catch (err) {
       console.error('Failed to copy:', err);
     }
-  };
+  }
 
-  const handleSendToAI = () => {
+  function handleSendToAI() {
     // TODO: AI Assistant로 프롬프트 전송 기능 구현
     // 현재는 콘솔에 로그만 출력
     console.log('[RefactoringPromptDialog] Sending to AI:', refactoringPrompt?.prompt);
     alert('AI Assistant 기능은 아직 구현되지 않았습니다.\n프롬프트가 클립보드에 복사되었습니다.');
     handleCopy();
-  };
+  }
+
+  function handleOpenChange(nextOpen: boolean) {
+    onOpenChange(nextOpen);
+  }
+
+  function handleCloseClick() {
+    onOpenChange(false);
+  }
 
   if (!refactoringPrompt) return null;
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
         <div className="bg-bg-elevated border border-border-DEFAULT rounded-lg shadow-2xl w-full max-w-3xl max-h-[80vh] flex flex-col">
           {/* Header */}
@@ -67,7 +75,7 @@ export function RefactoringPromptDialog({
               <Sparkles size={18} className="text-warm-300" />
               <h2 className="text-base font-semibold text-text-primary">AI Refactoring Prompt</h2>
             </div>
-            <Button variant="ghost" size="sm" className="h-8 w-8 p-0" onClick={() => onOpenChange(false)}>
+            <Button variant="ghost" size="sm" className="h-8 w-8 p-0" onClick={handleCloseClick}>
               <X size={16} />
             </Button>
           </div>
@@ -102,7 +110,7 @@ export function RefactoringPromptDialog({
 
           {/* Footer Actions */}
           <div className="flex items-center justify-end gap-2 p-4 border-t border-border-DEFAULT">
-            <Button variant="ghost" size="sm" onClick={() => onOpenChange(false)}>
+            <Button variant="ghost" size="sm" onClick={handleCloseClick}>
               Cancel
             </Button>
             <Button variant="ghost" size="sm" onClick={handleCopy} className="gap-2">

@@ -10,11 +10,14 @@ import {
   flexRender,
   getCoreRowModel,
   getSortedRowModel,
+  type Header,
+  type Row,
   type SortingState,
   useReactTable,
 } from '@tanstack/react-table';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import type { FuseResultMatch } from 'fuse.js';
+import type React from 'react';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 /**
@@ -146,6 +149,71 @@ interface DataTableProps {
   onRowSelect?: (index: number, data: Record<string, unknown>) => void; // 행 선택 콜백
   onScrollToColumn?: (columnKey: string) => void; // 컬럼 스크롤 콜백 등록
   visibleColumns?: string[]; // 표시할 컬럼 목록 (검색 필터링용)
+}
+
+function DataTableResizeHandle({ header }: { header: Header<Record<string, unknown>, unknown> }) {
+  function handleMouseDown(event: React.MouseEvent<HTMLDivElement>) {
+    header.getResizeHandler()(event);
+  }
+
+  function handleTouchStart(event: React.TouchEvent<HTMLDivElement>) {
+    header.getResizeHandler()(event);
+  }
+
+  return (
+    <div
+      onMouseDown={handleMouseDown}
+      onTouchStart={handleTouchStart}
+      className={`absolute right-0 top-0 h-full w-1 cursor-col-resize select-none touch-none hover:bg-warm-400 ${
+        header.column.getIsResizing() ? 'bg-warm-400' : ''
+      }`}
+    />
+  );
+}
+
+function DataTableRow({
+  row,
+  rowIndex,
+  selectedRowIndex,
+  measureElement,
+  onRowSelect,
+}: {
+  row: Row<Record<string, unknown>>;
+  rowIndex: number;
+  selectedRowIndex?: number | null;
+  measureElement: (node: Element | null) => void;
+  onRowSelect?: (index: number, data: Record<string, unknown>) => void;
+}) {
+  const isSelected = selectedRowIndex === rowIndex;
+
+  function handleClick() {
+    onRowSelect?.(rowIndex, row.original);
+  }
+
+  return (
+    <tr
+      key={row.id}
+      className={`h-6 border-b border-border-DEFAULT transition-colors cursor-pointer ${
+        isSelected ? 'bg-warm-500/20' : 'hover:bg-warm-500/10'
+      }`}
+      data-index={rowIndex}
+      ref={measureElement}
+      onClick={handleClick}
+    >
+      {row.getVisibleCells().map((cell) => {
+        const width = cell.column.getSize();
+        return (
+          <td
+            key={cell.id}
+            className="px-3 py-0.5 text-2xs align-middle overflow-hidden border-r border-border-DEFAULT"
+            style={{ width: `${width}px` }}
+          >
+            <div className="truncate">{flexRender(cell.column.columnDef.cell, cell.getContext())}</div>
+          </td>
+        );
+      })}
+    </tr>
+  );
 }
 
 export function DataTable({
@@ -296,16 +364,20 @@ export function DataTable({
     }
   }, [onScrollToColumn, scrollToColumn]);
 
+  function handleRowSelect(rowIndex: number, rowData: Record<string, unknown>) {
+    onRowSelect?.(rowIndex, rowData);
+  }
+
   // 가로 스크롤 위치 저장 및 복원
   useEffect(() => {
     const container = tableContainerRef.current;
     if (!container) return;
 
     // 스크롤 이벤트 핸들러
-    const handleScroll = () => {
+    function handleScroll() {
       // 가로 스크롤 위치 저장
       scrollLeftRef.current = container.scrollLeft;
-    };
+    }
 
     container.addEventListener('scroll', handleScroll, { passive: true });
 
@@ -366,15 +438,7 @@ export function DataTable({
                         {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
                       </div>
                       {/* Resize Handle */}
-                      {header.column.getCanResize() && (
-                        <div
-                          onMouseDown={header.getResizeHandler()}
-                          onTouchStart={header.getResizeHandler()}
-                          className={`absolute right-0 top-0 h-full w-1 cursor-col-resize select-none touch-none hover:bg-warm-400 ${
-                            header.column.getIsResizing() ? 'bg-warm-400' : ''
-                          }`}
-                        />
-                      )}
+                      {header.column.getCanResize() && <DataTableResizeHandle header={header} />}
                     </th>
                   );
                 })}
@@ -394,31 +458,16 @@ export function DataTable({
                 {/* Virtual rows */}
                 {virtualRows.map((virtualRow) => {
                   const row = rows[virtualRow.index];
-                  const isSelected = selectedRowIndex === virtualRow.index;
 
                   return (
-                    <tr
+                    <DataTableRow
                       key={row.id}
-                      className={`h-6 border-b border-border-DEFAULT transition-colors cursor-pointer ${
-                        isSelected ? 'bg-warm-500/20' : 'hover:bg-warm-500/10'
-                      }`}
-                      data-index={virtualRow.index}
-                      ref={rowVirtualizer.measureElement}
-                      onClick={() => onRowSelect?.(virtualRow.index, row.original)}
-                    >
-                      {row.getVisibleCells().map((cell) => {
-                        const width = cell.column.getSize();
-                        return (
-                          <td
-                            key={cell.id}
-                            className="px-3 py-0.5 text-2xs align-middle overflow-hidden border-r border-border-DEFAULT"
-                            style={{ width: `${width}px` }}
-                          >
-                            <div className="truncate">{flexRender(cell.column.columnDef.cell, cell.getContext())}</div>
-                          </td>
-                        );
-                      })}
-                    </tr>
+                      row={row}
+                      rowIndex={virtualRow.index}
+                      selectedRowIndex={selectedRowIndex}
+                      measureElement={rowVirtualizer.measureElement}
+                      onRowSelect={handleRowSelect}
+                    />
                   );
                 })}
 

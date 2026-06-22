@@ -10,7 +10,7 @@ const CopyAllCodeButton: React.FC = () => {
   const fullNodeMap = useAtomValue(fullNodeMapAtom);
   const [isAllCopied, setIsAllCopied] = useState(false);
 
-  const handleCopyAllCode = async () => {
+  async function handleCopyAllCode() {
     try {
       // Calculate dependency depth for each node (deeper = more dependencies)
       const getDepth = (nodeId: string, visited = new Set<string>()): number => {
@@ -53,7 +53,7 @@ const CopyAllCodeButton: React.FC = () => {
     } catch (err) {
       console.error('Failed to copy all code:', err);
     }
-  };
+  }
 
   if (layoutNodes.length === 0) return null;
 

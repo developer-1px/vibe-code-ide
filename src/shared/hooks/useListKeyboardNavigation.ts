@@ -105,16 +105,46 @@ export function useListKeyboardNavigation<T>({
     debug,
   });
 
+  function handleDownKey(e: KeyboardEvent) {
+    e.preventDefault();
+    setFocusedIndex((prev) => Math.min(prev + 1, items.length - 1));
+    if (debug) {
+      console.log('[useListKeyboardNavigation] Down key - focusedIndex:', focusedIndex + 1);
+    }
+  }
+
+  function handleUpKey(e: KeyboardEvent) {
+    e.preventDefault();
+    setFocusedIndex((prev) => Math.max(prev - 1, 0));
+    if (debug) {
+      console.log('[useListKeyboardNavigation] Up key - focusedIndex:', focusedIndex - 1);
+    }
+  }
+
+  function handleEnterKey(e: KeyboardEvent) {
+    e.preventDefault();
+    if (items.length > 0 && items[focusedIndex]) {
+      onSelect(items[focusedIndex], focusedIndex);
+      if (debug) {
+        console.log('[useListKeyboardNavigation] Enter key - selected index:', focusedIndex);
+      }
+    }
+  }
+
+  function handleEscapeKey(e: KeyboardEvent) {
+    e.preventDefault();
+    if (onClose) {
+      onClose();
+      if (debug) {
+        console.log('[useListKeyboardNavigation] Escape key - closing');
+      }
+    }
+  }
+
   // Arrow Down - Move to next item
   useHotkeys(
     'down',
-    (e) => {
-      e.preventDefault();
-      setFocusedIndex((prev) => Math.min(prev + 1, items.length - 1));
-      if (debug) {
-        console.log('[useListKeyboardNavigation] Down key - focusedIndex:', focusedIndex + 1);
-      }
-    },
+    handleDownKey,
     {
       scopes: scope ? [scope] : undefined,
       enabled,
@@ -126,13 +156,7 @@ export function useListKeyboardNavigation<T>({
   // Arrow Up - Move to previous item
   useHotkeys(
     'up',
-    (e) => {
-      e.preventDefault();
-      setFocusedIndex((prev) => Math.max(prev - 1, 0));
-      if (debug) {
-        console.log('[useListKeyboardNavigation] Up key - focusedIndex:', focusedIndex - 1);
-      }
-    },
+    handleUpKey,
     {
       scopes: scope ? [scope] : undefined,
       enabled,
@@ -144,15 +168,7 @@ export function useListKeyboardNavigation<T>({
   // Enter - Select focused item
   useHotkeys(
     'enter',
-    (e) => {
-      e.preventDefault();
-      if (items.length > 0 && items[focusedIndex]) {
-        onSelect(items[focusedIndex], focusedIndex);
-        if (debug) {
-          console.log('[useListKeyboardNavigation] Enter key - selected index:', focusedIndex);
-        }
-      }
-    },
+    handleEnterKey,
     {
       scopes: scope ? [scope] : undefined,
       enabled,
@@ -164,15 +180,7 @@ export function useListKeyboardNavigation<T>({
   // Escape - Close (optional)
   useHotkeys(
     'escape',
-    (e) => {
-      e.preventDefault();
-      if (onClose) {
-        onClose();
-        if (debug) {
-          console.log('[useListKeyboardNavigation] Escape key - closing');
-        }
-      }
-    },
+    handleEscapeKey,
     {
       scopes: scope ? [scope] : undefined,
       enabled,

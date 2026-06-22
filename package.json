@@ -7,13 +7,17 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "lint": "biome check ./src",
-    "lint:fix": "biome check --write --unsafe ./src",
+    "lint": "node scripts/lint-event-handlers.mjs && biome check ./src",
+    "lint:event-handlers": "node scripts/lint-event-handlers.mjs",
+    "lint:fix": "biome check --write --unsafe ./src && node scripts/lint-event-handlers.mjs",
     "format": "biome format --write ./src",
     "prepare": "husky"
   },
   "lint-staged": {
-    "*.{ts,tsx}": "biome check --write --unsafe --no-errors-on-unmatched --files-ignore-unknown=true"
+    "*.{ts,tsx}": [
+      "biome check --write --unsafe --no-errors-on-unmatched --files-ignore-unknown=true",
+      "node scripts/lint-event-handlers.mjs"
+    ]
   },
   "dependencies": {
     "@google/genai": "^1.34.0",

@@ -12,7 +12,8 @@
  */
 
 import { useAtomValue, useSetAtom } from 'jotai';
-import { useCallback, useMemo } from 'react';
+import type React from 'react';
+import { useMemo } from 'react';
 import { activeActivityPageIdAtom } from '@/app/model/activityPageAtoms';
 import { filesAtom, viewModeAtom } from '@/entities/AppView/model/atoms';
 import { deadCodeResultsAtom } from '@/features/Code/CodeAnalyzer/DeadCodeAnalyzer/model/atoms';
@@ -61,11 +62,15 @@ const CodeCardHeader = ({ node }: { node: CanvasNode }) => {
   const shortPath = getNodeShortPath(node);
 
   // Handle double-click to enter IDE view mode
-  const handleDoubleClick = useCallback(() => {
+  function handleDoubleClick() {
     setActiveActivityPageId('explorer');
     setViewMode('ide');
     setFocusedNodeId(node.id);
-  }, [setActiveActivityPageId, setViewMode, setFocusedNodeId, node.id]);
+  }
+
+  function handleToggleLevel(e: React.MouseEvent) {
+    toggleLevel(e);
+  }
 
   return (
     <div
@@ -75,7 +80,7 @@ const CodeCardHeader = ({ node }: { node: CanvasNode }) => {
     >
       <div className="flex items-center gap-2 overflow-hidden">
         {/* Fold Level Toggle Button */}
-        <FoldLevelButton currentLevel={currentLevel} onToggle={toggleLevel} disabled={!canFold} />
+        <FoldLevelButton currentLevel={currentLevel} onToggle={handleToggleLevel} disabled={!canFold} />
 
         {/* Node Icon */}
         <iconConfig.Icon className={`w-4 h-4 ${iconConfig.color}`} />

@@ -35,20 +35,24 @@ class WorkerPool {
   private initWorkers() {
     for (let i = 0; i < this.workerCount; i++) {
       const worker = new Worker(new URL('../workers/codeParser.worker.ts', import.meta.url), { type: 'module' });
+      const callbacks = this.callbacks;
 
-      worker.addEventListener('message', (event: MessageEvent<ParseResponse>) => {
+      function handleMessage(event: MessageEvent<ParseResponse>) {
         const { filePath, lines, parseTime } = event.data;
-        const callback = this.callbacks.get(filePath);
+        const callback = callbacks.get(filePath);
 
         if (callback) {
           callback(lines, parseTime);
-          this.callbacks.delete(filePath);
+          callbacks.delete(filePath);
         }
-      });
+      }
 
-      worker.addEventListener('error', (error) => {
+      function handleError(error: ErrorEvent) {
         console.error('[WorkerPool] Worker error:', error);
-      });
+      }
+
+      worker.addEventListener('message', handleMessage);
+      worker.addEventListener('error', handleError);
 
       this.workers.push(worker);
     }
@@ -78,7 +82,9 @@ class WorkerPool {
    * 모든 Worker 종료
    */
   public terminate() {
-    this.workers.forEach((worker) => worker.terminate());
+    this.workers.forEach((worker) => {
+      worker.terminate();
+    });
     this.workers = [];
     this.callbacks.clear();
     console.log('[WorkerPool] All workers terminated');

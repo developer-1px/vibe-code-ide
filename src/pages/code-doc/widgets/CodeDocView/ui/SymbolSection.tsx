@@ -24,11 +24,17 @@ export const SymbolSection: React.FC<{
   if (symbol.type === 'test-case') TypeIcon = 'testCase';
   if (symbol.type === 'test-hook') TypeIcon = 'testHook';
 
-  const handleDefinitionClick = () => {
+  function handleDefinitionClick() {
     if (symbol.startLine && onDefinitionClick) {
       onDefinitionClick(symbol.startLine);
     }
-  };
+  }
+
+  function handleCodeLineClick(lineNumber: number) {
+    if (onDefinitionClick) {
+      onDefinitionClick(lineNumber);
+    }
+  }
 
   return (
     <section
@@ -269,7 +275,7 @@ export const SymbolSection: React.FC<{
                   const startLine = getStartLine(block.lines);
                   grouped.push(
                     <div key={idx}>
-                      <TextbookCodeBlock code={block.content} startLine={startLine} onLineClick={onDefinitionClick} />
+                      <TextbookCodeBlock code={block.content} startLine={startLine} onLineClick={handleCodeLineClick} />
                     </div>
                   );
                 }

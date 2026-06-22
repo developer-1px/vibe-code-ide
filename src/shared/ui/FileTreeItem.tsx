@@ -36,7 +36,7 @@ export const FileTreeItem = React.forwardRef<HTMLDivElement, FileTreeItemProps>(
     },
     ref
   ) => {
-    const handleClick = (_e: React.MouseEvent) => {
+    function handleClick(_e: React.MouseEvent) {
       // Single click - update focus
       if (onFocus) {
         onFocus();
@@ -45,22 +45,22 @@ export const FileTreeItem = React.forwardRef<HTMLDivElement, FileTreeItemProps>(
       if (onClick) {
         onClick();
       }
-    };
+    }
 
-    const handleDoubleClick = (_e: React.MouseEvent) => {
+    function handleDoubleClick(_e: React.MouseEvent) {
       // Double click - open file or toggle folder
       if (onDoubleClick) {
         onDoubleClick();
       }
-    };
+    }
 
-    const handleChevronClick = (e: React.MouseEvent) => {
+    function handleChevronClick(e: React.MouseEvent) {
       e.stopPropagation();
       // Chevron click - immediately toggle folder
       if (isFolder && onDoubleClick) {
         onDoubleClick();
       }
-    };
+    }
 
     // File icon color based on extension
     const getFileIconColor = (ext?: string) => {

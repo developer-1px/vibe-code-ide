@@ -8,11 +8,11 @@ const ResetViewButton: React.FC = () => {
   const setVisibleNodeIds = useSetAtom(visibleNodeIdsAtom);
   const setOpenedFiles = useSetAtom(openedFilesAtom);
 
-  const handleReset = () => {
+  function handleReset() {
     // Clear all opened files and visible nodes
     setVisibleNodeIds(new Set());
     setOpenedFiles(new Set());
-  };
+  }
 
   if (visibleNodeIds.size <= 1) return null;
 

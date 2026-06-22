@@ -15,29 +15,37 @@ export function ExportButton({ data, filename = 'export' }: ExportButtonProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [copied, setCopied] = useState(false);
 
-  const handleExportCsv = () => {
+  function handleExportCsv() {
     downloadCsv(data, `${filename}.csv`);
     setIsOpen(false);
-  };
+  }
 
-  const handleExportJson = () => {
+  function handleExportJson() {
     downloadJson(data, `${filename}.json`);
     setIsOpen(false);
-  };
+  }
 
-  const handleCopy = async () => {
+  async function handleCopy() {
     const success = await copyToClipboard(data);
     if (success) {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     }
     setIsOpen(false);
-  };
+  }
+
+  function handleToggleOpen() {
+    setIsOpen(!isOpen);
+  }
+
+  function handleCloseDropdown() {
+    setIsOpen(false);
+  }
 
   return (
     <div className="relative">
       <button
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={handleToggleOpen}
         className="flex items-center gap-1.5 px-3 py-1.5 text-2xs font-medium text-text-secondary bg-bg-deep border border-border-DEFAULT rounded-md hover:bg-bg-elevated hover:text-text-primary transition-colors"
       >
         <Download size={12} />
@@ -47,7 +55,7 @@ export function ExportButton({ data, filename = 'export' }: ExportButtonProps) {
       {isOpen && (
         <>
           {/* Backdrop */}
-          <div className="fixed inset-0 z-10" onClick={() => setIsOpen(false)} />
+          <div className="fixed inset-0 z-10" onClick={handleCloseDropdown} />
 
           {/* Dropdown */}
           <div className="absolute right-0 top-full mt-1 w-48 bg-bg-elevated border border-border-DEFAULT rounded-md shadow-lg z-20 overflow-hidden">

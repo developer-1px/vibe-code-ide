@@ -95,7 +95,9 @@ function extractTokensFromAST(node: any, source: string, tokens: Token[] = []): 
 
       // Children
       if (node.children) {
-        node.children.forEach((child: any) => extractTokensFromAST(child, source, tokens));
+        node.children.forEach((child: any) => {
+          extractTokensFromAST(child, source, tokens);
+        });
       }
       break;
 
@@ -116,7 +118,9 @@ function extractTokensFromAST(node: any, source: string, tokens: Token[] = []): 
 
     case 0: // ROOT
       if (node.children) {
-        node.children.forEach((child: any) => extractTokensFromAST(child, source, tokens));
+        node.children.forEach((child: any) => {
+          extractTokensFromAST(child, source, tokens);
+        });
       }
       break;
   }

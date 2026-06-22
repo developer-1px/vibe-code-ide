@@ -26,12 +26,28 @@ export const DeadCodeCategoryHeader = React.forwardRef<
 
   const isExpanded = expandedCategories[categoryKey];
 
-  const toggleCategory = () => {
+  function handleToggleCategory() {
     setExpandedCategories((prev) => ({
       ...prev,
       [categoryKey]: !prev[categoryKey],
     }));
-  };
+  }
+
+  function handleFocus() {
+    onFocus?.();
+  }
+
+  function handleKeyDown(e: React.KeyboardEvent) {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      onFocus?.();
+    }
+  }
+
+  function handleToggleButtonClick(e: React.MouseEvent) {
+    e.stopPropagation();
+    handleToggleCategory();
+  }
 
   return (
     <div
@@ -39,24 +55,12 @@ export const DeadCodeCategoryHeader = React.forwardRef<
       className={`flex items-center gap-2 px-2 py-1.5 hover:bg-white/5 transition-colors border-b border-border-DEFAULT ${
         focused ? 'bg-white/8' : ''
       }`}
-      onClick={onFocus}
-      onKeyDown={(e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          onFocus?.();
-        }
-      }}
+      onClick={handleFocus}
+      onKeyDown={handleKeyDown}
       role="button"
       tabIndex={0}
     >
-      <button
-        type="button"
-        onClick={(e) => {
-          e.stopPropagation();
-          toggleCategory();
-        }}
-        className="flex items-center gap-1.5 flex-1"
-      >
+      <button type="button" onClick={handleToggleButtonClick} className="flex items-center gap-1.5 flex-1">
         {isExpanded ? (
           <ChevronDown size={14} className="text-text-muted shrink-0" />
         ) : (

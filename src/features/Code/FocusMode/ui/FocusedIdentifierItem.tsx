@@ -23,7 +23,7 @@ export const FocusedIdentifierItem: React.FC<FocusedIdentifierItemProps> = ({ me
   const fullNodeMap = useAtomValue(fullNodeMapAtom);
   const chipRef = useRef<HTMLDivElement>(null);
 
-  const handleRemove = () => {
+  function handleRemove() {
     // Deactivate (remove from focus mode)
     setActiveLocalVariables((prev: Map<string, Set<string>>) => {
       const next = new Map(prev);
@@ -57,12 +57,19 @@ export const FocusedIdentifierItem: React.FC<FocusedIdentifierItemProps> = ({ me
 
       return pruneDetachedNodes(next, fullNodeMap, null, null);
     });
-  };
+  }
 
-  const handleClick = (e: React.MouseEvent) => {
+  function handleClick(e: React.MouseEvent) {
     e.stopPropagation();
     handleRemove();
-  };
+  }
+
+  function handleKeyDown(e: React.KeyboardEvent) {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      handleRemove();
+    }
+  }
 
   // Delete/Backspace to remove
   useHotkeys('delete,backspace', handleRemove, {
@@ -74,12 +81,7 @@ export const FocusedIdentifierItem: React.FC<FocusedIdentifierItemProps> = ({ me
     <div
       ref={chipRef}
       onClick={handleClick}
-      onKeyDown={(e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          handleRemove();
-        }
-      }}
+      onKeyDown={handleKeyDown}
       role="button"
       tabIndex={0}
       className="

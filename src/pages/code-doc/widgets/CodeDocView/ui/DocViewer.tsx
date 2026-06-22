@@ -18,9 +18,13 @@ export const DocViewer = ({ data, layout }: DocViewerProps) => {
   const VISIBLE_IMPORTS = 8;
   const visibleImports = isDepsExpanded ? data.imports : data.imports.slice(0, VISIBLE_IMPORTS);
 
-  const handleDefinitionClick = (startLine: number) => {
+  function handleDefinitionClick(startLine: number) {
     console.log('[DocViewer] Navigate to line:', startLine);
-  };
+  }
+
+  function handleDependenciesClick() {
+    setIsDepsExpanded(!isDepsExpanded);
+  }
 
   return (
     <div className={`mx-auto ${layout === 'split' ? 'px-16 py-12' : ''}`}>
@@ -75,7 +79,7 @@ export const DocViewer = ({ data, layout }: DocViewerProps) => {
 
             {importsCount > VISIBLE_IMPORTS && (
               <button
-                onClick={() => setIsDepsExpanded(!isDepsExpanded)}
+                onClick={handleDependenciesClick}
                 className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-bold text-gray-500 hover:text-gray-900 transition-colors"
               >
                 {isDepsExpanded ? (

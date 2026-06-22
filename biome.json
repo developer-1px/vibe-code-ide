@@ -38,6 +38,13 @@
     }
   },
   "files": {
-    "includes": ["**/src/**/*.ts", "**/src/**/*.tsx", "!**/node_modules", "!**/dist", "!**/build"]
+    "includes": [
+      "**/src/**/*.ts",
+      "**/src/**/*.tsx",
+      "!**/src/shared/tsParser/virtual-types/**",
+      "!**/node_modules",
+      "!**/dist",
+      "!**/build"
+    ]
   }
 }

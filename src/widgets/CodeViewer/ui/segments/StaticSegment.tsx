@@ -35,17 +35,17 @@ export const StaticSegment: React.FC<StaticSegmentProps> = ({ segment, style, is
   const isIdentifier = isIdentifierSegment(segment);
   const isHovered = isIdentifier && hoveredIdentifier === segment.text;
 
-  const handleMouseEnter = () => {
+  function handleMouseEnter() {
     if (isIdentifier) {
       setHoveredIdentifier(segment.text);
     }
-  };
+  }
 
-  const handleMouseLeave = () => {
+  function handleMouseLeave() {
     if (isIdentifier) {
       setHoveredIdentifier(null);
     }
-  };
+  }
 
   const className = isFocused
     ? `${style.className} bg-cyan-500/30 rounded`

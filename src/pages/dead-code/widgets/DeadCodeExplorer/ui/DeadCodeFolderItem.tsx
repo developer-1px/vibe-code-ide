@@ -22,6 +22,14 @@ export const DeadCodeFolderItem = React.forwardRef<
   const { name, depth, isCollapsed, focused, globalItemIndex, itemRefs, onFocus, onDoubleClick } = props;
   const icon = isCollapsed ? Folder : FolderOpen;
 
+  function handleFocus() {
+    onFocus?.();
+  }
+
+  function handleDoubleClick() {
+    onDoubleClick();
+  }
+
   return (
     <FileTreeItem
       ref={(el) => {
@@ -41,8 +49,8 @@ export const DeadCodeFolderItem = React.forwardRef<
       isOpen={!isCollapsed}
       focused={focused}
       indent={depth}
-      onFocus={onFocus}
-      onDoubleClick={onDoubleClick}
+      onFocus={handleFocus}
+      onDoubleClick={handleDoubleClick}
     />
   );
 });

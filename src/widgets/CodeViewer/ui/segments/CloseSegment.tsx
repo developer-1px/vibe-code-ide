@@ -20,14 +20,14 @@ export const CloseSegment: React.FC<CloseSegmentProps> = ({ segment, node, style
   const setVisibleNodeIds = useSetAtom(visibleNodeIdsAtom);
   const fullNodeMap = useAtomValue(fullNodeMapAtom);
 
-  const handleClick = (e: React.MouseEvent) => {
+  function handleClick(e: React.MouseEvent) {
     e.stopPropagation();
     setVisibleNodeIds((prev: Set<string>) => {
       const next = new Set(prev);
       next.delete(node.id);
       return pruneDetachedNodes(next, fullNodeMap, null, null);
     });
-  };
+  }
 
   return (
     <span onClick={handleClick} className={style.className} title={style.title}>

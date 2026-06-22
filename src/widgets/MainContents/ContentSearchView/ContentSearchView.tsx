@@ -5,6 +5,7 @@
 
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import { Search } from 'lucide-react';
+import type React from 'react';
 import { useEffect, useMemo, useRef } from 'react';
 import { filesAtom, viewModeAtom } from '../../../entities/AppView/model/atoms';
 import { useOpenFile } from '../../../features/File/OpenFiles/lib/useOpenFile';
@@ -125,6 +126,102 @@ export function ContentSearchView() {
 
   let currentFlatIndex = 0;
 
+  function handleQueryChange(e: React.ChangeEvent<HTMLInputElement>) {
+    setQuery(e.target.value);
+  }
+
+  function handleCaseSensitiveChange(e: React.ChangeEvent<HTMLInputElement>) {
+    setOptions({ ...options, caseSensitive: e.target.checked });
+  }
+
+  function handleWholeWordChange(e: React.ChangeEvent<HTMLInputElement>) {
+    setOptions({ ...options, wholeWord: e.target.checked });
+  }
+
+  function handleUseRegexChange(e: React.ChangeEvent<HTMLInputElement>) {
+    setOptions({ ...options, useRegex: e.target.checked });
+  }
+
+  function handleFocusItem(index: number) {
+    setFocusedIndex(index);
+  }
+
+  function FileResultButton({
+    filePath,
+    totalMatches,
+    itemIndex,
+    isFocused,
+  }: {
+    filePath: string;
+    totalMatches: number;
+    itemIndex: number;
+    isFocused: boolean;
+  }) {
+    function handleItemRef(el: HTMLButtonElement | null) {
+      if (el) itemRefs.current.set(itemIndex, el);
+      else itemRefs.current.delete(itemIndex);
+    }
+
+    function handleClick() {
+      handleFocusItem(itemIndex);
+    }
+
+    return (
+      <button
+        type="button"
+        ref={handleItemRef}
+        onClick={handleClick}
+        className={`w-full flex items-center justify-between px-4 py-1.5 text-left hover:bg-bg-elevated transition-colors ${
+          isFocused ? 'bg-bg-elevated' : ''
+        }`}
+      >
+        <span className="text-xs font-medium text-text-primary">{filePath}</span>
+        <span className="text-2xs text-text-tertiary">
+          {totalMatches} {totalMatches === 1 ? 'match' : 'matches'}
+        </span>
+      </button>
+    );
+  }
+
+  function MatchResultButton({
+    match,
+    itemIndex,
+    isFocused,
+  }: {
+    match: { line: number; text: string; matchStart: number; matchEnd: number };
+    itemIndex: number;
+    isFocused: boolean;
+  }) {
+    function handleItemRef(el: HTMLButtonElement | null) {
+      if (el) itemRefs.current.set(itemIndex, el);
+      else itemRefs.current.delete(itemIndex);
+    }
+
+    function handleClick() {
+      handleFocusItem(itemIndex);
+    }
+
+    return (
+      <button
+        type="button"
+        ref={handleItemRef}
+        onClick={handleClick}
+        className={`w-full px-4 py-1 text-left hover:bg-bg-elevated transition-colors ${
+          isFocused ? 'bg-bg-elevated' : ''
+        }`}
+      >
+        <div className="flex items-center gap-2 text-2xs">
+          <span className="text-text-tertiary font-mono">{match.line}</span>
+          <span className="text-text-secondary truncate font-mono">
+            {match.text.slice(0, match.matchStart)}
+            <span className="bg-warm-300/20 text-warm-300">{match.text.slice(match.matchStart, match.matchEnd)}</span>
+            {match.text.slice(match.matchEnd)}
+          </span>
+        </div>
+      </button>
+    );
+  }
+
   return (
     <div className="flex-1 flex flex-col overflow-hidden bg-bg-deep">
       {/* Header */}
@@ -134,7 +231,7 @@ export function ContentSearchView() {
           ref={inputRef}
           type="text"
           value={query}
-          onChange={(e) => setQuery(e.target.value)}
+          onChange={handleQueryChange}
           placeholder="Search in files... (Cmd+Shift+F)"
           className="flex-1 bg-transparent text-sm text-text-primary placeholder-text-tertiary outline-none"
         />
@@ -146,27 +243,17 @@ export function ContentSearchView() {
           <input
             type="checkbox"
             checked={options.caseSensitive}
-            onChange={(e) => setOptions({ ...options, caseSensitive: e.target.checked })}
+            onChange={handleCaseSensitiveChange}
             className="rounded"
           />
           <span className="text-text-secondary">Case Sensitive</span>
         </label>
         <label className="flex items-center gap-1.5 cursor-pointer">
-          <input
-            type="checkbox"
-            checked={options.wholeWord}
-            onChange={(e) => setOptions({ ...options, wholeWord: e.target.checked })}
-            className="rounded"
-          />
+          <input type="checkbox" checked={options.wholeWord} onChange={handleWholeWordChange} className="rounded" />
           <span className="text-text-secondary">Whole Word</span>
         </label>
         <label className="flex items-center gap-1.5 cursor-pointer">
-          <input
-            type="checkbox"
-            checked={options.useRegex}
-            onChange={(e) => setOptions({ ...options, useRegex: e.target.checked })}
-            className="rounded"
-          />
+          <input type="checkbox" checked={options.useRegex} onChange={handleUseRegexChange} className="rounded" />
           <span className="text-text-secondary">Use Regex</span>
         </label>
       </div>
@@ -191,22 +278,12 @@ export function ContentSearchView() {
                 return (
                   <div key={result.filePath} className="mb-3">
                     {/* File header */}
-                    <button
-                      type="button"
-                      ref={(el) => {
-                        if (el) itemRefs.current.set(fileItemIndex, el);
-                        else itemRefs.current.delete(fileItemIndex);
-                      }}
-                      onClick={() => setFocusedIndex(fileItemIndex)}
-                      className={`w-full flex items-center justify-between px-4 py-1.5 text-left hover:bg-bg-elevated transition-colors ${
-                        isFileFocused ? 'bg-bg-elevated' : ''
-                      }`}
-                    >
-                      <span className="text-xs font-medium text-text-primary">{result.filePath}</span>
-                      <span className="text-2xs text-text-tertiary">
-                        {result.totalMatches} {result.totalMatches === 1 ? 'match' : 'matches'}
-                      </span>
-                    </button>
+                    <FileResultButton
+                      filePath={result.filePath}
+                      totalMatches={result.totalMatches}
+                      itemIndex={fileItemIndex}
+                      isFocused={isFileFocused}
+                    />
 
                     {/* Matches */}
                     <div className="space-y-0.5 ml-4">
@@ -215,29 +292,12 @@ export function ContentSearchView() {
                         const isMatchFocused = focusedIndex === matchItemIndex;
 
                         return (
-                          <button
+                          <MatchResultButton
                             key={matchIndex}
-                            type="button"
-                            ref={(el) => {
-                              if (el) itemRefs.current.set(matchItemIndex, el);
-                              else itemRefs.current.delete(matchItemIndex);
-                            }}
-                            onClick={() => setFocusedIndex(matchItemIndex)}
-                            className={`w-full px-4 py-1 text-left hover:bg-bg-elevated transition-colors ${
-                              isMatchFocused ? 'bg-bg-elevated' : ''
-                            }`}
-                          >
-                            <div className="flex items-center gap-2 text-2xs">
-                              <span className="text-text-tertiary font-mono">{match.line}</span>
-                              <span className="text-text-secondary truncate font-mono">
-                                {match.text.slice(0, match.matchStart)}
-                                <span className="bg-warm-300/20 text-warm-300">
-                                  {match.text.slice(match.matchStart, match.matchEnd)}
-                                </span>
-                                {match.text.slice(match.matchEnd)}
-                              </span>
-                            </div>
-                          </button>
+                            match={match}
+                            itemIndex={matchItemIndex}
+                            isFocused={isMatchFocused}
+                          />
                         );
                       })}
                     </div>

@@ -15,6 +15,10 @@ const FileNavPanel = ({
   currentFilePath: string | null;
   onFileClick: (filePath: string) => void;
 }) => {
+  function handleFileClick(filePath: string) {
+    onFileClick(filePath);
+  }
+
   return (
     <div className="w-48 border-l border-border-DEFAULT bg-bg-elevated overflow-y-auto">
       {/* 헤더 */}
@@ -24,38 +28,55 @@ const FileNavPanel = ({
 
       {/* 파일 목록 */}
       <div className="flex flex-col">
-        {filePaths.map((filePath) => {
-          const fileName = getFileName(filePath);
-          const isActive = filePath === currentFilePath;
-
-          return (
-            <button
-              key={filePath}
-              onClick={() => onFileClick(filePath)}
-              className={`
-                flex items-center gap-2 px-3 py-2 text-left transition-colors
-                hover:bg-bg-hover
-                ${isActive ? 'bg-warm-500/10 border-l-2 border-warm-300' : 'border-l-2 border-transparent'}
-              `}
-            >
-              <FileIcon
-                fileName={fileName}
-                size={12}
-                className={`shrink-0 ${isActive ? 'text-warm-300' : 'text-text-tertiary'}`}
-              />
-              <div className="flex flex-col min-w-0">
-                <span
-                  className={`text-xs truncate ${isActive ? 'text-text-primary font-medium' : 'text-text-secondary'}`}
-                >
-                  {fileName}
-                </span>
-              </div>
-            </button>
-          );
-        })}
+        {filePaths.map((filePath) => (
+          <FileNavButton
+            key={filePath}
+            filePath={filePath}
+            isActive={filePath === currentFilePath}
+            onFileClick={handleFileClick}
+          />
+        ))}
       </div>
     </div>
   );
 };
+
+function FileNavButton({
+  filePath,
+  isActive,
+  onFileClick,
+}: {
+  filePath: string;
+  isActive: boolean;
+  onFileClick: (filePath: string) => void;
+}) {
+  const fileName = getFileName(filePath);
+
+  function handleClick() {
+    onFileClick(filePath);
+  }
+
+  return (
+    <button
+      onClick={handleClick}
+      className={`
+        flex items-center gap-2 px-3 py-2 text-left transition-colors
+        hover:bg-bg-hover
+        ${isActive ? 'bg-warm-500/10 border-l-2 border-warm-300' : 'border-l-2 border-transparent'}
+      `}
+    >
+      <FileIcon
+        fileName={fileName}
+        size={12}
+        className={`shrink-0 ${isActive ? 'text-warm-300' : 'text-text-tertiary'}`}
+      />
+      <div className="flex flex-col min-w-0">
+        <span className={`text-xs truncate ${isActive ? 'text-text-primary font-medium' : 'text-text-secondary'}`}>
+          {fileName}
+        </span>
+      </div>
+    </button>
+  );
+}
 
 export default FileNavPanel;
