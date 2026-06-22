@@ -8,7 +8,7 @@ import type React from 'react';
 import { hoveredIdentifierAtom } from '@/entities/AppView/model/atoms';
 import { useOpenFile } from '@/features/File/OpenFiles/lib/useOpenFile';
 import type { CanvasNode } from '../../../../entities/CanvasNode/model/types';
-import { getTokenStyle } from '../../../../entities/SourceFileNode/lib/styleUtils';
+import { getTokenStyle } from '../../core/styler/tokenStyles';
 import type { CodeSegment, SegmentStyle } from '../../core/types';
 
 interface DependencyTokenSegmentProps {

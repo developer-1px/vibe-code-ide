@@ -1,7 +1,6 @@
 import { useAtomValue } from 'jotai';
 import type React from 'react';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { getEdgeColor } from '@/entities/SourceFileNode/lib/styleUtils.ts';
 import { cardPositionsAtom, layoutLinksAtom, layoutNodesAtom, transformAtom } from '@/features/Canvas/model/atoms';
 
 /**
@@ -31,6 +30,39 @@ const findOutputPort = (depEl: HTMLElement, nodeId: string, symbolName: string):
   // No match found - log warning
   console.warn(`[CanvasConnections] No output port found for symbol "${symbolName}" in ${nodeId}`);
   return null;
+};
+
+const getEdgeColor = (nodeType: string): string => {
+  switch (nodeType) {
+    case 'pure-function':
+      return '#06b6d4';
+    case 'immutable-data':
+      return '#3b82f6';
+    case 'computed':
+      return '#0ea5e9';
+    case 'ref':
+      return '#10b981';
+    case 'state-ref':
+      return '#f59e0b';
+    case 'state-action':
+      return '#f97316';
+    case 'mutable-ref':
+      return '#eab308';
+    case 'effect-action':
+      return '#ef4444';
+    case 'hook':
+      return '#8b5cf6';
+    case 'function':
+      return '#f59e0b';
+    case 'template':
+      return '#d946ef';
+    case 'call':
+      return '#eab308';
+    case 'store':
+      return '#14b8a6';
+    default:
+      return '#38bdf8';
+  }
 };
 
 const CanvasConnections: React.FC = () => {

@@ -4,7 +4,6 @@
  */
 
 import * as ts from 'typescript';
-import { extractDefinitions } from '@/entities/SourceFileNode/lib/definitionExtractor';
 import type { SourceFileNode } from '@/entities/SourceFileNode/model/types';
 import { getFileName } from '@/shared/pathUtils';
 import {
@@ -16,6 +15,7 @@ import {
   type Parameter,
   type SymbolDetail,
 } from '../model/types';
+import { extractDefinitions } from './definitionExtractor';
 import { parseCodeDoc } from './parseCodeDoc';
 
 /**

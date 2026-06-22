@@ -2,8 +2,8 @@
  * Code Line entity - represents a single line of code with its segments and metadata
  */
 
-import type { FoldInfo } from '../../CodeFold';
-import type { CodeSegment } from '../../CodeSegment';
+import type { FoldInfo } from '../../CodeFold/model/types';
+import type { CodeSegment } from '../../CodeSegment/model/types';
 
 /**
  * Export slot information - represents an exported identifier on this line
