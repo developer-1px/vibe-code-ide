@@ -4,7 +4,7 @@ import type React from 'react';
 import { useMemo } from 'react';
 import type { CanvasNode, ComponentGroup } from '@/entities/CanvasNode/model/types.ts';
 import { layoutNodesAtom } from '@/features/Canvas/model/atoms';
-import { estimateNodeHeight } from './utils.ts';
+import { estimateNodeHeight } from '../lib/utils.ts';
 
 const CanvasBackground: React.FC = () => {
   const layoutNodes = useAtomValue(layoutNodesAtom);

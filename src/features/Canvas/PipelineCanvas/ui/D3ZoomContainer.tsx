@@ -1,5 +1,5 @@
 import type { ReactNode, RefObject } from 'react';
-import { useD3Zoom } from './useD3Zoom.ts';
+import { useD3Zoom } from '../hooks/useD3Zoom.ts';
 
 const D3ZoomContainer = ({
   containerRef,

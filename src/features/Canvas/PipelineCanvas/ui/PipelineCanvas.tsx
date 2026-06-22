@@ -7,13 +7,12 @@ import { filesAtom, focusedPaneAtom, fullNodeMapAtom, graphDataAtom } from '@/en
 import { openedFilesAtom, selectedNodeIdsAtom, visibleNodeIdsAtom } from '@/features/Canvas/model/atoms';
 import { symbolMetadataAtom } from '@/features/Search/UnifiedSearch/model/atoms.ts';
 import { extractSymbolMetadata } from '@/shared/symbolMetadataExtractor.ts';
+import { useCanvasLayout } from '../hooks/useCanvasLayout.ts';
 import { CanvasCodeCard } from './CanvasCodeCard.tsx';
 import CanvasConnections from './CanvasConnections.tsx';
+import CopyAllCodeButton from './CopyAllCodeButton';
 import D3ZoomContainer from './D3ZoomContainer.tsx';
-// Hooks & Sub-components
-import CopyAllCodeButton from './ui/CopyAllCodeButton';
-import ResetViewButton from './ui/ResetViewButton';
-import { useCanvasLayout } from './useCanvasLayout.ts';
+import ResetViewButton from './ResetViewButton';
 
 const PipelineCanvas: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
