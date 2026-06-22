@@ -3,8 +3,8 @@
  * Includes folders, files, AND dead code items
  */
 
+import type { DeadCodeTreeNode } from '@/features/Code/CodeAnalyzer/DeadCodeAnalyzer/lib/buildDeadCodeTree.ts';
 import type { DeadCodeItem } from '@/features/Code/CodeAnalyzer/DeadCodeAnalyzer/lib/deadCodeAnalyzer.ts';
-import type { FolderNode } from '@/widgets/FileExplorer/model/types';
 
 export interface DeadCodeFlatItem {
   id: string; // 고유 ID
@@ -16,7 +16,7 @@ export interface DeadCodeFlatItem {
 }
 
 export function getDeadCodeFlatList(
-  tree: FolderNode[],
+  tree: DeadCodeTreeNode[],
   collapsedFolders: Set<string>,
   deadCodeItems: DeadCodeItem[]
 ): DeadCodeFlatItem[] {
@@ -31,7 +31,7 @@ export function getDeadCodeFlatList(
   });
 
   // Match FileTreeRenderer's exact recursion order
-  function traverseNode(node: FolderNode) {
+  function traverseNode(node: DeadCodeTreeNode) {
     // Process folder
     if (node.type === 'folder') {
       result.push({

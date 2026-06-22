@@ -10,7 +10,7 @@ import { useMemo, useRef } from 'react';
 import { focusedPaneAtom } from '@/entities/AppView/model/atoms';
 import type { CanvasNode } from '@/entities/CanvasNode/model/types.ts';
 import { cardPositionsAtom, selectedNodeIdsAtom, transformAtom } from '@/features/Canvas/model/atoms';
-import CodeCard from '@/widgets/CodeCard/CodeCard.tsx';
+import CodeCard from '@/features/Code/CodeCard/CodeCard.tsx';
 
 interface CanvasCodeCardProps {
   node: CanvasNode;

@@ -8,11 +8,11 @@ import { ChevronDown, ChevronRight } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { filesAtom, fullNodeMapAtom } from '@/entities/AppView/model/atoms';
 import { getDependencies, getDependents } from '@/entities/SourceFileNode/lib/getters';
+import { FileExplorer } from '@/features/Explorer/ui/FileExplorer';
 import { activeTabAtom } from '@/features/File/OpenFiles/model/atoms';
 import { resolvePath } from '@/shared/tsParser/utils/pathResolver';
-import { FileExplorer } from '@/widgets/FileExplorer/FileExplorer';
 
-export function RelatedFilesView({ containerRef }: { containerRef: React.RefObject<HTMLDivElement> }) {
+export function RelatedFilesView() {
   const files = useAtomValue(filesAtom);
   const fullNodeMap = useAtomValue(fullNodeMapAtom);
   const activeTab = useAtomValue(activeTabAtom);
@@ -106,7 +106,7 @@ export function RelatedFilesView({ containerRef }: { containerRef: React.RefObje
           </button>
           {!isDependenciesCollapsed && (
             <div className="flex-1 overflow-hidden">
-              <FileExplorer containerRef={containerRef} filteredFiles={dependenciesFiles} />
+              <FileExplorer filteredFiles={dependenciesFiles} />
             </div>
           )}
         </div>
@@ -130,7 +130,7 @@ export function RelatedFilesView({ containerRef }: { containerRef: React.RefObje
           </button>
           {!isDependentsCollapsed && (
             <div className="flex-1 overflow-hidden">
-              <FileExplorer containerRef={containerRef} filteredFiles={dependentsFilesRecord} />
+              <FileExplorer filteredFiles={dependentsFilesRecord} />
             </div>
           )}
         </div>

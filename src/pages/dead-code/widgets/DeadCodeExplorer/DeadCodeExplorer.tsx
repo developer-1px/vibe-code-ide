@@ -6,18 +6,41 @@
 import { useAtom, useAtomValue } from 'jotai';
 import type React from 'react';
 import { useMemo } from 'react';
-import type { FolderNode } from '@/features/Code/CodeAnalyzer/DeadCodeAnalyzer/lib/buildDeadCodeTree.ts';
 import type { DeadCodeItem } from '@/features/Code/CodeAnalyzer/DeadCodeAnalyzer/lib/deadCodeAnalyzer.ts';
 import {
   deadCodeResultsAtom,
   expandedCategoriesAtom,
   isAnalyzingAtom,
 } from '@/features/Code/CodeAnalyzer/DeadCodeAnalyzer/model/atoms.ts';
+import type { CategoryKey } from '@/features/Code/CodeAnalyzer/DeadCodeAnalyzer/model/types.ts';
 import { useTreeKeyboardNavigation } from '@/shared/hooks/useTreeKeyboardNavigation.ts';
 import { TreeView } from '@/shared/ui/TreeView/TreeView.tsx';
 import { useCategoryIndices } from './lib/useCategoryIndices.ts';
 import { DeadCodeCategoryHeader } from './ui/DeadCodeCategoryHeader.tsx';
 import { DeadCodeResultItem } from './ui/DeadCodeResultItem.tsx';
+
+interface DeadCodeExplorerBaseNode {
+  id: string;
+  parentId: string | null;
+  name: string;
+  path: string;
+  children?: DeadCodeExplorerNode[];
+}
+
+interface DeadCodeExplorerCategoryNode extends DeadCodeExplorerBaseNode {
+  type: 'category';
+  categoryKey: CategoryKey;
+  title: string;
+  items: DeadCodeItem[];
+}
+
+interface DeadCodeExplorerItemNode extends DeadCodeExplorerBaseNode {
+  type: 'dead-code-item';
+  filePath?: string;
+  deadCodeItem: DeadCodeItem;
+}
+
+type DeadCodeExplorerNode = DeadCodeExplorerCategoryNode | DeadCodeExplorerItemNode;
 
 export function DeadCodeExplorer({ containerRef: _containerRef }: { containerRef: React.RefObject<HTMLDivElement> }) {
   const deadCodeResults = useAtomValue(deadCodeResultsAtom);
@@ -29,11 +52,11 @@ export function DeadCodeExplorer({ containerRef: _containerRef }: { containerRef
 
   // Build unified tree with all categories
   const unifiedTree = useMemo(() => {
-    const tree: FolderNode[] = [];
+    const tree: DeadCodeExplorerNode[] = [];
 
     categories.forEach((category) => {
       // Add category header node with children
-      const categoryNode: FolderNode = {
+      const categoryNode: DeadCodeExplorerNode = {
         id: `category-${category.key}`,
         parentId: null,
         type: 'category',
@@ -130,7 +153,7 @@ export function DeadCodeExplorer({ containerRef: _containerRef }: { containerRef
 }
 
 // Helper to build tree with category prefix
-function buildDeadCodeTreeWithCategory(items: DeadCodeItem[], categoryKey: string): FolderNode[] {
+function buildDeadCodeTreeWithCategory(items: DeadCodeItem[], categoryKey: string): DeadCodeExplorerNode[] {
   // Simplified - just create dead-code-item nodes
   // You can enhance this with folder grouping if needed
   return items.map((item, idx) => ({

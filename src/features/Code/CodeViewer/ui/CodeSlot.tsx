@@ -1,0 +1,122 @@
+import { useAtomValue, useSetAtom } from 'jotai';
+import type React from 'react';
+import { useMemo } from 'react';
+import { useEditorTheme } from '@/entities/AppTheme/EditorThemeProvider';
+import type { SourceFileNode } from '@/entities/SourceFileNode/model/types';
+import { lastExpandedIdAtom, layoutLinksAtom, visibleNodeIdsAtom } from '@/features/Canvas/model/atoms';
+import { targetLineAtom } from '@/features/File/Navigation/model/atoms';
+import { getSlotColor } from '../core/styler/tokenStyles';
+
+const CodeSlot = ({
+  tokenId,
+  lineNum,
+  slotIdx,
+  depNode,
+  definitionLine,
+  symbolName,
+  isOutputSlot = false,
+  isDead = false,
+}: {
+  tokenId: string;
+  lineNum: number;
+  slotIdx: number;
+  depNode?: SourceFileNode;
+  definitionLine?: number;
+  symbolName?: string;
+  isOutputSlot?: boolean;
+  isDead?: boolean; // ✅ Dead identifier (VSCode-like muted)
+}) => {
+  const theme = useEditorTheme();
+  const setTargetLine = useSetAtom(targetLineAtom);
+  const setLastExpandedId = useSetAtom(lastExpandedIdAtom);
+  const visibleNodeIds = useAtomValue(visibleNodeIdsAtom);
+  const layoutLinks = useAtomValue(layoutLinksAtom);
+
+  // Check if this slot has an active connection
+  const hasConnection = useMemo(() => {
+    return layoutLinks.some((link) => link.source === tokenId);
+  }, [layoutLinks, tokenId]);
+
+  // ✅ Dead identifier slot: 회색 + 점선 테두리
+  const slotColorClass = isDead
+    ? 'bg-slate-600/40 border-slate-500/60 shadow-slate-600/20 group-hover/line:border-slate-400 opacity-50'
+    : depNode
+      ? getSlotColor(depNode.type)
+      : 'bg-slate-500/60 border-slate-400/80 shadow-slate-500/30 group-hover/line:border-slate-300';
+
+  function handleSlotClick(e: React.MouseEvent) {
+    e.stopPropagation();
+
+    if (!depNode) return;
+
+    // Check if target node is visible
+    const isVisible = visibleNodeIds.has(tokenId) || visibleNodeIds.has(tokenId.split('::')[0]);
+
+    if (isVisible) {
+      // Node is already visible - go to definition line
+      setTargetLine({
+        nodeId: tokenId,
+        lineNum: depNode.startLine,
+      });
+    } else {
+      // Node is not visible - expand it first, then go to definition
+      setLastExpandedId(tokenId);
+      // Wait for node to be rendered, then scroll
+      setTimeout(() => {
+        setTargetLine({
+          nodeId: tokenId,
+          lineNum: depNode.startLine,
+        });
+      }, 700); // Wait for expansion animation + layout
+    }
+  }
+
+  // Vertical Center Calculation:
+  // Line Height (leading-[1rem]) = 16px. Center = 8px.
+  // Slot Height = 6px (h-1.5). Center = 3px.
+  // Top Offset = 8px - 3px = 5px.
+
+  // Horizontal Position:
+  // Input slots: left side (starting at 2px)
+  // Output slots: right side (starting at 2px from right edge)
+  const horizontalPos = 2 + slotIdx * theme.dimensions.slotSpacing;
+  const positionStyle = isOutputSlot
+    ? { top: '5px', right: `${horizontalPos}px` }
+    : { top: '5px', left: `${horizontalPos}px` };
+
+  // Data attributes based on slot type
+  const dataAttributes = isOutputSlot
+    ? {
+        'data-output-port': tokenId,
+        'data-output-port-line': lineNum,
+        'data-output-slot-for': tokenId,
+        'data-output-slot-line': lineNum,
+        'data-output-slot-def-line': definitionLine,
+        'data-output-slot-unique': `${tokenId}::line${lineNum}`,
+      }
+    : {
+        'data-input-slot-for': tokenId,
+        'data-input-slot-line': lineNum,
+        'data-input-slot-def-line': definitionLine,
+        'data-input-slot-symbol': symbolName,
+        'data-input-slot-unique': `${tokenId}::line${lineNum}`,
+      };
+
+  // Border style: connected (solid) vs dead (dashed) vs none
+  const borderClass = hasConnection
+    ? 'border-2'
+    : isDead
+      ? 'border-2 border-dashed' // ✅ Dead identifier: 점선 테두리
+      : 'border-0';
+
+  return (
+    <div
+      className={`${theme.dimensions.slotSize} rounded-full absolute z-10 transition-all duration-300 ${borderClass} group-hover/line:scale-110 shadow-lg cursor-pointer hover:scale-125 ${slotColorClass}`}
+      style={positionStyle}
+      {...dataAttributes}
+      onClick={handleSlotClick}
+    />
+  );
+};
+
+export default CodeSlot;

@@ -1,6 +1,6 @@
 import { useAtomValue, useSetAtom } from 'jotai';
 import { rightPanelOpenAtom, rightPanelTypeAtom } from '@/entities/AppView/model/atoms';
-import { TabContainer } from '@/widgets/MainContents/TabContainer';
+import { TabContainer } from '@/features/File/OpenFiles/ui/TabContainer';
 import { ExplorerSidebar } from '../../ExplorerSidebar/ui/ExplorerSidebar';
 import { WorkspacePanel } from '../../WorkspacePanel/ui/WorkspacePanel';
 

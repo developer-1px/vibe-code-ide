@@ -3,7 +3,7 @@
  * 여러 파일을 동시에 파싱하기 위한 Worker Pool
  */
 
-import type { CodeLine } from '../widgets/CodeViewer/core/types';
+import type { CodeLine } from '@/features/Code/CodeViewer/core/types/codeLine';
 
 interface ParseRequest {
   filePath: string;

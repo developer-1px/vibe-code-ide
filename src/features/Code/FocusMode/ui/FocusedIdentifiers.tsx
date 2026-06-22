@@ -7,11 +7,11 @@ import { useAtomValue } from 'jotai';
 import type React from 'react';
 import { useMemo } from 'react';
 import { filesAtom } from '@/entities/AppView/model/atoms';
+import type { CanvasNode } from '@/entities/CanvasNode/model/types.ts';
 import { deadCodeResultsAtom } from '@/features/Code/CodeAnalyzer/DeadCodeAnalyzer/model/atoms.ts';
-import type { CanvasNode } from '../../../../entities/CanvasNode/model/types.ts';
-import { renderCodeLinesDirect } from '../../../../widgets/CodeViewer/core/renderer/renderCodeLinesDirect.ts';
-import { renderVueFile } from '../../../../widgets/CodeViewer/core/renderer/renderVueFile.ts';
-import { activeLocalVariablesAtom } from '../model/atoms.ts';
+import { renderCodeLinesDirect } from '@/features/Code/CodeViewer/core/renderer/renderCodeLinesDirect.ts';
+import { renderVueFile } from '@/features/Code/CodeViewer/core/renderer/renderVueFile.ts';
+import { activeLocalVariablesAtom } from '@/features/Code/FocusMode/model/atoms.ts';
 import { FocusedIdentifierItem } from './FocusedIdentifierItem.tsx';
 
 interface FocusedIdentifiersProps {

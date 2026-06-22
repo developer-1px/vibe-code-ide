@@ -1,16 +1,15 @@
 import { useAtom, useAtomValue } from 'jotai';
 import { ChevronDown, ChevronRight } from 'lucide-react';
 import type React from 'react';
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 import { fileTreeModeAtom, isSidebarOpenAtom } from '@/features/Explorer/model/atoms';
+import { FileExplorer } from '@/features/Explorer/ui/FileExplorer';
 import { Sidebar } from '@/shared/ui/Sidebar';
-import { FileExplorer } from '@/widgets/FileExplorer/FileExplorer.tsx';
 import { RelatedFilesView } from '../../RelatedFilesView/ui/RelatedFilesView';
 
 export const ExplorerSidebar: React.FC = () => {
   const isSidebarOpen = useAtomValue(isSidebarOpenAtom);
   const [fileTreeMode, setFileTreeMode] = useAtom(fileTreeModeAtom);
-  const containerRef = useRef<HTMLDivElement>(null);
   const [isFileExplorerCollapsed, setIsFileExplorerCollapsed] = useState(false);
 
   if (!isSidebarOpen) {
@@ -30,7 +29,7 @@ export const ExplorerSidebar: React.FC = () => {
   }
 
   return (
-    <div ref={containerRef} className="relative focus:outline-none">
+    <div className="relative focus:outline-none">
       <Sidebar resizable defaultWidth={250} minWidth={200} maxWidth={800} className="h-full shadow-2xl">
         <div className={!isFileExplorerCollapsed ? 'flex-1 flex flex-col overflow-hidden' : ''}>
           <button
@@ -73,11 +72,7 @@ export const ExplorerSidebar: React.FC = () => {
                 </button>
               </div>
 
-              {fileTreeMode === 'all' ? (
-                <FileExplorer containerRef={containerRef} />
-              ) : (
-                <RelatedFilesView containerRef={containerRef} />
-              )}
+              {fileTreeMode === 'all' ? <FileExplorer /> : <RelatedFilesView />}
             </>
           )}
         </div>
