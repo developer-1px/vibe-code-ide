@@ -9,11 +9,11 @@ import { useState } from 'react';
 
 interface CustomJsonModalProps {
   isOpen: boolean;
-  onClose: () => void;
-  onSubmit: (data: Record<string, unknown>[]) => void;
+  closeModal: () => void;
+  submitJson: (data: Record<string, unknown>[]) => void;
 }
 
-export function CustomJsonModal({ isOpen, onClose, onSubmit }: CustomJsonModalProps) {
+export function CustomJsonModal({ isOpen, closeModal, submitJson }: CustomJsonModalProps) {
   const [jsonText, setJsonText] = useState('');
   const [error, setError] = useState<string | null>(null);
 
@@ -52,10 +52,10 @@ export function CustomJsonModal({ isOpen, onClose, onSubmit }: CustomJsonModalPr
       }
 
       // 성공
-      onSubmit(dataArray);
+      submitJson(dataArray);
       setJsonText('');
       setError(null);
-      onClose();
+      closeModal();
     } catch (err) {
       if (err instanceof SyntaxError) {
         setError(`Invalid JSON: ${err.message}`);
@@ -68,7 +68,7 @@ export function CustomJsonModal({ isOpen, onClose, onSubmit }: CustomJsonModalPr
   function handleCancel() {
     setJsonText('');
     setError(null);
-    onClose();
+    closeModal();
   }
 
   function handleJsonTextChange(e: React.ChangeEvent<HTMLTextAreaElement>) {

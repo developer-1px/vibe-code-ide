@@ -9,12 +9,12 @@ import { useAutoScroll } from '../../../hooks/useAutoScroll';
 export interface UseTreeStateProps {
   /** External collapsed paths (optional) */
   collapsedPaths?: Set<string>;
-  /** External collapse toggle handler (optional) */
-  onToggleCollapse?: (path: string) => void;
+  /** External collapse toggle command (optional) */
+  toggleCollapse?: (path: string) => void;
   /** External focused index (optional) */
   focusedIndex?: number;
-  /** External focus change handler (optional) */
-  onFocusChange?: (index: number) => void;
+  /** External focus change command (optional) */
+  changeFocus?: (index: number) => void;
   /** External item refs (optional) */
   itemRefs?: React.MutableRefObject<Map<number, HTMLElement>>;
   /** Scroll container ref - TreeView's root div (required for auto-scroll) */
@@ -23,9 +23,9 @@ export interface UseTreeStateProps {
 
 export function useTreeState({
   collapsedPaths: externalCollapsed,
-  onToggleCollapse: externalToggle,
+  toggleCollapse: externalToggle,
   focusedIndex: externalFocused,
-  onFocusChange: externalFocusChange,
+  changeFocus: externalFocusChange,
   itemRefs: externalRefs,
   scrollContainerRef,
 }: UseTreeStateProps = {}) {

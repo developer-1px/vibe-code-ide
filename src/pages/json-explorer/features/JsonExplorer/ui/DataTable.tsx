@@ -10,8 +10,6 @@ import {
   flexRender,
   getCoreRowModel,
   getSortedRowModel,
-  type Header,
-  type Row,
   type SortingState,
   useReactTable,
 } from '@tanstack/react-table';
@@ -19,6 +17,8 @@ import { useVirtualizer } from '@tanstack/react-virtual';
 import type { FuseResultMatch } from 'fuse.js';
 import type React from 'react';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { DataTableResizeHandle } from './DataTableResizeHandle';
+import { DataTableRow } from './DataTableRow';
 
 /**
  * JSON 데이터에서 모든 키를 추출 (코드 노출 순서 유지)
@@ -142,90 +142,25 @@ interface DataTableProps {
   data: Record<string, unknown>[];
   totalCount: number;
   formatHeaders?: boolean; // Header 포맷팅 옵션 (기본값: false)
-  onLoadMore?: () => void; // 무한 스크롤 콜백
+  loadMore?: () => void; // 무한 스크롤 콜백
   searchMatches?: Map<number, FuseResultMatch[]>; // 검색 매칭 정보
   searchQuery?: string; // 검색어
   selectedRowIndex?: number | null; // 선택된 행 인덱스
-  onRowSelect?: (index: number, data: Record<string, unknown>) => void; // 행 선택 콜백
-  onScrollToColumn?: (columnKey: string) => void; // 컬럼 스크롤 콜백 등록
+  selectRow?: (index: number, data: Record<string, unknown>) => void; // 행 선택 콜백
+  registerScrollToColumn?: (columnKey: string) => void; // 컬럼 스크롤 콜백 등록
   visibleColumns?: string[]; // 표시할 컬럼 목록 (검색 필터링용)
-}
-
-function DataTableResizeHandle({ header }: { header: Header<Record<string, unknown>, unknown> }) {
-  function handleMouseDown(event: React.MouseEvent<HTMLDivElement>) {
-    header.getResizeHandler()(event);
-  }
-
-  function handleTouchStart(event: React.TouchEvent<HTMLDivElement>) {
-    header.getResizeHandler()(event);
-  }
-
-  return (
-    <div
-      onMouseDown={handleMouseDown}
-      onTouchStart={handleTouchStart}
-      className={`absolute right-0 top-0 h-full w-1 cursor-col-resize select-none touch-none hover:bg-warm-400 ${
-        header.column.getIsResizing() ? 'bg-warm-400' : ''
-      }`}
-    />
-  );
-}
-
-function DataTableRow({
-  row,
-  rowIndex,
-  selectedRowIndex,
-  measureElement,
-  onRowSelect,
-}: {
-  row: Row<Record<string, unknown>>;
-  rowIndex: number;
-  selectedRowIndex?: number | null;
-  measureElement: (node: Element | null) => void;
-  onRowSelect?: (index: number, data: Record<string, unknown>) => void;
-}) {
-  const isSelected = selectedRowIndex === rowIndex;
-
-  function handleClick() {
-    onRowSelect?.(rowIndex, row.original);
-  }
-
-  return (
-    <tr
-      key={row.id}
-      className={`h-6 border-b border-border-DEFAULT transition-colors cursor-pointer ${
-        isSelected ? 'bg-warm-500/20' : 'hover:bg-warm-500/10'
-      }`}
-      data-index={rowIndex}
-      ref={measureElement}
-      onClick={handleClick}
-    >
-      {row.getVisibleCells().map((cell) => {
-        const width = cell.column.getSize();
-        return (
-          <td
-            key={cell.id}
-            className="px-3 py-0.5 text-2xs align-middle overflow-hidden border-r border-border-DEFAULT"
-            style={{ width: `${width}px` }}
-          >
-            <div className="truncate">{flexRender(cell.column.columnDef.cell, cell.getContext())}</div>
-          </td>
-        );
-      })}
-    </tr>
-  );
 }
 
 export function DataTable({
   data,
   totalCount,
   formatHeaders = false,
-  onLoadMore,
+  loadMore,
   searchMatches,
   searchQuery,
   selectedRowIndex,
-  onRowSelect,
-  onScrollToColumn,
+  selectRow,
+  registerScrollToColumn,
   visibleColumns,
 }: DataTableProps) {
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -322,8 +257,8 @@ export function DataTable({
 
   // 무한 스크롤 감지
   const lastItem = virtualRows[virtualRows.length - 1];
-  if (lastItem && lastItem.index >= rows.length - 1 && data.length < totalCount && onLoadMore) {
-    onLoadMore();
+  if (lastItem && lastItem.index >= rows.length - 1 && data.length < totalCount && loadMore) {
+    loadMore();
   }
 
   // 검색 매칭 개수 계산
@@ -359,14 +294,10 @@ export function DataTable({
 
   // 스크롤 함수 등록
   useEffect(() => {
-    if (onScrollToColumn) {
-      onScrollToColumn(scrollToColumn);
+    if (registerScrollToColumn) {
+      registerScrollToColumn(scrollToColumn);
     }
-  }, [onScrollToColumn, scrollToColumn]);
-
-  function handleRowSelect(rowIndex: number, rowData: Record<string, unknown>) {
-    onRowSelect?.(rowIndex, rowData);
-  }
+  }, [registerScrollToColumn, scrollToColumn]);
 
   // 가로 스크롤 위치 저장 및 복원
   useEffect(() => {
@@ -466,7 +397,7 @@ export function DataTable({
                       rowIndex={virtualRow.index}
                       selectedRowIndex={selectedRowIndex}
                       measureElement={rowVirtualizer.measureElement}
-                      onRowSelect={handleRowSelect}
+                      selectRow={selectRow}
                     />
                   );
                 })}

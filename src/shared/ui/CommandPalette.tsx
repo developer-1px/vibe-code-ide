@@ -26,33 +26,22 @@ import { getFileName } from '../../shared/pathUtils';
 
 export interface CommandPaletteProps {
   open: boolean;
-  onOpenChange: (open: boolean) => void;
+  changeOpen: (open: boolean) => void;
   query: string;
-  onQueryChange: (query: string) => void;
+  changeQuery: (query: string) => void;
   results: SearchResult[];
-  selectedIndex: number;
-  onSelectedIndexChange: (index: number) => void;
-  onSelectResult: (result: SearchResult) => void;
+  selectResult: (result: SearchResult) => void;
 }
 
-export function CommandPalette({
-  open,
-  onOpenChange,
-  query,
-  onQueryChange,
-  results,
-  selectedIndex,
-  onSelectedIndexChange,
-  onSelectResult,
-}: CommandPaletteProps) {
+export function CommandPalette({ open, changeOpen, query, changeQuery, results, selectResult }: CommandPaletteProps) {
   const inputRef = React.useRef<HTMLInputElement>(null);
 
   function handleSelectResult(result: SearchResult) {
-    onSelectResult(result);
+    selectResult(result);
   }
 
   function handleClose() {
-    onOpenChange(false);
+    changeOpen(false);
   }
 
   // Headless keyboard navigation with auto-scroll
@@ -275,7 +264,7 @@ export function CommandPalette({
   };
 
   function handleQueryChange(e: React.ChangeEvent<HTMLInputElement>) {
-    onQueryChange(e.target.value);
+    changeQuery(e.target.value);
   }
 
   function CommandPaletteResultItem({

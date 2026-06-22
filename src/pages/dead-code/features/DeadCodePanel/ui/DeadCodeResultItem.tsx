@@ -9,10 +9,9 @@ import React from 'react';
 import { activeActivityPageIdAtom } from '@/app/model/activityPageAtoms';
 import { viewModeAtom } from '@/entities/AppView/model/atoms';
 import type { DeadCodeItem } from '@/features/Code/CodeAnalyzer/DeadCodeAnalyzer/lib/deadCodeAnalyzer.ts';
-import { useDeadCodeSelection } from '@/features/Code/CodeAnalyzer/DeadCodeSelection/lib/useDeadCodeSelection.ts';
 import { targetLineAtom } from '@/features/File/Navigation/model/atoms.ts';
 import { useOpenFile } from '@/features/File/OpenFiles/lib/useOpenFile.ts';
-import { Checkbox } from '@/shared/ui/Checkbox';
+import { DeadCodeResultCheckbox } from './DeadCodeResultCheckbox.tsx';
 
 // Get icon for dead code kind
 function getKindIcon(kind: DeadCodeItem['kind']) {
@@ -48,9 +47,7 @@ export const DeadCodeResultItem = React.forwardRef<
   const setViewMode = useSetAtom(viewModeAtom);
   const setActiveActivityPageId = useSetAtom(activeActivityPageIdAtom);
   const { openFile } = useOpenFile();
-  const { toggleItemSelection, isItemSelected } = useDeadCodeSelection();
 
-  const isSelected = isItemSelected(item);
   const fileName = item.filePath.split('/').pop() || item.filePath;
   const KindIcon = getKindIcon(item.kind);
 
@@ -70,14 +67,6 @@ export const DeadCodeResultItem = React.forwardRef<
       e.preventDefault();
       handleItemClick();
     }
-  }
-
-  function handleCheckedChange() {
-    toggleItemSelection(item);
-  }
-
-  function handleCheckboxClick(e: React.MouseEvent) {
-    e.stopPropagation();
   }
 
   return (
@@ -107,12 +96,7 @@ export const DeadCodeResultItem = React.forwardRef<
         <span className="text-2xs text-text-tertiary">
           {fileName}:{item.line}
         </span>
-        <Checkbox
-          checked={isSelected}
-          onCheckedChange={handleCheckedChange}
-          className="border-border-hover"
-          onClick={handleCheckboxClick}
-        />
+        <DeadCodeResultCheckbox item={item} />
       </div>
     </div>
   );

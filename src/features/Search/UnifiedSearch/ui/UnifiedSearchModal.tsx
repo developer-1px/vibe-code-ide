@@ -17,6 +17,7 @@ import {
 } from '@/features/Search/UnifiedSearch/model/atoms.ts';
 import { CommandPalette } from '@/shared/ui/CommandPalette';
 import { searchResultsFuzzy } from '../lib/searchService.ts';
+import { selectSearchResult } from '../lib/selectSearchResult.ts';
 import { getAllSearchableItems } from '../lib/symbolExtractor.ts';
 import type { SearchResult } from '../model/types.ts';
 
@@ -62,93 +63,29 @@ export const UnifiedSearchModal: React.FC = () => {
     });
   }, [query, allSearchableItems, isOpen, setResults]);
 
-  // Handle close (defined first, used by handleSelectResult)
-  function handleClose() {
+  function closeModal() {
     setIsOpen(false);
     // Keep query - don't clear it
     setResults([]);
   }
 
-  // Handle result selection
-  function handleSelectResult(result: SearchResult) {
-    if (result.type === 'file') {
-      // Open file
-      openFile(result.filePath);
-    } else if (result.type === 'folder') {
-      // Open folder in FolderView (expand recursively)
-      const folderPath = result.filePath;
-
-      // Get all parent folders (recursively)
-      const parts = folderPath.split('/');
-      const foldersToOpen: string[] = [];
-      for (let i = 1; i <= parts.length; i++) {
-        const parentFolder = parts.slice(0, i).join('/');
-        if (parentFolder) {
-          foldersToOpen.push(parentFolder);
-        }
-      }
-
-      // Remove all parent folders from collapsed set
-      setCollapsedFolders((prev) => {
-        const next = new Set(prev);
-        for (const folder of foldersToOpen) {
-          next.delete(folder);
-        }
-        return next;
-      });
-
-      // Focus sidebar
-      setFocusedPane('sidebar');
-    } else if (result.type === 'symbol') {
-      console.log('[SearchResults] CodeSymbol selected:', {
-        name: result.name,
-        nodeId: result.nodeId,
-        filePath: result.filePath,
-        lineNumber: result.lineNumber,
-        nodeType: result.nodeType,
-      });
-
-      // For Usage: just open file and scroll to line
-      if (result.nodeType === 'usage') {
-        openFile(result.filePath, {
-          lineNumber: result.lineNumber,
-        });
-      } else {
-        // For Declaration: open file, scroll to symbol, and activate focus mode
-        openFile(result.filePath, {
-          lineNumber: result.lineNumber || 0,
-          focusSymbol: result.name,
-          focusPane: 'canvas',
-        });
-
-        console.log('[SearchResults] Activated focus mode for:', result.name, 'in file:', result.filePath);
-      }
-    }
-
-    // Close modal
-    handleClose();
+  function selectResult(result: SearchResult) {
+    selectSearchResult(result, {
+      openFile,
+      changeCollapsedFolders: setCollapsedFolders,
+      changeFocusedPane: setFocusedPane,
+    });
+    closeModal();
   }
-
-  function handleOpenChange(nextOpen: boolean) {
-    setIsOpen(nextOpen);
-  }
-
-  function handleQueryChange(nextQuery: string) {
-    setQuery(nextQuery);
-  }
-
-  function handleSelectedIndexChange() {}
 
   return (
     <CommandPalette
       open={isOpen}
-      onOpenChange={handleOpenChange}
+      changeOpen={setIsOpen}
       query={query}
-      onQueryChange={handleQueryChange}
+      changeQuery={setQuery}
       results={results}
-      selectedIndex={0}
-      onSelectedIndexChange={handleSelectedIndexChange}
-      onSelectResult={handleSelectResult}
+      selectResult={selectResult}
     />
   );
 };

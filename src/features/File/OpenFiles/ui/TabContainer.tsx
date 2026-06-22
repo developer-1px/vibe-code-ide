@@ -4,58 +4,10 @@
  */
 
 import { useAtom } from 'jotai';
-import { X } from 'lucide-react';
-import type React from 'react';
 import { ContentSearchView } from '@/features/Search/ContentSearch/ui/ContentSearchView';
-import { activeTabIdAtom, type ContentTab, openedTabsAtom } from '../model/contentTabs';
+import { activeTabIdAtom, openedTabsAtom } from '../model/contentTabs';
 import IDEScrollView from './IDEScrollView/IDEScrollView';
-
-interface TabButtonProps {
-  tab: ContentTab;
-  isActive: boolean;
-  isClosable: boolean;
-  onActivateTab: (tabId: string) => void;
-  onCloseTab: (tabId: string) => void;
-}
-
-function TabButton({ tab, isActive, isClosable, onActivateTab, onCloseTab }: TabButtonProps) {
-  function handleActivateClick() {
-    onActivateTab(tab.id);
-  }
-
-  function handleCloseClick(e: React.MouseEvent) {
-    e.stopPropagation();
-    onCloseTab(tab.id);
-  }
-
-  return (
-    <div
-      className={`group flex items-center gap-2 px-3 py-2 border-b-2 transition-colors flex-shrink-0 ${
-        isActive ? 'border-warm-300 bg-bg-elevated' : 'border-transparent hover:bg-bg-DEFAULT'
-      }`}
-    >
-      <button
-        type="button"
-        onClick={handleActivateClick}
-        className={`text-xs font-medium transition-colors ${
-          isActive ? 'text-text-primary' : 'text-text-tertiary group-hover:text-text-secondary'
-        }`}
-      >
-        {tab.label}
-      </button>
-      {isClosable && (
-        <button
-          type="button"
-          onClick={handleCloseClick}
-          className="opacity-0 group-hover:opacity-100 transition-opacity hover:bg-bg-deep rounded p-0.5"
-          aria-label="Close tab"
-        >
-          <X size={12} className="text-text-tertiary hover:text-text-primary" />
-        </button>
-      )}
-    </div>
-  );
-}
+import { TabButton } from './TabButton';
 
 export function TabContainer() {
   const [openedTabs, setOpenedTabs] = useAtom(openedTabsAtom);
@@ -63,7 +15,7 @@ export function TabContainer() {
 
   const activeTab = openedTabs.find((tab) => tab.id === activeTabId);
 
-  function handleCloseTab(tabId: string) {
+  function closeTab(tabId: string) {
     const tabIndex = openedTabs.findIndex((tab) => tab.id === tabId);
     if (tabIndex === -1 || openedTabs.length === 1) return; // 마지막 탭은 닫지 않음
 
@@ -77,7 +29,7 @@ export function TabContainer() {
     }
   }
 
-  function handleActivateTab(tabId: string) {
+  function activateTab(tabId: string) {
     setActiveTabId(tabId);
   }
 
@@ -95,8 +47,8 @@ export function TabContainer() {
               tab={tab}
               isActive={isActive}
               isClosable={isClosable}
-              onActivateTab={handleActivateTab}
-              onCloseTab={handleCloseTab}
+              activateTab={activateTab}
+              closeTab={closeTab}
             />
           );
         })}

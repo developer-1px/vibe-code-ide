@@ -6,36 +6,10 @@
 import { useSetAtom } from 'jotai';
 import React from 'react';
 import { focusedFolderAtom } from '@/entities/AppView/model/atoms';
+import { FolderBreadcrumbSegment } from './FolderBreadcrumbSegment';
 
 interface FolderBreadcrumbProps {
   focusedFolder: string;
-}
-
-interface FolderBreadcrumbSegmentProps {
-  segment: string;
-  path: string;
-  isCurrent: boolean;
-}
-
-function FolderBreadcrumbSegment({ segment, path, isCurrent }: FolderBreadcrumbSegmentProps) {
-  const setFocusedFolder = useSetAtom(focusedFolderAtom);
-
-  function handleClick() {
-    setFocusedFolder(path);
-  }
-
-  return (
-    <>
-      <span className="text-text-tertiary">&gt;</span>
-      <button
-        onClick={handleClick}
-        className={`hover:text-text-primary transition-colors ${isCurrent ? 'text-text-primary font-medium' : ''}`}
-        title={`${path}로 이동`}
-      >
-        {segment}
-      </button>
-    </>
-  );
 }
 
 export const FolderBreadcrumb: React.FC<FolderBreadcrumbProps> = ({ focusedFolder }) => {

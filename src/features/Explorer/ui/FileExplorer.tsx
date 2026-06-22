@@ -4,89 +4,21 @@
  */
 
 import { useAtom, useAtomValue } from 'jotai';
-import { Folder, FolderOpen } from 'lucide-react';
-import type React from 'react';
 import { useEffect, useMemo, useState } from 'react';
 import { filesAtom, focusedFolderAtom } from '@/entities/AppView/model/atoms';
 import { useOpenFile } from '@/features/File/OpenFiles/lib/useOpenFile';
 import { activeTabAtom, openedTabsAtom } from '@/features/File/OpenFiles/model/atoms';
 import { useTreeKeyboardNavigation } from '@/shared/hooks/useTreeKeyboardNavigation';
-import { FileIcon } from '@/shared/ui/FileIcon';
-import { FileTreeItem } from '@/shared/ui/FileTreeItem';
 import { TreeView } from '@/shared/ui/TreeView/TreeView';
 import { buildFileTree } from '../lib/buildFileTree';
 import { getFlatItemList } from '../lib/getFlatItemList';
 import { getInitialCollapsedFolders } from '../lib/getInitialCollapsedFolders';
 import type { FolderNode } from '../model/types';
+import { FileExplorerTreeItem } from './FileExplorerTreeItem';
 import { FolderBreadcrumb } from './FolderBreadcrumb';
 
 interface FileExplorerProps {
   filteredFiles?: Record<string, string>;
-}
-
-interface FileExplorerTreeItemProps {
-  node: FolderNode;
-  depth: number;
-  isFocused: boolean;
-  isCollapsed: boolean;
-  itemRef: React.Ref<HTMLDivElement>;
-  activeTab: string | null;
-  openedTabs: string[];
-  onFocus: () => void;
-  onToggleFolder: () => void;
-  onFileClick: (filePath: string) => void;
-}
-
-function FileExplorerTreeItem({
-  node,
-  depth,
-  isFocused,
-  isCollapsed,
-  itemRef,
-  activeTab,
-  openedTabs,
-  onFocus,
-  onToggleFolder,
-  onFileClick,
-}: FileExplorerTreeItemProps) {
-  const isActive = activeTab === node.filePath;
-  const isOpened = node.filePath ? openedTabs.includes(node.filePath) : false;
-  const fileExtension = node.name.includes('.') ? `.${node.name.split('.').pop()}` : undefined;
-  const icon =
-    node.type === 'folder'
-      ? isCollapsed
-        ? Folder
-        : FolderOpen
-      : ((() => <FileIcon fileName={node.name} />) as React.ComponentType);
-
-  function handleDoubleClick() {
-    if (node.type === 'file' && node.filePath) {
-      onFileClick(node.filePath);
-    } else {
-      onToggleFolder();
-    }
-  }
-
-  function handleFocus() {
-    onFocus();
-  }
-
-  return (
-    <FileTreeItem
-      ref={itemRef}
-      icon={icon}
-      label={node.name}
-      active={isActive}
-      opened={isOpened}
-      focused={isFocused}
-      isFolder={node.type === 'folder'}
-      isOpen={!isCollapsed}
-      indent={depth}
-      fileExtension={fileExtension}
-      onFocus={handleFocus}
-      onDoubleClick={handleDoubleClick}
-    />
-  );
 }
 
 export function FileExplorer({ filteredFiles }: FileExplorerProps) {
@@ -108,7 +40,7 @@ export function FileExplorer({ filteredFiles }: FileExplorerProps) {
   // Flat list of all visible items for keyboard navigation
   const flatItemList = useMemo(() => getFlatItemList(fileTree, collapsedFolders), [fileTree, collapsedFolders]);
 
-  function handleToggleFolder(path: string) {
+  function toggleFolder(path: string) {
     setCollapsedFolders((prev) => {
       const next = new Set(prev);
       if (next.has(path)) {
@@ -120,26 +52,26 @@ export function FileExplorer({ filteredFiles }: FileExplorerProps) {
     });
   }
 
-  function handleFileClick(filePath: string) {
+  function openFilePath(filePath: string) {
     openFile(filePath);
   }
 
-  // Folder Focus Mode handlers
-  function handleFolderFocus(folderPath: string) {
+  // Folder Focus Mode commands
+  function focusFolder(folderPath: string) {
     setFocusedFolder(folderPath);
   }
 
-  function handleExitFocus() {
+  function exitFolderFocus() {
     setFocusedFolder(null);
   }
 
-  function handleItemAction(item: FolderNode) {
+  function activateItem(item: FolderNode) {
     if (item.filePath) {
-      handleFileClick(item.filePath);
+      openFilePath(item.filePath);
     }
   }
 
-  function handleFocusChange(nextFocusedIndex: number) {
+  function changeFocusedIndex(nextFocusedIndex: number) {
     setFocusedIndex(nextFocusedIndex);
   }
 
@@ -147,10 +79,10 @@ export function FileExplorer({ filteredFiles }: FileExplorerProps) {
   const { focusedIndex, setFocusedIndex, itemRefs } = useTreeKeyboardNavigation({
     flatItemList,
     collapsedFolders,
-    onToggleFolder: handleToggleFolder,
-    onItemAction: handleItemAction,
-    onFolderFocus: handleFolderFocus,
-    onExitFocus: handleExitFocus,
+    onToggleFolder: toggleFolder,
+    onItemAction: activateItem,
+    onFolderFocus: focusFolder,
+    onExitFocus: exitFolderFocus,
     scope: 'sidebar',
     enabled: true,
   });
@@ -176,9 +108,9 @@ export function FileExplorer({ filteredFiles }: FileExplorerProps) {
         getNodeType={(node) => node.type}
         getNodePath={(node) => node.path}
         collapsedPaths={collapsedFolders}
-        onToggleCollapse={handleToggleFolder}
+        toggleCollapse={toggleFolder}
         focusedIndex={focusedIndex}
-        onFocusChange={handleFocusChange}
+        changeFocus={changeFocusedIndex}
         itemRefs={itemRefs}
       >
         {({ node, depth, isFocused, isCollapsed, itemRef, handleFocus, handleToggle }) => {
@@ -191,9 +123,9 @@ export function FileExplorer({ filteredFiles }: FileExplorerProps) {
               itemRef={itemRef}
               activeTab={activeTab}
               openedTabs={openedTabs}
-              onFocus={handleFocus}
-              onToggleFolder={handleToggle}
-              onFileClick={handleFileClick}
+              focusItem={handleFocus}
+              toggleFolder={handleToggle}
+              openFile={openFilePath}
             />
           );
         }}

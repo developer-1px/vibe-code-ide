@@ -5,15 +5,13 @@
  */
 
 import Fuse, { type FuseResultMatch } from 'fuse.js';
-import { PanelRightClose, PanelRightOpen } from 'lucide-react';
 import { useMemo, useState } from 'react';
-import { Checkbox } from '@/shared/ui/Checkbox';
 import { extractAllKeyPaths } from '../lib/extractKeyPaths';
 import { type DataSource, getLimitedData, getTotalCount } from '../lib/loadTestData';
 import { CustomJsonModal } from './CustomJsonModal';
 import { DataTable } from './DataTable';
-import { ExportButton } from './ExportButton';
 import { JsonDetailsPanel } from './JsonDetailsPanel';
+import { JsonExplorerHeader } from './JsonExplorerHeader';
 import { JsonExplorerSidebar } from './JsonExplorerSidebar';
 import { SearchBar } from './SearchBar';
 
@@ -34,8 +32,8 @@ export function JsonExplorer() {
   // 스키마 선택 관리
   const [selectedSchema, setSelectedSchema] = useState<string | null>(null);
 
-  // onScrollToColumn 핸들러를 useCallback으로 안정화
-  function handleSetScrollToColumn(fn: (columnKey: string) => void) {
+  // DataTable에서 등록한 컬럼 스크롤 command를 보관
+  function registerScrollToColumn(fn: (columnKey: string) => void) {
     setScrollToColumnFn(() => fn);
   }
 
@@ -46,8 +44,8 @@ export function JsonExplorer() {
   );
   const totalCount = useMemo(() => getTotalCount(dataSource, customData), [dataSource, customData]);
 
-  // 데이터 소스 변경 핸들러
-  function handleDataSourceChange(newSource: DataSource) {
+  // 데이터 소스 변경 시 탐색 상태 초기화
+  function changeDataSource(newSource: DataSource) {
     setDataSource(newSource);
     setLoadedCount(100); // 초기 로드 개수로 리셋
     setSearchQuery(''); // 검색어 초기화
@@ -55,8 +53,8 @@ export function JsonExplorer() {
     setSelectedRowData(null);
   }
 
-  // 커스텀 JSON 제출 핸들러
-  function handleCustomJsonSubmit(data: Record<string, unknown>[]) {
+  // 커스텀 JSON 적용 시 데이터 소스 전환
+  function submitCustomJson(data: Record<string, unknown>[]) {
     setCustomData(data);
     setDataSource('custom');
     setLoadedCount(100);
@@ -194,19 +192,19 @@ export function JsonExplorer() {
     };
   }, [allProducts, searchQuery, fuse, schemaFilteredColumns]);
 
-  function handleSelectPath(path: string) {
+  function selectPath(path: string) {
     console.log('Selected key path:', path);
   }
 
   // 무한 스크롤: 100개씩 추가 로드
-  function handleLoadMore() {
+  function loadMoreRows() {
     if (loadedCount < totalCount) {
       setLoadedCount((prev) => Math.min(prev + 100, totalCount));
     }
   }
 
-  // 행 선택 핸들러
-  function handleRowSelect(index: number, data: Record<string, unknown>) {
+  // 행 선택 시 상세 패널 열기
+  function selectRow(index: number, data: Record<string, unknown>) {
     setSelectedRowIndex(index);
     setSelectedRowData(data);
     if (!rightPanelOpen) {
@@ -215,38 +213,26 @@ export function JsonExplorer() {
   }
 
   // 우측 패널 닫기
-  function handleClosePanel() {
+  function closeDetailsPanel() {
     setRightPanelOpen(false);
     setSelectedRowIndex(null);
     setSelectedRowData(null);
   }
 
-  // 컬럼 스크롤 핸들러
-  function handleScrollToColumn(columnKey: string) {
+  // 사이드바 컬럼 선택을 DataTable 스크롤 command로 연결
+  function scrollToColumn(columnKey: string) {
     scrollToColumnFn?.(columnKey);
   }
 
-  function handleCustomJsonClick() {
+  function openCustomJsonModal() {
     setCustomJsonModalOpen(true);
   }
 
-  function handleSchemaSelect(schemaPath: string | null) {
+  function selectSchema(schemaPath: string | null) {
     setSelectedSchema(schemaPath);
   }
 
-  function handleFormatHeadersCheckedChange(checked: boolean | 'indeterminate') {
-    setFormatHeaders(checked === true);
-  }
-
-  function handleRightPanelToggle() {
-    setRightPanelOpen(!rightPanelOpen);
-  }
-
-  function handleSearchQueryChange(nextQuery: string) {
-    setSearchQuery(nextQuery);
-  }
-
-  function handleCustomJsonModalClose() {
+  function closeCustomJsonModal() {
     setCustomJsonModalOpen(false);
   }
 
@@ -256,67 +242,30 @@ export function JsonExplorer() {
       <JsonExplorerSidebar
         columns={visibleColumns}
         allData={allProducts}
-        onSelectPath={handleSelectPath}
-        onScrollToColumn={handleScrollToColumn}
+        selectPath={selectPath}
+        scrollToColumn={scrollToColumn}
         dataSource={dataSource}
-        onDataSourceChange={handleDataSourceChange}
-        onCustomJsonClick={handleCustomJsonClick}
+        changeDataSource={changeDataSource}
+        openCustomJson={openCustomJsonModal}
         selectedSchema={selectedSchema}
-        onSchemaSelect={handleSchemaSelect}
+        selectSchema={selectSchema}
       />
 
       {/* Main Content */}
       <div className="flex flex-col flex-1 bg-bg-elevated min-w-0">
-        {/* Header */}
-        <div className="px-4 py-2.5 border-b border-border-DEFAULT bg-bg-deep shrink-0">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-base font-semibold text-text-primary">JSON Explorer</h1>
-              <p className="text-2xs text-text-tertiary mt-0.5">Explore test.json data (Server Product Price List)</p>
-            </div>
-
-            {/* Right Controls */}
-            <div className="flex items-center gap-3">
-              {/* Format Headers Toggle */}
-              <div className="flex items-center gap-2">
-                <Checkbox
-                  id="format-headers"
-                  checked={formatHeaders}
-                  onCheckedChange={handleFormatHeadersCheckedChange}
-                />
-                <label
-                  htmlFor="format-headers"
-                  className="text-2xs text-text-secondary cursor-pointer select-none hover:text-text-primary transition-colors"
-                >
-                  Format Headers
-                </label>
-              </div>
-
-              {/* Export Button */}
-              <ExportButton data={filteredProducts} filename="json-export" />
-
-              {/* Right Panel Toggle */}
-              <button
-                onClick={handleRightPanelToggle}
-                className="p-1.5 hover:bg-bg-elevated rounded transition-colors"
-                aria-label="Toggle details panel"
-                title={rightPanelOpen ? 'Close details panel' : 'Open details panel'}
-              >
-                {rightPanelOpen ? (
-                  <PanelRightClose size={16} className="text-warm-400" />
-                ) : (
-                  <PanelRightOpen size={16} className="text-text-tertiary" />
-                )}
-              </button>
-            </div>
-          </div>
-        </div>
+        <JsonExplorerHeader
+          formatHeaders={formatHeaders}
+          changeFormatHeaders={setFormatHeaders}
+          exportData={filteredProducts}
+          rightPanelOpen={rightPanelOpen}
+          changeRightPanelOpen={setRightPanelOpen}
+        />
 
         {/* Search Bar */}
         <div className="shrink-0">
           <SearchBar
             value={searchQuery}
-            onChange={handleSearchQueryChange}
+            changeValue={setSearchQuery}
             placeholder="Search by code, name, or generation..."
           />
         </div>
@@ -327,26 +276,22 @@ export function JsonExplorer() {
             data={filteredProducts}
             totalCount={totalCount}
             formatHeaders={formatHeaders}
-            onLoadMore={handleLoadMore}
+            loadMore={loadMoreRows}
             searchMatches={searchMatches}
             searchQuery={searchQuery}
             selectedRowIndex={selectedRowIndex}
-            onRowSelect={handleRowSelect}
-            onScrollToColumn={handleSetScrollToColumn}
+            selectRow={selectRow}
+            registerScrollToColumn={registerScrollToColumn}
             visibleColumns={visibleColumns}
           />
         </div>
       </div>
 
       {/* Right Panel - Details */}
-      {rightPanelOpen && <JsonDetailsPanel data={selectedRowData} onClose={handleClosePanel} />}
+      {rightPanelOpen && <JsonDetailsPanel data={selectedRowData} closePanel={closeDetailsPanel} />}
 
       {/* Custom JSON Modal */}
-      <CustomJsonModal
-        isOpen={customJsonModalOpen}
-        onClose={handleCustomJsonModalClose}
-        onSubmit={handleCustomJsonSubmit}
-      />
+      <CustomJsonModal isOpen={customJsonModalOpen} closeModal={closeCustomJsonModal} submitJson={submitCustomJson} />
     </div>
   );
 }
