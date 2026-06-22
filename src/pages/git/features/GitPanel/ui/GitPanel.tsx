@@ -1,84 +1,20 @@
-import {
-  Check,
-  ChevronDown,
-  ChevronRight,
-  Download,
-  FileText,
-  GitBranch,
-  GitCommit,
-  Minus,
-  Plus,
-  RotateCw,
-  Upload,
-} from 'lucide-react';
 import * as React from 'react';
 import { cn } from '@/shared/lib/utils';
-import { Button } from '@/shared/ui/Button';
 import { ScrollArea } from '@/shared/ui/ScrollArea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/shared/ui/Select';
 import { Separator } from '@/shared/ui/Separator';
-import { Textarea } from '@/shared/ui/Textarea';
+import type { Commit, FileChange } from '../model/types';
+import { GitChangeSection } from './GitChangeSection';
+import { GitCommitBox } from './GitCommitBox';
+import { GitHistorySection } from './GitHistorySection';
+import { GitPanelHeader } from './GitPanelHeader';
 
 export interface GitPanelProps {
   className?: string;
 }
 
-interface FileChange {
-  path: string;
-  status: 'added' | 'modified' | 'deleted' | 'renamed';
-  staged: boolean;
-}
-
-interface Commit {
-  hash: string;
-  message: string;
-  author: string;
-  date: string;
-}
-
-function getStatusIcon(status: FileChange['status']) {
-  switch (status) {
-    case 'added':
-      return <Plus size={12} className="text-status-success" />;
-    case 'modified':
-      return <FileText size={12} className="text-yellow-500" />;
-    case 'deleted':
-      return <Minus size={12} className="text-red-500" />;
-    case 'renamed':
-      return <RotateCw size={12} className="text-blue-500" />;
-  }
-}
-
-function getStatusColor(status: FileChange['status']) {
-  switch (status) {
-    case 'added':
-      return 'text-status-success';
-    case 'modified':
-      return 'text-yellow-500';
-    case 'deleted':
-      return 'text-red-500';
-    case 'renamed':
-      return 'text-blue-500';
-  }
-}
-
-/**
- * GitPanel - Git source control interface
- *
- * Features:
- * - View changes (staged/unstaged)
- * - Stage/unstage files
- * - Commit changes
- * - Branch management
- * - Push/pull operations
- * - Commit history
- */
 export function GitPanel({ className }: GitPanelProps) {
   const [commitMessage, setCommitMessage] = React.useState('');
   const [currentBranch, setCurrentBranch] = React.useState('main');
-  const [showStagedChanges, setShowStagedChanges] = React.useState(true);
-  const [showUnstagedChanges, setShowUnstagedChanges] = React.useState(true);
-  const [showCommitHistory, setShowCommitHistory] = React.useState(false);
 
   const [fileChanges, setFileChanges] = React.useState<FileChange[]>([
     { path: 'src/app/ui/AppTitleBar/TitleBar.tsx', status: 'modified', staged: true },
@@ -113,7 +49,7 @@ export function GitPanel({ className }: GitPanelProps) {
   const stagedChanges = fileChanges.filter((f) => f.staged);
   const unstagedChanges = fileChanges.filter((f) => !f.staged);
 
-  function handleToggleStage(path: string) {
+  function toggleFileStage(path: string) {
     setFileChanges((prev) => prev.map((f) => (f.path === path ? { ...f, staged: !f.staged } : f)));
   }
 
@@ -125,233 +61,40 @@ export function GitPanel({ className }: GitPanelProps) {
     setFileChanges((prev) => prev.map((f) => ({ ...f, staged: false })));
   }
 
-  function handleBranchValueChange(nextBranch: string) {
-    setCurrentBranch(nextBranch);
-  }
-
-  function handleCommitMessageChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
-    setCommitMessage(e.target.value);
-  }
-
-  function handleStagedChangesClick() {
-    setShowStagedChanges(!showStagedChanges);
-  }
-
-  function handleUnstagedChangesClick() {
-    setShowUnstagedChanges(!showUnstagedChanges);
-  }
-
-  function handleCommitHistoryClick() {
-    setShowCommitHistory(!showCommitHistory);
-  }
-
-  function handleUnstageAllClick(e: React.MouseEvent) {
-    e.stopPropagation();
-    unstageAll();
-  }
-
-  function handleStageAllClick(e: React.MouseEvent) {
-    e.stopPropagation();
-    stageAll();
-  }
-
-  function GitFileChangeButton({ file }: { file: FileChange }) {
-    function handleClick() {
-      handleToggleStage(file.path);
-    }
-
-    return (
-      <button
-        onClick={handleClick}
-        className="w-full flex items-center gap-2 px-2 py-1 hover:bg-white/5 transition-colors text-left rounded group"
-      >
-        {getStatusIcon(file.status)}
-        <span className={cn('text-xs flex-1 truncate', getStatusColor(file.status))}>{file.path}</span>
-        <span className="text-2xs text-text-muted uppercase">{file.status.charAt(0)}</span>
-        {file.staged ? (
-          <Check size={12} className="text-status-success opacity-0 group-hover:opacity-100" />
-        ) : (
-          <Plus size={12} className="text-text-muted opacity-0 group-hover:opacity-100" />
-        )}
-      </button>
-    );
-  }
-
   return (
     <div className={cn('flex h-full flex-col bg-bg-surface border-r border-border-DEFAULT', className)}>
-      {/* Header */}
-      <div className="p-3 space-y-2 border-b border-border-DEFAULT">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <GitBranch size={14} className="text-text-muted" />
-            <span className="text-xs font-medium text-text-primary uppercase tracking-wide">Source Control</span>
-          </div>
-          <div className="flex items-center gap-1">
-            <Button variant="ghost" size="sm" className="h-6 w-6 p-0" title="Pull">
-              <Download size={12} />
-            </Button>
-            <Button variant="ghost" size="sm" className="h-6 w-6 p-0" title="Push">
-              <Upload size={12} />
-            </Button>
-            <Button variant="ghost" size="sm" className="h-6 w-6 p-0" title="Refresh">
-              <RotateCw size={12} />
-            </Button>
-          </div>
-        </div>
-
-        {/* Branch Selector */}
-        <Select value={currentBranch} onValueChange={handleBranchValueChange}>
-          <SelectTrigger className="h-8 text-xs">
-            <GitBranch size={12} className="mr-1" />
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="main">main</SelectItem>
-            <SelectItem value="develop">develop</SelectItem>
-            <SelectItem value="feature/new-ui">feature/new-ui</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
+      <GitPanelHeader currentBranch={currentBranch} changeBranch={setCurrentBranch} />
 
       <ScrollArea className="flex-1">
         <div className="p-3 space-y-3">
-          {/* Commit Message */}
-          <div className="space-y-2">
-            <Textarea
-              placeholder="Commit message..."
-              value={commitMessage}
-              onChange={handleCommitMessageChange}
-              className="min-h-15 text-xs resize-none"
-            />
-            <div className="flex gap-2">
-              <Button
-                size="sm"
-                className="flex-1 h-7 text-xs bg-warm-300 text-bg-deep hover:bg-warm-300/90"
-                disabled={!commitMessage || stagedChanges.length === 0}
-              >
-                <GitCommit size={12} className="mr-1" />
-                Commit
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                className="flex-1 h-7 text-xs"
-                disabled={!commitMessage || stagedChanges.length === 0}
-              >
-                <GitCommit size={12} className="mr-1" />
-                Commit & Push
-              </Button>
-            </div>
-          </div>
+          <GitCommitBox
+            commitMessage={commitMessage}
+            stagedChangeCount={stagedChanges.length}
+            changeCommitMessage={setCommitMessage}
+          />
 
           <Separator />
 
-          {/* Staged Changes */}
-          <div className="space-y-1">
-            <button
-              onClick={handleStagedChangesClick}
-              className="w-full flex items-center gap-1 px-1 py-1 hover:bg-white/5 rounded transition-colors"
-            >
-              {showStagedChanges ? (
-                <ChevronDown size={14} className="text-text-muted" />
-              ) : (
-                <ChevronRight size={14} className="text-text-muted" />
-              )}
-              <span className="text-xs font-medium text-text-primary flex-1 text-left">Staged Changes</span>
-              <span className="text-xs text-text-muted">{stagedChanges.length}</span>
-              {stagedChanges.length > 0 && (
-                <Button variant="ghost" size="sm" className="h-5 px-1 text-2xs" onClick={handleUnstageAllClick}>
-                  <Minus size={10} className="mr-0.5" />
-                  Unstage All
-                </Button>
-              )}
-            </button>
-
-            {showStagedChanges && (
-              <div className="ml-2 space-y-0.5">
-                {stagedChanges.length > 0 ? (
-                  stagedChanges.map((file) => <GitFileChangeButton key={file.path} file={file} />)
-                ) : (
-                  <div className="px-2 py-3 text-xs text-text-muted text-center">No staged changes</div>
-                )}
-              </div>
-            )}
-          </div>
-
-          {/* Unstaged Changes */}
-          <div className="space-y-1">
-            <button
-              onClick={handleUnstagedChangesClick}
-              className="w-full flex items-center gap-1 px-1 py-1 hover:bg-white/5 rounded transition-colors"
-            >
-              {showUnstagedChanges ? (
-                <ChevronDown size={14} className="text-text-muted" />
-              ) : (
-                <ChevronRight size={14} className="text-text-muted" />
-              )}
-              <span className="text-xs font-medium text-text-primary flex-1 text-left">Changes</span>
-              <span className="text-xs text-text-muted">{unstagedChanges.length}</span>
-              {unstagedChanges.length > 0 && (
-                <Button variant="ghost" size="sm" className="h-5 px-1 text-2xs" onClick={handleStageAllClick}>
-                  <Plus size={10} className="mr-0.5" />
-                  Stage All
-                </Button>
-              )}
-            </button>
-
-            {showUnstagedChanges && (
-              <div className="ml-2 space-y-0.5">
-                {unstagedChanges.length > 0 ? (
-                  unstagedChanges.map((file) => <GitFileChangeButton key={file.path} file={file} />)
-                ) : (
-                  <div className="px-2 py-3 text-xs text-text-muted text-center">No changes</div>
-                )}
-              </div>
-            )}
-          </div>
+          <GitChangeSection
+            title="Staged Changes"
+            emptyMessage="No staged changes"
+            files={stagedChanges}
+            allAction="unstage"
+            toggleAll={unstageAll}
+            toggleFileStage={toggleFileStage}
+          />
+          <GitChangeSection
+            title="Changes"
+            emptyMessage="No changes"
+            files={unstagedChanges}
+            allAction="stage"
+            toggleAll={stageAll}
+            toggleFileStage={toggleFileStage}
+          />
 
           <Separator />
 
-          {/* Commit History */}
-          <div className="space-y-1">
-            <button
-              onClick={handleCommitHistoryClick}
-              className="w-full flex items-center gap-1 px-1 py-1 hover:bg-white/5 rounded transition-colors"
-            >
-              {showCommitHistory ? (
-                <ChevronDown size={14} className="text-text-muted" />
-              ) : (
-                <ChevronRight size={14} className="text-text-muted" />
-              )}
-              <span className="text-xs font-medium text-text-primary flex-1 text-left">Recent Commits</span>
-              <span className="text-xs text-text-muted">{commits.length}</span>
-            </button>
-
-            {showCommitHistory && (
-              <div className="ml-2 space-y-1">
-                {commits.map((commit) => (
-                  <div
-                    key={commit.hash}
-                    className="px-2 py-1.5 hover:bg-white/5 rounded transition-colors cursor-pointer"
-                  >
-                    <div className="flex items-start gap-2">
-                      <GitCommit size={12} className="text-warm-300 mt-0.5 shrink-0" />
-                      <div className="flex-1 min-w-0">
-                        <p className="text-xs text-text-primary line-clamp-2">{commit.message}</p>
-                        <div className="mt-0.5 flex items-center gap-2 text-2xs text-text-muted">
-                          <span className="font-mono">{commit.hash}</span>
-                          <span>•</span>
-                          <span>{commit.author}</span>
-                          <span>•</span>
-                          <span>{commit.date}</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
+          <GitHistorySection commits={commits} />
         </div>
       </ScrollArea>
     </div>

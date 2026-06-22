@@ -1,123 +1,7 @@
 import type React from 'react';
-import { useEffect, useRef, useState } from 'react';
-
-interface HighlightJs {
-  highlight: (code: string, options: { language: string }) => { value: string };
-}
-
-declare const hljs: HighlightJs | undefined;
-
-const HighlightedCodeLine = ({ line, lang }: { line: string; lang: string }) => {
-  const codeRef = useRef<HTMLElement>(null);
-  const fallbackText = line || ' ';
-
-  useEffect(() => {
-    if (codeRef.current && typeof hljs !== 'undefined') {
-      codeRef.current.innerHTML = hljs.highlight(fallbackText, { language: lang }).value;
-    }
-  }, [fallbackText, lang]);
-
-  return (
-    <code ref={codeRef} className={`language-${lang} bg-transparent p-0 block`}>
-      {typeof hljs === 'undefined' ? fallbackText : undefined}
-    </code>
-  );
-};
-
-interface TextbookLineNumberProps {
-  lineIndex: number;
-  lineNumber: number;
-  isHovered: boolean;
-  canClick: boolean;
-  onHoverLine: (lineIndex: number) => void;
-  onLeaveLine: () => void;
-  onLineClick: (lineNumber: number) => void;
-}
-
-function TextbookLineNumber({
-  lineIndex,
-  lineNumber,
-  isHovered,
-  canClick,
-  onHoverLine,
-  onLeaveLine,
-  onLineClick,
-}: TextbookLineNumberProps) {
-  function handleMouseEnter() {
-    onHoverLine(lineIndex);
-  }
-
-  function handleMouseLeave() {
-    onLeaveLine();
-  }
-
-  function handleClick() {
-    onLineClick(lineNumber);
-  }
-
-  return (
-    <div
-      className={`font-mono text-[10px] leading-5 transition-colors ${canClick ? 'cursor-pointer' : ''} ${
-        isHovered ? 'text-blue-500 font-bold' : 'text-gray-300 group-hover:text-gray-400'
-      }`}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-      onClick={handleClick}
-      title={canClick ? `Go to line ${lineNumber}` : undefined}
-    >
-      {lineNumber}
-    </div>
-  );
-}
-
-interface TextbookCodeRowProps {
-  line: string;
-  lang: string;
-  lineIndex: number;
-  lineNumber: number;
-  isHovered: boolean;
-  canClick: boolean;
-  onHoverLine: (lineIndex: number) => void;
-  onLeaveLine: () => void;
-  onLineClick: (lineNumber: number) => void;
-}
-
-function TextbookCodeRow({
-  line,
-  lang,
-  lineIndex,
-  lineNumber,
-  isHovered,
-  canClick,
-  onHoverLine,
-  onLeaveLine,
-  onLineClick,
-}: TextbookCodeRowProps) {
-  function handleMouseEnter() {
-    onHoverLine(lineIndex);
-  }
-
-  function handleMouseLeave() {
-    onLeaveLine();
-  }
-
-  function handleClick() {
-    onLineClick(lineNumber);
-  }
-
-  return (
-    <div
-      className={`font-mono leading-5 text-gray-800 text-[11px] transition-colors ${canClick ? 'cursor-pointer' : ''} ${
-        isHovered ? 'bg-blue-50/50' : ''
-      }`}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-      onClick={handleClick}
-    >
-      <HighlightedCodeLine line={line} lang={lang} />
-    </div>
-  );
-}
+import { useState } from 'react';
+import { TextbookCodeRow } from './TextbookCodeRow';
+import { TextbookLineNumber } from './TextbookLineNumber';
 
 export const TextbookCodeBlock: React.FC<{
   code: string;
@@ -159,9 +43,9 @@ export const TextbookCodeBlock: React.FC<{
                 lineNumber={lineNum}
                 isHovered={isHovered}
                 canClick={canClickLine}
-                onHoverLine={handleHoverLine}
-                onLeaveLine={handleLeaveLine}
-                onLineClick={handleLineClick}
+                hoverLine={handleHoverLine}
+                leaveLine={handleLeaveLine}
+                clickLine={handleLineClick}
               />
             );
           })}
@@ -179,9 +63,9 @@ export const TextbookCodeBlock: React.FC<{
                 lineNumber={startLine + i}
                 isHovered={isHovered}
                 canClick={canClickLine}
-                onHoverLine={handleHoverLine}
-                onLeaveLine={handleLeaveLine}
-                onLineClick={handleLineClick}
+                hoverLine={handleHoverLine}
+                leaveLine={handleLeaveLine}
+                clickLine={handleLineClick}
               />
             );
           })}

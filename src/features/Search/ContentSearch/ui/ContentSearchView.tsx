@@ -4,8 +4,6 @@
  */
 
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
-import { Search } from 'lucide-react';
-import type React from 'react';
 import { useEffect, useMemo, useRef } from 'react';
 import { filesAtom, viewModeAtom } from '@/entities/AppView/model/atoms';
 import { useOpenFile } from '@/features/File/OpenFiles/lib/useOpenFile';
@@ -18,6 +16,12 @@ import {
   contentSearchQueryAtom,
   contentSearchResultsAtom,
 } from '../model/atoms';
+import { ContentSearchInput } from './ContentSearchInput';
+import { ContentSearchOptions } from './ContentSearchOptions';
+import { ContentSearchPreview, type ContentSearchPreviewInfo } from './ContentSearchPreview';
+import { ContentSearchResults } from './ContentSearchResults';
+
+type ContentSearchFlatItem = { type: 'file' | 'match'; fileIndex: number; matchIndex?: number };
 
 export function ContentSearchView() {
   const viewMode = useAtomValue(viewModeAtom);
@@ -62,7 +66,7 @@ export function ContentSearchView() {
 
   // Flatten results for navigation
   const flatResults = useMemo(() => {
-    const flat: Array<{ type: 'file' | 'match'; fileIndex: number; matchIndex?: number }> = [];
+    const flat: ContentSearchFlatItem[] = [];
     results.forEach((result, fileIndex) => {
       flat.push({ type: 'file', fileIndex });
       result.matches.forEach((_, matchIndex) => {
@@ -72,27 +76,31 @@ export function ContentSearchView() {
     return flat;
   }, [results]);
 
+  function handleResultSelect(item: ContentSearchFlatItem) {
+    const result = results[item.fileIndex];
+    openFile(result.filePath);
+    setViewMode('ide');
+    // TODO: Scroll to line number if match item
+  }
+
+  function handleCloseSearch() {
+    setViewMode('ide');
+    setQuery('');
+    setResults([]);
+  }
+
   // Keyboard navigation with auto-scroll
   const { focusedIndex, setFocusedIndex, itemRefs, scrollContainerRef } = useListKeyboardNavigation({
     items: flatResults,
-    onSelect: (item) => {
-      const result = results[item.fileIndex];
-      openFile(result.filePath);
-      setViewMode('ide');
-      // TODO: Scroll to line number if match item
-    },
-    onClose: () => {
-      setViewMode('ide');
-      setQuery('');
-      setResults([]);
-    },
+    onSelect: handleResultSelect,
+    onClose: handleCloseSearch,
     scope: 'contentSearch',
     enabled: isActive,
     enableOnFormTags: true,
   });
 
   // Get current preview info
-  const previewInfo = useMemo(() => {
+  const previewInfo = useMemo<ContentSearchPreviewInfo | null>(() => {
     if (flatResults.length === 0 || focusedIndex >= flatResults.length) return null;
 
     const focused = flatResults[focusedIndex];
@@ -124,226 +132,22 @@ export function ContentSearchView() {
     }
   }, [previewInfo?.matchLine]);
 
-  let currentFlatIndex = 0;
-
-  function handleQueryChange(e: React.ChangeEvent<HTMLInputElement>) {
-    setQuery(e.target.value);
-  }
-
-  function handleCaseSensitiveChange(e: React.ChangeEvent<HTMLInputElement>) {
-    setOptions({ ...options, caseSensitive: e.target.checked });
-  }
-
-  function handleWholeWordChange(e: React.ChangeEvent<HTMLInputElement>) {
-    setOptions({ ...options, wholeWord: e.target.checked });
-  }
-
-  function handleUseRegexChange(e: React.ChangeEvent<HTMLInputElement>) {
-    setOptions({ ...options, useRegex: e.target.checked });
-  }
-
-  function handleFocusItem(index: number) {
-    setFocusedIndex(index);
-  }
-
-  function FileResultButton({
-    filePath,
-    totalMatches,
-    itemIndex,
-    isFocused,
-  }: {
-    filePath: string;
-    totalMatches: number;
-    itemIndex: number;
-    isFocused: boolean;
-  }) {
-    function handleItemRef(el: HTMLButtonElement | null) {
-      if (el) itemRefs.current.set(itemIndex, el);
-      else itemRefs.current.delete(itemIndex);
-    }
-
-    function handleClick() {
-      handleFocusItem(itemIndex);
-    }
-
-    return (
-      <button
-        type="button"
-        ref={handleItemRef}
-        onClick={handleClick}
-        className={`w-full flex items-center justify-between px-4 py-1.5 text-left hover:bg-bg-elevated transition-colors ${
-          isFocused ? 'bg-bg-elevated' : ''
-        }`}
-      >
-        <span className="text-xs font-medium text-text-primary">{filePath}</span>
-        <span className="text-2xs text-text-tertiary">
-          {totalMatches} {totalMatches === 1 ? 'match' : 'matches'}
-        </span>
-      </button>
-    );
-  }
-
-  function MatchResultButton({
-    match,
-    itemIndex,
-    isFocused,
-  }: {
-    match: { line: number; text: string; matchStart: number; matchEnd: number };
-    itemIndex: number;
-    isFocused: boolean;
-  }) {
-    function handleItemRef(el: HTMLButtonElement | null) {
-      if (el) itemRefs.current.set(itemIndex, el);
-      else itemRefs.current.delete(itemIndex);
-    }
-
-    function handleClick() {
-      handleFocusItem(itemIndex);
-    }
-
-    return (
-      <button
-        type="button"
-        ref={handleItemRef}
-        onClick={handleClick}
-        className={`w-full px-4 py-1 text-left hover:bg-bg-elevated transition-colors ${
-          isFocused ? 'bg-bg-elevated' : ''
-        }`}
-      >
-        <div className="flex items-center gap-2 text-2xs">
-          <span className="text-text-tertiary font-mono">{match.line}</span>
-          <span className="text-text-secondary truncate font-mono">
-            {match.text.slice(0, match.matchStart)}
-            <span className="bg-warm-300/20 text-warm-300">{match.text.slice(match.matchStart, match.matchEnd)}</span>
-            {match.text.slice(match.matchEnd)}
-          </span>
-        </div>
-      </button>
-    );
-  }
-
   return (
     <div className="flex-1 flex flex-col overflow-hidden bg-bg-deep">
-      {/* Header */}
-      <div className="flex items-center gap-2 px-4 py-3 border-b border-border-DEFAULT bg-bg-elevated flex-shrink-0">
-        <Search size={16} className="text-text-tertiary" />
-        <input
-          ref={inputRef}
-          type="text"
-          value={query}
-          onChange={handleQueryChange}
-          placeholder="Search in files... (Cmd+Shift+F)"
-          className="flex-1 bg-transparent text-sm text-text-primary placeholder-text-tertiary outline-none"
-        />
-      </div>
-
-      {/* Options */}
-      <div className="flex items-center gap-4 px-4 py-2 border-b border-border-DEFAULT bg-bg-elevated text-2xs flex-shrink-0">
-        <label className="flex items-center gap-1.5 cursor-pointer">
-          <input
-            type="checkbox"
-            checked={options.caseSensitive}
-            onChange={handleCaseSensitiveChange}
-            className="rounded"
-          />
-          <span className="text-text-secondary">Case Sensitive</span>
-        </label>
-        <label className="flex items-center gap-1.5 cursor-pointer">
-          <input type="checkbox" checked={options.wholeWord} onChange={handleWholeWordChange} className="rounded" />
-          <span className="text-text-secondary">Whole Word</span>
-        </label>
-        <label className="flex items-center gap-1.5 cursor-pointer">
-          <input type="checkbox" checked={options.useRegex} onChange={handleUseRegexChange} className="rounded" />
-          <span className="text-text-secondary">Use Regex</span>
-        </label>
-      </div>
+      <ContentSearchInput query={query} inputRef={inputRef} changeQuery={setQuery} />
+      <ContentSearchOptions options={options} changeOptions={setOptions} />
 
       {/* Main content: Results (left) + Preview (right) */}
       <div className="flex-1 flex overflow-hidden">
-        {/* Results List */}
-        <div
-          ref={scrollContainerRef}
-          className="w-[400px] flex-shrink-0 overflow-y-auto border-r border-border-DEFAULT"
-        >
-          {results.length === 0 ? (
-            <div className="flex items-center justify-center h-full text-text-tertiary text-xs">
-              {query ? 'No results found' : 'Type to search...'}
-            </div>
-          ) : (
-            <div className="py-2">
-              {results.map((result, _fileIndex) => {
-                const fileItemIndex = currentFlatIndex++;
-                const isFileFocused = focusedIndex === fileItemIndex;
-
-                return (
-                  <div key={result.filePath} className="mb-3">
-                    {/* File header */}
-                    <FileResultButton
-                      filePath={result.filePath}
-                      totalMatches={result.totalMatches}
-                      itemIndex={fileItemIndex}
-                      isFocused={isFileFocused}
-                    />
-
-                    {/* Matches */}
-                    <div className="space-y-0.5 ml-4">
-                      {result.matches.map((match, matchIndex) => {
-                        const matchItemIndex = currentFlatIndex++;
-                        const isMatchFocused = focusedIndex === matchItemIndex;
-
-                        return (
-                          <MatchResultButton
-                            key={matchIndex}
-                            match={match}
-                            itemIndex={matchItemIndex}
-                            isFocused={isMatchFocused}
-                          />
-                        );
-                      })}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          )}
-        </div>
-
-        {/* Preview Panel */}
-        <div className="flex-1 flex flex-col overflow-hidden bg-bg-elevated">
-          {previewInfo ? (
-            <>
-              {/* Preview Header */}
-              <div className="flex items-center justify-between px-4 py-2 border-b border-border-DEFAULT flex-shrink-0">
-                <span className="text-xs font-medium text-text-primary">{previewInfo.fileName}</span>
-                <span className="text-2xs text-text-tertiary">{previewInfo.filePath}</span>
-              </div>
-
-              {/* Preview Content */}
-              <pre
-                ref={previewRef}
-                className="flex-1 overflow-auto p-4 text-2xs font-mono text-text-secondary bg-bg-deep"
-              >
-                {previewInfo.content.split('\n').map((line, index) => {
-                  const lineNumber = index + 1;
-                  const isMatchLine = lineNumber === previewInfo.matchLine;
-
-                  return (
-                    <div key={lineNumber} data-line={lineNumber} className={`${isMatchLine ? 'bg-warm-300/10' : ''}`}>
-                      <span className="inline-block w-12 text-right pr-4 text-text-tertiary select-none">
-                        {lineNumber}
-                      </span>
-                      <span className={isMatchLine ? 'text-warm-300' : ''}>{line}</span>
-                    </div>
-                  );
-                })}
-              </pre>
-            </>
-          ) : (
-            <div className="flex items-center justify-center h-full text-text-tertiary text-xs">
-              Select a search result to preview
-            </div>
-          )}
-        </div>
+        <ContentSearchResults
+          query={query}
+          results={results}
+          focusedIndex={focusedIndex}
+          itemRefs={itemRefs}
+          scrollContainerRef={scrollContainerRef}
+          focusItem={setFocusedIndex}
+        />
+        <ContentSearchPreview previewInfo={previewInfo} previewRef={previewRef} />
       </div>
     </div>
   );
