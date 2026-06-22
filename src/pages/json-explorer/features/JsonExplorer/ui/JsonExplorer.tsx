@@ -8,14 +8,14 @@ import Fuse, { type FuseResultMatch } from 'fuse.js';
 import { PanelRightClose, PanelRightOpen } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { Checkbox } from '@/shared/ui/Checkbox';
-import { extractAllKeyPaths } from './lib/extractKeyPaths';
-import { type DataSource, getLimitedData, getTotalCount } from './lib/loadTestData';
-import { CustomJsonModal } from './ui/CustomJsonModal';
-import { DataTable } from './ui/DataTable';
-import { ExportButton } from './ui/ExportButton';
-import { JsonDetailsPanel } from './ui/JsonDetailsPanel';
-import { JsonExplorerSidebar } from './ui/JsonExplorerSidebar';
-import { SearchBar } from './ui/SearchBar';
+import { extractAllKeyPaths } from '../lib/extractKeyPaths';
+import { type DataSource, getLimitedData, getTotalCount } from '../lib/loadTestData';
+import { CustomJsonModal } from './CustomJsonModal';
+import { DataTable } from './DataTable';
+import { ExportButton } from './ExportButton';
+import { JsonDetailsPanel } from './JsonDetailsPanel';
+import { JsonExplorerSidebar } from './JsonExplorerSidebar';
+import { SearchBar } from './SearchBar';
 
 export function JsonExplorer() {
   const [searchQuery, setSearchQuery] = useState('');
