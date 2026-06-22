@@ -1,4 +1,4 @@
-import CodeDocView from './widgets/CodeDocView/CodeDocView';
+import CodeDocView from './features/CodeDocView/ui/CodeDocView';
 
 export function PageCodeDoc() {
   return (

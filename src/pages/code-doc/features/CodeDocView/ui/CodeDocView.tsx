@@ -8,9 +8,9 @@ import { Columns3, FileText } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { fullNodeMapAtom } from '@/entities/AppView/model/atoms';
 import { activeTabAtom, openedTabsAtom } from '@/features/File/OpenFiles/model/atoms';
-import { convertToDocData } from './lib/tsAdapter';
-import type { DocData } from './model/types';
-import { DocViewer } from './ui/DocViewer';
+import { convertToDocData } from '../lib/tsAdapter';
+import type { DocData } from '../model/types';
+import { DocViewer } from './DocViewer';
 
 type LayoutMode = 'linear' | 'split';
 
@@ -42,7 +42,7 @@ const CodeDocView = () => {
   // UI 반응 로직: activeTab 변경에 따른 스크롤
   // ==========================================
   // Feature 레이어의 activeTabAtom이 변경되면,
-  // Widget은 해당 문서로 스크롤하여 시각적 피드백 제공
+  // CodeDocView는 해당 문서로 스크롤하여 시각적 피드백 제공
   useEffect(() => {
     if (activeTab && scrollContainerRef.current) {
       const targetElement = document.getElementById(`doc-${activeTab}`);
