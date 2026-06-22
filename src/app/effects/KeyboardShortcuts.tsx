@@ -9,9 +9,9 @@ import { useCallback, useEffect, useRef } from 'react';
 import { useHotkeys } from 'react-hotkeys-hook';
 import { activeActivityPageIdAtom } from '@/app/model/activityPageAtoms';
 import { viewModeAtom } from '@/entities/AppView/model/atoms';
+import { isSidebarOpenAtom } from '@/features/Explorer/model/atoms';
 import { useOpenFile } from '@/features/File/OpenFiles/lib/useOpenFile';
 import { searchModalOpenAtom } from '@/features/Search/UnifiedSearch/model/atoms';
-import { isSidebarOpenAtom } from '@/pages/explorer/widgets/ExplorerSidebar/model/atoms';
 import { activeTabIdAtom, openedTabsAtom } from '@/widgets/MainContents/model/atoms';
 
 const GLOBAL_HOTKEYS = {
