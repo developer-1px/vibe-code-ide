@@ -2,4 +2,6 @@ import { atom } from 'jotai';
 
 export const isSidebarOpenAtom = atom<boolean>(true);
 
-export const fileTreeModeAtom = atom<'all' | 'related'>('all');
+export type FileTreeMode = 'all' | 'related';
+
+export const fileTreeModeAtom = atom<FileTreeMode>('all');
