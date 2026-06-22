@@ -1,4 +1,4 @@
-import SlideView from './features/SlideView/ui/SlideView';
+import SlideView from './widgets/SlideView/ui/SlideView';
 
 export function PageSlides() {
   return (

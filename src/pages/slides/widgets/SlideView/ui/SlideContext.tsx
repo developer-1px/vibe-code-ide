@@ -1,7 +1,7 @@
 import { useSetAtom } from 'jotai';
 import { Badge } from '@/shared/ui/Badge';
 import type { Slide } from '../../../entities/Slide/model/types';
-import { setCurrentSlideWithHistoryAtom } from '../../SlideNavigation/model/atoms';
+import { setCurrentSlideWithHistoryAtom } from '../../../features/SlideNavigation/model/atoms';
 
 /**
  * 슬라이드 컨텍스트 - Caller/Callee/Sibling 정보 표시

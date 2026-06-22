@@ -1,7 +1,12 @@
 import { useAtom, useAtomValue } from 'jotai';
 import { useEffect } from 'react';
 import { useHotkeys, useHotkeysContext } from 'react-hotkeys-hook';
-import { chunkCountAtom, chunksAtom, currentChunkIndexAtom, targetDepthAtom } from '../../SlideNavigation/model/atoms';
+import {
+  chunkCountAtom,
+  chunksAtom,
+  currentChunkIndexAtom,
+  targetDepthAtom,
+} from '../../../features/SlideNavigation/model/atoms';
 
 /**
  * 슬라이드 키보드 네비게이션 scope

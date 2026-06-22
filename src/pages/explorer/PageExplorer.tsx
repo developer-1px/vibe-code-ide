@@ -1,4 +1,4 @@
-import { ExplorerWorkspace } from '@/features/Explorer/ui/ExplorerWorkspace';
+import { ExplorerWorkspace } from './widgets/ExplorerWorkspace/ui/ExplorerWorkspace';
 
 export function PageExplorer() {
   return <ExplorerWorkspace />;

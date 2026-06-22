@@ -1,4 +1,4 @@
-import { JsonExplorer } from './features/JsonExplorer/ui/JsonExplorer';
+import { JsonExplorer } from './widgets/JsonExplorer/ui/JsonExplorer';
 
 export function PageJsonExplorer() {
   return <JsonExplorer />;

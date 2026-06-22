@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import { graphDataAtom } from '@/entities/AppView/model/atoms';
 import { activeTabAtom, openedTabsAtom } from '@/features/File/OpenFiles/model/atoms';
 import { buildSlidesFromFiles } from '../../../entities/Slide/lib/slideBuilder';
-import { currentSlideAtom, currentSlideIdAtom, slidesAtom } from '../../SlideNavigation/model/atoms';
+import { currentSlideAtom, currentSlideIdAtom, slidesAtom } from '../../../features/SlideNavigation/model/atoms';
 import SlideContent from './SlideContent';
 import SlideContext from './SlideContext';
 import { SlideKeyboardScope } from './SlideKeyboardScope';
