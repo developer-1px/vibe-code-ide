@@ -50,14 +50,14 @@ export interface TreeViewProps<TNode> {
   /** Collapsed paths state (optional: external state) */
   collapsedPaths?: Set<string>;
 
-  /** Collapse toggle handler (optional: external handler) */
-  onToggleCollapse?: (path: string) => void;
+  /** Collapse toggle command (optional: external command) */
+  toggleCollapse?: (path: string) => void;
 
   /** Focused index (optional: external state) */
   focusedIndex?: number;
 
-  /** Focus change handler (optional: external handler) */
-  onFocusChange?: (index: number) => void;
+  /** Focus change command (optional: external command) */
+  changeFocus?: (index: number) => void;
 
   /** Item refs for keyboard navigation (optional: external refs) */
   itemRefs?: React.MutableRefObject<Map<number, HTMLElement>>;

@@ -17,7 +17,7 @@
  *   getNodeType={(node) => node.type}
  *   getNodePath={(node) => node.path}
  *   collapsedPaths={collapsedFolders}
- *   onToggleCollapse={toggleFolder}
+ *   toggleCollapse={toggleFolder}
  * >
  *   {({ node, depth, isFocused, isCollapsed, itemRef, handleFocus }) => (
  *     <FileTreeItem
@@ -41,9 +41,9 @@ export function TreeView<TNode>({
   getNodePath,
   getNodeChildren,
   collapsedPaths: externalCollapsed,
-  onToggleCollapse: externalToggle,
+  toggleCollapse: externalToggle,
   focusedIndex: externalFocused,
-  onFocusChange: externalFocusChange,
+  changeFocus: externalFocusChange,
   itemRefs: externalRefs,
   children,
   className,
@@ -54,9 +54,9 @@ export function TreeView<TNode>({
   // State management (supports both internal and external state)
   const { collapsedPaths, toggleCollapse, focusedIndex, setFocusedIndex, itemRefs } = useTreeState({
     collapsedPaths: externalCollapsed,
-    onToggleCollapse: externalToggle,
+    toggleCollapse: externalToggle,
     focusedIndex: externalFocused,
-    onFocusChange: externalFocusChange,
+    changeFocus: externalFocusChange,
     itemRefs: externalRefs,
     scrollContainerRef,
   });
