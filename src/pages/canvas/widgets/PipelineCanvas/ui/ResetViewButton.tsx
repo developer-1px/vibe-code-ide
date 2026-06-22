@@ -1,7 +1,7 @@
 import { useAtomValue, useSetAtom } from 'jotai';
 import { RotateCcw as IconRotateCcw } from 'lucide-react';
 import type React from 'react';
-import { openedFilesAtom, visibleNodeIdsAtom } from '@/pages/canvas/widgets/PipelineCanvas/model/atoms';
+import { openedFilesAtom, visibleNodeIdsAtom } from '@/features/Canvas/model/atoms';
 
 const ResetViewButton: React.FC = () => {
   const visibleNodeIds = useAtomValue(visibleNodeIdsAtom);

@@ -1,14 +1,10 @@
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import type React from 'react';
 import { fullNodeMapAtom } from '@/entities/AppView/model/atoms';
+import { pruneDetachedNodes } from '@/features/Canvas/lib/pruneDetachedNodes';
+import { cardPositionsAtom, transformAtom, visibleNodeIdsAtom } from '@/features/Canvas/model/atoms';
 import { activeLocalVariablesAtom } from '@/features/Code/FocusMode/model/atoms';
 import { useGotoDefinition } from '@/features/File/GotoDefinition/lib/useGotoDefinition';
-import {
-  cardPositionsAtom,
-  transformAtom,
-  visibleNodeIdsAtom,
-} from '@/pages/canvas/widgets/PipelineCanvas/model/atoms';
-import { pruneDetachedNodes } from '@/pages/canvas/widgets/PipelineCanvas/utils';
 import { getTokenStyle } from '../../../entities/SourceFileNode/lib/styleUtils';
 
 const CodeToken = ({

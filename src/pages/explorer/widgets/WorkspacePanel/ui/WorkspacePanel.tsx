@@ -5,10 +5,10 @@
 
 import { useAtomValue } from 'jotai';
 import { X } from 'lucide-react';
+import { FileIcon } from '@/entities/SourceFileNode/ui/FileIcon';
 import { useOpenFile } from '@/features/File/OpenFiles/lib/useOpenFile';
 import { activeTabAtom, openedTabsAtom } from '@/features/File/OpenFiles/model/atoms';
-import { FileIcon } from '../../entities/SourceFileNode/ui/FileIcon';
-import { getFileName } from '../../shared/pathUtils';
+import { getFileName } from '@/shared/pathUtils';
 
 interface WorkspacePanelProps {
   onClose: () => void;

@@ -2,12 +2,8 @@ import { useAtomValue, useSetAtom } from 'jotai';
 import type React from 'react';
 import { useMemo } from 'react';
 import { useEditorTheme } from '@/entities/AppTheme/EditorThemeProvider';
+import { lastExpandedIdAtom, layoutLinksAtom, visibleNodeIdsAtom } from '@/features/Canvas/model/atoms';
 import { targetLineAtom } from '@/features/File/Navigation/model/atoms';
-import {
-  lastExpandedIdAtom,
-  layoutLinksAtom,
-  visibleNodeIdsAtom,
-} from '@/pages/canvas/widgets/PipelineCanvas/model/atoms';
 import { getSlotColor } from '../../../entities/SourceFileNode/lib/styleUtils';
 import type { SourceFileNode } from '../../../entities/SourceFileNode/model/types';
 

@@ -12,8 +12,8 @@ import { ThemeProvider } from '@/entities/AppTheme/ThemeProvider';
 import { filesAtom, graphDataAtom, parseErrorAtom, parseProgressAtom } from '@/entities/AppView/model/atoms';
 import { store } from '@/entities/AppView/model/store';
 import { UnifiedSearchModal } from '@/features/Search/UnifiedSearch/ui/UnifiedSearchModal';
+import { KeyboardShortcuts } from './app/effects/KeyboardShortcuts';
 import type { SourceFileNode } from './entities/SourceFileNode/model/types';
-import { KeyboardShortcuts } from './features/KeyboardShortcuts/KeyboardShortcuts';
 
 const AppContent: React.FC = () => {
   // Parse project when files change

@@ -8,9 +8,9 @@
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import { useCallback, useMemo } from 'react';
 import { fullNodeMapAtom } from '@/entities/AppView/model/atoms';
+import { pruneDetachedNodes } from '@/features/Canvas/lib/pruneDetachedNodes';
+import { visibleNodeIdsAtom } from '@/features/Canvas/model/atoms';
 import { activeLocalVariablesAtom } from '@/features/Code/FocusMode/model/atoms';
-import { visibleNodeIdsAtom } from '@/pages/canvas/widgets/PipelineCanvas/model/atoms';
-import { pruneDetachedNodes } from '@/pages/canvas/widgets/PipelineCanvas/utils';
 import type { CanvasNode } from '../../../entities/CanvasNode/model/types';
 import type { CodeLine } from '../../../entities/CodeLine/model/types';
 

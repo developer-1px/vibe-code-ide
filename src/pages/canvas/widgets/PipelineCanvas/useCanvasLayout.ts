@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { fullNodeMapAtom } from '@/entities/AppView/model/atoms';
 import type { CanvasNode } from '@/entities/CanvasNode/model/types.ts';
 import type { GraphData } from '@/entities/SourceFileNode/model/types.ts';
-import { layoutLinksAtom, layoutNodesAtom } from './model/atoms.ts';
+import { layoutLinksAtom, layoutNodesAtom } from '@/features/Canvas/model/atoms';
 
 export const useCanvasLayout = (_initialData: GraphData | null, visibleNodeIds: Set<string>) => {
   const [layoutNodes, setLayoutNodes] = useState<CanvasNode[]>([]);

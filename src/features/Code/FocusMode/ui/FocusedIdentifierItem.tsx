@@ -7,8 +7,8 @@ import type React from 'react';
 import { useRef } from 'react';
 import { useHotkeys } from 'react-hotkeys-hook';
 import { fullNodeMapAtom } from '@/entities/AppView/model/atoms';
-import { visibleNodeIdsAtom } from '@/pages/canvas/widgets/PipelineCanvas/model/atoms.ts';
-import { pruneDetachedNodes } from '@/pages/canvas/widgets/PipelineCanvas/utils.ts';
+import { pruneDetachedNodes } from '@/features/Canvas/lib/pruneDetachedNodes.ts';
+import { visibleNodeIdsAtom } from '@/features/Canvas/model/atoms.ts';
 import { activeLocalVariablesAtom } from '../model/atoms.ts';
 import type { IdentifierMetadata } from './FocusedIdentifiers.tsx';
 

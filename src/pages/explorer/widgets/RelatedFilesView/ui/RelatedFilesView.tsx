@@ -10,7 +10,7 @@ import { filesAtom, fullNodeMapAtom } from '@/entities/AppView/model/atoms';
 import { getDependencies, getDependents } from '@/entities/SourceFileNode/lib/getters';
 import { activeTabAtom } from '@/features/File/OpenFiles/model/atoms';
 import { resolvePath } from '@/shared/tsParser/utils/pathResolver';
-import { FileExplorer } from '../FileExplorer/FileExplorer';
+import { FileExplorer } from '@/widgets/FileExplorer/FileExplorer';
 
 export function RelatedFilesView({ containerRef }: { containerRef: React.RefObject<HTMLDivElement> }) {
   const files = useAtomValue(filesAtom);
