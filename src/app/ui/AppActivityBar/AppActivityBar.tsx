@@ -7,9 +7,9 @@ import { useAtom } from 'jotai';
 import { Settings } from 'lucide-react';
 import { activeActivityPageIdAtom } from '@/app/model/activityPageAtoms';
 import { primaryActivityPages, secondaryActivityPages } from '@/app/model/activityPages';
-import { ActivityBar, ActivityBarItem, ActivityBarSeparator } from '@/components/ide/ActivityBar.tsx';
 import { DocumentModeToggle } from '@/features/DocumentMode/DocumentModeToggle.tsx';
 import UploadFolderButton from '@/features/UploadFolderButton.tsx';
+import { ActivityBar, ActivityBarItem, ActivityBarSeparator } from './ActivityBar';
 
 export function AppActivityBar() {
   const [activeActivityPageId, setActiveActivityPageId] = useAtom(activeActivityPageIdAtom);
