@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { fileTreeModeAtom, isSidebarOpenAtom } from '@/features/Explorer/model/atoms';
 import { FileExplorer } from '@/features/Explorer/ui/FileExplorer';
 import { Sidebar } from '@/shared/ui/Sidebar';
-import { RelatedFilesView } from '../../RelatedFilesView/ui/RelatedFilesView';
+import { RelatedFilesView } from './RelatedFilesView';
 
 export const ExplorerSidebar: React.FC = () => {
   const isSidebarOpen = useAtomValue(isSidebarOpenAtom);

@@ -3,29 +3,26 @@
  * Displays list of currently opened files with quick navigation
  */
 
-import { useAtomValue } from 'jotai';
+import { useAtomValue, useSetAtom } from 'jotai';
 import { X } from 'lucide-react';
+import { rightPanelOpenAtom } from '@/entities/AppView/model/atoms';
 import { useOpenFile } from '@/features/File/OpenFiles/lib/useOpenFile';
 import { activeTabAtom, openedTabsAtom } from '@/features/File/OpenFiles/model/atoms';
 import { getFileName } from '@/shared/pathUtils';
 import { FileIcon } from '@/shared/ui/FileIcon';
 
-interface WorkspacePanelProps {
-  onClose: () => void;
-}
-
 interface WorkspaceFileButtonProps {
   filePath: string;
   activeTab: string | null;
-  onOpenFile: (filePath: string) => void;
 }
 
-function WorkspaceFileButton({ filePath, activeTab, onOpenFile }: WorkspaceFileButtonProps) {
+function WorkspaceFileButton({ filePath, activeTab }: WorkspaceFileButtonProps) {
   const fileName = getFileName(filePath);
   const isActive = filePath === activeTab;
+  const { openFile } = useOpenFile();
 
   function handleClick() {
-    onOpenFile(filePath);
+    openFile(filePath);
   }
 
   return (
@@ -42,17 +39,13 @@ function WorkspaceFileButton({ filePath, activeTab, onOpenFile }: WorkspaceFileB
   );
 }
 
-export function WorkspacePanel({ onClose }: WorkspacePanelProps) {
+export function WorkspacePanel() {
   const openedTabs = useAtomValue(openedTabsAtom);
   const activeTab = useAtomValue(activeTabAtom);
-  const { openFile } = useOpenFile();
+  const setRightPanelOpen = useSetAtom(rightPanelOpenAtom);
 
   function handleCloseClick() {
-    onClose();
-  }
-
-  function handleOpenFile(filePath: string) {
-    openFile(filePath);
+    setRightPanelOpen(false);
   }
 
   return (
@@ -76,9 +69,7 @@ export function WorkspacePanel({ onClose }: WorkspacePanelProps) {
             No files opened
           </div>
         ) : (
-          openedTabs.map((filePath) => (
-            <WorkspaceFileButton key={filePath} filePath={filePath} activeTab={activeTab} onOpenFile={handleOpenFile} />
-          ))
+          openedTabs.map((filePath) => <WorkspaceFileButton key={filePath} filePath={filePath} activeTab={activeTab} />)
         )}
       </div>
     </div>
