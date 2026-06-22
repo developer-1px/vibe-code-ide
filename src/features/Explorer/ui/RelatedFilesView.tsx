@@ -4,21 +4,17 @@
  */
 
 import { useAtomValue } from 'jotai';
-import { ChevronDown, ChevronRight } from 'lucide-react';
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { filesAtom, fullNodeMapAtom } from '@/entities/AppView/model/atoms';
 import { getDependencies, getDependents } from '@/entities/SourceFileNode/lib/getters';
-import { FileExplorer } from '@/features/Explorer/ui/FileExplorer';
 import { activeTabAtom } from '@/features/File/OpenFiles/model/atoms';
 import { resolvePath } from '@/shared/tsParser/utils/pathResolver';
+import { RelatedFilesSection } from './RelatedFilesSection';
 
 export function RelatedFilesView() {
   const files = useAtomValue(filesAtom);
   const fullNodeMap = useAtomValue(fullNodeMapAtom);
   const activeTab = useAtomValue(activeTabAtom);
-
-  const [isDependenciesCollapsed, setIsDependenciesCollapsed] = useState(false);
-  const [isDependentsCollapsed, setIsDependentsCollapsed] = useState(false);
 
   // Calculate dependencies and dependents for active file
   const { dependencies, dependents } = useMemo(() => {
@@ -78,62 +74,16 @@ export function RelatedFilesView() {
     );
   }
 
-  function handleDependenciesToggle() {
-    setIsDependenciesCollapsed(!isDependenciesCollapsed);
-  }
-
-  function handleDependentsToggle() {
-    setIsDependentsCollapsed(!isDependentsCollapsed);
-  }
-
   return (
     <div className="flex-1 flex flex-col overflow-hidden">
       {/* Dependencies Section */}
       {dependencies.length > 0 && (
-        <div className={isDependenciesCollapsed ? '' : 'flex-1 flex flex-col overflow-hidden'}>
-          <button
-            onClick={handleDependenciesToggle}
-            className="flex w-full h-8 items-center justify-between border-b border-border-DEFAULT px-2 flex-shrink-0 hover:bg-bg-deep transition-colors"
-          >
-            <span className="text-2xs font-medium text-text-tertiary normal-case">
-              Dependencies ({dependencies.length})
-            </span>
-            {isDependenciesCollapsed ? (
-              <ChevronRight className="w-3 h-3 text-text-muted" />
-            ) : (
-              <ChevronDown className="w-3 h-3 text-text-muted" />
-            )}
-          </button>
-          {!isDependenciesCollapsed && (
-            <div className="flex-1 overflow-hidden">
-              <FileExplorer filteredFiles={dependenciesFiles} />
-            </div>
-          )}
-        </div>
+        <RelatedFilesSection title="Dependencies" count={dependencies.length} files={dependenciesFiles} />
       )}
 
       {/* Dependents Section */}
       {dependents.length > 0 && (
-        <div className={isDependentsCollapsed ? '' : 'flex-1 flex flex-col overflow-hidden'}>
-          <button
-            onClick={handleDependentsToggle}
-            className="flex w-full h-8 items-center justify-between border-b border-border-DEFAULT px-2 flex-shrink-0 hover:bg-bg-deep transition-colors"
-          >
-            <span className="text-2xs font-medium text-text-tertiary normal-case">
-              Dependents ({dependents.length})
-            </span>
-            {isDependentsCollapsed ? (
-              <ChevronRight className="w-3 h-3 text-text-muted" />
-            ) : (
-              <ChevronDown className="w-3 h-3 text-text-muted" />
-            )}
-          </button>
-          {!isDependentsCollapsed && (
-            <div className="flex-1 overflow-hidden">
-              <FileExplorer filteredFiles={dependentsFilesRecord} />
-            </div>
-          )}
-        </div>
+        <RelatedFilesSection title="Dependents" count={dependents.length} files={dependentsFilesRecord} />
       )}
     </div>
   );

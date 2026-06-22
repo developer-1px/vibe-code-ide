@@ -12,8 +12,8 @@ import type { FoldLevel } from '../hooks/useFoldLevel';
 export interface FoldLevelButtonProps {
   /** 현재 Fold 레벨 */
   currentLevel: FoldLevel;
-  /** 토글 핸들러 */
-  onToggle: (e: React.MouseEvent) => void;
+  /** Fold 레벨 변경 command */
+  toggleLevel: (e: React.MouseEvent) => void;
   /** 비활성화 여부 */
   disabled?: boolean;
 }
@@ -44,13 +44,13 @@ function getFoldTooltip(level: FoldLevel): string {
  *
  * <FoldLevelButton
  *   currentLevel={currentLevel}
- *   onToggle={toggleLevel}
+ *   toggleLevel={toggleLevel}
  *   disabled={!canFold}
  * />
  */
-export function FoldLevelButton({ currentLevel, onToggle, disabled = false }: FoldLevelButtonProps) {
+export function FoldLevelButton({ currentLevel, toggleLevel, disabled = false }: FoldLevelButtonProps) {
   function handleClick(e: React.MouseEvent) {
-    onToggle(e);
+    toggleLevel(e);
   }
 
   if (disabled) return null;

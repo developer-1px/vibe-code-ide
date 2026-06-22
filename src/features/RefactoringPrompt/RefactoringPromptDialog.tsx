@@ -13,14 +13,14 @@ import { generateRefactoringPrompt, type RefactoringPrompt } from './lib/promptG
 
 export interface RefactoringPromptDialogProps {
   open: boolean;
-  onOpenChange: (open: boolean) => void;
+  changeOpen: (open: boolean) => void;
   selectedItemKeys: Set<string>;
   deadCodeResults: DeadCodeResults;
 }
 
 export function RefactoringPromptDialog({
   open,
-  onOpenChange,
+  changeOpen,
   selectedItemKeys,
   deadCodeResults,
 }: RefactoringPromptDialogProps) {
@@ -56,11 +56,11 @@ export function RefactoringPromptDialog({
   }
 
   function handleOpenChange(nextOpen: boolean) {
-    onOpenChange(nextOpen);
+    changeOpen(nextOpen);
   }
 
   function handleCloseClick() {
-    onOpenChange(false);
+    changeOpen(false);
   }
 
   if (!refactoringPrompt) return null;

@@ -12,7 +12,6 @@
  */
 
 import { useAtomValue, useSetAtom } from 'jotai';
-import type React from 'react';
 import { useMemo } from 'react';
 import { activeActivityPageIdAtom } from '@/app/model/activityPageAtoms';
 import { filesAtom, viewModeAtom } from '@/entities/AppView/model/atoms';
@@ -68,10 +67,6 @@ const CodeCardHeader = ({ node }: { node: CanvasNode }) => {
     setFocusedNodeId(node.id);
   }
 
-  function handleToggleLevel(e: React.MouseEvent) {
-    toggleLevel(e);
-  }
-
   return (
     <div
       className="px-3 py-1.5 border-b border-white/5 flex justify-between items-center bg-black/20 cursor-pointer"
@@ -80,7 +75,7 @@ const CodeCardHeader = ({ node }: { node: CanvasNode }) => {
     >
       <div className="flex items-center gap-2 overflow-hidden">
         {/* Fold Level Toggle Button */}
-        <FoldLevelButton currentLevel={currentLevel} onToggle={handleToggleLevel} disabled={!canFold} />
+        <FoldLevelButton currentLevel={currentLevel} toggleLevel={toggleLevel} disabled={!canFold} />
 
         {/* Node Icon */}
         <iconConfig.Icon className={`w-4 h-4 ${iconConfig.color}`} />
