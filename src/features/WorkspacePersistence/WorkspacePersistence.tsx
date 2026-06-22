@@ -9,12 +9,8 @@
 
 import { useAtomValue, useSetAtom } from 'jotai';
 import { useEffect } from 'react';
+import { cardPositionsAtom, transformAtom, visibleNodeIdsAtom } from '@/features/Canvas/model/atoms';
 import { activeLocalVariablesAtom } from '@/features/Code/FocusMode/model/atoms';
-import {
-  cardPositionsAtom,
-  transformAtom,
-  visibleNodeIdsAtom,
-} from '@/pages/canvas/widgets/PipelineCanvas/model/atoms';
 import { loadWorkspaceState, saveWorkspaceState } from '../../shared/storage/indexedDB';
 
 export const WorkspacePersistence = () => {

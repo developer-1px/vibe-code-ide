@@ -7,9 +7,9 @@
 import { useAtomValue, useSetAtom } from 'jotai';
 import { activeActivityPageIdAtom } from '@/app/model/activityPageAtoms';
 import { focusedPaneAtom } from '@/entities/AppView/model/atoms';
+import { openedFilesAtom } from '@/features/Canvas/model/atoms.ts';
 import { activeLocalVariablesAtom } from '@/features/Code/FocusMode/model/atoms.ts';
 import { targetLineAtom } from '@/features/File/Navigation/model/atoms.ts';
-import { openedFilesAtom } from '@/pages/canvas/widgets/PipelineCanvas/model/atoms.ts';
 import { activeTabAtom, openedTabsAtom } from '../model/atoms.ts';
 
 export interface OpenFileOptions {

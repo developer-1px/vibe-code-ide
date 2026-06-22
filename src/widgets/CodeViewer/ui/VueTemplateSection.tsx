@@ -10,7 +10,7 @@ import type React from 'react';
 import { useMemo } from 'react';
 import { useEditorTheme } from '@/entities/AppTheme/EditorThemeProvider';
 import { filesAtom, fullNodeMapAtom } from '@/entities/AppView/model/atoms';
-import { lastExpandedIdAtom, visibleNodeIdsAtom } from '@/pages/canvas/widgets/PipelineCanvas/model/atoms';
+import { lastExpandedIdAtom, visibleNodeIdsAtom } from '@/features/Canvas/model/atoms';
 import { extractTemplateComponents, extractTemplateVariables } from '@/shared/tsParser/utils/vueTemplateParser';
 import type { CanvasNode } from '../../../entities/CanvasNode/model/types';
 

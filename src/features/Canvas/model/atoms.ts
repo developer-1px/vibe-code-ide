@@ -1,5 +1,5 @@
 /**
- * PipelineCanvas Widget - Atoms
+ * Canvas view atoms.
  * Canvas 노드 확장, 레이아웃, 변환, 가시성 관련 상태
  */
 import { atom } from 'jotai';
