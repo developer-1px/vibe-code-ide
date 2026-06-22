@@ -3,7 +3,7 @@ import { Check as IconCheck, Copy as IconCopy } from 'lucide-react';
 import type React from 'react';
 import { useState } from 'react';
 import { fullNodeMapAtom } from '@/entities/AppView/model/atoms';
-import { layoutNodesAtom } from '@/pages/canvas/widgets/PipelineCanvas/model/atoms';
+import { layoutNodesAtom } from '../model/atoms';
 
 const CopyAllCodeButton: React.FC = () => {
   const layoutNodes = useAtomValue(layoutNodesAtom);

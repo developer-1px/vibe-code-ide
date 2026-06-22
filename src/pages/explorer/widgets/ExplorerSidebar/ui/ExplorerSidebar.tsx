@@ -4,7 +4,7 @@ import type React from 'react';
 import { useRef, useState } from 'react';
 import { Sidebar } from '@/shared/ui/Sidebar';
 import { FileExplorer } from '@/widgets/FileExplorer/FileExplorer.tsx';
-import { RelatedFilesView } from '@/widgets/RelatedFilesView/RelatedFilesView.tsx';
+import { RelatedFilesView } from '../../RelatedFilesView/ui/RelatedFilesView';
 import { fileTreeModeAtom, isSidebarOpenAtom } from '../model/atoms.ts';
 
 export const ExplorerSidebar: React.FC = () => {

@@ -1,8 +1,8 @@
 import { useAtomValue, useSetAtom } from 'jotai';
 import { rightPanelOpenAtom, rightPanelTypeAtom } from '@/entities/AppView/model/atoms';
 import { TabContainer } from '@/widgets/MainContents/TabContainer';
-import { WorkspacePanel } from '@/widgets/WorkspacePanel/WorkspacePanel';
 import { ExplorerSidebar } from '../../ExplorerSidebar/ui/ExplorerSidebar';
+import { WorkspacePanel } from '../../WorkspacePanel/ui/WorkspacePanel';
 
 export function ExplorerWorkspace() {
   const rightPanelOpen = useAtomValue(rightPanelOpenAtom);

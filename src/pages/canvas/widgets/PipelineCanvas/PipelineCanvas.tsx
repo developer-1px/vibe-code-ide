@@ -4,8 +4,6 @@ import { useEffect, useMemo, useRef } from 'react';
 import { useHotkeys } from 'react-hotkeys-hook';
 // Atoms & Hooks
 import { filesAtom, focusedPaneAtom, fullNodeMapAtom, graphDataAtom } from '@/entities/AppView/model/atoms';
-import CopyAllCodeButton from '@/features/CopyAllCodeButton.tsx';
-import ResetViewButton from '@/features/ResetViewButton.tsx';
 import { symbolMetadataAtom } from '@/features/Search/UnifiedSearch/model/atoms.ts';
 import { extractSymbolMetadata } from '@/shared/symbolMetadataExtractor.ts';
 import { CanvasCodeCard } from './CanvasCodeCard.tsx';
@@ -13,6 +11,8 @@ import CanvasConnections from './CanvasConnections.tsx';
 import D3ZoomContainer from './D3ZoomContainer.tsx';
 import { openedFilesAtom, selectedNodeIdsAtom, visibleNodeIdsAtom } from './model/atoms.ts';
 // Hooks & Sub-components
+import CopyAllCodeButton from './ui/CopyAllCodeButton';
+import ResetViewButton from './ui/ResetViewButton';
 import { useCanvasLayout } from './useCanvasLayout.ts';
 
 const PipelineCanvas: React.FC = () => {
