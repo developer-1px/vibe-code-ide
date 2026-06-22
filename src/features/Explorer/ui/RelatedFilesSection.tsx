@@ -16,7 +16,7 @@ export function RelatedFilesSection({ title, count, files }: RelatedFilesSection
   }
 
   return (
-    <div className={isCollapsed ? '' : 'flex-1 flex flex-col overflow-hidden'}>
+    <div className={isCollapsed ? '' : 'flex-1 min-h-0 flex flex-col overflow-hidden'}>
       <button
         onClick={handleToggle}
         className="flex w-full h-8 items-center justify-between border-b border-border-DEFAULT px-2 flex-shrink-0 hover:bg-bg-deep transition-colors"
@@ -31,7 +31,7 @@ export function RelatedFilesSection({ title, count, files }: RelatedFilesSection
         )}
       </button>
       {!isCollapsed && (
-        <div className="flex-1 overflow-hidden">
+        <div className="flex-1 min-h-0 overflow-hidden">
           <FileExplorer filteredFiles={files} />
         </div>
       )}

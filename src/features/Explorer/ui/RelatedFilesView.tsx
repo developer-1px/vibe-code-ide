@@ -75,7 +75,7 @@ export function RelatedFilesView() {
   }
 
   return (
-    <div className="flex-1 flex flex-col overflow-hidden">
+    <div className="flex-1 min-h-0 flex flex-col overflow-hidden">
       {/* Dependencies Section */}
       {dependencies.length > 0 && (
         <RelatedFilesSection title="Dependencies" count={dependencies.length} files={dependenciesFiles} />

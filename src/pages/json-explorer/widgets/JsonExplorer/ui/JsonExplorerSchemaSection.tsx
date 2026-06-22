@@ -22,7 +22,7 @@ export function JsonExplorerSchemaSection({
   }
 
   return (
-    <div className="border-b border-border-DEFAULT flex flex-col overflow-hidden">
+    <div className="min-h-0 border-b border-border-DEFAULT flex flex-col overflow-hidden">
       <div
         className="flex items-center gap-2 px-3 py-2 bg-bg-deep cursor-pointer hover:bg-bg-deep/80 transition-colors shrink-0"
         onClick={handleToggle}
@@ -34,7 +34,7 @@ export function JsonExplorerSchemaSection({
       </div>
 
       {isExpanded && (
-        <ScrollArea className="flex-1 max-h-[50vh]">
+        <ScrollArea className="flex-1 min-h-0 max-h-[50vh]">
           <div className="py-2">
             {schemaInterfaces.map((interfaceNode) => (
               <SchemaInterfaceItem

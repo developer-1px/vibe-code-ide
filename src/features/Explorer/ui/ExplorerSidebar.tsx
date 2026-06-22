@@ -24,7 +24,7 @@ export const ExplorerSidebar: React.FC = () => {
   return (
     <div className="relative focus:outline-none">
       <Sidebar resizable defaultWidth={250} minWidth={200} maxWidth={800} className="h-full shadow-2xl">
-        <div className={!isFileExplorerCollapsed ? 'flex-1 flex flex-col overflow-hidden' : ''}>
+        <div className={!isFileExplorerCollapsed ? 'flex-1 min-h-0 flex flex-col overflow-hidden' : ''}>
           <ExplorerSectionHeader isCollapsed={isFileExplorerCollapsed} toggleCollapsed={toggleFileExplorerCollapsed} />
 
           {!isFileExplorerCollapsed && (

@@ -117,7 +117,7 @@ const SlideContent = ({ slide }: { slide: Slide }) => {
   }, [currentChunk]);
 
   return (
-    <div className="flex flex-col h-full bg-bg-base border border-border-DEFAULT rounded-lg overflow-hidden">
+    <div className="flex flex-col h-full min-h-0 bg-bg-base border border-border-DEFAULT rounded-lg overflow-hidden">
       {/* 헤더 - 함수 정보 */}
       <div className="flex items-center justify-between px-4 py-3 bg-bg-elevated border-b border-border-DEFAULT">
         <div className="flex items-center gap-3">
@@ -139,7 +139,7 @@ const SlideContent = ({ slide }: { slide: Slide }) => {
       </div>
 
       {/* 코드 영역 - CodeViewer 사용 */}
-      <div className="flex-1 overflow-auto">
+      <div className="flex-1 min-h-0 overflow-auto">
         {displayLines.length > 0 ? (
           <CodeViewer
             processedLines={displayLines}

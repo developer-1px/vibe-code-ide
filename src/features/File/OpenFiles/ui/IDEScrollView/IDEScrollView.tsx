@@ -115,7 +115,7 @@ const IDEScrollView = () => {
   }
 
   return (
-    <div id="scroll-view-container" className="flex-1 h-full overflow-y-auto bg-bg-elevated">
+    <div id="scroll-view-container" className="flex-1 min-h-0 h-full overflow-y-auto bg-bg-elevated">
       {displayFilePaths.map((filePath) => {
         const node = fullNodeMap.get(filePath);
         if (!node) return null;

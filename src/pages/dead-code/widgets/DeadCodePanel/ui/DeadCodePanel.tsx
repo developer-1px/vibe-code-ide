@@ -30,7 +30,7 @@ export function DeadCodePanel() {
   }
 
   return (
-    <div className="flex h-full w-full overflow-hidden">
+    <div className="flex h-full min-h-0 w-full min-w-0 overflow-hidden">
       {/* 좌측: Dead Code Panel */}
       <div className="relative focus:outline-none">
         <Sidebar resizable defaultWidth={280} minWidth={200} maxWidth={600} className="h-full shadow-2xl">

@@ -96,7 +96,7 @@ export function CustomJsonModal({ isOpen, closeModal, submitJson }: CustomJsonMo
           </div>
 
           {/* Body */}
-          <div className="flex-1 overflow-hidden flex flex-col p-4">
+          <div className="flex-1 min-h-0 overflow-hidden flex flex-col p-4">
             {/* Instructions */}
             <p className="text-2xs text-text-secondary mb-2">
               Enter a JSON array of objects. Example:{' '}

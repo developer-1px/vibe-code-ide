@@ -237,7 +237,7 @@ export function JsonExplorer() {
   }
 
   return (
-    <div className="flex h-full w-full overflow-hidden">
+    <div className="flex h-full min-h-0 w-full min-w-0 overflow-hidden">
       {/* Left Panel - DataSource + Schema + Columns */}
       <JsonExplorerSidebar
         columns={visibleColumns}

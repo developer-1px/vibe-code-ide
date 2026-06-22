@@ -346,7 +346,7 @@ export function DataTable({
       </div>
 
       {/* Table - Virtualized */}
-      <div ref={tableContainerRef} className="flex-1 overflow-auto relative">
+      <div ref={tableContainerRef} className="flex-1 min-h-0 min-w-0 overflow-auto relative">
         <table className="caption-bottom text-sm w-full table-fixed">
           <thead className="sticky top-0 z-10 [&_tr]:border-b">
             {table.getHeaderGroups().map((headerGroup) => (

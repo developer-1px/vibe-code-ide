@@ -81,7 +81,7 @@ export function JsonDetailsPanel({ data, closePanel }: JsonDetailsPanelProps) {
       </div>
 
       {/* JSON with Syntax Highlighting */}
-      <ScrollArea className="flex-1">
+      <ScrollArea className="flex-1 min-h-0">
         <div className="py-2">
           <JsonHighlighter json={jsonString} />
         </div>

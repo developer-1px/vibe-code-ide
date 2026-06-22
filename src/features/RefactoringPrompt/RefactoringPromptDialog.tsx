@@ -102,7 +102,7 @@ export function RefactoringPromptDialog({
           </div>
 
           {/* Prompt Content */}
-          <ScrollArea className="flex-1 p-4">
+          <ScrollArea className="flex-1 min-h-0 p-4">
             <pre className="font-mono text-xs text-text-secondary whitespace-pre-wrap break-words bg-bg-deep rounded-lg p-4 border border-border-light">
               {refactoringPrompt.prompt}
             </pre>

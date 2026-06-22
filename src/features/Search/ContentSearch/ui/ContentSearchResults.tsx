@@ -23,7 +23,10 @@ export function ContentSearchResults({
   let currentFlatIndex = 0;
 
   return (
-    <div ref={scrollContainerRef} className="w-[400px] flex-shrink-0 overflow-y-auto border-r border-border-DEFAULT">
+    <div
+      ref={scrollContainerRef}
+      className="w-[400px] min-h-0 flex-shrink-0 overflow-y-auto border-r border-border-DEFAULT"
+    >
       {results.length === 0 ? (
         <div className="flex items-center justify-center h-full text-text-tertiary text-xs">
           {query ? 'No results found' : 'Type to search...'}

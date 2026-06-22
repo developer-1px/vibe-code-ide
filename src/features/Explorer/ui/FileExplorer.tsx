@@ -103,7 +103,7 @@ export function FileExplorer({ filteredFiles }: FileExplorerProps) {
       {focusedFolder && <FolderBreadcrumb focusedFolder={focusedFolder} />}
 
       <TreeView
-        className="flex-1 overflow-y-auto py-1"
+        className="flex-1 min-h-0 overflow-y-auto py-1"
         data={fileTree}
         getNodeType={(node) => node.type}
         getNodePath={(node) => node.path}

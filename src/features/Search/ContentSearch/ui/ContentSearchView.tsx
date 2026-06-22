@@ -133,12 +133,12 @@ export function ContentSearchView() {
   }, [previewInfo?.matchLine]);
 
   return (
-    <div className="flex-1 flex flex-col overflow-hidden bg-bg-deep">
+    <div className="flex-1 min-h-0 flex flex-col overflow-hidden bg-bg-deep">
       <ContentSearchInput query={query} inputRef={inputRef} changeQuery={setQuery} />
       <ContentSearchOptions options={options} changeOptions={setOptions} />
 
       {/* Main content: Results (left) + Preview (right) */}
-      <div className="flex-1 flex overflow-hidden">
+      <div className="flex-1 min-h-0 flex overflow-hidden">
         <ContentSearchResults
           query={query}
           results={results}

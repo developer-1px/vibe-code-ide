@@ -33,7 +33,7 @@ export function WorkspacePanel() {
       </div>
 
       {/* Content */}
-      <div className="flex-1 overflow-y-auto">
+      <div className="flex-1 min-h-0 overflow-y-auto">
         {openedTabs.length === 0 ? (
           <div className="flex items-center justify-center h-full text-text-tertiary text-xs px-3 text-center">
             No files opened

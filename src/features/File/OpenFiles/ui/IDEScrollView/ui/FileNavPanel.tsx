@@ -15,7 +15,7 @@ const FileNavPanel = ({
   selectFile: (filePath: string) => void;
 }) => {
   return (
-    <div className="w-48 border-l border-border-DEFAULT bg-bg-elevated overflow-y-auto">
+    <div className="w-48 min-h-0 border-l border-border-DEFAULT bg-bg-elevated overflow-y-auto">
       {/* 헤더 */}
       <div className="sticky top-0 bg-bg-elevated border-b border-border-DEFAULT px-3 py-2 z-10">
         <span className="text-xs font-medium text-text-secondary">Files ({filePaths.length})</span>

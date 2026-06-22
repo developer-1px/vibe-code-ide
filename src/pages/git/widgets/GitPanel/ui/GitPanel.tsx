@@ -65,7 +65,7 @@ export function GitPanel({ className }: GitPanelProps) {
     <div className={cn('flex h-full flex-col bg-bg-surface border-r border-border-DEFAULT', className)}>
       <GitPanelHeader currentBranch={currentBranch} changeBranch={setCurrentBranch} />
 
-      <ScrollArea className="flex-1">
+      <ScrollArea className="flex-1 min-h-0">
         <div className="p-3 space-y-3">
           <GitCommitBox
             commitMessage={commitMessage}

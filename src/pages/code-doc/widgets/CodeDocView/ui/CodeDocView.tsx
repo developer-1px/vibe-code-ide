@@ -69,7 +69,7 @@ const CodeDocView = () => {
   }
 
   return (
-    <div className="absolute inset-0 bg-gray-50 overflow-hidden">
+    <div className="absolute inset-0 min-h-0 bg-gray-50 overflow-hidden">
       {/* Top Control Bar */}
       <div className="absolute top-6 right-8 z-50 print:hidden">
         <button
@@ -88,7 +88,7 @@ const CodeDocView = () => {
       {/* Content Area - Centered */}
       <div
         ref={scrollContainerRef}
-        className="absolute inset-0 flex items-start justify-center overflow-y-auto custom-scrollbar"
+        className="absolute inset-0 min-h-0 flex items-start justify-center overflow-y-auto custom-scrollbar"
       >
         <div className="w-full max-w-7xl p-6 md:p-12">
           {allDocData.map(({ filePath, docData }, index) => (

@@ -34,7 +34,7 @@ export function TabContainer() {
   }
 
   return (
-    <div className="flex-1 flex flex-col overflow-hidden">
+    <div className="flex-1 min-h-0 flex flex-col overflow-hidden">
       {/* Tab Bar */}
       <div className="flex items-center border-b border-border-DEFAULT bg-bg-elevated flex-shrink-0 overflow-x-auto">
         {openedTabs.map((tab) => {
@@ -55,7 +55,7 @@ export function TabContainer() {
       </div>
 
       {/* Tab Content */}
-      <div className="flex-1 overflow-hidden">
+      <div className="flex-1 min-h-0 overflow-hidden">
         {activeTab?.type === 'ide' && <IDEScrollView />}
         {activeTab?.type === 'search' && <ContentSearchView />}
       </div>
