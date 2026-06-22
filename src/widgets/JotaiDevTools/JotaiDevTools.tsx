@@ -16,7 +16,6 @@ import * as filesAtoms from '@/features/File/OpenFiles/model/atoms';
 import * as searchAtoms from '@/features/Search/UnifiedSearch/model/atoms';
 import * as canvasAtoms from '@/pages/canvas/widgets/PipelineCanvas/model/atoms';
 import * as sidebarAtoms from '@/pages/explorer/widgets/ExplorerSidebar/model/atoms';
-import * as deadCodePanelAtoms from '@/pages/PageAnalysis/DeadCodePanel/model/atoms';
 
 // Combine all atoms for DevTools tracking
 const atoms = {
@@ -30,7 +29,6 @@ const atoms = {
   ...filesAtoms,
   ...canvasAtoms,
   ...sidebarAtoms,
-  ...deadCodePanelAtoms,
 };
 
 interface AtomUpdate {

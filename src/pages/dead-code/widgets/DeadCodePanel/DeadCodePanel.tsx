@@ -13,8 +13,8 @@ import {
   deadCodeResultsAtom,
   selectedDeadCodeItemsAtom,
 } from '@/features/Code/CodeAnalyzer/DeadCodeAnalyzer/model/atoms.ts';
+import { RefactoringPromptDialog } from '@/features/RefactoringPrompt/RefactoringPromptDialog.tsx';
 import IDEScrollView from '@/widgets/MainContents/IDEScrollView/IDEScrollView.tsx';
-import { RefactoringPromptDialog } from '../../../features/RefactoringPrompt/RefactoringPromptDialog.tsx';
 import { DeadCodeExplorer } from '../DeadCodeExplorer/DeadCodeExplorer.tsx';
 import { DeadCodePanelHeader } from './ui/DeadCodePanelHeader.tsx';
 import { DeadCodePanelSummary } from './ui/DeadCodePanelSummary.tsx';

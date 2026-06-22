@@ -6,15 +6,15 @@
 import { useAtom, useAtomValue } from 'jotai';
 import type React from 'react';
 import { useMemo } from 'react';
+import type { FolderNode } from '@/features/Code/CodeAnalyzer/DeadCodeAnalyzer/lib/buildDeadCodeTree.ts';
+import type { DeadCodeItem } from '@/features/Code/CodeAnalyzer/DeadCodeAnalyzer/lib/deadCodeAnalyzer.ts';
 import {
   deadCodeResultsAtom,
   expandedCategoriesAtom,
   isAnalyzingAtom,
 } from '@/features/Code/CodeAnalyzer/DeadCodeAnalyzer/model/atoms.ts';
-import type { FolderNode } from '../../../features/Code/CodeAnalyzer/DeadCodeAnalyzer/lib/buildDeadCodeTree.ts';
-import type { DeadCodeItem } from '../../../features/Code/CodeAnalyzer/DeadCodeAnalyzer/lib/deadCodeAnalyzer.ts';
-import { useTreeKeyboardNavigation } from '../../../shared/hooks/useTreeKeyboardNavigation.ts';
-import { TreeView } from '../../../shared/ui/TreeView/TreeView.tsx';
+import { useTreeKeyboardNavigation } from '@/shared/hooks/useTreeKeyboardNavigation.ts';
+import { TreeView } from '@/shared/ui/TreeView/TreeView.tsx';
 import { useCategoryIndices } from './lib/useCategoryIndices.ts';
 import { DeadCodeCategoryHeader } from './ui/DeadCodeCategoryHeader.tsx';
 import { DeadCodeResultItem } from './ui/DeadCodeResultItem.tsx';

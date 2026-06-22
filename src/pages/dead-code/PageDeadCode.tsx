@@ -1,5 +1,5 @@
-import { PageAnalysis } from '../PageAnalysis/PageAnalysis';
+import { DeadCodePanel } from './widgets/DeadCodePanel/DeadCodePanel';
 
 export function PageDeadCode() {
-  return <PageAnalysis />;
+  return <DeadCodePanel />;
 }

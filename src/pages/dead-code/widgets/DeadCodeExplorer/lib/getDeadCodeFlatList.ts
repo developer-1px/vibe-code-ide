@@ -3,8 +3,8 @@
  * Includes folders, files, AND dead code items
  */
 
+import type { DeadCodeItem } from '@/features/Code/CodeAnalyzer/DeadCodeAnalyzer/lib/deadCodeAnalyzer.ts';
 import type { FolderNode } from '@/widgets/FileExplorer/model/types';
-import type { DeadCodeItem } from '../../../../features/Code/CodeAnalyzer/DeadCodeAnalyzer/lib/deadCodeAnalyzer.ts';
 
 export interface DeadCodeFlatItem {
   id: string; // 고유 ID

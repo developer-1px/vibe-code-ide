@@ -9,8 +9,10 @@ import { useMemo } from 'react';
 import { FileTreeItem } from '@/components/ide/FileTreeItem.tsx';
 import { Checkbox } from '@/components/ui/Checkbox.tsx';
 import { filesAtom, viewModeAtom } from '@/entities/AppView/model/atoms';
+import { FileIcon } from '@/entities/SourceFileNode/ui/FileIcon.tsx';
 import { buildDeadCodeTree } from '@/features/Code/CodeAnalyzer/DeadCodeAnalyzer/lib/buildDeadCodeTree.ts';
 import { renderCategoryIcon } from '@/features/Code/CodeAnalyzer/DeadCodeAnalyzer/lib/categoryUtils.tsx';
+import type { DeadCodeItem } from '@/features/Code/CodeAnalyzer/DeadCodeAnalyzer/lib/deadCodeAnalyzer.ts';
 import {
   collapsedFoldersAtom,
   expandedCategoriesAtom,
@@ -20,9 +22,7 @@ import { useDeadCodeSelection } from '@/features/Code/CodeAnalyzer/DeadCodeSelec
 import { CategoryCheckbox } from '@/features/Code/CodeAnalyzer/DeadCodeSelection/ui/CategoryCheckbox.tsx';
 import { targetLineAtom } from '@/features/File/Navigation/model/atoms.ts';
 import { useOpenFile } from '@/features/File/OpenFiles/lib/useOpenFile.ts';
-import { FileIcon } from '../../../../entities/SourceFileNode/ui/FileIcon.tsx';
-import type { DeadCodeItem } from '../../../../features/Code/CodeAnalyzer/DeadCodeAnalyzer/lib/deadCodeAnalyzer.ts';
-import { TreeView } from '../../../../shared/ui/TreeView/TreeView.tsx';
+import { TreeView } from '@/shared/ui/TreeView/TreeView.tsx';
 import { DeadCodeFolderItem } from './DeadCodeFolderItem.tsx';
 
 export function DeadCodeCategory({

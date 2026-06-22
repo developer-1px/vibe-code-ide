@@ -4,13 +4,20 @@
 
 import { useSetAtom } from 'jotai';
 import { AlertTriangle, X } from 'lucide-react';
+import { activeActivityPageIdAtom } from '@/app/model/activityPageAtoms';
 import { Button } from '@/components/ui/Button.tsx';
+import { viewModeAtom } from '@/entities/AppView/model/atoms';
 import { AnalyzeButton } from '@/features/Code/CodeAnalyzer/DeadCodeAnalyzer/ui/AnalyzeButton.tsx';
 import { CopyAllButton } from '@/features/Code/CodeAnalyzer/DeadCodePromptCopy/ui/CopyAllButton.tsx';
-import { deadCodePanelOpenAtom } from '../model/atoms.ts';
 
 export function DeadCodePanelHeader() {
-  const setDeadCodePanelOpen = useSetAtom(deadCodePanelOpenAtom);
+  const setActiveActivityPageId = useSetAtom(activeActivityPageIdAtom);
+  const setViewMode = useSetAtom(viewModeAtom);
+
+  const closeDeadCodePage = () => {
+    setActiveActivityPageId('explorer');
+    setViewMode('ide');
+  };
 
   return (
     <div className="flex items-center justify-between px-2 py-1.5 border-b border-border-DEFAULT">
@@ -24,7 +31,7 @@ export function DeadCodePanelHeader() {
       <div className="flex items-center gap-1">
         <AnalyzeButton />
         <CopyAllButton />
-        <Button variant="ghost" size="sm" className="h-5 w-5 p-0" onClick={() => setDeadCodePanelOpen(false)}>
+        <Button variant="ghost" size="sm" className="h-5 w-5 p-0" onClick={closeDeadCodePage}>
           <X size={12} />
         </Button>
       </div>
