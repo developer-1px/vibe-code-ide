@@ -7,8 +7,6 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ### Essential Commands
 - `npm install` - Install dependencies
 - `npm run dev` - Start development server (http://localhost:3000)
-- `npm run dev:server` - Start terminal server (WebSocket on port 3001)
-- `npm run dev:all` - Start both dev server and terminal server concurrently
 - `npm run build` - Production build
 - `npm run preview` - Preview production build
 
@@ -20,7 +18,6 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ### Environment Setup
 - Create `.env.local` file with `GEMINI_API_KEY=your_key_here` for AI features
 - Development server runs on port 3000
-- Terminal WebSocket server runs on port 3001
 
 ---
 
@@ -170,6 +167,9 @@ useHotkeys('down', handler, {
 - **TypeScript Compiler API** - Code parsing (never regex!)
 - **@vue/compiler-sfc** - Vue template parsing
 - **D3** - Canvas pan/zoom
+- **TailwindCSS 4.x** - Styling with custom LIMN theme
+- **Biome** - Linting and formatting (not ESLint/Prettier!)
+- **class-variance-authority (CVA)** - Component variant management
 - **Feature-Sliced Design (FSD)** - Architecture
 
 ---
@@ -187,6 +187,7 @@ useHotkeys('down', handler, {
 - `transformAtom` - Canvas zoom/pan state
 - `foldedLinesAtom` - Code folding state per node
 - `searchModalOpenAtom` - Unified search modal (Shift+Shift)
+- `documentModeAtom` - Document view mode (IDE/Search tabs)
 
 **Pattern:** Components access atoms directly. NO handler props drilling!
 
@@ -201,13 +202,15 @@ src/
 ├── widgets/          # Complex UI components
 ├── shared/           # Shared utilities (tsParser, codeParser, storage)
 ├── store/            # Global Jotai atoms
-└── hooks/            # Custom React hooks
+├── hooks/            # Custom React hooks
+└── styles/           # Global styles (limn.css - LIMN design system)
 ```
 
 **Important:**
 - `entities/` - Pure domain logic, NO UI components
 - `features/` - Independent business units with lib/ and ui/
-- `components/` - Design system components, can be modified for project needs
+- `components/` - Design system components (LIMN theme), can be modified for project needs
+- `styles/limn.css` - Design system tokens and theme definitions
 
 ### Features/Entities Organization
 
@@ -229,6 +232,7 @@ features/
 ├── Search/                  # 도메인 그룹 (Search 관련 features)
 │   └── UnifiedSearch/
 ├── KeyboardShortcuts/       # 독립 feature (도메인 무관)
+├── DocumentMode/            # 독립 feature (문서 모드 전환)
 └── WorkspacePersistence/    # 독립 feature (도메인 무관)
 
 entities/
@@ -236,7 +240,10 @@ entities/
 │   ├── CodeLine/
 │   ├── CodeSegment/
 │   └── CodeFold/
-└── SourceFileNode/          # 현재: 독립 entity
+├── SourceFileNode/          # 현재: 독립 entity
+├── CanvasNode/              # Canvas rendering
+├── CodeSymbol/              # Symbol metadata
+└── AppView/                 # View state management
 ```
 
 **Rules:**
@@ -296,6 +303,94 @@ id: 'src/app/atoms.ts::parseProject'      // function
 
 ---
 
+## LIMN Design System
+
+### Design Philosophy
+
+**LIMN** (Light Interface - Minimal Notation) - 따뜻한 색상의 미니멀 디자인 시스템
+
+**Key characteristics:**
+- Warm color palette (peach/orange accent colors)
+- Dark mode first (with document light mode support)
+- Consistent spacing with CSS variables
+- Component variants via CVA (class-variance-authority)
+- TailwindCSS 4.x with `@theme` directive
+
+### Theme Structure
+
+**Location:** `src/styles/limn.css`
+
+**Design tokens:**
+```css
+/* Background layers */
+--color-bg-deep: #15151d;          /* Deepest background */
+--color-bg-base: #181822;          /* Base background */
+--color-bg-surface: rgb(28 28 38 / 0.95);  /* Surface level */
+--color-bg-elevated: #1c1c26;      /* Elevated surfaces */
+
+/* Warm accent (signature LIMN color) */
+--color-warm-300: #ffcc99;         /* Primary accent */
+--color-warm-400: rgb(255 200 150 / 0.9);
+--color-warm-glow: rgb(255 180 120 / 0.15);  /* Subtle glow effect */
+
+/* Text hierarchy */
+--color-text-primary: rgb(255 240 220 / 0.95);
+--color-text-secondary: rgb(255 250 245 / 0.7);
+--color-text-tertiary: rgb(255 250 245 / 0.55);
+--color-text-faint: rgb(255 250 245 / 0.38);
+
+/* Layout dimensions */
+--limn-sidebar-width: 240px;
+--limn-tab-height: 32px;
+--limn-file-item-height: 24px;
+```
+
+### Component Patterns
+
+**All components in `src/components/ui/` follow shadcn/ui patterns with LIMN theme:**
+
+```typescript
+// ✅ Component with CVA variants
+import { cva, type VariantProps } from 'class-variance-authority';
+
+const badgeVariants = cva(
+  'inline-flex items-center rounded-sm px-2 py-1 text-2xs',
+  {
+    variants: {
+      variant: {
+        default: 'bg-white/5 text-text-tertiary',
+        active: 'bg-warm-glow border border-border-warm text-warm-300',
+      },
+    },
+  }
+);
+
+export interface BadgeProps
+  extends React.HTMLAttributes<HTMLDivElement>,
+  VariantProps<typeof badgeVariants> {}
+
+function Badge({ className, variant, ...props }: BadgeProps) {
+  return <div className={cn(badgeVariants({ variant }), className)} {...props} />;
+}
+```
+
+**Component rules:**
+- ✅ Use CVA for variant management
+- ✅ Extend HTML element props (React.HTMLAttributes)
+- ✅ Use `cn()` utility for className merging
+- ✅ Interface props allowed (design system exception)
+- ❌ NO React.FC
+
+### Document Mode Support
+
+**Light mode for document view** (`[data-doc-mode="light"]`):
+- Switched via `documentModeAtom`
+- Used in CodeDocView widget
+- Clean white background for reading
+- Darker accent colors for contrast
+
+---
+
 ## Coding Conventions
 
 ### Import Rules
@@ -344,15 +439,13 @@ const FeatureComponent = ({
   };
 };
 
-// ✅ EXCEPTION: shared 컴포넌트는 interface 허용 (재사용성)
-interface TreeViewProps {
-  data: TreeNode[];
-  onSelect: (id: string) => void;
-}
+// ✅ EXCEPTION: components/ui (design system) - interface 허용
+export interface BadgeProps
+  extends React.HTMLAttributes<HTMLDivElement>,
+  VariantProps<typeof badgeVariants> {}
 
-const TreeView = ({ data, onSelect }: TreeViewProps) => {
-  // shared/ui/ 컴포넌트는 비즈니스 로직 최소화
-  // 재사용을 위해 interface 정의 가능
+const Badge = ({ variant, className, ...props }: BadgeProps) => {
+  // Design system components use interface for reusability
 };
 
 // ❌ NEVER use React.FC (깔끔하지 않음)
@@ -364,7 +457,7 @@ const Component: React.FC<Props> = ({ ... }) => { ... }  // NO!
 - ❌ Handler props - Use atoms internally (features/widgets만)
 - ✅ Interface for data structures (entities/features model/)
 - ❌ Interface for component props (features/widgets - inline만)
-- ✅ Interface for component props (shared/components - 재사용 시 허용)
+- ✅ Interface for component props (components/ui - design system)
 - ❌ React.FC 사용 금지 (inline props가 더 깔끔)
 
 ### TypeScript Rules
@@ -382,6 +475,11 @@ const CodeCard = ({ nodeId, lines }: {
   nodeId: string;
   lines: CodeLine[];  // Reuse data interface
 }) => { ... };
+
+// ✅ Design system props (reusable)
+export interface ButtonProps
+  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
+  VariantProps<typeof buttonVariants> {}
 ```
 
 ---
@@ -411,6 +509,18 @@ const CodeCard = ({ nodeId, lines }: {
 - Click dependency → expand file
 - Click local → highlight usages (Focus Mode)
 - Fold/unfold blocks
+
+### Main Content Tab System
+
+**Dynamic tab system for IDE and Search views:**
+- `MainContents` widget manages tab state
+- IDE mode - Traditional file explorer + canvas
+- Search mode - Unified search with preview panel
+- Tabs persist with workspace
+
+**Key atoms:**
+- `documentModeAtom` - Current tab ('ide' | 'search')
+- Controlled by `features/DocumentMode`
 
 ### Keyboard Shortcuts
 
@@ -452,6 +562,15 @@ const CodeCard = ({ nodeId, lines }: {
 6. Set `enableOnFormTags: true` for input field shortcuts
 7. Include all dependencies in 4th parameter array
 
+### Adding design system component
+
+1. Create component in `src/components/ui/{Component}.tsx`
+2. Use CVA for variant management
+3. Extend appropriate HTML element props
+4. Use LIMN theme tokens from `limn.css`
+5. Export interface (design system exception)
+6. Use `cn()` utility for className merging
+
 ---
 
 ## Anti-Patterns to Avoid
@@ -460,10 +579,12 @@ const CodeCard = ({ nodeId, lines }: {
 2. ❌ Regex for code analysis (use AST!)
 3. ❌ Re-traversing AST (use fullNodeMap filtering)
 4. ❌ Handler props drilling (use atoms)
-5. ❌ Component props interfaces (use inline)
+5. ❌ Component props interfaces (use inline, except components/ui)
 6. ❌ Using deprecated types (VariableNode, GraphNode)
 7. ❌ Hotkeys without scopes (causes conflicts)
 8. ❌ Adding metadata fields to SourceFileNode (use getters)
+9. ❌ Using ESLint/Prettier (use Biome!)
+10. ❌ Hardcoded colors (use LIMN theme tokens)
 
 ---
 
@@ -473,6 +594,8 @@ const CodeCard = ({ nodeId, lines }: {
 - `README.md` - Project philosophy and vision
 - `docs/2-Areas/Architecture/` - Architectural decision records
 - TypeScript Compiler API - For AST traversal patterns
+- TailwindCSS 4.x docs - For styling patterns
+- CVA docs - For component variants
 
 ---
 
@@ -499,7 +622,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 
 **Before committing:**
 - [ ] No barrel exports created
-- [ ] Component props are inline (features/widgets only - shared 예외)
+- [ ] Component props are inline (features/widgets only - components/ui 예외)
 - [ ] Handlers use atoms (not props)
 - [ ] No React.FC used (inline props가 더 깔끔)
 - [ ] Import paths have NO extensions (.ts, .tsx)
@@ -509,9 +632,19 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 - [ ] Hotkeys have unique scopes
 - [ ] Dependencies array properly specified
 - [ ] Features 3개 이상 → 도메인 그룹핑 고려
+- [ ] Use LIMN theme tokens (not hardcoded colors)
+- [ ] Use CVA for component variants (design system)
+- [ ] Run `npm run lint:fix` before committing
 
 **If adding TypeScript analysis:**
 - [ ] Symbol info needed? → Filter fullNodeMap
 - [ ] New symbol type? → Modify Worker extractSymbolNodes()
 - [ ] AST traversal? → STOP! Check fullNodeMap first
 - [ ] Usage extraction? → OK (exception, not top-level)
+
+**If adding UI component:**
+- [ ] Design system component? → Use interface (components/ui)
+- [ ] Feature component? → Use inline props (features/)
+- [ ] Use CVA for variants? (design system only)
+- [ ] Use LIMN theme tokens from limn.css?
+- [ ] Extend appropriate HTML element props?

@@ -259,9 +259,20 @@ export const fillLineGaps = (line: CodeLine, lineText: string, sourceFile: ts.So
   }
 
   // Segments가 없으면 전체 라인을 text로
+  const finalSegments = filledSegments.length > 0 ? filledSegments : [{ text: lineText, kinds: ['text'] }];
+
+  // 주석 및 빈 줄 감지
+  const isBlankLine = lineText.trim().length === 0;
+  const isComment =
+    !isBlankLine &&
+    finalSegments.every((seg) => seg.kinds.includes('comment') || seg.kinds.includes('text')) &&
+    finalSegments.some((seg) => seg.kinds.includes('comment'));
+
   return {
     ...line,
-    segments: filledSegments.length > 0 ? filledSegments : [{ text: lineText, kinds: ['text'] }],
+    segments: finalSegments,
+    isComment,
+    isBlankLine,
   };
 };
 

@@ -15,10 +15,10 @@ const buttonVariants = cva(
         link: 'text-warm-300 underline-offset-4 hover:underline',
       },
       size: {
-        default: 'h-9 px-6 py-2.5 text-md rounded-[var(--limn-radius-lg)]',
-        sm: 'h-7 px-3 py-1 text-sm rounded-[var(--limn-radius-md)]',
-        lg: 'h-11 px-7 py-3 text-md rounded-[var(--limn-radius-xl)]',
-        icon: 'h-9 w-9 rounded-[var(--limn-radius-lg)]',
+        default: 'h-9 px-6 py-2.5 text-md rounded-lg',
+        sm: 'h-7 px-3 py-1 text-sm rounded-md',
+        lg: 'h-11 px-7 py-3 text-md rounded-xl',
+        icon: 'h-9 w-9 rounded-lg',
       },
     },
     defaultVariants: {
