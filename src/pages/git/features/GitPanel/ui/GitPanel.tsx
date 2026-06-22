@@ -82,7 +82,7 @@ export function GitPanel({ className }: GitPanelProps) {
 
   const [fileChanges, setFileChanges] = React.useState<FileChange[]>([
     { path: 'src/app/ui/AppTitleBar/TitleBar.tsx', status: 'modified', staged: true },
-    { path: 'src/pages/explorer/widgets/ExplorerSidebar/ui/ExplorerSidebar.tsx', status: 'modified', staged: true },
+    { path: 'src/features/Explorer/ui/ExplorerSidebar.tsx', status: 'modified', staged: true },
     { path: 'src/shared/ui/Button.tsx', status: 'modified', staged: false },
     { path: 'src/App.tsx', status: 'modified', staged: false },
     { path: 'src/utils/helpers.ts', status: 'added', staged: false },
