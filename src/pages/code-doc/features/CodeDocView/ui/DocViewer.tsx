@@ -18,7 +18,7 @@ export const DocViewer = ({ data, layout }: DocViewerProps) => {
   const VISIBLE_IMPORTS = 8;
   const visibleImports = isDepsExpanded ? data.imports : data.imports.slice(0, VISIBLE_IMPORTS);
 
-  function handleDefinitionClick(startLine: number) {
+  function goToDefinition(startLine: number) {
     console.log('[DocViewer] Navigate to line:', startLine);
   }
 
@@ -99,7 +99,7 @@ export const DocViewer = ({ data, layout }: DocViewerProps) => {
 
       <div className="mb-32">
         {data.symbols?.map((symbol, idx) => (
-          <SymbolSection key={idx} symbol={symbol} layout={layout} onDefinitionClick={handleDefinitionClick} />
+          <SymbolSection key={idx} symbol={symbol} layout={layout} goToDefinition={goToDefinition} />
         ))}
       </div>
 

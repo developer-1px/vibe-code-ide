@@ -7,25 +7,25 @@ export const TextbookCodeBlock: React.FC<{
   code: string;
   lang?: string;
   startLine?: number;
-  onLineClick?: (lineNumber: number) => void;
-}> = ({ code, lang = 'typescript', startLine = 1, onLineClick }) => {
+  clickLine?: (lineNumber: number) => void;
+}> = ({ code, lang = 'typescript', startLine = 1, clickLine }) => {
   const [hoveredLine, setHoveredLine] = useState<number | null>(null);
 
   const lineCount = code.split('\n').length;
   const codeLines = code.split('\n');
-  const canClickLine = Boolean(onLineClick);
+  const canClickLine = Boolean(clickLine);
 
-  function handleHoverLine(lineIndex: number) {
+  function hoverLine(lineIndex: number) {
     setHoveredLine(lineIndex);
   }
 
-  function handleLeaveLine() {
+  function leaveLine() {
     setHoveredLine(null);
   }
 
-  function handleLineClick(lineNumber: number) {
-    if (onLineClick) {
-      onLineClick(lineNumber);
+  function selectLine(lineNumber: number) {
+    if (clickLine) {
+      clickLine(lineNumber);
     }
   }
 
@@ -43,9 +43,9 @@ export const TextbookCodeBlock: React.FC<{
                 lineNumber={lineNum}
                 isHovered={isHovered}
                 canClick={canClickLine}
-                hoverLine={handleHoverLine}
-                leaveLine={handleLeaveLine}
-                clickLine={handleLineClick}
+                hoverLine={hoverLine}
+                leaveLine={leaveLine}
+                clickLine={selectLine}
               />
             );
           })}
@@ -63,9 +63,9 @@ export const TextbookCodeBlock: React.FC<{
                 lineNumber={startLine + i}
                 isHovered={isHovered}
                 canClick={canClickLine}
-                hoverLine={handleHoverLine}
-                leaveLine={handleLeaveLine}
-                clickLine={handleLineClick}
+                hoverLine={hoverLine}
+                leaveLine={leaveLine}
+                clickLine={selectLine}
               />
             );
           })}

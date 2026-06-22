@@ -1,5 +1,4 @@
 import { Copy } from 'lucide-react';
-import type React from 'react';
 import type { ReactNode } from 'react';
 import { useMemo, useState } from 'react';
 
@@ -73,13 +72,14 @@ function renderHighlightedJsonLine(text: string): ReactNode[] {
 interface JsonHighlighterLineProps {
   line: { text: string; path: string | null; lineNumber: number };
   copiedPath: string | null;
-  copyPath: (path: string, e: React.MouseEvent) => void;
+  copyPath: (path: string) => void;
 }
 
 function JsonHighlighterLine({ line, copiedPath, copyPath }: JsonHighlighterLineProps) {
   function handleCopyPathClick(e: React.MouseEvent) {
     if (line.path) {
-      copyPath(line.path, e);
+      e.stopPropagation();
+      copyPath(line.path);
     }
   }
 
@@ -159,8 +159,7 @@ export function JsonHighlighter({ json }: { json: string }) {
     return result;
   }, [json]);
 
-  async function handleCopyPath(path: string, e: React.MouseEvent) {
-    e.stopPropagation();
+  async function copyPath(path: string) {
     try {
       await navigator.clipboard.writeText(path);
       setCopiedPath(path);
@@ -173,7 +172,7 @@ export function JsonHighlighter({ json }: { json: string }) {
   return (
     <div className="font-mono text-2xs">
       {lines.map((line) => (
-        <JsonHighlighterLine key={line.lineNumber} line={line} copiedPath={copiedPath} copyPath={handleCopyPath} />
+        <JsonHighlighterLine key={line.lineNumber} line={line} copiedPath={copiedPath} copyPath={copyPath} />
       ))}
     </div>
   );

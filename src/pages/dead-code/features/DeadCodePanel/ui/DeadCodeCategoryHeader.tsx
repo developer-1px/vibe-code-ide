@@ -25,7 +25,7 @@ export const DeadCodeCategoryHeader = React.forwardRef<
 
   const isExpanded = expandedCategories[categoryKey];
 
-  function handleToggleCategory() {
+  function toggleCategory() {
     setExpandedCategories((prev) => ({
       ...prev,
       [categoryKey]: !prev[categoryKey],
@@ -59,7 +59,7 @@ export const DeadCodeCategoryHeader = React.forwardRef<
         itemCount={items.length}
         categoryKey={categoryKey}
         isExpanded={isExpanded}
-        toggleCategory={handleToggleCategory}
+        toggleCategory={toggleCategory}
       />
 
       <CategoryCheckbox items={items} />

@@ -14,8 +14,8 @@ const getStartLine = (lineStr?: string): number => {
 export const SymbolSection: React.FC<{
   symbol: SymbolDetail;
   layout: 'linear' | 'split';
-  onDefinitionClick?: (startLine: number) => void;
-}> = ({ symbol, layout, onDefinitionClick }) => {
+  goToDefinition?: (startLine: number) => void;
+}> = ({ symbol, layout, goToDefinition }) => {
   let TypeIcon = 'info';
   if (symbol.type === 'function') TypeIcon = 'function';
   if (symbol.type === 'interface') TypeIcon = 'interface';
@@ -25,14 +25,14 @@ export const SymbolSection: React.FC<{
   if (symbol.type === 'test-hook') TypeIcon = 'testHook';
 
   function handleDefinitionClick() {
-    if (symbol.startLine && onDefinitionClick) {
-      onDefinitionClick(symbol.startLine);
+    if (symbol.startLine && goToDefinition) {
+      goToDefinition(symbol.startLine);
     }
   }
 
-  function handleCodeLineClick(lineNumber: number) {
-    if (onDefinitionClick) {
-      onDefinitionClick(lineNumber);
+  function goToCodeLine(lineNumber: number) {
+    if (goToDefinition) {
+      goToDefinition(lineNumber);
     }
   }
 
@@ -275,7 +275,7 @@ export const SymbolSection: React.FC<{
                   const startLine = getStartLine(block.lines);
                   grouped.push(
                     <div key={idx}>
-                      <TextbookCodeBlock code={block.content} startLine={startLine} onLineClick={handleCodeLineClick} />
+                      <TextbookCodeBlock code={block.content} startLine={startLine} clickLine={goToCodeLine} />
                     </div>
                   );
                 }
