@@ -3,7 +3,7 @@
  * Includes folders, files, AND dead code items
  */
 
-import type { FolderNode } from '@/app/ui/AppSidebar/model/types';
+import type { FolderNode } from '@/widgets/FileExplorer/model/types';
 import type { DeadCodeItem } from '../../../../features/Code/CodeAnalyzer/DeadCodeAnalyzer/lib/deadCodeAnalyzer.ts';
 
 export interface DeadCodeFlatItem {

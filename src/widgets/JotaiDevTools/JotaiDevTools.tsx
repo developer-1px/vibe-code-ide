@@ -5,7 +5,6 @@
 import type { Atom } from 'jotai';
 import { ChevronDown } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
-import * as sidebarAtoms from '@/app/ui/AppSidebar/model/atoms';
 import * as themeAtoms from '@/entities/AppTheme/atoms';
 import * as appAtoms from '@/entities/AppView/model/atoms';
 import { store } from '@/entities/AppView/model/store';
@@ -15,6 +14,7 @@ import * as focusModeAtoms from '@/features/Code/FocusMode/model/atoms';
 import * as navigationAtoms from '@/features/File/Navigation/model/atoms';
 import * as filesAtoms from '@/features/File/OpenFiles/model/atoms';
 import * as searchAtoms from '@/features/Search/UnifiedSearch/model/atoms';
+import * as sidebarAtoms from '@/pages/explorer/widgets/ExplorerSidebar/model/atoms';
 import * as deadCodePanelAtoms from '@/pages/PageAnalysis/DeadCodePanel/model/atoms';
 import * as canvasAtoms from '@/widgets/MainContents/PipelineCanvas/model/atoms';
 

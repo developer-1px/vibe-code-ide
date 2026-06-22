@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { cn } from '@/components/lib/utils';
 
-// AppSidebar.Header - Compound Component
+// Sidebar.Header - Compound Component
 export interface SidebarHeaderProps extends React.HTMLAttributes<HTMLDivElement> {
   children: React.ReactNode;
 }
@@ -22,7 +22,7 @@ const SidebarHeader = React.forwardRef<HTMLDivElement, SidebarHeaderProps>(({ cl
 });
 SidebarHeader.displayName = 'SidebarHeader';
 
-// AppSidebar - Main Component
+// Sidebar - Main Component
 export interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {
   children: React.ReactNode;
   side?: 'left' | 'right'; // Which side to place the sidebar

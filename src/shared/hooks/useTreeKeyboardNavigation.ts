@@ -1,6 +1,6 @@
 /**
  * useTreeKeyboardNavigation - 트리 구조 키보드 네비게이션 공통 로직
- * AppSidebar와 DeadCodePanel에서 재사용
+ * ExplorerSidebar와 DeadCodePanel에서 재사용
  *
  * Note: Auto-scroll은 TreeView의 useTreeState에서 처리됩니다.
  */
