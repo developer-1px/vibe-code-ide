@@ -1,14 +1,4 @@
-import type { SourceFileNode } from '../../SourceFileNode';
-
-export interface TemplateTokenRange {
-  startOffset: number; // Absolute position in template content
-  endOffset: number; // Absolute position in template content
-  text: string;
-  tokenIds: string[]; // Dependency IDs found in this expression
-  relativeStart?: number; // Line-relative column position
-  relativeEnd?: number; // Line-relative column position
-  type?: 'token' | 'string' | 'comment' | 'directive-if' | 'directive-for' | 'directive-else' | 'directive-else-if'; // Added to distinguish variable tokens from string literals, comments, and directives
-}
+import type { SourceFileNode } from '../../SourceFileNode/model/types';
 
 export interface CanvasNode extends SourceFileNode {
   x: number;

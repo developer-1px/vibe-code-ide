@@ -5,7 +5,7 @@ import { pruneDetachedNodes } from '@/features/Canvas/lib/pruneDetachedNodes';
 import { cardPositionsAtom, transformAtom, visibleNodeIdsAtom } from '@/features/Canvas/model/atoms';
 import { activeLocalVariablesAtom } from '@/features/Code/FocusMode/model/atoms';
 import { useGotoDefinition } from '@/features/File/GotoDefinition/lib/useGotoDefinition';
-import { getTokenStyle } from '../../../entities/SourceFileNode/lib/styleUtils';
+import { getTokenStyle } from '../core/styler/tokenStyles';
 
 const CodeToken = ({
   text,

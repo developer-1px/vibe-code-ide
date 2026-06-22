@@ -5,16 +5,15 @@
  * 아키텍처: Getter Layer 패턴 (AST 파싱 로직 분리), 로컬 캐싱 (파일당 1회 순회), 순수 함수 설계
  */
 
+import { getExports, getImports } from '../../../../../entities/SourceFileNode/lib/metadata.ts';
+import type { GraphData } from '../../../../../entities/SourceFileNode/model/types.ts';
 import {
   getComponentProps,
-  getExports,
   getFunctionArguments,
-  getImports,
   getLocalFunctions,
   getLocalVariables,
   getUsedIdentifiers,
-} from '../../../../../entities/SourceFileNode/lib/metadata.ts';
-import type { GraphData } from '../../../../../entities/SourceFileNode/model/types.ts';
+} from './deadCodeMetadata';
 
 // Dead Code 항목 (kind/category 2단계 분류, optional 필드로 상세 정보 제공)
 export interface DeadCodeItem {

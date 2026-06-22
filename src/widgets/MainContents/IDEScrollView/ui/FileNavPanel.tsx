@@ -3,7 +3,7 @@
  * 파일 목록 표시 및 스크롤 네비게이션
  */
 
-import { FileIcon } from '../../../../entities/SourceFileNode/ui/FileIcon.tsx';
+import { FileIcon } from '@/shared/ui/FileIcon';
 import { getFileName } from '../../../../shared/pathUtils.ts';
 
 const FileNavPanel = ({

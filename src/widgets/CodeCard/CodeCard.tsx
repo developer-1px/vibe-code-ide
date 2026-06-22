@@ -8,7 +8,6 @@ import { foldedLinesAtom } from '@/features/Code/CodeFold/model/atoms';
 import { activeTabAtom } from '@/features/File/OpenFiles/model/atoms';
 import { hoveredFilePathAtom } from '@/widgets/MainContents/IDEScrollView/model/atoms';
 import type { CanvasNode } from '../../entities/CanvasNode/model/types';
-import { getNodeBorderColor } from '../../entities/SourceFileNode/lib/styleUtils';
 import CodeViewer from '../CodeViewer/CodeViewer';
 // Lib - Pure Utilities
 import { renderCodeLinesDirect } from '../CodeViewer/core/renderer/renderCodeLinesDirect';
@@ -17,6 +16,37 @@ import VueTemplateSection from '../CodeViewer/ui/VueTemplateSection';
 import CodeCardCopyButton from './ui/CodeCardCopyButton';
 // UI Components
 import CodeCardHeader from './ui/CodeCardHeader';
+
+const getNodeBorderColor = (nodeType: string): string => {
+  switch (nodeType) {
+    case 'pure-function':
+      return 'border-cyan-500/50 shadow-cyan-900/20';
+    case 'immutable-data':
+      return 'border-blue-500/50 shadow-blue-900/20';
+    case 'computed':
+      return 'border-sky-500/50 shadow-sky-900/20';
+    case 'ref':
+      return 'border-emerald-500/50 shadow-emerald-900/20';
+    case 'state-ref':
+      return 'border-amber-500/50 shadow-amber-900/20';
+    case 'state-action':
+      return 'border-orange-500/50 shadow-orange-900/20';
+    case 'mutable-ref':
+      return 'border-yellow-500/50 shadow-yellow-900/20';
+    case 'effect-action':
+      return 'border-red-500/50 shadow-red-900/20';
+    case 'hook':
+      return 'border-violet-500/50 shadow-violet-900/20';
+    case 'function':
+      return 'border-amber-500/50 shadow-amber-900/20';
+    case 'template':
+      return 'border-fuchsia-500/50 shadow-fuchsia-900/20';
+    case 'call':
+      return 'border-yellow-500/50 shadow-yellow-900/20';
+    default:
+      return 'border-vibe-border shadow-black/20';
+  }
+};
 
 const CodeCard = ({ node }: { node: CanvasNode }) => {
   const files = useAtomValue(filesAtom);
