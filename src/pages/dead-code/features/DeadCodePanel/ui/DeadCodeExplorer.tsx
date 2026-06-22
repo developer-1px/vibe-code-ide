@@ -3,8 +3,7 @@
  * Single TreeView with all categories for unified keyboard navigation
  */
 
-import { useAtom, useAtomValue } from 'jotai';
-import type React from 'react';
+import { useAtomValue } from 'jotai';
 import { useMemo } from 'react';
 import type { DeadCodeItem } from '@/features/Code/CodeAnalyzer/DeadCodeAnalyzer/lib/deadCodeAnalyzer.ts';
 import {
@@ -15,9 +14,9 @@ import {
 import type { CategoryKey } from '@/features/Code/CodeAnalyzer/DeadCodeAnalyzer/model/types.ts';
 import { useTreeKeyboardNavigation } from '@/shared/hooks/useTreeKeyboardNavigation.ts';
 import { TreeView } from '@/shared/ui/TreeView/TreeView.tsx';
-import { useCategoryIndices } from './lib/useCategoryIndices.ts';
-import { DeadCodeCategoryHeader } from './ui/DeadCodeCategoryHeader.tsx';
-import { DeadCodeResultItem } from './ui/DeadCodeResultItem.tsx';
+import { useDeadCodeCategories } from '../lib/useDeadCodeCategories.ts';
+import { DeadCodeCategoryHeader } from './DeadCodeCategoryHeader.tsx';
+import { DeadCodeResultItem } from './DeadCodeResultItem.tsx';
 
 interface DeadCodeExplorerBaseNode {
   id: string;
@@ -42,13 +41,13 @@ interface DeadCodeExplorerItemNode extends DeadCodeExplorerBaseNode {
 
 type DeadCodeExplorerNode = DeadCodeExplorerCategoryNode | DeadCodeExplorerItemNode;
 
-export function DeadCodeExplorer({ containerRef: _containerRef }: { containerRef: React.RefObject<HTMLDivElement> }) {
+export function DeadCodeExplorer() {
   const deadCodeResults = useAtomValue(deadCodeResultsAtom);
   const isAnalyzing = useAtomValue(isAnalyzingAtom);
-  const [expandedCategories] = useAtom(expandedCategoriesAtom);
+  const expandedCategories = useAtomValue(expandedCategoriesAtom);
 
   // Get all categories
-  const categories = useCategoryIndices();
+  const categories = useDeadCodeCategories();
 
   // Build unified tree with all categories
   const unifiedTree = useMemo(() => {
