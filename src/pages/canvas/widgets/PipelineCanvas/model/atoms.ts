@@ -3,7 +3,7 @@
  * Canvas 노드 확장, 레이아웃, 변환, 가시성 관련 상태
  */
 import { atom } from 'jotai';
-import type { CanvasNode } from '../../../../entities/CanvasNode/model/types.ts';
+import type { CanvasNode } from '@/entities/CanvasNode/model/types.ts';
 
 // ============================================================================
 // Node Expansion & Overlapping View

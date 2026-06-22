@@ -14,7 +14,7 @@ import {
   cardPositionsAtom,
   transformAtom,
   visibleNodeIdsAtom,
-} from '@/widgets/MainContents/PipelineCanvas/model/atoms';
+} from '@/pages/canvas/widgets/PipelineCanvas/model/atoms';
 import { loadWorkspaceState, saveWorkspaceState } from '../../shared/storage/indexedDB';
 
 export const WorkspacePersistence = () => {

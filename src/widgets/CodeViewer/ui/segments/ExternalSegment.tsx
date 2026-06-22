@@ -8,12 +8,12 @@ import { useAtomValue, useSetAtom } from 'jotai';
 import type React from 'react';
 import { fullNodeMapAtom, hoveredIdentifierAtom, viewModeAtom } from '@/entities/AppView/model/atoms';
 import { useOpenFile } from '@/features/File/OpenFiles/lib/useOpenFile';
-import { focusedNodeIdAtom } from '@/widgets/MainContents/IDEScrollView/model/atoms.ts';
 import {
   cardPositionsAtom,
   transformAtom,
   visibleNodeIdsAtom,
-} from '@/widgets/MainContents/PipelineCanvas/model/atoms';
+} from '@/pages/canvas/widgets/PipelineCanvas/model/atoms';
+import { focusedNodeIdAtom } from '@/widgets/MainContents/IDEScrollView/model/atoms.ts';
 import type { CanvasNode } from '../../../../entities/CanvasNode/model/types';
 import type { CodeSegment, SegmentStyle } from '../../core/types';
 

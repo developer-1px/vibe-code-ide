@@ -1,7 +1,7 @@
 import { useAtomValue } from 'jotai';
 import type React from 'react';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { getEdgeColor } from '../../../entities/SourceFileNode/lib/styleUtils.ts';
+import { getEdgeColor } from '@/entities/SourceFileNode/lib/styleUtils.ts';
 import { cardPositionsAtom, layoutLinksAtom, layoutNodesAtom, transformAtom } from './model/atoms.ts';
 
 /**
@@ -162,7 +162,11 @@ const CanvasConnections: React.FC = () => {
   }, [drawConnections]);
 
   return (
-    <svg ref={svgRef} className="absolute top-0 left-0 w-full h-full overflow-visible pointer-events-none z-5">
+    <svg
+      ref={svgRef}
+      aria-hidden="true"
+      className="absolute top-0 left-0 w-full h-full overflow-visible pointer-events-none z-5"
+    >
       {paths}
     </svg>
   );

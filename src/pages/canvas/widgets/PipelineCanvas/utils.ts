@@ -1,5 +1,5 @@
-import type { CanvasNode } from '../../../entities/CanvasNode/model/types.ts';
-import type { SourceFileNode } from '../../../entities/SourceFileNode/model/types.ts';
+import type { CanvasNode } from '@/entities/CanvasNode/model/types.ts';
+import type { SourceFileNode } from '@/entities/SourceFileNode/model/types.ts';
 
 // --- Constants ---
 export const LEVEL_SPACING = 850; // Horizontal space between columns

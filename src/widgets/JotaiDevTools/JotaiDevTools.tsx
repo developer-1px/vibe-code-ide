@@ -14,9 +14,9 @@ import * as focusModeAtoms from '@/features/Code/FocusMode/model/atoms';
 import * as navigationAtoms from '@/features/File/Navigation/model/atoms';
 import * as filesAtoms from '@/features/File/OpenFiles/model/atoms';
 import * as searchAtoms from '@/features/Search/UnifiedSearch/model/atoms';
+import * as canvasAtoms from '@/pages/canvas/widgets/PipelineCanvas/model/atoms';
 import * as sidebarAtoms from '@/pages/explorer/widgets/ExplorerSidebar/model/atoms';
 import * as deadCodePanelAtoms from '@/pages/PageAnalysis/DeadCodePanel/model/atoms';
-import * as canvasAtoms from '@/widgets/MainContents/PipelineCanvas/model/atoms';
 
 // Combine all atoms for DevTools tracking
 const atoms = {

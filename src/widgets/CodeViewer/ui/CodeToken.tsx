@@ -7,8 +7,8 @@ import {
   cardPositionsAtom,
   transformAtom,
   visibleNodeIdsAtom,
-} from '@/widgets/MainContents/PipelineCanvas/model/atoms';
-import { pruneDetachedNodes } from '@/widgets/MainContents/PipelineCanvas/utils';
+} from '@/pages/canvas/widgets/PipelineCanvas/model/atoms';
+import { pruneDetachedNodes } from '@/pages/canvas/widgets/PipelineCanvas/utils';
 import { getTokenStyle } from '../../../entities/SourceFileNode/lib/styleUtils';
 
 const CodeToken = ({

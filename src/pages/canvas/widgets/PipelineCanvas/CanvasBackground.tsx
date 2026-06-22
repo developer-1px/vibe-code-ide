@@ -2,7 +2,7 @@ import { useAtomValue } from 'jotai';
 import { Layers as IconLayers } from 'lucide-react';
 import type React from 'react';
 import { useMemo } from 'react';
-import type { CanvasNode, ComponentGroup } from '../../../entities/CanvasNode/model/types.ts';
+import type { CanvasNode, ComponentGroup } from '@/entities/CanvasNode/model/types.ts';
 import { layoutNodesAtom } from './model/atoms.ts';
 import { estimateNodeHeight } from './utils.ts';
 
