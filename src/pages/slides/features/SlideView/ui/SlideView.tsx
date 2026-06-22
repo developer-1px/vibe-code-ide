@@ -2,11 +2,11 @@ import { useAtomValue, useSetAtom } from 'jotai';
 import { useEffect } from 'react';
 import { graphDataAtom } from '@/entities/AppView/model/atoms';
 import { activeTabAtom, openedTabsAtom } from '@/features/File/OpenFiles/model/atoms';
-import { buildSlidesFromFiles } from '../../entities/Slide/lib/slideBuilder';
-import { currentSlideAtom, currentSlideIdAtom, slidesAtom } from '../../features/SlideNavigation/model/atoms';
+import { buildSlidesFromFiles } from '../../../entities/Slide/lib/slideBuilder';
+import { currentSlideAtom, currentSlideIdAtom, slidesAtom } from '../../SlideNavigation/model/atoms';
 import SlideContent from './SlideContent';
 import SlideContext from './SlideContext';
-import { useSlideKeyboard } from './useSlideKeyboard';
+import { SlideKeyboardScope } from './SlideKeyboardScope';
 
 /**
  * SlideView - PPT 스타일 코드 뷰어
@@ -19,9 +19,6 @@ const SlideView = () => {
   const slides = useAtomValue(slidesAtom);
   const setSlides = useSetAtom(slidesAtom);
   const setCurrentSlideId = useSetAtom(currentSlideIdAtom);
-
-  // 키보드 네비게이션 활성화
-  useSlideKeyboard();
 
   // 디버깅 로그
   useEffect(() => {
@@ -78,28 +75,35 @@ const SlideView = () => {
   // 슬라이드가 없으면 빈 상태 표시
   if (slides.length === 0) {
     return (
-      <div className="flex items-center justify-center h-full">
-        <div className="text-center">
-          <div className="text-text-tertiary text-sm mb-2">No slides available</div>
-          <div className="text-text-faint text-xs">
-            Open files (Shift+Shift or click in sidebar) to view code slides
+      <>
+        <SlideKeyboardScope />
+        <div className="flex items-center justify-center h-full">
+          <div className="text-center">
+            <div className="text-text-tertiary text-sm mb-2">No slides available</div>
+            <div className="text-text-faint text-xs">
+              Open files (Shift+Shift or click in sidebar) to view code slides
+            </div>
           </div>
         </div>
-      </div>
+      </>
     );
   }
 
   // 현재 슬라이드가 없으면 로딩 상태
   if (!currentSlide) {
     return (
-      <div className="flex items-center justify-center h-full">
-        <div className="text-text-tertiary text-sm">Loading slide...</div>
-      </div>
+      <>
+        <SlideKeyboardScope />
+        <div className="flex items-center justify-center h-full">
+          <div className="text-text-tertiary text-sm">Loading slide...</div>
+        </div>
+      </>
     );
   }
 
   return (
     <div className="flex h-full gap-4 p-4">
+      <SlideKeyboardScope />
       {/* 메인 슬라이드 영역 (70%) */}
       <div className="flex-[7]">
         <SlideContent slide={currentSlide} />

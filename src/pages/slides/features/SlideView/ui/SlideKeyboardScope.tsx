@@ -1,23 +1,12 @@
-import { useAtom, useAtomValue, useSetAtom } from 'jotai';
+import { useAtom, useAtomValue } from 'jotai';
 import { useEffect } from 'react';
 import { useHotkeys, useHotkeysContext } from 'react-hotkeys-hook';
-import {
-  chunkCountAtom,
-  chunksAtom,
-  currentChunkIndexAtom,
-  currentSlideAtom,
-  setCurrentSlideWithHistoryAtom,
-  slidesAtom,
-  targetDepthAtom,
-} from '../../features/SlideNavigation/model/atoms';
+import { chunkCountAtom, chunksAtom, currentChunkIndexAtom, targetDepthAtom } from '../../SlideNavigation/model/atoms';
 
 /**
- * 슬라이드 키보드 네비게이션 훅
+ * 슬라이드 키보드 네비게이션 scope
  */
-export function useSlideKeyboard() {
-  const _currentSlide = useAtomValue(currentSlideAtom);
-  const _allSlides = useAtomValue(slidesAtom);
-  const _setCurrentSlide = useSetAtom(setCurrentSlideWithHistoryAtom);
+export function SlideKeyboardScope() {
   const [currentChunkIndex, setCurrentChunkIndex] = useAtom(currentChunkIndexAtom);
   const chunkCount = useAtomValue(chunkCountAtom);
   const chunks = useAtomValue(chunksAtom);
@@ -184,4 +173,6 @@ export function useSlideKeyboard() {
     },
     [currentChunkIndex, chunkCount, chunks, setCurrentChunkIndex, setTargetDepth]
   );
+
+  return null;
 }

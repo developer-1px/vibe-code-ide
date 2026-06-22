@@ -4,14 +4,9 @@ import { filesAtom, graphDataAtom } from '@/entities/AppView/model/atoms';
 import type { SourceFileNode } from '@/entities/SourceFileNode/model/types';
 import CodeViewer from '@/features/Code/CodeViewer/CodeViewer';
 import { renderCodeLinesDirect } from '@/features/Code/CodeViewer/core/renderer/renderCodeLinesDirect';
-import type { Slide } from '../../entities/Slide/model/types';
-import { extractChunks } from '../../features/SlideNavigation/lib/extractChunks';
-import {
-  chunkCountAtom,
-  chunksAtom,
-  currentChunkIndexAtom,
-  targetDepthAtom,
-} from '../../features/SlideNavigation/model/atoms';
+import type { Slide } from '../../../entities/Slide/model/types';
+import { extractChunks } from '../../SlideNavigation/lib/extractChunks';
+import { chunkCountAtom, chunksAtom, currentChunkIndexAtom, targetDepthAtom } from '../../SlideNavigation/model/atoms';
 
 /**
  * 슬라이드 콘텐츠 - 함수 코드 표시

@@ -1,18 +1,13 @@
 import { useSetAtom } from 'jotai';
 import { Badge } from '@/shared/ui/Badge';
-import type { Slide } from '../../entities/Slide/model/types';
-import { setCurrentSlideWithHistoryAtom } from '../../features/SlideNavigation/model/atoms';
+import type { Slide } from '../../../entities/Slide/model/types';
+import { setCurrentSlideWithHistoryAtom } from '../../SlideNavigation/model/atoms';
 
 /**
  * 슬라이드 컨텍스트 - Caller/Callee/Sibling 정보 표시
  */
 const SlideContext = ({ slide }: { slide: Slide }) => {
   const { context } = slide;
-  const setCurrentSlide = useSetAtom(setCurrentSlideWithHistoryAtom);
-
-  function handleNavigate(targetId: string) {
-    setCurrentSlide(targetId);
-  }
 
   return (
     <div className="flex flex-col gap-4 p-4 bg-bg-elevated border border-border-DEFAULT rounded-lg">
@@ -24,7 +19,7 @@ const SlideContext = ({ slide }: { slide: Slide }) => {
         ) : (
           <div className="flex flex-wrap gap-2">
             {context.callers.map((callerId) => (
-              <FunctionBadge key={callerId} nodeId={callerId} onNavigate={handleNavigate} />
+              <FunctionBadge key={callerId} nodeId={callerId} />
             ))}
           </div>
         )}
@@ -38,7 +33,7 @@ const SlideContext = ({ slide }: { slide: Slide }) => {
         ) : (
           <div className="flex flex-wrap gap-2">
             {context.callees.map((calleeId) => (
-              <FunctionBadge key={calleeId} nodeId={calleeId} onNavigate={handleNavigate} />
+              <FunctionBadge key={calleeId} nodeId={calleeId} />
             ))}
           </div>
         )}
@@ -52,12 +47,7 @@ const SlideContext = ({ slide }: { slide: Slide }) => {
         ) : (
           <div className="flex flex-wrap gap-2">
             {context.siblings.map((siblingId) => (
-              <FunctionBadge
-                key={siblingId}
-                nodeId={siblingId}
-                onNavigate={handleNavigate}
-                isActive={siblingId === slide.id}
-              />
+              <FunctionBadge key={siblingId} nodeId={siblingId} isActive={siblingId === slide.id} />
             ))}
           </div>
         )}
@@ -88,20 +78,14 @@ const SlideContext = ({ slide }: { slide: Slide }) => {
 /**
  * 함수 뱃지 - 클릭 가능한 함수 이름
  */
-const FunctionBadge = ({
-  nodeId,
-  onNavigate,
-  isActive = false,
-}: {
-  nodeId: string;
-  onNavigate: (targetId: string) => void;
-  isActive?: boolean;
-}) => {
+const FunctionBadge = ({ nodeId, isActive = false }: { nodeId: string; isActive?: boolean }) => {
+  const setCurrentSlide = useSetAtom(setCurrentSlideWithHistoryAtom);
+
   // nodeId에서 함수 이름 추출 (filePath::functionName 형식)
   const functionName = nodeId.includes('::') ? nodeId.split('::').pop() || nodeId : nodeId.split('/').pop() || nodeId;
 
   function handleClick() {
-    onNavigate(nodeId);
+    setCurrentSlide(nodeId);
   }
 
   return (
