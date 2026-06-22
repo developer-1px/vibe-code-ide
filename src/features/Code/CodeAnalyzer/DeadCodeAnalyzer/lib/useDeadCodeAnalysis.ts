@@ -5,7 +5,11 @@
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import { useEffect } from 'react';
 import { graphDataAtom } from '@/entities/AppView/model/atoms';
-import { deadCodeResultsAtom, isAnalyzingAtom, selectedDeadCodeItemsAtom } from '../model/atoms.ts';
+import {
+  deadCodeResultsAtom,
+  isAnalyzingAtom,
+  selectedDeadCodeItemsAtom,
+} from '@/features/Code/CodeAnalyzer/DeadCodeAnalyzer/model/atoms.ts';
 import { analyzeDeadCode } from './deadCodeAnalyzer.ts';
 
 export function useDeadCodeAnalysis() {

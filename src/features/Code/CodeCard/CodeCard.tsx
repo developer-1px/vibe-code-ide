@@ -1,0 +1,144 @@
+import { useAtomValue, useSetAtom } from 'jotai';
+import { useEffect, useMemo, useRef } from 'react';
+import { filesAtom } from '@/entities/AppView/model/atoms';
+import type { CanvasNode } from '@/entities/CanvasNode/model/types';
+import { deadCodeResultsAtom } from '@/features/Code/CodeAnalyzer/DeadCodeAnalyzer/model/atoms';
+import { getFoldableLinesByMaxDepth } from '@/features/Code/CodeFold/lib/foldUtils';
+// Atoms
+import { foldedLinesAtom } from '@/features/Code/CodeFold/model/atoms';
+import CodeViewer from '@/features/Code/CodeViewer/CodeViewer';
+// Lib - Pure Utilities
+import { renderCodeLinesDirect } from '@/features/Code/CodeViewer/core/renderer/renderCodeLinesDirect';
+import { renderVueFile } from '@/features/Code/CodeViewer/core/renderer/renderVueFile';
+import { hoveredFilePathAtom } from '@/features/Code/CodeViewer/model/atoms';
+import VueTemplateSection from '@/features/Code/CodeViewer/ui/VueTemplateSection';
+import { activeTabAtom } from '@/features/File/OpenFiles/model/atoms';
+import CodeCardCopyButton from './ui/CodeCardCopyButton';
+// UI Components
+import CodeCardHeader from './ui/CodeCardHeader';
+
+const getNodeBorderColor = (nodeType: string): string => {
+  switch (nodeType) {
+    case 'pure-function':
+      return 'border-cyan-500/50 shadow-cyan-900/20';
+    case 'immutable-data':
+      return 'border-blue-500/50 shadow-blue-900/20';
+    case 'computed':
+      return 'border-sky-500/50 shadow-sky-900/20';
+    case 'ref':
+      return 'border-emerald-500/50 shadow-emerald-900/20';
+    case 'state-ref':
+      return 'border-amber-500/50 shadow-amber-900/20';
+    case 'state-action':
+      return 'border-orange-500/50 shadow-orange-900/20';
+    case 'mutable-ref':
+      return 'border-yellow-500/50 shadow-yellow-900/20';
+    case 'effect-action':
+      return 'border-red-500/50 shadow-red-900/20';
+    case 'hook':
+      return 'border-violet-500/50 shadow-violet-900/20';
+    case 'function':
+      return 'border-amber-500/50 shadow-amber-900/20';
+    case 'template':
+      return 'border-fuchsia-500/50 shadow-fuchsia-900/20';
+    case 'call':
+      return 'border-yellow-500/50 shadow-yellow-900/20';
+    default:
+      return 'border-vibe-border shadow-black/20';
+  }
+};
+
+const CodeCard = ({ node }: { node: CanvasNode }) => {
+  const files = useAtomValue(filesAtom);
+  const deadCodeResults = useAtomValue(deadCodeResultsAtom);
+  const setHoveredFilePath = useSetAtom(hoveredFilePathAtom);
+  const activeTab = useAtomValue(activeTabAtom);
+
+  // Check if this card is for the currently active tab
+  const isActive = activeTab === node.filePath;
+
+  // Render code lines with syntax highlighting
+  const processedLines = useMemo(() => {
+    // Vue 파일인 경우 renderVueFile 사용
+    if (node.filePath.endsWith('.vue')) {
+      return renderVueFile(node, files);
+    }
+    // 그 외의 경우 renderCodeLinesDirect 사용
+    return renderCodeLinesDirect(node, files, deadCodeResults);
+  }, [node, files, deadCodeResults]);
+
+  const foldedLinesMap = useAtomValue(foldedLinesAtom);
+  const setFoldedLinesMap = useSetAtom(foldedLinesAtom);
+
+  // Import만 접기 (초기 렌더링 시 한 번만) - Level 0 (import only folded)
+  useEffect(() => {
+    // 이미 fold 상태가 설정되어 있으면 초기화하지 않음
+    if (foldedLinesMap.has(node.id)) {
+      return;
+    }
+
+    // depth 1 (import)만 접기 (Level 0)
+    const linesToFold = getFoldableLinesByMaxDepth(processedLines, 1);
+    setFoldedLinesMap((prev) => {
+      const next = new Map(prev);
+      const nodeFolds = new Set<number>();
+      linesToFold.forEach((lineNum) => {
+        nodeFolds.add(lineNum);
+      });
+      next.set(node.id, nodeFolds);
+      return next;
+    });
+  }, [node.id, processedLines, foldedLinesMap, setFoldedLinesMap]);
+
+  // Script 영역의 마지막 라인 번호 계산
+  const scriptEndLine = useMemo(() => {
+    if (processedLines.length === 0) return 0;
+    return processedLines[processedLines.length - 1].num;
+  }, [processedLines]);
+
+  // Card ref for ID assignment
+  const cardRef = useRef<HTMLDivElement>(null);
+
+  function handleMouseEnter() {
+    setHoveredFilePath(node.filePath);
+  }
+
+  function handleMouseLeave() {
+    setHoveredFilePath(null);
+  }
+
+  return (
+    <div
+      ref={cardRef}
+      id={`node-${node.visualId || node.id}`}
+      className={`
+        bg-theme-panel/95 backdrop-blur-md border shadow-2xl rounded-lg flex flex-col relative group/card overflow-visible
+        ${getNodeBorderColor(node.type)}
+        ${!isActive ? 'grayscale transition-all duration-[2000ms] ease-in-out' : 'transition-none'}
+        min-w-[420px] max-w-[700px] w-fit cursor-default
+      `}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+    >
+      {/* Header */}
+      <CodeCardHeader node={node} />
+
+      {/* Code Lines (script가 있을 때만) */}
+      {processedLines.length > 0 && <CodeViewer processedLines={processedLines} node={node} />}
+
+      {/* Vue Template Section (파일 노드이면서 vueTemplate이 있을 때만) */}
+      {node.vueTemplate && (
+        <div className="flex flex-col bg-[#0b1221] py-2">
+          <VueTemplateSection template={node.vueTemplate} node={node} scriptEndLine={scriptEndLine} />
+        </div>
+      )}
+
+      {/* Copy Button - Bottom Right */}
+      <CodeCardCopyButton codeSnippet={node.codeSnippet} />
+
+      <div className="absolute inset-0 border-2 border-transparent group-hover/card:border-white/5 rounded-lg pointer-events-none transition-colors" />
+    </div>
+  );
+};
+
+export default CodeCard;

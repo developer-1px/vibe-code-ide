@@ -1,4 +1,4 @@
-import PipelineCanvas from '@/pages/canvas/widgets/PipelineCanvas/PipelineCanvas';
+import PipelineCanvas from '@/features/Canvas/PipelineCanvas/ui/PipelineCanvas';
 
 export function PageCanvas() {
   return (

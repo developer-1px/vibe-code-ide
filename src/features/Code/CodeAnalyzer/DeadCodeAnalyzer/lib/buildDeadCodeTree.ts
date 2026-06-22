@@ -3,12 +3,22 @@
  * Each DeadCodeItem becomes an independent node for keyboard navigation
  */
 
-import type { FolderNode } from '../../../../../widgets/FileExplorer/model/types.ts';
 import type { DeadCodeItem } from './deadCodeAnalyzer.ts';
 
-export function buildDeadCodeTree(items: DeadCodeItem[]): FolderNode[] {
-  const rootChildren: FolderNode[] = [];
-  const folderMap = new Map<string, FolderNode>();
+export interface DeadCodeTreeNode {
+  id: string;
+  parentId: string | null;
+  type: 'folder' | 'dead-code-item';
+  name: string;
+  path: string;
+  children?: DeadCodeTreeNode[];
+  filePath?: string;
+  deadCodeItem?: DeadCodeItem;
+}
+
+export function buildDeadCodeTree(items: DeadCodeItem[]): DeadCodeTreeNode[] {
+  const rootChildren: DeadCodeTreeNode[] = [];
+  const folderMap = new Map<string, DeadCodeTreeNode>();
 
   // Each DeadCodeItem becomes an independent node
   items.forEach((item) => {
@@ -16,7 +26,7 @@ export function buildDeadCodeTree(items: DeadCodeItem[]): FolderNode[] {
     const fileName = parts[parts.length - 1];
 
     // Build folder hierarchy first to get parentId
-    let currentParent: FolderNode[] = rootChildren;
+    let currentParent: DeadCodeTreeNode[] = rootChildren;
     let currentPath = '';
     let parentId: string | null = null;
 
@@ -45,7 +55,7 @@ export function buildDeadCodeTree(items: DeadCodeItem[]): FolderNode[] {
     }
 
     // Create dead-code-item node
-    const itemNode: FolderNode = {
+    const itemNode: DeadCodeTreeNode = {
       id: `${item.filePath}:${item.line}:${item.symbolName}`, // 고유 ID
       parentId: parentId, // 부모 ID
       type: 'dead-code-item',
@@ -66,7 +76,7 @@ export function buildDeadCodeTree(items: DeadCodeItem[]): FolderNode[] {
   });
 
   // Sort: folders first, then by line number
-  const sortNodes = (nodes: FolderNode[]): FolderNode[] => {
+  const sortNodes = (nodes: DeadCodeTreeNode[]): DeadCodeTreeNode[] => {
     nodes.sort((a, b) => {
       // Folders first
       if (a.type !== b.type) {

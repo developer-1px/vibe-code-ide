@@ -11,8 +11,8 @@ import { activeActivityPageIdAtom } from '@/app/model/activityPageAtoms';
 import { viewModeAtom } from '@/entities/AppView/model/atoms';
 import { isSidebarOpenAtom } from '@/features/Explorer/model/atoms';
 import { useOpenFile } from '@/features/File/OpenFiles/lib/useOpenFile';
+import { activeTabIdAtom, openedTabsAtom } from '@/features/File/OpenFiles/model/contentTabs';
 import { searchModalOpenAtom } from '@/features/Search/UnifiedSearch/model/atoms';
-import { activeTabIdAtom, openedTabsAtom } from '@/widgets/MainContents/model/atoms';
 
 const GLOBAL_HOTKEYS = {
   TOGGLE_SIDEBAR: 'mod+\\',

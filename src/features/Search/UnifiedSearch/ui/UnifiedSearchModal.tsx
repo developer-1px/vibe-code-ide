@@ -8,16 +8,16 @@ import type React from 'react';
 import { useEffect, useMemo } from 'react';
 import { filesAtom, focusedPaneAtom, fullNodeMapAtom } from '@/entities/AppView/model/atoms';
 import { useOpenFile } from '@/features/File/OpenFiles/lib/useOpenFile.ts';
-import { CommandPalette } from '@/shared/ui/CommandPalette';
-import { searchResultsFuzzy } from '../lib/searchService.ts';
-import { getAllSearchableItems } from '../lib/symbolExtractor.ts';
 import {
   collapsedFoldersAtom,
   searchModalOpenAtom,
   searchQueryAtom,
   searchResultsAtom,
   symbolMetadataAtom,
-} from '../model/atoms.ts';
+} from '@/features/Search/UnifiedSearch/model/atoms.ts';
+import { CommandPalette } from '@/shared/ui/CommandPalette';
+import { searchResultsFuzzy } from '../lib/searchService.ts';
+import { getAllSearchableItems } from '../lib/symbolExtractor.ts';
 import type { SearchResult } from '../model/types.ts';
 
 export const UnifiedSearchModal: React.FC = () => {

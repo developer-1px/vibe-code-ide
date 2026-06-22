@@ -4,7 +4,7 @@
  */
 
 import * as ts from 'typescript';
-import type { CodeLine } from '../widgets/CodeViewer/core/types';
+import type { CodeLine } from '@/features/Code/CodeViewer/core/types/codeLine';
 
 // Worker 메시지 타입 정의
 interface ParseRequest {
