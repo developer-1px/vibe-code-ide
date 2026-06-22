@@ -1,4 +1,4 @@
-import { GitPanel } from '@/components/ide/GitPanel';
+import { GitPanel } from './widgets/GitPanel/GitPanel';
 
 export function PageGit() {
   return (
