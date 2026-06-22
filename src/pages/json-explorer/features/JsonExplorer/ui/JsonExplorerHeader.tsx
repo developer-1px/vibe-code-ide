@@ -1,6 +1,6 @@
-import { PanelRightClose, PanelRightOpen } from 'lucide-react';
-import { Checkbox } from '@/shared/ui/Checkbox';
+import { DetailsPanelToggleButton } from './DetailsPanelToggleButton';
 import { ExportButton } from './ExportButton';
+import { FormatHeadersCheckbox } from './FormatHeadersCheckbox';
 
 interface JsonExplorerHeaderProps {
   formatHeaders: boolean;
@@ -17,14 +17,6 @@ export function JsonExplorerHeader({
   rightPanelOpen,
   changeRightPanelOpen,
 }: JsonExplorerHeaderProps) {
-  function handleFormatHeadersCheckedChange(checked: boolean | 'indeterminate') {
-    changeFormatHeaders(checked === true);
-  }
-
-  function handleRightPanelToggle() {
-    changeRightPanelOpen(!rightPanelOpen);
-  }
-
   return (
     <div className="px-4 py-2.5 border-b border-border-DEFAULT bg-bg-deep shrink-0">
       <div className="flex items-center justify-between">
@@ -34,30 +26,11 @@ export function JsonExplorerHeader({
         </div>
 
         <div className="flex items-center gap-3">
-          <div className="flex items-center gap-2">
-            <Checkbox id="format-headers" checked={formatHeaders} onCheckedChange={handleFormatHeadersCheckedChange} />
-            <label
-              htmlFor="format-headers"
-              className="text-2xs text-text-secondary cursor-pointer select-none hover:text-text-primary transition-colors"
-            >
-              Format Headers
-            </label>
-          </div>
+          <FormatHeadersCheckbox formatHeaders={formatHeaders} changeFormatHeaders={changeFormatHeaders} />
 
           <ExportButton data={exportData} filename="json-export" />
 
-          <button
-            onClick={handleRightPanelToggle}
-            className="p-1.5 hover:bg-bg-elevated rounded transition-colors"
-            aria-label="Toggle details panel"
-            title={rightPanelOpen ? 'Close details panel' : 'Open details panel'}
-          >
-            {rightPanelOpen ? (
-              <PanelRightClose size={16} className="text-warm-400" />
-            ) : (
-              <PanelRightOpen size={16} className="text-text-tertiary" />
-            )}
-          </button>
+          <DetailsPanelToggleButton rightPanelOpen={rightPanelOpen} changeRightPanelOpen={changeRightPanelOpen} />
         </div>
       </div>
     </div>

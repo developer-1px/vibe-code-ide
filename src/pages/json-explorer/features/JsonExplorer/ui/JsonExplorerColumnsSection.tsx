@@ -1,36 +1,12 @@
 import { ChevronDown, ChevronRight, Columns } from 'lucide-react';
 import { useState } from 'react';
 import { ScrollArea } from '@/shared/ui/ScrollArea';
+import { JsonExplorerColumnItem } from './JsonExplorerColumnItem';
 
 interface JsonExplorerColumnsSectionProps {
   columns: string[];
   selectColumn?: (columnKey: string) => void;
   scrollToColumn?: (columnKey: string) => void;
-}
-
-function ColumnItem({
-  column,
-  selectColumn,
-  scrollToColumn,
-}: {
-  column: string;
-  selectColumn?: (column: string) => void;
-  scrollToColumn?: (column: string) => void;
-}) {
-  function handleClick() {
-    selectColumn?.(column);
-    scrollToColumn?.(column);
-  }
-
-  return (
-    <div
-      className="flex items-center gap-2 px-3 py-0.5 text-2xs cursor-pointer hover:bg-warm-500/10 transition-colors"
-      onClick={handleClick}
-    >
-      <div className="w-1 h-1 rounded-full bg-warm-300 shrink-0" />
-      <span className="font-mono text-text-secondary truncate">{column}</span>
-    </div>
-  );
 }
 
 export function JsonExplorerColumnsSection({ columns, selectColumn, scrollToColumn }: JsonExplorerColumnsSectionProps) {
@@ -56,7 +32,12 @@ export function JsonExplorerColumnsSection({ columns, selectColumn, scrollToColu
         <ScrollArea className="flex-1">
           <div className="py-1">
             {columns.map((column) => (
-              <ColumnItem key={column} column={column} selectColumn={selectColumn} scrollToColumn={scrollToColumn} />
+              <JsonExplorerColumnItem
+                key={column}
+                column={column}
+                selectColumn={selectColumn}
+                scrollToColumn={scrollToColumn}
+              />
             ))}
           </div>
         </ScrollArea>
