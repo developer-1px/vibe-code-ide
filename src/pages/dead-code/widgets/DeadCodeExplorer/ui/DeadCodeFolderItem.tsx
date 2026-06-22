@@ -4,7 +4,7 @@
 
 import { Folder, FolderOpen } from 'lucide-react';
 import React from 'react';
-import { FileTreeItem } from '@/components/ide/FileTreeItem.tsx';
+import { FileTreeItem } from '@/shared/ui/FileTreeItem';
 
 export const DeadCodeFolderItem = React.forwardRef<
   HTMLDivElement,

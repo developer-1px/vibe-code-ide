@@ -2,7 +2,7 @@ import { useAtom, useAtomValue } from 'jotai';
 import { ChevronDown, ChevronRight } from 'lucide-react';
 import type React from 'react';
 import { useRef, useState } from 'react';
-import { Sidebar } from '@/components/ide/Sidebar.tsx';
+import { Sidebar } from '@/shared/ui/Sidebar';
 import { FileExplorer } from '@/widgets/FileExplorer/FileExplorer.tsx';
 import { RelatedFilesView } from '@/widgets/RelatedFilesView/RelatedFilesView.tsx';
 import { fileTreeModeAtom, isSidebarOpenAtom } from '../model/atoms.ts';

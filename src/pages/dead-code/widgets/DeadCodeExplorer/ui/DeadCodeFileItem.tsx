@@ -5,7 +5,6 @@
 import { useSetAtom } from 'jotai';
 import React from 'react';
 import { activeActivityPageIdAtom } from '@/app/model/activityPageAtoms';
-import { FileTreeItem } from '@/components/ide/FileTreeItem.tsx';
 import { viewModeAtom } from '@/entities/AppView/model/atoms';
 import { FileIcon } from '@/entities/SourceFileNode/ui/FileIcon.tsx';
 import type { DeadCodeItem } from '@/features/Code/CodeAnalyzer/DeadCodeAnalyzer/lib/deadCodeAnalyzer.ts';
@@ -13,6 +12,7 @@ import { useDeadCodeSelection } from '@/features/Code/CodeAnalyzer/DeadCodeSelec
 import { targetLineAtom } from '@/features/File/Navigation/model/atoms.ts';
 import { useOpenFile } from '@/features/File/OpenFiles/lib/useOpenFile.ts';
 import { Checkbox } from '@/shared/ui/Checkbox';
+import { FileTreeItem } from '@/shared/ui/FileTreeItem';
 
 export const DeadCodeFileItem = React.forwardRef<
   HTMLDivElement,
