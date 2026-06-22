@@ -6,6 +6,7 @@
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import { ChevronDown, ChevronRight } from 'lucide-react';
 import { useMemo } from 'react';
+import { activeActivityPageIdAtom } from '@/app/model/activityPageAtoms';
 import { FileTreeItem } from '@/components/ide/FileTreeItem.tsx';
 import { Checkbox } from '@/components/ui/Checkbox.tsx';
 import { filesAtom, viewModeAtom } from '@/entities/AppView/model/atoms';
@@ -43,6 +44,7 @@ export function DeadCodeCategory({
   const files = useAtomValue(filesAtom);
   const setTargetLine = useSetAtom(targetLineAtom);
   const setViewMode = useSetAtom(viewModeAtom);
+  const setActiveActivityPageId = useSetAtom(activeActivityPageIdAtom);
   const { openFile } = useOpenFile();
   const { toggleItemSelection, isItemSelected } = useDeadCodeSelection();
 
@@ -51,6 +53,7 @@ export function DeadCodeCategory({
   const handleItemClick = (item: DeadCodeItem) => {
     openFile(item.filePath);
     setTargetLine({ nodeId: item.filePath, lineNum: item.line });
+    setActiveActivityPageId('explorer');
     setViewMode('ide');
   };
 

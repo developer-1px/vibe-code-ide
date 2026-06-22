@@ -18,7 +18,6 @@ import { PageExplorer } from '@/pages/explorer/PageExplorer';
 import { PageGit } from '@/pages/git/PageGit';
 import { PageJsonExplorer } from '@/pages/json-explorer/PageJsonExplorer';
 import { PageSlides } from '@/pages/slides/PageSlides';
-import type { ViewMode } from '../../entities/AppView/model/atoms';
 
 export const ACTIVITY_PAGE_IDS = [
   'explorer',
@@ -42,7 +41,6 @@ export interface ActivityPageDescriptor {
   group: ActivityPageGroup;
   pageComponentName: string;
   pagePath: `src/pages/${string}/Page${string}.tsx`;
-  legacyViewMode: ViewMode;
 }
 
 /**
@@ -60,7 +58,6 @@ export const activityPages = [
     group: 'primary',
     pageComponentName: 'PageExplorer',
     pagePath: 'src/pages/explorer/PageExplorer.tsx',
-    legacyViewMode: 'ide',
   },
   {
     id: 'code-doc',
@@ -70,7 +67,6 @@ export const activityPages = [
     group: 'primary',
     pageComponentName: 'PageCodeDoc',
     pagePath: 'src/pages/code-doc/PageCodeDoc.tsx',
-    legacyViewMode: 'codeDoc',
   },
   {
     id: 'slides',
@@ -80,7 +76,6 @@ export const activityPages = [
     group: 'primary',
     pageComponentName: 'PageSlides',
     pagePath: 'src/pages/slides/PageSlides.tsx',
-    legacyViewMode: 'ide',
   },
   {
     id: 'canvas',
@@ -90,7 +85,6 @@ export const activityPages = [
     group: 'primary',
     pageComponentName: 'PageCanvas',
     pagePath: 'src/pages/canvas/PageCanvas.tsx',
-    legacyViewMode: 'canvas',
   },
   {
     id: 'dead-code',
@@ -100,7 +94,6 @@ export const activityPages = [
     group: 'secondary',
     pageComponentName: 'PageDeadCode',
     pagePath: 'src/pages/dead-code/PageDeadCode.tsx',
-    legacyViewMode: 'ide',
   },
   {
     id: 'json-explorer',
@@ -110,7 +103,6 @@ export const activityPages = [
     group: 'secondary',
     pageComponentName: 'PageJsonExplorer',
     pagePath: 'src/pages/json-explorer/PageJsonExplorer.tsx',
-    legacyViewMode: 'jsonExplorer',
   },
   {
     id: 'assistant',
@@ -120,7 +112,6 @@ export const activityPages = [
     group: 'secondary',
     pageComponentName: 'PageAssistant',
     pagePath: 'src/pages/assistant/PageAssistant.tsx',
-    legacyViewMode: 'ide',
   },
   {
     id: 'git',
@@ -130,7 +121,6 @@ export const activityPages = [
     group: 'secondary',
     pageComponentName: 'PageGit',
     pagePath: 'src/pages/git/PageGit.tsx',
-    legacyViewMode: 'ide',
   },
 ] satisfies ActivityPageDescriptor[];
 

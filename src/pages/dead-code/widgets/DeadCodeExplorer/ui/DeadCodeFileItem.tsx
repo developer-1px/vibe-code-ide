@@ -4,6 +4,7 @@
 
 import { useSetAtom } from 'jotai';
 import React from 'react';
+import { activeActivityPageIdAtom } from '@/app/model/activityPageAtoms';
 import { FileTreeItem } from '@/components/ide/FileTreeItem.tsx';
 import { Checkbox } from '@/components/ui/Checkbox.tsx';
 import { viewModeAtom } from '@/entities/AppView/model/atoms';
@@ -28,6 +29,7 @@ export const DeadCodeFileItem = React.forwardRef<
   const { items, fileName, depth, focused, globalItemIndex, itemRefs, onFocus } = props;
   const setTargetLine = useSetAtom(targetLineAtom);
   const setViewMode = useSetAtom(viewModeAtom);
+  const setActiveActivityPageId = useSetAtom(activeActivityPageIdAtom);
   const { openFile } = useOpenFile();
   const { toggleItemSelection, isItemSelected } = useDeadCodeSelection();
 
@@ -36,6 +38,7 @@ export const DeadCodeFileItem = React.forwardRef<
   const handleItemClick = (item: DeadCodeItem) => {
     openFile(item.filePath);
     setTargetLine({ nodeId: item.filePath, lineNum: item.line });
+    setActiveActivityPageId('explorer');
     setViewMode('ide');
   };
 

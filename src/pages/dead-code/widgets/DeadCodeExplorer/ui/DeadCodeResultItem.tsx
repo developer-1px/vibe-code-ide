@@ -6,6 +6,7 @@
 import { useSetAtom } from 'jotai';
 import { Code2, Component, FileBox, FunctionSquare, Import, Variable } from 'lucide-react';
 import React from 'react';
+import { activeActivityPageIdAtom } from '@/app/model/activityPageAtoms';
 import { Checkbox } from '@/components/ui/Checkbox.tsx';
 import { viewModeAtom } from '@/entities/AppView/model/atoms';
 import type { DeadCodeItem } from '@/features/Code/CodeAnalyzer/DeadCodeAnalyzer/lib/deadCodeAnalyzer.ts';
@@ -45,6 +46,7 @@ export const DeadCodeResultItem = React.forwardRef<
   const { item, depth: _depth, focused, onFocus } = props;
   const setTargetLine = useSetAtom(targetLineAtom);
   const setViewMode = useSetAtom(viewModeAtom);
+  const setActiveActivityPageId = useSetAtom(activeActivityPageIdAtom);
   const { openFile } = useOpenFile();
   const { toggleItemSelection, isItemSelected } = useDeadCodeSelection();
 
@@ -55,6 +57,7 @@ export const DeadCodeResultItem = React.forwardRef<
   const handleItemClick = () => {
     openFile(item.filePath);
     setTargetLine({ nodeId: item.filePath, lineNum: item.line });
+    setActiveActivityPageId('explorer');
     setViewMode('ide');
   };
 
