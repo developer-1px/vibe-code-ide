@@ -5,7 +5,7 @@
 import { Copy, X } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { useMemo, useState } from 'react';
-import { ScrollArea } from '@/components/ui/ScrollArea';
+import { ScrollArea } from '@/shared/ui/ScrollArea';
 
 interface JsonDetailsPanelProps {
   data: Record<string, unknown> | null;

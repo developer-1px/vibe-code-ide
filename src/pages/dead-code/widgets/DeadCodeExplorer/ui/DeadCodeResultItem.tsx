@@ -7,12 +7,12 @@ import { useSetAtom } from 'jotai';
 import { Code2, Component, FileBox, FunctionSquare, Import, Variable } from 'lucide-react';
 import React from 'react';
 import { activeActivityPageIdAtom } from '@/app/model/activityPageAtoms';
-import { Checkbox } from '@/components/ui/Checkbox.tsx';
 import { viewModeAtom } from '@/entities/AppView/model/atoms';
 import type { DeadCodeItem } from '@/features/Code/CodeAnalyzer/DeadCodeAnalyzer/lib/deadCodeAnalyzer.ts';
 import { useDeadCodeSelection } from '@/features/Code/CodeAnalyzer/DeadCodeSelection/lib/useDeadCodeSelection.ts';
 import { targetLineAtom } from '@/features/File/Navigation/model/atoms.ts';
 import { useOpenFile } from '@/features/File/OpenFiles/lib/useOpenFile.ts';
+import { Checkbox } from '@/shared/ui/Checkbox';
 
 // Get icon for dead code kind
 function getKindIcon(kind: DeadCodeItem['kind']) {

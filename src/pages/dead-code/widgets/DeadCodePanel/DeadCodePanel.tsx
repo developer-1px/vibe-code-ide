@@ -7,13 +7,13 @@ import { useAtomValue } from 'jotai';
 import { Sparkles } from 'lucide-react';
 import { useRef, useState } from 'react';
 import { Sidebar } from '@/components/ide/Sidebar.tsx';
-import { Button } from '@/components/ui/Button.tsx';
 import { useDeadCodeAnalysis } from '@/features/Code/CodeAnalyzer/DeadCodeAnalyzer/lib/useDeadCodeAnalysis.ts';
 import {
   deadCodeResultsAtom,
   selectedDeadCodeItemsAtom,
 } from '@/features/Code/CodeAnalyzer/DeadCodeAnalyzer/model/atoms.ts';
 import { RefactoringPromptDialog } from '@/features/RefactoringPrompt/RefactoringPromptDialog.tsx';
+import { Button } from '@/shared/ui/Button';
 import IDEScrollView from '@/widgets/MainContents/IDEScrollView/IDEScrollView.tsx';
 import { DeadCodeExplorer } from '../DeadCodeExplorer/DeadCodeExplorer.tsx';
 import { DeadCodePanelHeader } from './ui/DeadCodePanelHeader.tsx';

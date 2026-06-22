@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { cn } from '@/components/lib/utils';
+import { cn } from '@/shared/lib/utils';
 
 export interface TitleBarProps extends React.HTMLAttributes<HTMLDivElement> {
   filename?: string;

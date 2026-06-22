@@ -12,12 +12,12 @@ import {
   Upload,
 } from 'lucide-react';
 import * as React from 'react';
-import { cn } from '@/components/lib/utils';
-import { Button } from '@/components/ui/Button';
-import { ScrollArea } from '@/components/ui/ScrollArea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/Select';
-import { Separator } from '@/components/ui/Separator';
-import { Textarea } from '@/components/ui/Textarea';
+import { cn } from '@/shared/lib/utils';
+import { Button } from '@/shared/ui/Button';
+import { ScrollArea } from '@/shared/ui/ScrollArea';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/shared/ui/Select';
+import { Separator } from '@/shared/ui/Separator';
+import { Textarea } from '@/shared/ui/Textarea';
 
 export interface GitPanelProps {
   className?: string;

@@ -7,7 +7,7 @@
 import Fuse, { type FuseResultMatch } from 'fuse.js';
 import { PanelRightClose, PanelRightOpen } from 'lucide-react';
 import { useCallback, useMemo, useState } from 'react';
-import { Checkbox } from '@/components/ui/Checkbox';
+import { Checkbox } from '@/shared/ui/Checkbox';
 import { extractAllKeyPaths } from './lib/extractKeyPaths';
 import { type DataSource, getLimitedData, getTotalCount } from './lib/loadTestData';
 import { CustomJsonModal } from './ui/CustomJsonModal';

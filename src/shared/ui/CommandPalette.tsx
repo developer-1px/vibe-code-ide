@@ -19,9 +19,9 @@ import {
   Upload,
 } from 'lucide-react';
 import * as React from 'react';
-import { cn } from '@/components/lib/utils';
 import type { SearchResult } from '@/features/Search/UnifiedSearch/model/types';
 import { useListKeyboardNavigation } from '@/shared/hooks/useListKeyboardNavigation';
+import { cn } from '@/shared/lib/utils';
 import { getFileName } from '../../shared/pathUtils';
 
 export interface CommandPaletteProps {

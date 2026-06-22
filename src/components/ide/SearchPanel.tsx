@@ -1,9 +1,9 @@
 import { CaseSensitive, ChevronDown, ChevronRight, FileSearch, Replace, Search, WholeWord } from 'lucide-react';
 import * as React from 'react';
-import { cn } from '@/components/lib/utils';
-import { Button } from '@/components/ui/Button';
-import { Input } from '@/components/ui/Input';
-import { ScrollArea } from '@/components/ui/ScrollArea';
+import { cn } from '@/shared/lib/utils';
+import { Button } from '@/shared/ui/Button';
+import { Input } from '@/shared/ui/Input';
+import { ScrollArea } from '@/shared/ui/ScrollArea';
 
 export interface SearchPanelProps {
   className?: string;

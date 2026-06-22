@@ -1,5 +1,5 @@
 import { useSetAtom } from 'jotai';
-import { Badge } from '@/components/ui/Badge';
+import { Badge } from '@/shared/ui/Badge';
 import type { Slide } from '../../entities/Slide/model/types';
 import { setCurrentSlideWithHistoryAtom } from '../../features/SlideNavigation/model/atoms';
 

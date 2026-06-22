@@ -4,13 +4,13 @@
 
 import { useAtomValue } from 'jotai';
 import { useMemo } from 'react';
-import { ScrollArea } from '@/components/ui/ScrollArea.tsx';
 import { buildDeadCodeTree } from '@/features/Code/CodeAnalyzer/DeadCodeAnalyzer/lib/buildDeadCodeTree.ts';
 import {
   collapsedFoldersAtom,
   deadCodeResultsAtom,
   isAnalyzingAtom,
 } from '@/features/Code/CodeAnalyzer/DeadCodeAnalyzer/model/atoms.ts';
+import { ScrollArea } from '@/shared/ui/ScrollArea';
 import { useCategoryIndices } from '../lib/useCategoryIndices.ts';
 import { DeadCodeCategory } from './DeadCodeCategory.tsx';
 

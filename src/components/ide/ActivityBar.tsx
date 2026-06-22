@@ -1,7 +1,7 @@
 import type { LucideIcon } from 'lucide-react';
 import * as React from 'react';
-import { cn } from '@/components/lib/utils';
-import { Indicator } from '@/components/ui/Indicator';
+import { cn } from '@/shared/lib/utils';
+import { Indicator } from '@/shared/ui/Indicator';
 
 export interface ActivityBarItemProps {
   icon: LucideIcon;
@@ -58,7 +58,7 @@ ActivityBar.displayName = 'ActivityBar';
 // Separator for dividing activity bar sections
 const ActivityBarSeparator = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
   ({ className, ...props }, ref) => {
-    return <div ref={ref} className={cn('w-8 h-px bg-border-DEFAULT my-1', className)} role="separator" {...props} />;
+    return <div ref={ref} className={cn('w-8 h-px bg-border-DEFAULT my-1', className)} {...props} />;
   }
 );
 ActivityBarSeparator.displayName = 'ActivityBarSeparator';

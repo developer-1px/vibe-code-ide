@@ -21,7 +21,7 @@ import {
   CommandList,
   CommandSeparator,
   CommandShortcut,
-} from '@/components/ui/Command';
+} from '@/shared/ui/Command';
 
 export interface QuickActionsDialogProps {
   open?: boolean;

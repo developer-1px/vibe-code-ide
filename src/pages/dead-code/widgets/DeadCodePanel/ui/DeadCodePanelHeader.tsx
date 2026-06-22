@@ -5,10 +5,10 @@
 import { useSetAtom } from 'jotai';
 import { AlertTriangle, X } from 'lucide-react';
 import { activeActivityPageIdAtom } from '@/app/model/activityPageAtoms';
-import { Button } from '@/components/ui/Button.tsx';
 import { viewModeAtom } from '@/entities/AppView/model/atoms';
 import { AnalyzeButton } from '@/features/Code/CodeAnalyzer/DeadCodeAnalyzer/ui/AnalyzeButton.tsx';
 import { CopyAllButton } from '@/features/Code/CodeAnalyzer/DeadCodePromptCopy/ui/CopyAllButton.tsx';
+import { Button } from '@/shared/ui/Button';
 
 export function DeadCodePanelHeader() {
   const setActiveActivityPageId = useSetAtom(activeActivityPageIdAtom);

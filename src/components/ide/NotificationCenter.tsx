@@ -1,10 +1,10 @@
 import { AlertCircle, AlertTriangle, Bell, Check, CheckCircle2, ExternalLink, Info, Trash2, X } from 'lucide-react';
 import * as React from 'react';
-import { cn } from '@/components/lib/utils';
-import { Badge } from '@/components/ui/Badge';
-import { Button } from '@/components/ui/Button';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/Popover';
-import { ScrollArea } from '@/components/ui/ScrollArea';
+import { cn } from '@/shared/lib/utils';
+import { Badge } from '@/shared/ui/Badge';
+import { Button } from '@/shared/ui/Button';
+import { Popover, PopoverContent, PopoverTrigger } from '@/shared/ui/Popover';
+import { ScrollArea } from '@/shared/ui/ScrollArea';
 
 export interface NotificationCenterProps {
   className?: string;

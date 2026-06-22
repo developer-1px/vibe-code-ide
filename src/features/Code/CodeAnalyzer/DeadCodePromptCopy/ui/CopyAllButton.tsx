@@ -4,7 +4,7 @@
 
 import { useAtomValue } from 'jotai';
 import { Check, Copy } from 'lucide-react';
-import { Button } from '@/components/ui/Button.tsx';
+import { Button } from '@/shared/ui/Button';
 import { deadCodeResultsAtom } from '../../DeadCodeAnalyzer/model/atoms.ts';
 import { useCopyAllPrompt } from '../lib/useCopyAllPrompt.ts';
 

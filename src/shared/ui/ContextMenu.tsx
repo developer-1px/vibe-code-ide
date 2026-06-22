@@ -1,6 +1,6 @@
 import type { LucideIcon } from 'lucide-react';
 import * as React from 'react';
-import { cn } from '@/components/lib/utils';
+import { cn } from '@/shared/lib/utils';
 
 export interface ContextMenuItem {
   label: string;

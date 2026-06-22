@@ -5,7 +5,7 @@
 
 import { ChevronDown, ChevronRight, Columns, Copy, Database, FileJson, GitBranch, Pencil } from 'lucide-react';
 import { useMemo, useState } from 'react';
-import { ScrollArea } from '@/components/ui/ScrollArea';
+import { ScrollArea } from '@/shared/ui/ScrollArea';
 import { extractSchemaInterfaces, type SchemaInterfaceNode } from '../lib/extractKeyPaths';
 import type { DataSource } from '../lib/loadTestData';
 

@@ -2,8 +2,8 @@
  * Category Header Checkbox Component
  */
 
-import { cn } from '@/components/lib/utils.ts';
-import { Checkbox } from '@/components/ui/Checkbox.tsx';
+import { cn } from '@/shared/lib/utils';
+import { Checkbox } from '@/shared/ui/Checkbox';
 import type { DeadCodeItem } from '../../DeadCodeAnalyzer/lib/deadCodeAnalyzer.ts';
 import { useDeadCodeSelection } from '../lib/useDeadCodeSelection.ts';
 

@@ -1,7 +1,7 @@
 import { type LucideIcon, X } from 'lucide-react';
 import * as React from 'react';
-import { cn } from '@/components/lib/utils';
-import { Indicator } from '@/components/ui/Indicator';
+import { cn } from '@/shared/lib/utils';
+import { Indicator } from '@/shared/ui/Indicator';
 
 export interface TabProps {
   icon?: LucideIcon;

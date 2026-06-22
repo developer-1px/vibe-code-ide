@@ -6,9 +6,9 @@
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import type React from 'react';
 import { useCallback, useEffect, useMemo } from 'react';
-import { CommandPalette } from '@/components/ui/CommandPalette.tsx';
 import { filesAtom, focusedPaneAtom, fullNodeMapAtom } from '@/entities/AppView/model/atoms';
 import { useOpenFile } from '@/features/File/OpenFiles/lib/useOpenFile.ts';
+import { CommandPalette } from '@/shared/ui/CommandPalette';
 import { searchResultsFuzzy } from '../lib/searchService.ts';
 import { getAllSearchableItems } from '../lib/symbolExtractor.ts';
 import {
