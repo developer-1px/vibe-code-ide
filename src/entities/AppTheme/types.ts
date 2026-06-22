@@ -14,7 +14,7 @@ export interface AppTheme {
     // Main backgrounds (hex values)
     background: string; // Main app background
     canvas: string; // Canvas/workspace area
-    sidebar: string; // AppSidebar background
+    sidebar: string; // Sidebar background
     header: string; // Header background
     panel: string; // Panel/card background
 

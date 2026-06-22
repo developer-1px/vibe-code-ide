@@ -6,7 +6,7 @@ import { foldedLinesAtom } from '@/features/Code/CodeFold/model/atoms';
 import FoldBadge from '@/features/Code/CodeFold/ui/FoldBadge';
 import FoldButton from '@/features/Code/CodeFold/ui/FoldButton';
 import { targetLineAtom } from '@/features/File/Navigation/model/atoms';
-import { layoutNodesAtom } from '@/widgets/MainContents/PipelineCanvas/model/atoms';
+import { layoutNodesAtom } from '@/pages/canvas/widgets/PipelineCanvas/model/atoms';
 import type { CanvasNode } from '../../../entities/CanvasNode/model/types';
 import { getSymbolUsages } from '../../../entities/SourceFileNode/lib/metadata';
 import type { SourceFileNode } from '../../../entities/SourceFileNode/model/types';

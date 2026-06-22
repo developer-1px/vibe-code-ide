@@ -13,6 +13,7 @@
 
 import { useAtomValue, useSetAtom } from 'jotai';
 import { useCallback, useMemo } from 'react';
+import { activeActivityPageIdAtom } from '@/app/model/activityPageAtoms';
 import { filesAtom, viewModeAtom } from '@/entities/AppView/model/atoms';
 import { deadCodeResultsAtom } from '@/features/Code/CodeAnalyzer/DeadCodeAnalyzer/model/atoms';
 import { focusedNodeIdAtom } from '@/widgets/MainContents/IDEScrollView/model/atoms.ts';
@@ -33,6 +34,7 @@ const CodeCardHeader = ({ node }: { node: CanvasNode }) => {
   const files = useAtomValue(filesAtom);
   const deadCodeResults = useAtomValue(deadCodeResultsAtom);
   const setViewMode = useSetAtom(viewModeAtom);
+  const setActiveActivityPageId = useSetAtom(activeActivityPageIdAtom);
   const setFocusedNodeId = useSetAtom(focusedNodeIdAtom);
 
   // Process code lines to extract metadata
@@ -60,9 +62,10 @@ const CodeCardHeader = ({ node }: { node: CanvasNode }) => {
 
   // Handle double-click to enter IDE view mode
   const handleDoubleClick = useCallback(() => {
+    setActiveActivityPageId('explorer');
     setViewMode('ide');
     setFocusedNodeId(node.id);
-  }, [setViewMode, setFocusedNodeId, node.id]);
+  }, [setActiveActivityPageId, setViewMode, setFocusedNodeId, node.id]);
 
   return (
     <div

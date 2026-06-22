@@ -3,31 +3,17 @@ import type React from 'react';
 import { useEffect, useRef } from 'react';
 import { HotkeysProvider } from 'react-hotkeys-hook';
 import * as ts from 'typescript';
+import { activeActivityPageIdAtom } from '@/app/model/activityPageAtoms';
+import { activityPageById } from '@/app/model/activityPages';
 import { AppActivityBar } from '@/app/ui/AppActivityBar/AppActivityBar';
-import AppSidebar from '@/app/ui/AppSidebar/AppSidebar';
 import { AppStatusBar } from '@/app/ui/AppStatusBar/AppStatusBar';
 import { AppTitleBar } from '@/app/ui/AppTitleBar/AppTitleBar';
 import { ThemeProvider } from '@/entities/AppTheme/ThemeProvider';
-import {
-  filesAtom,
-  graphDataAtom,
-  parseErrorAtom,
-  parseProgressAtom,
-  rightPanelOpenAtom,
-  rightPanelTypeAtom,
-  viewModeAtom,
-} from '@/entities/AppView/model/atoms';
+import { filesAtom, graphDataAtom, parseErrorAtom, parseProgressAtom } from '@/entities/AppView/model/atoms';
 import { store } from '@/entities/AppView/model/store';
 import { UnifiedSearchModal } from '@/features/Search/UnifiedSearch/ui/UnifiedSearchModal';
-import { JsonExplorer } from '@/pages/JsonExplorer/JsonExplorer';
-import { deadCodePanelOpenAtom } from '@/pages/PageAnalysis/DeadCodePanel/model/atoms';
-import { PageAnalysis } from '@/pages/PageAnalysis/PageAnalysis';
-import PipelineCanvas from '@/widgets/MainContents/PipelineCanvas/PipelineCanvas.tsx';
-import { TabContainer } from '@/widgets/MainContents/TabContainer';
 import type { SourceFileNode } from './entities/SourceFileNode/model/types';
 import { KeyboardShortcuts } from './features/KeyboardShortcuts/KeyboardShortcuts';
-import CodeDocView from './widgets/CodeDocView/CodeDocView';
-import { WorkspacePanel } from './widgets/WorkspacePanel/WorkspacePanel';
 
 const AppContent: React.FC = () => {
   // Parse project when files change
@@ -35,12 +21,10 @@ const AppContent: React.FC = () => {
   const setGraphData = useSetAtom(graphDataAtom);
   const setParseError = useSetAtom(parseErrorAtom);
   const setParseProgress = useSetAtom(parseProgressAtom);
-  const viewMode = useAtomValue(viewModeAtom);
-  const deadCodePanelOpen = useAtomValue(deadCodePanelOpenAtom);
-  const rightPanelOpen = useAtomValue(rightPanelOpenAtom);
-  const rightPanelType = useAtomValue(rightPanelTypeAtom);
-  const setRightPanelOpen = useSetAtom(rightPanelOpenAtom);
+  const activeActivityPageId = useAtomValue(activeActivityPageIdAtom);
   const workerRef = useRef<Worker | null>(null);
+  const activeActivityPage = activityPageById.get(activeActivityPageId) ?? activityPageById.get('explorer');
+  const ActiveActivityPage = activeActivityPage?.Component;
 
   // 🔥 Web Worker for Project Parsing
   useEffect(() => {
@@ -158,29 +142,7 @@ const AppContent: React.FC = () => {
         {/* Activity Bar */}
         <AppActivityBar />
 
-        {/* 독립 페이지 모드 (자체 레이아웃): PageAnalysis, JsonExplorer */}
-        {viewMode === 'jsonExplorer' && <JsonExplorer />}
-        {deadCodePanelOpen && <PageAnalysis />}
-
-        {/* 기본 IDE 레이아웃 (Sidebar + Main Content + Right Panel) */}
-        {!deadCodePanelOpen && viewMode !== 'jsonExplorer' && (
-          <>
-            {/* Left Sidebar: File Explorer */}
-            <AppSidebar />
-
-            {/* Main Content Area: Canvas or TabContainer (IDE/Search) or CodeDocView */}
-            <div className="flex-1 relative overflow-hidden">
-              {viewMode === 'canvas' && <PipelineCanvas />}
-              {(viewMode === 'ide' || viewMode === 'contentSearch') && <TabContainer />}
-              {viewMode === 'codeDoc' && <CodeDocView />}
-            </div>
-
-            {/* Right Panel: Workspace */}
-            {rightPanelOpen && rightPanelType === 'workspace' && (
-              <WorkspacePanel onClose={() => setRightPanelOpen(false)} />
-            )}
-          </>
-        )}
+        {ActiveActivityPage && <ActiveActivityPage />}
       </div>
 
       {/* Status Bar */}

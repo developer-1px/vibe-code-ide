@@ -8,7 +8,7 @@ import { useMemo } from 'react';
 import { useEditorTheme } from '@/entities/AppTheme/EditorThemeProvider';
 import { activeLocalVariablesAtom } from '@/features/Code/FocusMode/model/atoms';
 import { LocalVariableSegment } from '@/features/Code/FocusMode/ui/LocalVariableSegment';
-import { visibleNodeIdsAtom } from '@/widgets/MainContents/PipelineCanvas/model/atoms';
+import { visibleNodeIdsAtom } from '@/pages/canvas/widgets/PipelineCanvas/model/atoms';
 import type { CanvasNode } from '../../../entities/CanvasNode/model/types';
 import { buildSegmentStyle } from '../core/styler/styleBuilder';
 import type { CodeLine, CodeSegment, SegmentKind } from '../core/types/codeLine';

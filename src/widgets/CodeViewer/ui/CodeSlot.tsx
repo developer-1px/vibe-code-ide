@@ -7,7 +7,7 @@ import {
   lastExpandedIdAtom,
   layoutLinksAtom,
   visibleNodeIdsAtom,
-} from '@/widgets/MainContents/PipelineCanvas/model/atoms';
+} from '@/pages/canvas/widgets/PipelineCanvas/model/atoms';
 import { getSlotColor } from '../../../entities/SourceFileNode/lib/styleUtils';
 import type { SourceFileNode } from '../../../entities/SourceFileNode/model/types';
 

@@ -5,7 +5,6 @@
 
 import { useAtom } from 'jotai';
 import { X } from 'lucide-react';
-import SlideView from '../SlideView/SlideView';
 import { ContentSearchView } from './ContentSearchView/ContentSearchView';
 import IDEScrollView from './IDEScrollView/IDEScrollView';
 import { activeTabIdAtom, openedTabsAtom } from './model/atoms';
@@ -76,7 +75,6 @@ export function TabContainer() {
       <div className="flex-1 overflow-hidden">
         {activeTab?.type === 'ide' && <IDEScrollView />}
         {activeTab?.type === 'search' && <ContentSearchView />}
-        {activeTab?.type === 'slide' && <SlideView />}
       </div>
     </div>
   );

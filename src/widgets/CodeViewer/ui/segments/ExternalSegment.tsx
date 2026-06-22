@@ -1,19 +1,20 @@
 /**
  * ExternalSegment - 외부 import/closure/function 핸들러
- * - IDE 모드: 일반 클릭으로 해당 파일 열고 정의 위치로 이동
- * - Canvas 모드: 일반 클릭으로 파일 열기, Cmd+Click으로 시점 이동
+ * - IDE 계열 페이지: 일반 클릭으로 해당 파일 열고 정의 위치로 이동
+ * - Canvas 페이지: 일반 클릭으로 파일 열기, Cmd+Click으로 시점 이동
  */
 
 import { useAtomValue, useSetAtom } from 'jotai';
 import type React from 'react';
-import { fullNodeMapAtom, hoveredIdentifierAtom, viewModeAtom } from '@/entities/AppView/model/atoms';
+import { activeActivityPageIdAtom } from '@/app/model/activityPageAtoms';
+import { fullNodeMapAtom, hoveredIdentifierAtom } from '@/entities/AppView/model/atoms';
 import { useOpenFile } from '@/features/File/OpenFiles/lib/useOpenFile';
-import { focusedNodeIdAtom } from '@/widgets/MainContents/IDEScrollView/model/atoms.ts';
 import {
   cardPositionsAtom,
   transformAtom,
   visibleNodeIdsAtom,
-} from '@/widgets/MainContents/PipelineCanvas/model/atoms';
+} from '@/pages/canvas/widgets/PipelineCanvas/model/atoms';
+import { focusedNodeIdAtom } from '@/widgets/MainContents/IDEScrollView/model/atoms.ts';
 import type { CanvasNode } from '../../../../entities/CanvasNode/model/types';
 import type { CodeSegment, SegmentStyle } from '../../core/types';
 
@@ -32,7 +33,8 @@ export const ExternalSegment: React.FC<ExternalSegmentProps> = ({ segment, node,
   const cardPositions = useAtomValue(cardPositionsAtom);
   const transform = useAtomValue(transformAtom);
   const setTransform = useSetAtom(transformAtom);
-  const viewMode = useAtomValue(viewModeAtom);
+  const activeActivityPageId = useAtomValue(activeActivityPageIdAtom);
+  const isCanvasPage = activeActivityPageId === 'canvas';
   const setFocusedNodeId = useSetAtom(focusedNodeIdAtom);
   const { openFile } = useOpenFile();
   const hoveredIdentifier = useAtomValue(hoveredIdentifierAtom);
@@ -51,13 +53,13 @@ export const ExternalSegment: React.FC<ExternalSegmentProps> = ({ segment, node,
       text: segment.text,
       definedIn: segment.definedIn,
       definitionLocation: segment.definitionLocation,
-      viewMode,
+      activeActivityPageId,
     });
 
     e.stopPropagation();
 
-    // IDE 모드: 외부 파일을 새 탭으로 열고 정의 위치로 이동
-    if (viewMode === 'ide' && segment.definedIn) {
+    // IDE 계열 페이지: 외부 파일을 새 탭으로 열고 정의 위치로 이동
+    if (!isCanvasPage && segment.definedIn) {
       // definedIn에서 파일 경로 추출 (예: "src/store/atoms.ts" 또는 "src/store/atoms.ts::parseErrorAtom")
       const filePath = segment.definedIn.split('::')[0];
 
@@ -93,8 +95,8 @@ export const ExternalSegment: React.FC<ExternalSegmentProps> = ({ segment, node,
 
     // Cmd+Click: 해당 노드로 시점 이동
     if (e.metaKey) {
-      if (viewMode === 'canvas') {
-        // Canvas 모드: 카메라 이동
+      if (isCanvasPage) {
+        // Canvas 페이지: 카메라 이동
         const targetX = targetNode.x || 0;
         const targetY = targetNode.y || 0;
         const cardOffset = cardPositions.get(targetNode.id) || { x: 0, y: 0 };
@@ -110,7 +112,7 @@ export const ExternalSegment: React.FC<ExternalSegmentProps> = ({ segment, node,
           y: -((targetY + cardOffset.y) * scale - viewportHeight / 2),
         });
       } else {
-        // IDE 모드: 파일 전환
+        // IDE 계열 페이지: 파일 전환
         setFocusedNodeId(targetNode.id);
       }
       return;

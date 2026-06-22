@@ -1,14 +1,15 @@
 /**
  * useOpenFile Hook
  * 파일 열기 로직 통합 관리
- * View Mode (IDE/Canvas)에 따라 자동으로 분기 처리
+ * Active Activity page에 따라 IDE 탭 또는 Canvas openedFiles로 분기 처리
  */
 
 import { useAtomValue, useSetAtom } from 'jotai';
-import { focusedPaneAtom, viewModeAtom } from '@/entities/AppView/model/atoms';
+import { activeActivityPageIdAtom } from '@/app/model/activityPageAtoms';
+import { focusedPaneAtom } from '@/entities/AppView/model/atoms';
 import { activeLocalVariablesAtom } from '@/features/Code/FocusMode/model/atoms.ts';
 import { targetLineAtom } from '@/features/File/Navigation/model/atoms.ts';
-import { openedFilesAtom } from '@/widgets/MainContents/PipelineCanvas/model/atoms.ts';
+import { openedFilesAtom } from '@/pages/canvas/widgets/PipelineCanvas/model/atoms.ts';
 import { activeTabAtom, openedTabsAtom } from '../model/atoms.ts';
 
 export interface OpenFileOptions {
@@ -21,7 +22,7 @@ export interface OpenFileOptions {
 }
 
 export function useOpenFile() {
-  const viewMode = useAtomValue(viewModeAtom);
+  const activeActivityPageId = useAtomValue(activeActivityPageIdAtom);
   const activeTab = useAtomValue(activeTabAtom);
   const setOpenedTabs = useSetAtom(openedTabsAtom);
   const setActiveTab = useSetAtom(activeTabAtom);
@@ -29,11 +30,11 @@ export function useOpenFile() {
   const setTargetLine = useSetAtom(targetLineAtom);
   const setActiveLocalVariables = useSetAtom(activeLocalVariablesAtom);
   const setFocusedPane = useSetAtom(focusedPaneAtom);
-  const _setViewMode = useSetAtom(viewModeAtom);
+  const isCanvasPage = activeActivityPageId === 'canvas';
 
   /**
    * 파일 열기
-   * View Mode에 따라 자동으로 탭/캔버스로 열림
+   * Active Activity page에 따라 자동으로 탭/캔버스로 열림
    *
    * @param filePath - 열 파일 경로 (nodeId 형식도 허용: "src/App.tsx::AppContent" -> "src/App.tsx")
    * @param options - 추가 옵션 (lineNumber, focusSymbol, focusPane)
@@ -44,10 +45,10 @@ export function useOpenFile() {
     // nodeId 형식 ("src/App.tsx::AppContent")이면 파일 경로만 추출
     const actualFilePath = filePath.includes('::') ? filePath.split('::')[0] : filePath;
 
-    // IDE/CodeDoc 모드: 탭으로 열기
+    // IDE 계열 페이지: 탭으로 열기
     // 1. 이미 열려있는 파일이면 탭 추가하지 않음 (기존 탭 유지)
     // 2. 안 열려있는 파일이면 현재 활성 탭 바로 다음에 새 탭 추가
-    if (viewMode === 'ide' || viewMode === 'codeDoc') {
+    if (!isCanvasPage) {
       setOpenedTabs((prev) => {
         // 이미 열려있으면 탭 추가 안 함
         if (prev.includes(actualFilePath)) {
@@ -64,15 +65,15 @@ export function useOpenFile() {
       // activeTab 변경 시 IDEScrollView에서 자동으로 스크롤됨
       setActiveTab(actualFilePath);
     } else {
-      // Canvas 모드: openedFiles에 추가
-      setOpenedFiles((prev) => new Set([...prev, actualFilePath]));
+      // Canvas 페이지: openedFiles에 추가
+      setOpenedFiles((prev) => new Set<string>([...prev, actualFilePath]));
     }
 
     // Focus mode 활성화 (심볼이 지정된 경우)
     if (focusSymbol) {
       setActiveLocalVariables((prev: Map<string, Set<string>>) => {
         const next = new Map(prev);
-        const fileVars = new Set(next.get(actualFilePath) || new Set());
+        const fileVars = new Set<string>(next.get(actualFilePath) ?? []);
         fileVars.add(focusSymbol);
         next.set(actualFilePath, fileVars);
         return next;
@@ -105,8 +106,8 @@ export function useOpenFile() {
     const targetFilePath = filePath || activeTab;
     if (!targetFilePath) return;
 
-    // IDE/CodeDoc 모드: 탭에서 제거
-    if (viewMode === 'ide' || viewMode === 'codeDoc') {
+    // IDE 계열 페이지: 탭에서 제거
+    if (!isCanvasPage) {
       setOpenedTabs((prev) => {
         const filtered = prev.filter((tab) => tab !== targetFilePath);
 
@@ -124,7 +125,7 @@ export function useOpenFile() {
         return filtered;
       });
     } else {
-      // Canvas 모드: openedFiles에서 제거
+      // Canvas 페이지: openedFiles에서 제거
       setOpenedFiles((prev) => {
         const next = new Set(prev);
         next.delete(targetFilePath);

@@ -14,7 +14,7 @@ import type { SearchResult } from '../model/types.ts';
  * For files starting with "index", include parent folder name
  * @example
  * getFileDisplayName('src/shared/tsParser/index.ts') → 'tsParser/index.ts'
- * getFileDisplayName('src/components/Button.tsx') → 'Button.tsx'
+ * getFileDisplayName('src/shared/ui/Button.tsx') → 'Button.tsx'
  */
 function getFileDisplayName(filePath: string): string {
   const fileName = getFileName(filePath);

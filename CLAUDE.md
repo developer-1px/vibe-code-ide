@@ -196,11 +196,10 @@ useHotkeys('down', handler, {
 ```
 src/
 ├── app/              # Application initialization
-├── components/       # LIMN Design System (shadcn/ui style) - can be modified
 ├── entities/         # Domain models (lib, model only - NO ui/)
 ├── features/         # Business features (lib/ + ui/)
 ├── widgets/          # Complex UI components
-├── shared/           # Shared utilities (tsParser, codeParser, storage)
+├── shared/           # Shared utilities and UI primitives
 ├── store/            # Global Jotai atoms
 ├── hooks/            # Custom React hooks
 └── styles/           # Global styles (limn.css - LIMN design system)
@@ -209,7 +208,7 @@ src/
 **Important:**
 - `entities/` - Pure domain logic, NO UI components
 - `features/` - Independent business units with lib/ and ui/
-- `components/` - Design system components (LIMN theme), can be modified for project needs
+- `shared/ui/` - Design system primitives (LIMN theme), can be modified for project needs
 - `styles/limn.css` - Design system tokens and theme definitions
 
 ### Features/Entities Organization
@@ -347,7 +346,7 @@ id: 'src/app/atoms.ts::parseProject'      // function
 
 ### Component Patterns
 
-**All components in `src/components/ui/` follow shadcn/ui patterns with LIMN theme:**
+**All components in `src/shared/ui/` follow shadcn/ui patterns with LIMN theme:**
 
 ```typescript
 // ✅ Component with CVA variants
@@ -398,15 +397,15 @@ function Badge({ className, variant, ...props }: BadgeProps) {
 ```typescript
 // ✅ Direct imports - NO file extensions
 import { FoldInfo } from '../../../features/CodeFold/lib/types';  // NO .ts
-import { Button } from '@/components/ui/Button';  // NO .tsx
+import { Button } from '@/shared/ui/Button';  // NO .tsx
 
 // ✅ Relative paths (preferred for features/entities/widgets)
 import { atom } from '../../../store/atoms';
 import type { CanvasNode } from '../../../../entities/CanvasNode/model/types';
 
 // ✅ @/ Alias allowed ONLY for:
-// - components/ (design system)
-import { Button } from '@/components/ui/Button';
+// - shared/ui (design system)
+import { Button } from '@/shared/ui/Button';
 // - Top-level entry points (App.tsx, main.tsx)
 import { ThemeProvider } from '@/entities/AppTheme/ThemeProvider';  // App.tsx only
 // - Workers
@@ -439,7 +438,7 @@ const FeatureComponent = ({
   };
 };
 
-// ✅ EXCEPTION: components/ui (design system) - interface 허용
+// ✅ EXCEPTION: shared/ui (design system) - interface 허용
 export interface BadgeProps
   extends React.HTMLAttributes<HTMLDivElement>,
   VariantProps<typeof badgeVariants> {}
@@ -457,7 +456,7 @@ const Component: React.FC<Props> = ({ ... }) => { ... }  // NO!
 - ❌ Handler props - Use atoms internally (features/widgets만)
 - ✅ Interface for data structures (entities/features model/)
 - ❌ Interface for component props (features/widgets - inline만)
-- ✅ Interface for component props (components/ui - design system)
+- ✅ Interface for component props (shared/ui - design system)
 - ❌ React.FC 사용 금지 (inline props가 더 깔끔)
 
 ### TypeScript Rules
@@ -564,7 +563,7 @@ export interface ButtonProps
 
 ### Adding design system component
 
-1. Create component in `src/components/ui/{Component}.tsx`
+1. Create component in `src/shared/ui/{Component}.tsx`
 2. Use CVA for variant management
 3. Extend appropriate HTML element props
 4. Use LIMN theme tokens from `limn.css`
@@ -579,7 +578,7 @@ export interface ButtonProps
 2. ❌ Regex for code analysis (use AST!)
 3. ❌ Re-traversing AST (use fullNodeMap filtering)
 4. ❌ Handler props drilling (use atoms)
-5. ❌ Component props interfaces (use inline, except components/ui)
+5. ❌ Component props interfaces (use inline, except shared/ui)
 6. ❌ Using deprecated types (VariableNode, GraphNode)
 7. ❌ Hotkeys without scopes (causes conflicts)
 8. ❌ Adding metadata fields to SourceFileNode (use getters)
@@ -622,11 +621,11 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 
 **Before committing:**
 - [ ] No barrel exports created
-- [ ] Component props are inline (features/widgets only - components/ui 예외)
+- [ ] Component props are inline (features/widgets only - shared/ui 예외)
 - [ ] Handlers use atoms (not props)
 - [ ] No React.FC used (inline props가 더 깔끔)
 - [ ] Import paths have NO extensions (.ts, .tsx)
-- [ ] Relative paths used (except components/, App.tsx, workers)
+- [ ] Relative paths used (except shared/ui, App.tsx, workers)
 - [ ] AST used for code analysis (not regex)
 - [ ] Symbol info from fullNodeMap (not re-traversing)
 - [ ] Hotkeys have unique scopes
@@ -643,7 +642,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 - [ ] Usage extraction? → OK (exception, not top-level)
 
 **If adding UI component:**
-- [ ] Design system component? → Use interface (components/ui)
+- [ ] Design system component? → Use interface (shared/ui)
 - [ ] Feature component? → Use inline props (features/)
 - [ ] Use CVA for variants? (design system only)
 - [ ] Use LIMN theme tokens from limn.css?

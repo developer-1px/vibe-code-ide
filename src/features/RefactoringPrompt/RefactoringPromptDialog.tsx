@@ -5,9 +5,9 @@
 
 import { Check, Copy, Sparkles, X } from 'lucide-react';
 import * as React from 'react';
-import { Button } from '@/components/ui/Button';
-import { Dialog } from '@/components/ui/Dialog';
-import { ScrollArea } from '@/components/ui/ScrollArea';
+import { Button } from '@/shared/ui/Button';
+import { Dialog } from '@/shared/ui/Dialog';
+import { ScrollArea } from '@/shared/ui/ScrollArea';
 import type { DeadCodeResults } from '../Code/CodeAnalyzer/DeadCodeAnalyzer/lib/deadCodeAnalyzer.ts';
 import { generateRefactoringPrompt, type RefactoringPrompt } from './lib/promptGenerator';
 

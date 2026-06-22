@@ -53,8 +53,8 @@ export const fullNodeMapAtom = atom((get) => {
 // View Mode Atoms
 // ============================================================================
 
-// 뷰 모드 - Canvas vs IDE vs CodeDoc vs JsonExplorer vs ContentSearch view (localStorage 저장)
-export type ViewMode = 'canvas' | 'ide' | 'codeDoc' | 'jsonExplorer' | 'contentSearch';
+// IDE 내부 뷰 모드 - ActivityBar page routing은 activeActivityPageIdAtom이 담당
+export type ViewMode = 'ide' | 'contentSearch';
 export const viewModeAtom = atomWithStorage<ViewMode>('viewMode', 'ide'); // Default to IDE mode
 
 // 문서 모드 - Dark vs Light (for CodeDocView)
