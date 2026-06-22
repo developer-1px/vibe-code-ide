@@ -1,4 +1,4 @@
-import { GitPanel } from './widgets/GitPanel/GitPanel';
+import { GitPanel } from './features/GitPanel/ui/GitPanel';
 
 export function PageGit() {
   return (

@@ -62,28 +62,6 @@ function getStatusColor(status: FileChange['status']) {
   }
 }
 
-function GitFileChangeButton({ file, onToggleStage }: { file: FileChange; onToggleStage: (path: string) => void }) {
-  function handleClick() {
-    onToggleStage(file.path);
-  }
-
-  return (
-    <button
-      onClick={handleClick}
-      className="w-full flex items-center gap-2 px-2 py-1 hover:bg-white/5 transition-colors text-left rounded group"
-    >
-      {getStatusIcon(file.status)}
-      <span className={cn('text-xs flex-1 truncate', getStatusColor(file.status))}>{file.path}</span>
-      <span className="text-2xs text-text-muted uppercase">{file.status.charAt(0)}</span>
-      {file.staged ? (
-        <Check size={12} className="text-status-success opacity-0 group-hover:opacity-100" />
-      ) : (
-        <Plus size={12} className="text-text-muted opacity-0 group-hover:opacity-100" />
-      )}
-    </button>
-  );
-}
-
 /**
  * GitPanel - Git source control interface
  *
@@ -175,6 +153,28 @@ export function GitPanel({ className }: GitPanelProps) {
   function handleStageAllClick(e: React.MouseEvent) {
     e.stopPropagation();
     stageAll();
+  }
+
+  function GitFileChangeButton({ file }: { file: FileChange }) {
+    function handleClick() {
+      handleToggleStage(file.path);
+    }
+
+    return (
+      <button
+        onClick={handleClick}
+        className="w-full flex items-center gap-2 px-2 py-1 hover:bg-white/5 transition-colors text-left rounded group"
+      >
+        {getStatusIcon(file.status)}
+        <span className={cn('text-xs flex-1 truncate', getStatusColor(file.status))}>{file.path}</span>
+        <span className="text-2xs text-text-muted uppercase">{file.status.charAt(0)}</span>
+        {file.staged ? (
+          <Check size={12} className="text-status-success opacity-0 group-hover:opacity-100" />
+        ) : (
+          <Plus size={12} className="text-text-muted opacity-0 group-hover:opacity-100" />
+        )}
+      </button>
+    );
   }
 
   return (
@@ -270,9 +270,7 @@ export function GitPanel({ className }: GitPanelProps) {
             {showStagedChanges && (
               <div className="ml-2 space-y-0.5">
                 {stagedChanges.length > 0 ? (
-                  stagedChanges.map((file) => (
-                    <GitFileChangeButton key={file.path} file={file} onToggleStage={handleToggleStage} />
-                  ))
+                  stagedChanges.map((file) => <GitFileChangeButton key={file.path} file={file} />)
                 ) : (
                   <div className="px-2 py-3 text-xs text-text-muted text-center">No staged changes</div>
                 )}
@@ -304,9 +302,7 @@ export function GitPanel({ className }: GitPanelProps) {
             {showUnstagedChanges && (
               <div className="ml-2 space-y-0.5">
                 {unstagedChanges.length > 0 ? (
-                  unstagedChanges.map((file) => (
-                    <GitFileChangeButton key={file.path} file={file} onToggleStage={handleToggleStage} />
-                  ))
+                  unstagedChanges.map((file) => <GitFileChangeButton key={file.path} file={file} />)
                 ) : (
                   <div className="px-2 py-3 text-xs text-text-muted text-center">No changes</div>
                 )}
