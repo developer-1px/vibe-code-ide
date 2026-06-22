@@ -4,10 +4,18 @@
  */
 
 import * as ts from 'typescript';
-import { extractDefinitions } from '../../../entities/SourceFileNode/lib/definitionExtractor';
-import type { SourceFileNode } from '../../../entities/SourceFileNode/model/types';
-import { getFileName } from '../../../shared/pathUtils';
-import type { DocBlock, DocData, ImportItem, SymbolDetail } from '../model/types';
+import { extractDefinitions } from '@/entities/SourceFileNode/lib/definitionExtractor';
+import type { SourceFileNode } from '@/entities/SourceFileNode/model/types';
+import { getFileName } from '@/shared/pathUtils';
+import {
+  BlockType,
+  type DocBlock,
+  type DocData,
+  type ExportItem,
+  type ImportItem,
+  type Parameter,
+  type SymbolDetail,
+} from '../model/types';
 import { parseCodeDoc } from './parseCodeDoc';
 
 /**
@@ -261,7 +269,7 @@ function _generateBlocks(sourceFile: ts.SourceFile, body: ts.Block | ts.Node): D
 
   if (!ts.isBlock(body)) {
     blocks.push({
-      type: 'CODE' as any,
+      type: BlockType.CODE,
       content: body.getText(sourceFile),
       lines: getLineRange(sourceFile, body),
     });
@@ -325,7 +333,7 @@ function _generateBlocks(sourceFile: ts.SourceFile, body: ts.Block | ts.Node): D
         const tagMatch = text.match(/^\[(\w+)\]\s*(.*)/s);
         if (tagMatch) {
           const [, label, content] = tagMatch;
-          const type = label.toLowerCase() === 'branch' ? ('BRANCH' as any) : ('TAG' as any);
+          const type = label.toLowerCase() === 'branch' ? BlockType.BRANCH : BlockType.TAG;
           blocks.push({
             type,
             label,
@@ -333,20 +341,39 @@ function _generateBlocks(sourceFile: ts.SourceFile, body: ts.Block | ts.Node): D
             lines: `L${sourceFile.getLineAndCharacterOfPosition(pos).line + 1}`,
           });
         } else {
-          blocks.push({ type: 'PROSE' as any, content: text });
+          blocks.push({ type: BlockType.PROSE, content: text });
         }
       });
     }
 
     // 코드 추가
     blocks.push({
-      type: 'CODE' as any,
+      type: BlockType.CODE,
       content: stmt.getText(sourceFile),
       lines: getLineRange(sourceFile, stmt),
     });
   });
 
   return blocks;
+}
+
+function toDocParameters(
+  params = [] as NonNullable<ReturnType<typeof extractDefinitions>[number]['params']>
+): Parameter[] {
+  return params.map((param) => ({
+    name: param.name,
+    type: param.type,
+    description: param.defaultValue ? `Default: ${param.defaultValue}` : '',
+  }));
+}
+
+function toDocBlocks(blocks = [] as NonNullable<ReturnType<typeof extractDefinitions>[number]['blocks']>): DocBlock[] {
+  return blocks.map((block) => ({
+    type: block.type as BlockType,
+    content: block.content,
+    label: block.label,
+    lines: block.lines,
+  }));
 }
 
 /**
@@ -367,7 +394,7 @@ export function convertToDocData(node: SourceFileNode): DocData {
   }));
 
   // Exports 수집 (export modifier가 있는 심볼들)
-  const exports: any[] = definitions
+  const exports: ExportItem[] = definitions
     .filter((def) => def.modifiers?.export)
     .map((def) => ({
       name: def.name,
@@ -407,10 +434,10 @@ export function convertToDocData(node: SourceFileNode): DocData {
         startLine: def.line, // ✅ 소스 파일에서의 시작 라인
         signature: def.signature || def.name,
         description: def.description || '',
-        parameters: def.params,
+        parameters: toDocParameters(def.params),
         returns: def.returns,
         analysis: def.complexity ? { complexity: def.complexity } : undefined,
-        blocks: def.blocks || [],
+        blocks: toDocBlocks(def.blocks),
         flowchart: def.flowchart,
         testMetadata: def.testMetadata,
       };
