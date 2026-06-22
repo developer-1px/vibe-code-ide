@@ -7,7 +7,7 @@ interface SchemaFieldRowProps {
   displayType: string;
   typeColor: string;
   copiedPath: string | null;
-  copyPath: (path: string, e: React.MouseEvent) => void;
+  copyPath: (path: string) => void;
 }
 
 export function SchemaFieldRow({
@@ -20,7 +20,8 @@ export function SchemaFieldRow({
   copyPath,
 }: SchemaFieldRowProps) {
   function handleCopyPathClick(e: React.MouseEvent) {
-    copyPath(fullPath, e);
+    e.stopPropagation();
+    copyPath(fullPath);
   }
 
   return (

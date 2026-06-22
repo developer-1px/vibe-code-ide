@@ -15,8 +15,7 @@ export function SchemaInterfaceItem({
   const [isExpanded, setIsExpanded] = useState(false);
   const [copiedPath, setCopiedPath] = useState<string | null>(null);
 
-  async function handleCopyPath(path: string, e: React.MouseEvent) {
-    e.stopPropagation();
+  async function copyPath(path: string) {
     try {
       await navigator.clipboard.writeText(path);
       setCopiedPath(path);
@@ -105,7 +104,7 @@ export function SchemaInterfaceItem({
                 displayType={displayType}
                 typeColor={typeColor}
                 copiedPath={copiedPath}
-                copyPath={handleCopyPath}
+                copyPath={copyPath}
               />
             );
           })}

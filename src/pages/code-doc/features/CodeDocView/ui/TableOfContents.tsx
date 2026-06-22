@@ -3,7 +3,7 @@ import { Icon } from './Icon';
 
 interface TableOfContentsItemProps {
   symbol: SymbolDetail;
-  onSelectSymbol: (symbolName: string) => void;
+  selectSymbol: (symbolName: string) => void;
 }
 
 function getSymbolIcon(symbol: SymbolDetail) {
@@ -16,11 +16,11 @@ function getSymbolIcon(symbol: SymbolDetail) {
   return 'info';
 }
 
-function TableOfContentsItem({ symbol, onSelectSymbol }: TableOfContentsItemProps) {
+function TableOfContentsItem({ symbol, selectSymbol }: TableOfContentsItemProps) {
   const icon = getSymbolIcon(symbol);
 
   function handleClick() {
-    onSelectSymbol(symbol.name);
+    selectSymbol(symbol.name);
   }
 
   return (
@@ -38,7 +38,7 @@ function TableOfContentsItem({ symbol, onSelectSymbol }: TableOfContentsItemProp
 }
 
 export const TableOfContents = ({ symbols }: { symbols: SymbolDetail[] }) => {
-  function handleSelectSymbol(id: string) {
+  function selectSymbol(id: string) {
     const el = document.getElementById(id);
     if (el) {
       el.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -51,7 +51,7 @@ export const TableOfContents = ({ symbols }: { symbols: SymbolDetail[] }) => {
         <h4 className="font-sans text-2xs font-bold text-gray-400 uppercase tracking-widest mb-6">On This Page</h4>
         <ul className="space-y-3 relative border-l border-gray-200 ml-1">
           {symbols.map((symbol) => (
-            <TableOfContentsItem key={symbol.name} symbol={symbol} onSelectSymbol={handleSelectSymbol} />
+            <TableOfContentsItem key={symbol.name} symbol={symbol} selectSymbol={selectSymbol} />
           ))}
         </ul>
       </div>

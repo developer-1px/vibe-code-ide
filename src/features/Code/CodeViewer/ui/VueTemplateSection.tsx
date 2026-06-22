@@ -6,13 +6,13 @@
  */
 
 import { useAtomValue, useSetAtom } from 'jotai';
-import type React from 'react';
 import { useMemo } from 'react';
 import { useEditorTheme } from '@/entities/AppTheme/EditorThemeProvider';
 import { filesAtom, fullNodeMapAtom } from '@/entities/AppView/model/atoms';
 import type { CanvasNode } from '@/entities/CanvasNode/model/types';
 import { lastExpandedIdAtom, visibleNodeIdsAtom } from '@/features/Canvas/model/atoms';
 import { extractTemplateComponents, extractTemplateVariables } from '@/shared/tsParser/utils/vueTemplateParser';
+import { TemplateClickableSegment } from './TemplateClickableSegment';
 
 const VueTemplateSection = ({
   template,
@@ -124,12 +124,8 @@ const VueTemplateSection = ({
     });
   }, [template, node.dependencies, node.filePath, scriptEndLine, files]);
 
-  function handleTokenClick(nodeId: string, e: React.MouseEvent) {
-    e.stopPropagation();
-
+  function expandToken(nodeId: string, forceExpand: boolean) {
     if (!fullNodeMap.has(nodeId)) return;
-
-    const forceExpand = e.metaKey || e.ctrlKey;
 
     setVisibleNodeIds((prev: Set<string>) => {
       const next = new Set(prev);
@@ -161,31 +157,6 @@ const VueTemplateSection = ({
     setLastExpandedId(nodeId);
   }
 
-  function TemplateClickableSegment({
-    segment,
-  }: {
-    segment: {
-      text: string;
-      isClickable?: boolean;
-      nodeId?: string;
-    };
-  }) {
-    function handleClick(e: React.MouseEvent) {
-      if (segment.nodeId) {
-        handleTokenClick(segment.nodeId, e);
-      }
-    }
-
-    return (
-      <span
-        onClick={handleClick}
-        className={`inline-block px-0.5 rounded transition-all duration-200 select-text cursor-pointer border ${theme.colors.template.clickable.bg} ${theme.colors.template.clickable.border} ${theme.colors.template.clickable.text} ${theme.colors.template.clickable.hoverBg} ${theme.colors.template.clickable.hoverBorder}`}
-      >
-        {segment.text}
-      </span>
-    );
-  }
-
   return (
     <div className="flex flex-col">
       {templateLines.map((line, idx) => (
@@ -203,7 +174,14 @@ const VueTemplateSection = ({
           >
             {line.segments.map((seg, segIdx) => {
               if (seg.isClickable && seg.nodeId) {
-                return <TemplateClickableSegment key={segIdx} segment={seg} />;
+                return (
+                  <TemplateClickableSegment
+                    key={segIdx}
+                    text={seg.text}
+                    nodeId={seg.nodeId}
+                    expandToken={expandToken}
+                  />
+                );
               }
 
               return (

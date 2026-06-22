@@ -29,10 +29,6 @@ export function DeadCodePanel() {
     setShowPromptDialog(true);
   }
 
-  function handlePromptOpenChange(nextOpen: boolean) {
-    setShowPromptDialog(nextOpen);
-  }
-
   return (
     <div className="flex h-full w-full overflow-hidden">
       {/* 좌측: Dead Code Panel */}
@@ -65,7 +61,7 @@ export function DeadCodePanel() {
         {deadCodeResults && (
           <RefactoringPromptDialog
             open={showPromptDialog}
-            onOpenChange={handlePromptOpenChange}
+            changeOpen={setShowPromptDialog}
             selectedItemKeys={selectedItems}
             deadCodeResults={deadCodeResults}
           />
