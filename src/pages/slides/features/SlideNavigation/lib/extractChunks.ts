@@ -7,7 +7,7 @@
  * 3. fold와 fold 사이: 주석이 있든 없든 fold 끝~다음 fold 시작 전까지 = 하나의 chunk
  */
 
-import type { CodeLine } from '../../../entities/CodeLine/model/types';
+import type { CodeLine } from '@/entities/CodeLine/model/types';
 
 export interface ChunkInfo {
   lineNum: number; // chunk 시작 라인 (주석 블록 시작 또는 fold 시작)

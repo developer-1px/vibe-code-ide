@@ -1,8 +1,10 @@
 import { useAtomValue, useSetAtom } from 'jotai';
 import { useEffect, useMemo } from 'react';
-import { filesAtom, graphDataAtom } from '../../entities/AppView/model/atoms';
+import { filesAtom, graphDataAtom } from '@/entities/AppView/model/atoms';
+import type { SourceFileNode } from '@/entities/SourceFileNode/model/types';
+import CodeViewer from '@/widgets/CodeViewer/CodeViewer';
+import { renderCodeLinesDirect } from '@/widgets/CodeViewer/core/renderer/renderCodeLinesDirect';
 import type { Slide } from '../../entities/Slide/model/types';
-import type { SourceFileNode } from '../../entities/SourceFileNode/model/types';
 import { extractChunks } from '../../features/SlideNavigation/lib/extractChunks';
 import {
   chunkCountAtom,
@@ -10,8 +12,6 @@ import {
   currentChunkIndexAtom,
   targetDepthAtom,
 } from '../../features/SlideNavigation/model/atoms';
-import CodeViewer from '../CodeViewer/CodeViewer';
-import { renderCodeLinesDirect } from '../CodeViewer/core/renderer/renderCodeLinesDirect';
 
 /**
  * 슬라이드 콘텐츠 - 함수 코드 표시

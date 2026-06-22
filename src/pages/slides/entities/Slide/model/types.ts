@@ -1,5 +1,5 @@
-import type { CodeLine } from '../../CodeLine/model/types';
-import type { SourceFileNode } from '../../SourceFileNode/model/types';
+import type { CodeLine } from '@/entities/CodeLine/model/types';
+import type { SourceFileNode } from '@/entities/SourceFileNode/model/types';
 
 /**
  * Slide - PPT처럼 한 화면에 표시되는 함수 단위
