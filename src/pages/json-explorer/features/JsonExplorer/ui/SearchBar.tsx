@@ -8,13 +8,13 @@ import { Input } from '@/shared/ui/Input';
 
 interface SearchBarProps {
   value: string;
-  onChange: (value: string) => void;
+  changeValue: (value: string) => void;
   placeholder?: string;
 }
 
-export function SearchBar({ value, onChange, placeholder = 'Search products...' }: SearchBarProps) {
+export function SearchBar({ value, changeValue, placeholder = 'Search products...' }: SearchBarProps) {
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
-    onChange(e.target.value);
+    changeValue(e.target.value);
   }
 
   return (

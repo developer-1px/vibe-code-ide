@@ -10,7 +10,7 @@ import { ScrollArea } from '@/shared/ui/ScrollArea';
 
 interface JsonDetailsPanelProps {
   data: Record<string, unknown> | null;
-  onClose: () => void;
+  closePanel: () => void;
 }
 
 function renderHighlightedJsonLine(text: string): ReactNode[] {
@@ -83,13 +83,13 @@ function renderHighlightedJsonLine(text: string): ReactNode[] {
 interface JsonHighlighterLineProps {
   line: { text: string; path: string | null; lineNumber: number };
   copiedPath: string | null;
-  onCopyPath: (path: string, e: React.MouseEvent) => void;
+  copyPath: (path: string, e: React.MouseEvent) => void;
 }
 
-function JsonHighlighterLine({ line, copiedPath, onCopyPath }: JsonHighlighterLineProps) {
+function JsonHighlighterLine({ line, copiedPath, copyPath }: JsonHighlighterLineProps) {
   function handleCopyPathClick(e: React.MouseEvent) {
     if (line.path) {
-      onCopyPath(line.path, e);
+      copyPath(line.path, e);
     }
   }
 
@@ -196,13 +196,13 @@ function JsonHighlighter({ json }: { json: string }) {
   return (
     <div className="font-mono text-2xs">
       {lines.map((line) => (
-        <JsonHighlighterLine key={line.lineNumber} line={line} copiedPath={copiedPath} onCopyPath={handleCopyPath} />
+        <JsonHighlighterLine key={line.lineNumber} line={line} copiedPath={copiedPath} copyPath={handleCopyPath} />
       ))}
     </div>
   );
 }
 
-export function JsonDetailsPanel({ data, onClose }: JsonDetailsPanelProps) {
+export function JsonDetailsPanel({ data, closePanel }: JsonDetailsPanelProps) {
   const [copied, setCopied] = useState(false);
 
   // JSON 문자열 생성 (pretty print)
@@ -223,7 +223,7 @@ export function JsonDetailsPanel({ data, onClose }: JsonDetailsPanelProps) {
   }
 
   function handleCloseClick() {
-    onClose();
+    closePanel();
   }
 
   if (!data) {
