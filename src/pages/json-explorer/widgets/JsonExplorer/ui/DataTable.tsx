@@ -14,8 +14,8 @@ import {
   useReactTable,
 } from '@tanstack/react-table';
 import { useVirtualizer } from '@tanstack/react-virtual';
-import type Fuse from 'fuse.js';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import type { FuseResultMatch } from 'fuse.js';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 /**
  * JSON 데이터에서 모든 키를 추출 (코드 노출 순서 유지)
@@ -140,7 +140,7 @@ interface DataTableProps {
   totalCount: number;
   formatHeaders?: boolean; // Header 포맷팅 옵션 (기본값: false)
   onLoadMore?: () => void; // 무한 스크롤 콜백
-  searchMatches?: Map<number, Fuse.FuseResultMatch[]>; // 검색 매칭 정보
+  searchMatches?: Map<number, FuseResultMatch[]>; // 검색 매칭 정보
   searchQuery?: string; // 검색어
   selectedRowIndex?: number | null; // 선택된 행 인덱스
   onRowSelect?: (index: number, data: Record<string, unknown>) => void; // 행 선택 콜백
@@ -273,7 +273,7 @@ export function DataTable({
   }, [searchMatches]);
 
   // 컬럼 스크롤 함수
-  const scrollToColumn = (columnKey: string) => {
+  const scrollToColumn = useCallback((columnKey: string) => {
     const headerCell = headerRefs.current.get(columnKey);
     const container = tableContainerRef.current;
 
@@ -287,7 +287,7 @@ export function DataTable({
     setTimeout(() => {
       headerCell.classList.remove('animate-pulse');
     }, 1500);
-  };
+  }, []);
 
   // 스크롤 함수 등록
   useEffect(() => {
@@ -349,7 +349,7 @@ export function DataTable({
             {table.getHeaderGroups().map((headerGroup) => (
               <tr key={headerGroup.id} className="h-7 bg-bg-elevated border-b border-border-DEFAULT">
                 {headerGroup.headers.map((header) => {
-                  const columnKey = String(header.column.columnDef.accessorKey || header.id);
+                  const columnKey = header.column.id;
                   const width = header.column.getSize();
                   return (
                     <th

@@ -28,7 +28,9 @@ function extractKeyPathsFromObject(obj: unknown, prefix = '', maxDepth = 3, curr
       const firstItem = obj[0];
       if (typeof firstItem === 'object' && firstItem !== null) {
         const subPaths = extractKeyPathsFromObject(firstItem, prefix, maxDepth, currentDepth);
-        subPaths.forEach((path) => paths.add(path));
+        subPaths.forEach((path) => {
+          paths.add(path);
+        });
       }
     }
     return paths;
@@ -44,7 +46,9 @@ function extractKeyPathsFromObject(obj: unknown, prefix = '', maxDepth = 3, curr
     // 재귀적으로 중첩 객체 처리
     if (typeof value === 'object' && value !== null) {
       const subPaths = extractKeyPathsFromObject(value, currentPath, maxDepth, currentDepth + 1);
-      subPaths.forEach((path) => paths.add(path));
+      subPaths.forEach((path) => {
+        paths.add(path);
+      });
     }
   });
 
@@ -73,56 +77,6 @@ export function extractAllKeyPaths(data: Record<string, unknown>[], maxDepth = 3
   }
 
   return pathsOrder; // 코드 노출 순서 유지
-}
-
-/**
- * 키 경로를 계층 구조로 변환
- */
-export interface KeyPathNode {
-  key: string;
-  fullPath: string;
-  depth: number;
-  children: KeyPathNode[];
-  isLeaf: boolean;
-}
-
-export function buildKeyPathTree(keyPaths: string[]): KeyPathNode[] {
-  const root: KeyPathNode[] = [];
-  const nodeMap = new Map<string, KeyPathNode>();
-
-  keyPaths.forEach((path) => {
-    const parts = path.split('.');
-    let currentPath = '';
-
-    parts.forEach((part, index) => {
-      const parentPath = currentPath;
-      currentPath = currentPath ? `${currentPath}.${part}` : part;
-
-      if (!nodeMap.has(currentPath)) {
-        const node: KeyPathNode = {
-          key: part,
-          fullPath: currentPath,
-          depth: index,
-          children: [],
-          isLeaf: index === parts.length - 1,
-        };
-
-        nodeMap.set(currentPath, node);
-
-        if (parentPath) {
-          const parent = nodeMap.get(parentPath);
-          if (parent) {
-            parent.children.push(node);
-            parent.isLeaf = false;
-          }
-        } else {
-          root.push(node);
-        }
-      }
-    });
-  });
-
-  return root;
 }
 
 /**

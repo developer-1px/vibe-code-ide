@@ -3,12 +3,80 @@
  */
 
 import { Copy, X } from 'lucide-react';
+import type { ReactNode } from 'react';
 import { useMemo, useState } from 'react';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 
 interface JsonDetailsPanelProps {
   data: Record<string, unknown> | null;
   onClose: () => void;
+}
+
+function renderHighlightedJsonLine(text: string): ReactNode[] {
+  const tokens: ReactNode[] = [];
+  const tokenPattern =
+    /"([^"\\]*(?:\\.[^"\\]*)*)"(?=\s*:)|(:\s*)"([^"\\]*(?:\\.[^"\\]*)*)"|(:\s*)(-?\d+(?:\.\d+)?)|(:\s*)(true|false)|(:\s*)(null)|([{}[\]])/g;
+  let lastIndex = 0;
+
+  Array.from(text.matchAll(tokenPattern)).forEach((match, index) => {
+    if (match.index === undefined) return;
+
+    if (match.index > lastIndex) {
+      tokens.push(text.slice(lastIndex, match.index));
+    }
+
+    const key = `${index}-${match.index}`;
+
+    if (match[1] !== undefined) {
+      tokens.push(
+        <span key={key} className="text-warm-300 font-semibold">
+          {match[0]}
+        </span>
+      );
+    } else if (match[3] !== undefined) {
+      tokens.push(match[2]);
+      tokens.push(
+        <span key={key} className="text-green-400">
+          "{match[3]}"
+        </span>
+      );
+    } else if (match[5] !== undefined) {
+      tokens.push(match[4]);
+      tokens.push(
+        <span key={key} className="text-blue-400">
+          {match[5]}
+        </span>
+      );
+    } else if (match[7] !== undefined) {
+      tokens.push(match[6]);
+      tokens.push(
+        <span key={key} className="text-purple-400">
+          {match[7]}
+        </span>
+      );
+    } else if (match[9] !== undefined) {
+      tokens.push(match[8]);
+      tokens.push(
+        <span key={key} className="text-text-tertiary italic">
+          {match[9]}
+        </span>
+      );
+    } else if (match[10] !== undefined) {
+      tokens.push(
+        <span key={key} className="text-text-secondary">
+          {match[10]}
+        </span>
+      );
+    }
+
+    lastIndex = match.index + match[0].length;
+  });
+
+  if (lastIndex < text.length) {
+    tokens.push(text.slice(lastIndex));
+  }
+
+  return tokens;
 }
 
 /**
@@ -89,21 +157,6 @@ function JsonHighlighter({ json }: { json: string }) {
   return (
     <div className="font-mono text-2xs">
       {lines.map((line, index) => {
-        // Syntax highlighting
-        const highlightedText = line.text
-          // 키 (property name)
-          .replace(/"([^"]+)":/g, '<span class="text-warm-300 font-semibold">"$1"</span>:')
-          // 문자열 값
-          .replace(/:\s*"([^"]*)"/g, ': <span class="text-green-400">"$1"</span>')
-          // 숫자
-          .replace(/:\s*(\d+\.?\d*)/g, ': <span class="text-blue-400">$1</span>')
-          // true/false
-          .replace(/:\s*(true|false)/g, ': <span class="text-purple-400">$1</span>')
-          // null
-          .replace(/:\s*(null)/g, ': <span class="text-text-tertiary italic">$1</span>')
-          // 괄호
-          .replace(/([{}[\]])/g, '<span class="text-text-secondary">$1</span>');
-
         return (
           <div key={index} className="group hover:bg-warm-500/5 relative flex items-center">
             {/* Line number */}
@@ -112,7 +165,7 @@ function JsonHighlighter({ json }: { json: string }) {
             </span>
 
             {/* Code */}
-            <div className="flex-1 whitespace-pre" dangerouslySetInnerHTML={{ __html: highlightedText }} />
+            <div className="flex-1 whitespace-pre">{renderHighlightedJsonLine(line.text)}</div>
 
             {/* Copy path button */}
             {line.path && (

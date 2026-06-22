@@ -4,7 +4,7 @@
  * 자체 Left/Right Panel을 가진 독립적인 레이아웃
  */
 
-import Fuse from 'fuse.js';
+import Fuse, { type FuseResultMatch } from 'fuse.js';
 import { PanelRightClose, PanelRightOpen } from 'lucide-react';
 import { useCallback, useMemo, useState } from 'react';
 import { Checkbox } from '@/components/ui/Checkbox';
@@ -116,9 +116,6 @@ export function JsonExplorer() {
     return allColumns.filter((col) => schemaKeys.has(col));
   }, [allColumns, selectedSchema, allProducts]);
 
-  // 모든 키 경로 추출 (중첩 포함)
-  const keyPaths = useMemo(() => extractAllKeyPaths(allProducts, 3), [allProducts]);
-
   // Fuse.js 설정 (스키마 필터링 적용)
   const fuse = useMemo(() => {
     return new Fuse(allProducts, {
@@ -141,7 +138,7 @@ export function JsonExplorer() {
     }
 
     const results = fuse.search(searchQuery);
-    const matches = new Map<number, Fuse.FuseResultMatch[]>();
+    const matches = new Map<number, FuseResultMatch[]>();
     const matchedColumns = new Set<string>();
 
     const filtered = results.map((result, index) => {
@@ -234,7 +231,6 @@ export function JsonExplorer() {
       {/* Left Panel - DataSource + Schema + Columns */}
       <JsonExplorerSidebar
         columns={visibleColumns}
-        keyPaths={keyPaths}
         allData={allProducts}
         onSelectPath={handleSelectPath}
         onScrollToColumn={handleScrollToColumn}

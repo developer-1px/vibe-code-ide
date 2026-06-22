@@ -3,15 +3,14 @@
  * DataSource (데이터 소스 선택) + Columns (컬럼 목록) + Schema (키 경로 트리) 세 섹션으로 구성
  */
 
-import { ChevronDown, ChevronRight, Columns, GitBranch, Database, FileJson, Pencil, Copy } from 'lucide-react';
+import { ChevronDown, ChevronRight, Columns, Copy, Database, FileJson, GitBranch, Pencil } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { ScrollArea } from '@/components/ui/ScrollArea';
-import { buildKeyPathTree, extractSchemaInterfaces, type KeyPathNode, type SchemaInterfaceNode } from '../lib/extractKeyPaths';
+import { extractSchemaInterfaces, type SchemaInterfaceNode } from '../lib/extractKeyPaths';
 import type { DataSource } from '../lib/loadTestData';
 
 interface JsonExplorerSidebarProps {
   columns: string[]; // 1depth 컬럼 목록
-  keyPaths: string[]; // 모든 키 경로 (중첩 포함)
   allData: Record<string, unknown>[]; // 전체 데이터 (schema 분석용)
   onSelectPath?: (path: string) => void;
   onScrollToColumn?: (columnKey: string) => void; // 컬럼 스크롤 콜백
@@ -108,9 +107,7 @@ function SchemaInterfaceItem({
 
       {/* Path (collapsed) */}
       {!isExpanded && (
-        <div className="text-2xs text-text-tertiary font-mono italic px-2 pl-7 pb-1">
-          {node.path || 'root'}
-        </div>
+        <div className="text-2xs text-text-tertiary font-mono italic px-2 pl-7 pb-1">{node.path || 'root'}</div>
       )}
 
       {/* Interface Body (expanded) */}
@@ -133,11 +130,11 @@ function SchemaInterfaceItem({
             const typeColor = isPrimitive ? 'text-text-secondary' : 'text-cyan-400';
 
             return (
-              <div
-                key={field.name}
-                className="flex items-center gap-1.5 py-0.5 hover:bg-warm-500/5 group"
-              >
-                <span className="text-2xs font-mono text-warm-400 pl-2">{field.name}{optional}:</span>
+              <div key={field.name} className="flex items-center gap-1.5 py-0.5 hover:bg-warm-500/5 group">
+                <span className="text-2xs font-mono text-warm-400 pl-2">
+                  {field.name}
+                  {optional}:
+                </span>
                 <span className={`text-2xs font-mono ${typeColor}`}>{displayType};</span>
                 <button
                   onClick={(e) => handleCopyPath(field.fullPath, e)}
@@ -156,51 +153,9 @@ function SchemaInterfaceItem({
 
           {/* Full path */}
           <div className="text-2xs text-warm-400/60 font-mono italic mt-1">
-            // {node.path || 'root'}
+            {'// '}
+            {node.path || 'root'}
           </div>
-        </div>
-      )}
-    </div>
-  );
-}
-
-function KeyPathTreeItem({ node, onSelect }: { node: KeyPathNode; onSelect?: (path: string) => void }) {
-  const [isExpanded, setIsExpanded] = useState(false);
-  const hasChildren = node.children.length > 0;
-
-  const handleClick = () => {
-    if (hasChildren) {
-      setIsExpanded(!isExpanded);
-    }
-    onSelect?.(node.fullPath);
-  };
-
-  return (
-    <div>
-      <div
-        className="flex items-center gap-1 px-2 py-0.5 text-2xs cursor-pointer hover:bg-bg-deep/50 transition-colors"
-        onClick={handleClick}
-        style={{ paddingLeft: `${node.depth * 12 + 8}px` }}
-      >
-        {hasChildren ? (
-          isExpanded ? (
-            <ChevronDown size={10} className="shrink-0 text-text-tertiary" />
-          ) : (
-            <ChevronRight size={10} className="shrink-0 text-text-tertiary" />
-          )
-        ) : (
-          <div className="w-2.5 shrink-0" />
-        )}
-        <span className={`font-mono truncate ${node.isLeaf ? 'text-text-secondary' : 'text-warm-300 font-semibold'}`}>
-          {node.key}
-        </span>
-      </div>
-
-      {hasChildren && isExpanded && (
-        <div>
-          {node.children.map((child) => (
-            <KeyPathTreeItem key={child.fullPath} node={child} onSelect={onSelect} />
-          ))}
         </div>
       )}
     </div>
@@ -209,7 +164,6 @@ function KeyPathTreeItem({ node, onSelect }: { node: KeyPathNode; onSelect?: (pa
 
 export function JsonExplorerSidebar({
   columns,
-  keyPaths,
   allData,
   onSelectPath,
   onScrollToColumn,
@@ -219,7 +173,6 @@ export function JsonExplorerSidebar({
   selectedSchema,
   onSchemaSelect,
 }: JsonExplorerSidebarProps) {
-  const tree = useMemo(() => buildKeyPathTree(keyPaths), [keyPaths]);
   const schemaInterfaces = useMemo(() => {
     const interfaces = extractSchemaInterfaces(allData);
     console.log('[JsonExplorerSidebar] Schema interfaces extracted:', interfaces.length, 'interfaces');
@@ -254,11 +207,15 @@ export function JsonExplorerSidebar({
             {/* test.json */}
             <div
               className={`flex items-center gap-2 px-3 py-1.5 text-2xs cursor-pointer transition-colors ${
-                dataSource === 'test.json' ? 'bg-warm-500/20 text-text-primary' : 'text-text-secondary hover:bg-warm-500/10'
+                dataSource === 'test.json'
+                  ? 'bg-warm-500/20 text-text-primary'
+                  : 'text-text-secondary hover:bg-warm-500/10'
               }`}
               onClick={() => onDataSourceChange('test.json')}
             >
-              <div className={`w-1 h-1 rounded-full shrink-0 ${dataSource === 'test.json' ? 'bg-warm-400' : 'bg-text-tertiary'}`} />
+              <div
+                className={`w-1 h-1 rounded-full shrink-0 ${dataSource === 'test.json' ? 'bg-warm-400' : 'bg-text-tertiary'}`}
+              />
               <FileJson size={12} className="shrink-0" />
               <span className="font-mono truncate">test.json</span>
             </div>
@@ -266,11 +223,15 @@ export function JsonExplorerSidebar({
             {/* test2.json */}
             <div
               className={`flex items-center gap-2 px-3 py-1.5 text-2xs cursor-pointer transition-colors ${
-                dataSource === 'test2.json' ? 'bg-warm-500/20 text-text-primary' : 'text-text-secondary hover:bg-warm-500/10'
+                dataSource === 'test2.json'
+                  ? 'bg-warm-500/20 text-text-primary'
+                  : 'text-text-secondary hover:bg-warm-500/10'
               }`}
               onClick={() => onDataSourceChange('test2.json')}
             >
-              <div className={`w-1 h-1 rounded-full shrink-0 ${dataSource === 'test2.json' ? 'bg-warm-400' : 'bg-text-tertiary'}`} />
+              <div
+                className={`w-1 h-1 rounded-full shrink-0 ${dataSource === 'test2.json' ? 'bg-warm-400' : 'bg-text-tertiary'}`}
+              />
               <FileJson size={12} className="shrink-0" />
               <span className="font-mono truncate">test2.json</span>
             </div>
@@ -278,11 +239,15 @@ export function JsonExplorerSidebar({
             {/* Custom JSON */}
             <div
               className={`flex items-center gap-2 px-3 py-1.5 text-2xs cursor-pointer transition-colors ${
-                dataSource === 'custom' ? 'bg-warm-500/20 text-text-primary' : 'text-text-secondary hover:bg-warm-500/10'
+                dataSource === 'custom'
+                  ? 'bg-warm-500/20 text-text-primary'
+                  : 'text-text-secondary hover:bg-warm-500/10'
               }`}
               onClick={onCustomJsonClick}
             >
-              <div className={`w-1 h-1 rounded-full shrink-0 ${dataSource === 'custom' ? 'bg-warm-400' : 'bg-text-tertiary'}`} />
+              <div
+                className={`w-1 h-1 rounded-full shrink-0 ${dataSource === 'custom' ? 'bg-warm-400' : 'bg-text-tertiary'}`}
+              />
               <Pencil size={12} className="shrink-0" />
               <span className="truncate">Custom JSON...</span>
             </div>
