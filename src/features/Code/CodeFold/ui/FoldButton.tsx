@@ -30,7 +30,7 @@ const FoldButton: React.FC<FoldButtonProps> = ({ line, node }) => {
     return <div className="flex-shrink-0 w-3 h-3" />;
   }
 
-  const handleToggle = (e: React.MouseEvent) => {
+  function handleToggle(e: React.MouseEvent) {
     e.stopPropagation();
 
     setFoldedLinesMap((prev) => {
@@ -46,7 +46,7 @@ const FoldButton: React.FC<FoldButtonProps> = ({ line, node }) => {
       next.set(nodeId, nodeFolds);
       return next;
     });
-  };
+  }
 
   return (
     <button
@@ -64,6 +64,7 @@ const FoldButton: React.FC<FoldButtonProps> = ({ line, node }) => {
         strokeWidth="3"
         strokeLinecap="round"
         strokeLinejoin="round"
+        aria-hidden="true"
         className={`w-3 h-3 transition-transform ${isFolded ? '' : 'rotate-90'}`}
       >
         <polyline points="9 18 15 12 9 6"></polyline>

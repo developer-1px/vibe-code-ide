@@ -44,7 +44,7 @@ const CodeSlot = ({
       ? getSlotColor(depNode.type)
       : 'bg-slate-500/60 border-slate-400/80 shadow-slate-500/30 group-hover/line:border-slate-300';
 
-  const handleSlotClick = (e: React.MouseEvent) => {
+  function handleSlotClick(e: React.MouseEvent) {
     e.stopPropagation();
 
     if (!depNode) return;
@@ -69,7 +69,7 @@ const CodeSlot = ({
         });
       }, 700); // Wait for expansion animation + layout
     }
-  };
+  }
 
   // Vertical Center Calculation:
   // Line Height (leading-[1rem]) = 16px. Center = 8px.

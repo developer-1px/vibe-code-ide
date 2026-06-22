@@ -14,6 +14,92 @@ import { useOpenFile } from '@/features/File/OpenFiles/lib/useOpenFile.ts';
 import { Checkbox } from '@/shared/ui/Checkbox';
 import { FileTreeItem } from '@/shared/ui/FileTreeItem';
 
+interface DeadCodeFileItemRowProps {
+  item: DeadCodeItem;
+  itemIndex: number;
+  deadCodeGlobalIndex: number;
+  fileName: string;
+  fileExtension?: string;
+  depth: number;
+  focused?: boolean;
+  itemRefs: React.MutableRefObject<Map<number, HTMLDivElement>>;
+  forwardedRef: React.ForwardedRef<HTMLDivElement>;
+  isSelected: boolean;
+  onFocus?: () => void;
+  onOpenItem: (item: DeadCodeItem) => void;
+  onToggleItemSelection: (item: DeadCodeItem) => void;
+}
+
+function DeadCodeFileItemRow({
+  item,
+  itemIndex,
+  deadCodeGlobalIndex,
+  fileName,
+  fileExtension,
+  depth,
+  focused,
+  itemRefs,
+  forwardedRef,
+  isSelected,
+  onFocus,
+  onOpenItem,
+  onToggleItemSelection,
+}: DeadCodeFileItemRowProps) {
+  function handleTreeItemRef(el: HTMLDivElement | null) {
+    // Only attach TreeView ref to first item
+    if (itemIndex === 0) {
+      if (typeof forwardedRef === 'function') {
+        forwardedRef(el);
+      } else if (forwardedRef) {
+        forwardedRef.current = el;
+      }
+    }
+    if (el) {
+      itemRefs.current.set(deadCodeGlobalIndex, el);
+    }
+  }
+
+  function handleFocus() {
+    onFocus?.();
+  }
+
+  function handleDoubleClick() {
+    onOpenItem(item);
+  }
+
+  function handleCheckedChange() {
+    onToggleItemSelection(item);
+  }
+
+  function handleCheckboxClick(e: React.MouseEvent) {
+    e.stopPropagation();
+  }
+
+  return (
+    <div className="flex items-center gap-1">
+      <div className="flex-1 min-w-0">
+        <FileTreeItem
+          ref={handleTreeItemRef}
+          icon={(() => <FileIcon fileName={fileName} />) as React.ComponentType}
+          label={`${fileName}:${item.line} - ${item.symbolName}`}
+          focused={focused}
+          indent={depth}
+          fileExtension={fileExtension}
+          onFocus={handleFocus}
+          onDoubleClick={handleDoubleClick}
+        />
+      </div>
+      {item.from && <span className="text-2xs text-text-tertiary truncate max-w-[150px] mr-2">from "{item.from}"</span>}
+      <Checkbox
+        checked={isSelected}
+        onCheckedChange={handleCheckedChange}
+        className="shrink-0 mr-2 border-border-hover"
+        onClick={handleCheckboxClick}
+      />
+    </div>
+  );
+}
+
 export const DeadCodeFileItem = React.forwardRef<
   HTMLDivElement,
   {
@@ -35,12 +121,20 @@ export const DeadCodeFileItem = React.forwardRef<
 
   const fileExtension = fileName.includes('.') ? `.${fileName.split('.').pop()}` : undefined;
 
-  const handleItemClick = (item: DeadCodeItem) => {
+  function handleItemClick(item: DeadCodeItem) {
     openFile(item.filePath);
     setTargetLine({ nodeId: item.filePath, lineNum: item.line });
     setActiveActivityPageId('explorer');
     setViewMode('ide');
-  };
+  }
+
+  function handleFocus() {
+    onFocus?.();
+  }
+
+  function handleToggleItemSelection(item: DeadCodeItem) {
+    toggleItemSelection(item);
+  }
 
   return (
     <div>
@@ -50,41 +144,22 @@ export const DeadCodeFileItem = React.forwardRef<
         const isSelected = isItemSelected(item);
 
         return (
-          <div key={idx} className="flex items-center gap-1">
-            <div className="flex-1 min-w-0">
-              <FileTreeItem
-                ref={(el) => {
-                  // Only attach TreeView ref to first item
-                  if (idx === 0) {
-                    if (typeof ref === 'function') {
-                      ref(el);
-                    } else if (ref) {
-                      ref.current = el;
-                    }
-                  }
-                  if (el) {
-                    itemRefs.current.set(deadCodeGlobalIndex, el);
-                  }
-                }}
-                icon={(() => <FileIcon fileName={fileName} />) as React.ComponentType}
-                label={`${fileName}:${item.line} - ${item.symbolName}`}
-                focused={itemFocused}
-                indent={depth}
-                fileExtension={fileExtension}
-                onFocus={idx === 0 ? onFocus : undefined}
-                onDoubleClick={() => handleItemClick(item)}
-              />
-            </div>
-            {item.from && (
-              <span className="text-2xs text-text-tertiary truncate max-w-[150px] mr-2">from "{item.from}"</span>
-            )}
-            <Checkbox
-              checked={isSelected}
-              onCheckedChange={() => toggleItemSelection(item)}
-              className="shrink-0 mr-2 border-border-hover"
-              onClick={(e) => e.stopPropagation()}
-            />
-          </div>
+          <DeadCodeFileItemRow
+            key={`${item.filePath}:${item.line}:${item.symbolName}`}
+            item={item}
+            itemIndex={idx}
+            deadCodeGlobalIndex={deadCodeGlobalIndex}
+            fileName={fileName}
+            fileExtension={fileExtension}
+            depth={depth}
+            focused={itemFocused}
+            itemRefs={itemRefs}
+            forwardedRef={ref}
+            isSelected={isSelected}
+            onFocus={idx === 0 ? handleFocus : undefined}
+            onOpenItem={handleItemClick}
+            onToggleItemSelection={handleToggleItemSelection}
+          />
         );
       })}
     </div>

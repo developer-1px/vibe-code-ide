@@ -36,6 +36,54 @@ interface Commit {
   date: string;
 }
 
+function getStatusIcon(status: FileChange['status']) {
+  switch (status) {
+    case 'added':
+      return <Plus size={12} className="text-status-success" />;
+    case 'modified':
+      return <FileText size={12} className="text-yellow-500" />;
+    case 'deleted':
+      return <Minus size={12} className="text-red-500" />;
+    case 'renamed':
+      return <RotateCw size={12} className="text-blue-500" />;
+  }
+}
+
+function getStatusColor(status: FileChange['status']) {
+  switch (status) {
+    case 'added':
+      return 'text-status-success';
+    case 'modified':
+      return 'text-yellow-500';
+    case 'deleted':
+      return 'text-red-500';
+    case 'renamed':
+      return 'text-blue-500';
+  }
+}
+
+function GitFileChangeButton({ file, onToggleStage }: { file: FileChange; onToggleStage: (path: string) => void }) {
+  function handleClick() {
+    onToggleStage(file.path);
+  }
+
+  return (
+    <button
+      onClick={handleClick}
+      className="w-full flex items-center gap-2 px-2 py-1 hover:bg-white/5 transition-colors text-left rounded group"
+    >
+      {getStatusIcon(file.status)}
+      <span className={cn('text-xs flex-1 truncate', getStatusColor(file.status))}>{file.path}</span>
+      <span className="text-2xs text-text-muted uppercase">{file.status.charAt(0)}</span>
+      {file.staged ? (
+        <Check size={12} className="text-status-success opacity-0 group-hover:opacity-100" />
+      ) : (
+        <Plus size={12} className="text-text-muted opacity-0 group-hover:opacity-100" />
+      )}
+    </button>
+  );
+}
+
 /**
  * GitPanel - Git source control interface
  *
@@ -87,60 +135,47 @@ export function GitPanel({ className }: GitPanelProps) {
   const stagedChanges = fileChanges.filter((f) => f.staged);
   const unstagedChanges = fileChanges.filter((f) => !f.staged);
 
-  const toggleStage = (path: string) => {
+  function handleToggleStage(path: string) {
     setFileChanges((prev) => prev.map((f) => (f.path === path ? { ...f, staged: !f.staged } : f)));
-  };
+  }
 
-  const stageAll = () => {
+  function stageAll() {
     setFileChanges((prev) => prev.map((f) => ({ ...f, staged: true })));
-  };
+  }
 
-  const unstageAll = () => {
+  function unstageAll() {
     setFileChanges((prev) => prev.map((f) => ({ ...f, staged: false })));
-  };
+  }
 
-  const getStatusIcon = (status: FileChange['status']) => {
-    switch (status) {
-      case 'added':
-        return <Plus size={12} className="text-status-success" />;
-      case 'modified':
-        return <FileText size={12} className="text-yellow-500" />;
-      case 'deleted':
-        return <Minus size={12} className="text-red-500" />;
-      case 'renamed':
-        return <RotateCw size={12} className="text-blue-500" />;
-    }
-  };
+  function handleBranchValueChange(nextBranch: string) {
+    setCurrentBranch(nextBranch);
+  }
 
-  const getStatusColor = (status: FileChange['status']) => {
-    switch (status) {
-      case 'added':
-        return 'text-status-success';
-      case 'modified':
-        return 'text-yellow-500';
-      case 'deleted':
-        return 'text-red-500';
-      case 'renamed':
-        return 'text-blue-500';
-    }
-  };
+  function handleCommitMessageChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
+    setCommitMessage(e.target.value);
+  }
 
-  const renderFileChange = (file: FileChange) => (
-    <button
-      key={file.path}
-      onClick={() => toggleStage(file.path)}
-      className="w-full flex items-center gap-2 px-2 py-1 hover:bg-white/5 transition-colors text-left rounded group"
-    >
-      {getStatusIcon(file.status)}
-      <span className={cn('text-xs flex-1 truncate', getStatusColor(file.status))}>{file.path}</span>
-      <span className="text-2xs text-text-muted uppercase">{file.status.charAt(0)}</span>
-      {file.staged ? (
-        <Check size={12} className="text-status-success opacity-0 group-hover:opacity-100" />
-      ) : (
-        <Plus size={12} className="text-text-muted opacity-0 group-hover:opacity-100" />
-      )}
-    </button>
-  );
+  function handleStagedChangesClick() {
+    setShowStagedChanges(!showStagedChanges);
+  }
+
+  function handleUnstagedChangesClick() {
+    setShowUnstagedChanges(!showUnstagedChanges);
+  }
+
+  function handleCommitHistoryClick() {
+    setShowCommitHistory(!showCommitHistory);
+  }
+
+  function handleUnstageAllClick(e: React.MouseEvent) {
+    e.stopPropagation();
+    unstageAll();
+  }
+
+  function handleStageAllClick(e: React.MouseEvent) {
+    e.stopPropagation();
+    stageAll();
+  }
 
   return (
     <div className={cn('flex h-full flex-col bg-bg-surface border-r border-border-DEFAULT', className)}>
@@ -165,7 +200,7 @@ export function GitPanel({ className }: GitPanelProps) {
         </div>
 
         {/* Branch Selector */}
-        <Select value={currentBranch} onValueChange={setCurrentBranch}>
+        <Select value={currentBranch} onValueChange={handleBranchValueChange}>
           <SelectTrigger className="h-8 text-xs">
             <GitBranch size={12} className="mr-1" />
             <SelectValue />
@@ -185,7 +220,7 @@ export function GitPanel({ className }: GitPanelProps) {
             <Textarea
               placeholder="Commit message..."
               value={commitMessage}
-              onChange={(e) => setCommitMessage(e.target.value)}
+              onChange={handleCommitMessageChange}
               className="min-h-15 text-xs resize-none"
             />
             <div className="flex gap-2">
@@ -214,7 +249,7 @@ export function GitPanel({ className }: GitPanelProps) {
           {/* Staged Changes */}
           <div className="space-y-1">
             <button
-              onClick={() => setShowStagedChanges(!showStagedChanges)}
+              onClick={handleStagedChangesClick}
               className="w-full flex items-center gap-1 px-1 py-1 hover:bg-white/5 rounded transition-colors"
             >
               {showStagedChanges ? (
@@ -225,15 +260,7 @@ export function GitPanel({ className }: GitPanelProps) {
               <span className="text-xs font-medium text-text-primary flex-1 text-left">Staged Changes</span>
               <span className="text-xs text-text-muted">{stagedChanges.length}</span>
               {stagedChanges.length > 0 && (
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="h-5 px-1 text-2xs"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    unstageAll();
-                  }}
-                >
+                <Button variant="ghost" size="sm" className="h-5 px-1 text-2xs" onClick={handleUnstageAllClick}>
                   <Minus size={10} className="mr-0.5" />
                   Unstage All
                 </Button>
@@ -243,7 +270,9 @@ export function GitPanel({ className }: GitPanelProps) {
             {showStagedChanges && (
               <div className="ml-2 space-y-0.5">
                 {stagedChanges.length > 0 ? (
-                  stagedChanges.map(renderFileChange)
+                  stagedChanges.map((file) => (
+                    <GitFileChangeButton key={file.path} file={file} onToggleStage={handleToggleStage} />
+                  ))
                 ) : (
                   <div className="px-2 py-3 text-xs text-text-muted text-center">No staged changes</div>
                 )}
@@ -254,7 +283,7 @@ export function GitPanel({ className }: GitPanelProps) {
           {/* Unstaged Changes */}
           <div className="space-y-1">
             <button
-              onClick={() => setShowUnstagedChanges(!showUnstagedChanges)}
+              onClick={handleUnstagedChangesClick}
               className="w-full flex items-center gap-1 px-1 py-1 hover:bg-white/5 rounded transition-colors"
             >
               {showUnstagedChanges ? (
@@ -265,15 +294,7 @@ export function GitPanel({ className }: GitPanelProps) {
               <span className="text-xs font-medium text-text-primary flex-1 text-left">Changes</span>
               <span className="text-xs text-text-muted">{unstagedChanges.length}</span>
               {unstagedChanges.length > 0 && (
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="h-5 px-1 text-2xs"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    stageAll();
-                  }}
-                >
+                <Button variant="ghost" size="sm" className="h-5 px-1 text-2xs" onClick={handleStageAllClick}>
                   <Plus size={10} className="mr-0.5" />
                   Stage All
                 </Button>
@@ -283,7 +304,9 @@ export function GitPanel({ className }: GitPanelProps) {
             {showUnstagedChanges && (
               <div className="ml-2 space-y-0.5">
                 {unstagedChanges.length > 0 ? (
-                  unstagedChanges.map(renderFileChange)
+                  unstagedChanges.map((file) => (
+                    <GitFileChangeButton key={file.path} file={file} onToggleStage={handleToggleStage} />
+                  ))
                 ) : (
                   <div className="px-2 py-3 text-xs text-text-muted text-center">No changes</div>
                 )}
@@ -296,7 +319,7 @@ export function GitPanel({ className }: GitPanelProps) {
           {/* Commit History */}
           <div className="space-y-1">
             <button
-              onClick={() => setShowCommitHistory(!showCommitHistory)}
+              onClick={handleCommitHistoryClick}
               className="w-full flex items-center gap-1 px-1 py-1 hover:bg-white/5 rounded transition-colors"
             >
               {showCommitHistory ? (

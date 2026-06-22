@@ -15,11 +15,15 @@ export function CategoryCheckbox({ items }: { items: DeadCodeItem[] }) {
   const allSelected = isCategoryAllSelected(items);
   const someSelected = isCategorySomeSelected(items);
 
+  function handleCategoryCheckedChange() {
+    toggleCategorySelection(items);
+  }
+
   return (
     <Checkbox
       checked={allSelected}
       className={cn(someSelected && 'data-[state=checked]:bg-warm-300/50')}
-      onCheckedChange={() => toggleCategorySelection(items)}
+      onCheckedChange={handleCategoryCheckedChange}
     />
   );
 }

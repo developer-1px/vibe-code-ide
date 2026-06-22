@@ -6,23 +6,54 @@
 import { useAtom } from 'jotai';
 import { Settings } from 'lucide-react';
 import { activeActivityPageIdAtom } from '@/app/model/activityPageAtoms';
-import { primaryActivityPages, secondaryActivityPages } from '@/app/model/activityPages';
+import {
+  type ActivityPageDescriptor,
+  type ActivityPageId,
+  primaryActivityPages,
+  secondaryActivityPages,
+} from '@/app/model/activityPages';
 import { DocumentModeToggle } from '@/features/DocumentMode/DocumentModeToggle.tsx';
 import UploadFolderButton from '@/features/UploadFolderButton.tsx';
 import { ActivityBar, ActivityBarItem, ActivityBarSeparator } from './ActivityBar';
 
+interface ActivityPageItemProps {
+  page: ActivityPageDescriptor;
+  activeActivityPageId: ActivityPageId;
+  onSelectPage: (pageId: ActivityPageId) => void;
+}
+
+function ActivityPageItem({ page, activeActivityPageId, onSelectPage }: ActivityPageItemProps) {
+  function handleClick() {
+    onSelectPage(page.id);
+  }
+
+  return (
+    <ActivityBarItem
+      icon={page.icon}
+      label={page.label}
+      active={activeActivityPageId === page.id}
+      onClick={handleClick}
+    />
+  );
+}
+
 export function AppActivityBar() {
   const [activeActivityPageId, setActiveActivityPageId] = useAtom(activeActivityPageIdAtom);
+
+  function handleSelectPage(pageId: ActivityPageId) {
+    setActiveActivityPageId(pageId);
+  }
+
+  function handleSettingsClick() {}
 
   return (
     <ActivityBar>
       {primaryActivityPages.map((page) => (
-        <ActivityBarItem
+        <ActivityPageItem
           key={page.id}
-          icon={page.icon}
-          label={page.label}
-          active={activeActivityPageId === page.id}
-          onClick={() => setActiveActivityPageId(page.id)}
+          page={page}
+          activeActivityPageId={activeActivityPageId}
+          onSelectPage={handleSelectPage}
         />
       ))}
 
@@ -30,12 +61,11 @@ export function AppActivityBar() {
       <ActivityBarSeparator />
 
       {secondaryActivityPages.map((page) => (
-        <ActivityBarItem
+        <ActivityPageItem
           key={page.id}
-          icon={page.icon}
-          label={page.label}
-          active={activeActivityPageId === page.id}
-          onClick={() => setActiveActivityPageId(page.id)}
+          page={page}
+          activeActivityPageId={activeActivityPageId}
+          onSelectPage={handleSelectPage}
         />
       ))}
 
@@ -45,7 +75,7 @@ export function AppActivityBar() {
       <div className="px-1">
         <DocumentModeToggle />
       </div>
-      <ActivityBarItem icon={Settings} label="Settings" onClick={() => {}} />
+      <ActivityBarItem icon={Settings} label="Settings" onClick={handleSettingsClick} />
     </ActivityBar>
   );
 }

@@ -19,7 +19,9 @@ export function getFlatItemList(fileTree: FolderNode[], collapsedFolders: Set<st
       // If folder is open and has children, recursively traverse them
       const isCollapsed = collapsedFolders.has(node.path);
       if (!isCollapsed && node.children && node.children.length > 0) {
-        node.children.forEach((child) => traverseNode(child));
+        node.children.forEach((child) => {
+          traverseNode(child);
+        });
       }
     } else if (node.type === 'file' && node.filePath) {
       items.push({
@@ -33,7 +35,9 @@ export function getFlatItemList(fileTree: FolderNode[], collapsedFolders: Set<st
   };
 
   // Traverse all top-level nodes
-  fileTree.forEach((node) => traverseNode(node));
+  fileTree.forEach((node) => {
+    traverseNode(node);
+  });
 
   return items;
 }

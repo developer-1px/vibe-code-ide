@@ -51,52 +51,56 @@ export const KeyboardShortcuts = () => {
     setViewMode('contentSearch');
   }, [openedTabs, setActiveActivityPageId, setActiveTabId, setOpenedTabs, setViewMode]);
 
-  // Global hotkeys (no ref needed - always active)
-  useHotkeys(
-    Object.values(GLOBAL_HOTKEYS),
-    (e, { hotkey }) => {
-      console.log('[KeyboardShortcuts] Hotkey pressed:', hotkey);
-      e.preventDefault();
+  function handleGlobalHotkey(e: KeyboardEvent, { hotkey }: { hotkey?: string }) {
+    console.log('[KeyboardShortcuts] Hotkey pressed:', hotkey);
+    e.preventDefault();
 
-      switch (hotkey) {
-        case GLOBAL_HOTKEYS.TOGGLE_SIDEBAR:
-          setIsSidebarOpen((prev) => !prev);
-          break;
-        case GLOBAL_HOTKEYS.TOGGLE_CODE_DOC_PAGE:
-          // Explorer ↔ CodeDoc page 전환
-          if (activeActivityPageId === 'code-doc') {
-            setActiveActivityPageId('explorer');
-            setViewMode('ide');
-            console.log('[KeyboardShortcuts] Activity page toggled: explorer');
-          } else {
-            setActiveActivityPageId('code-doc');
-            console.log('[KeyboardShortcuts] Activity page toggled: code-doc');
-          }
-          break;
-        case GLOBAL_HOTKEYS.CLOSE_FILE:
-        case GLOBAL_HOTKEYS.CLOSE_FILE_ESC:
-          closeFile();
-          console.log('[KeyboardShortcuts] Close current file');
-          break;
-        case GLOBAL_HOTKEYS.CONTENT_SEARCH:
-          openSearchTab();
-          console.log('[KeyboardShortcuts] Content search view opened');
-          break;
-        case GLOBAL_HOTKEYS.NEW_SEARCH_TAB:
-          openSearchTab();
-          console.log('[KeyboardShortcuts] New search tab opened');
-          break;
-      }
-    },
-    { enableOnFormTags: true },
-    [setIsSidebarOpen, setViewMode, activeActivityPageId, setActiveActivityPageId, closeFile, openSearchTab]
-  );
+    switch (hotkey) {
+      case GLOBAL_HOTKEYS.TOGGLE_SIDEBAR:
+        setIsSidebarOpen((prev) => !prev);
+        break;
+      case GLOBAL_HOTKEYS.TOGGLE_CODE_DOC_PAGE:
+        // Explorer ↔ CodeDoc page 전환
+        if (activeActivityPageId === 'code-doc') {
+          setActiveActivityPageId('explorer');
+          setViewMode('ide');
+          console.log('[KeyboardShortcuts] Activity page toggled: explorer');
+        } else {
+          setActiveActivityPageId('code-doc');
+          console.log('[KeyboardShortcuts] Activity page toggled: code-doc');
+        }
+        break;
+      case GLOBAL_HOTKEYS.CLOSE_FILE:
+      case GLOBAL_HOTKEYS.CLOSE_FILE_ESC:
+        closeFile();
+        console.log('[KeyboardShortcuts] Close current file');
+        break;
+      case GLOBAL_HOTKEYS.CONTENT_SEARCH:
+        openSearchTab();
+        console.log('[KeyboardShortcuts] Content search view opened');
+        break;
+      case GLOBAL_HOTKEYS.NEW_SEARCH_TAB:
+        openSearchTab();
+        console.log('[KeyboardShortcuts] New search tab opened');
+        break;
+    }
+  }
+
+  // Global hotkeys (no ref needed - always active)
+  useHotkeys(Object.values(GLOBAL_HOTKEYS), handleGlobalHotkey, { enableOnFormTags: true }, [
+    setIsSidebarOpen,
+    setViewMode,
+    activeActivityPageId,
+    setActiveActivityPageId,
+    closeFile,
+    openSearchTab,
+  ]);
 
   // Shift+Shift (더블탭) - 검색 모달 열기
   const lastShiftPressRef = useRef<number>(0);
 
   useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
+    function handleKeyDown(e: KeyboardEvent) {
       if (e.key === 'Shift') {
         const now = Date.now();
         const timeSinceLastPress = now - lastShiftPressRef.current;
@@ -110,7 +114,7 @@ export const KeyboardShortcuts = () => {
           lastShiftPressRef.current = now;
         }
       }
-    };
+    }
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);

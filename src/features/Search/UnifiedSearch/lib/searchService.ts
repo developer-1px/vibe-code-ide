@@ -16,6 +16,13 @@ function getFuzzyWorker(): Worker {
   return fuzzyWorker;
 }
 
+function handleBeforeUnload() {
+  if (fuzzyWorker) {
+    fuzzyWorker.terminate();
+    fuzzyWorker = null;
+  }
+}
+
 /**
  * Perform fuzzy search in Web Worker (background thread)
  * Returns a Promise that resolves with fuzzy search results
@@ -45,7 +52,7 @@ export function searchResultsFuzzy(query: string, allResults: SearchResult[]): P
     const worker = getFuzzyWorker();
 
     // Listen for results from worker
-    const handleMessage = (event: MessageEvent<FuzzySearchResponse>) => {
+    function handleMessage(event: MessageEvent<FuzzySearchResponse>) {
       if (event.data.type === 'results') {
         worker.removeEventListener('message', handleMessage);
 
@@ -88,7 +95,7 @@ export function searchResultsFuzzy(query: string, allResults: SearchResult[]): P
 
         resolve(results);
       }
-    };
+    }
 
     worker.addEventListener('message', handleMessage);
 
@@ -107,10 +114,5 @@ export function searchResultsFuzzy(query: string, allResults: SearchResult[]): P
  * Cleanup worker on page unload
  */
 if (typeof window !== 'undefined') {
-  window.addEventListener('beforeunload', () => {
-    if (fuzzyWorker) {
-      fuzzyWorker.terminate();
-      fuzzyWorker = null;
-    }
-  });
+  window.addEventListener('beforeunload', handleBeforeUnload);
 }

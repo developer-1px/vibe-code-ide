@@ -54,12 +54,31 @@ export const DeadCodeResultItem = React.forwardRef<
   const fileName = item.filePath.split('/').pop() || item.filePath;
   const KindIcon = getKindIcon(item.kind);
 
-  const handleItemClick = () => {
+  function handleItemClick() {
     openFile(item.filePath);
     setTargetLine({ nodeId: item.filePath, lineNum: item.line });
     setActiveActivityPageId('explorer');
     setViewMode('ide');
-  };
+  }
+
+  function handleFocus() {
+    onFocus?.();
+  }
+
+  function handleKeyDown(e: React.KeyboardEvent) {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      handleItemClick();
+    }
+  }
+
+  function handleCheckedChange() {
+    toggleItemSelection(item);
+  }
+
+  function handleCheckboxClick(e: React.MouseEvent) {
+    e.stopPropagation();
+  }
 
   return (
     <div
@@ -67,14 +86,9 @@ export const DeadCodeResultItem = React.forwardRef<
       className={`flex items-center justify-between gap-2 cursor-pointer py-0.5 px-2 ${
         focused ? 'bg-white/8 border-l-2 border-warm-300/50' : ''
       }`}
-      onClick={onFocus}
+      onClick={handleFocus}
       onDoubleClick={handleItemClick}
-      onKeyDown={(e) => {
-        if (e.key === 'Enter') {
-          e.preventDefault();
-          handleItemClick();
-        }
-      }}
+      onKeyDown={handleKeyDown}
       role="button"
       tabIndex={0}
     >
@@ -95,9 +109,9 @@ export const DeadCodeResultItem = React.forwardRef<
         </span>
         <Checkbox
           checked={isSelected}
-          onCheckedChange={() => toggleItemSelection(item)}
+          onCheckedChange={handleCheckedChange}
           className="border-border-hover"
-          onClick={(e) => e.stopPropagation()}
+          onClick={handleCheckboxClick}
         />
       </div>
     </div>

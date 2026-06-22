@@ -11,7 +11,7 @@ const UploadFolderButton: React.FC = () => {
   const setActiveTab = useSetAtom(activeTabAtom);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleFolderSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  async function handleFolderSelect(e: React.ChangeEvent<HTMLInputElement>) {
     const fileList = e.target.files;
     if (!fileList || fileList.length === 0) return;
 
@@ -54,12 +54,16 @@ const UploadFolderButton: React.FC = () => {
     } else {
       alert('No .vue, .ts, .js, .jsx, or .tsx files found in the selected folder.');
     }
-  };
+  }
+
+  function handleUploadClick() {
+    fileInputRef.current?.click();
+  }
 
   return (
     <>
       <button
-        onClick={() => fileInputRef.current?.click()}
+        onClick={handleUploadClick}
         className="relative flex h-[var(--limn-activity-bar-icon)] w-[var(--limn-activity-bar-icon)] items-center justify-center rounded-md border border-transparent bg-transparent hover:bg-white/5 hover:border-border-light transition-all duration-normal"
         title="Upload Project Folder"
         aria-label="Upload Project Folder"

@@ -27,7 +27,7 @@ export const LocalVariableSegment: React.FC<LocalVariableSegmentProps> = ({ segm
 
   const isHovered = hoveredIdentifier === segment.text;
 
-  const handleClick = (e: React.MouseEvent) => {
+  function handleClick(e: React.MouseEvent) {
     e.stopPropagation();
 
     // Cmd+Click: 정의로 이동
@@ -58,15 +58,15 @@ export const LocalVariableSegment: React.FC<LocalVariableSegmentProps> = ({ segm
 
       return next;
     });
-  };
+  }
 
-  const handleMouseEnter = () => {
+  function handleMouseEnter() {
     setHoveredIdentifier(segment.text);
-  };
+  }
 
-  const handleMouseLeave = () => {
+  function handleMouseLeave() {
     setHoveredIdentifier(null);
-  };
+  }
 
   const className = isFocused
     ? `${style.className} bg-cyan-500/30 rounded`

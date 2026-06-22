@@ -51,8 +51,7 @@ function parseInWorker(filePath: string, content: string, _files: Record<string,
   }));
 }
 
-// Worker 메시지 핸들러
-self.addEventListener('message', (event: MessageEvent<ParseRequest>) => {
+function handleMessage(event: MessageEvent<ParseRequest>) {
   const { type, filePath, content, files } = event.data;
 
   if (type === 'parse') {
@@ -81,6 +80,9 @@ self.addEventListener('message', (event: MessageEvent<ParseRequest>) => {
       });
     }
   }
-});
+}
+
+// Worker 메시지 핸들러
+self.addEventListener('message', handleMessage);
 
 console.log('[Worker] Code parser worker initialized');

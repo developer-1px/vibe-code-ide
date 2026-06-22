@@ -52,6 +52,10 @@ const CodeDocView = () => {
     }
   }, [activeTab]);
 
+  function handleLayoutModeClick() {
+    setLayoutMode((prev) => (prev === 'linear' ? 'split' : 'linear'));
+  }
+
   // 파일이 없을 때
   if (allDocData.length === 0) {
     return (
@@ -69,7 +73,7 @@ const CodeDocView = () => {
       {/* Top Control Bar */}
       <div className="absolute top-6 right-8 z-50 print:hidden">
         <button
-          onClick={() => setLayoutMode((prev) => (prev === 'linear' ? 'split' : 'linear'))}
+          onClick={handleLayoutModeClick}
           className="p-2 rounded-lg bg-bg-deep border border-border shadow-sm text-text-secondary hover:text-text-primary transition-colors"
           title={layoutMode === 'linear' ? 'Annotated Layout' : 'Standard Layout'}
         >

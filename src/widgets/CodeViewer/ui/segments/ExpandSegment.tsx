@@ -23,7 +23,7 @@ export const ExpandSegment: React.FC<ExpandSegmentProps> = ({ segment, node: _no
 
   const isHovered = hoveredIdentifier === segment.text;
 
-  const handleClick = (e: React.MouseEvent) => {
+  function handleClick(e: React.MouseEvent) {
     e.stopPropagation();
     if (!segment.nodeId) return;
 
@@ -32,15 +32,15 @@ export const ExpandSegment: React.FC<ExpandSegmentProps> = ({ segment, node: _no
       next.add(segment.nodeId!);
       return next;
     });
-  };
+  }
 
-  const handleMouseEnter = () => {
+  function handleMouseEnter() {
     setHoveredIdentifier(segment.text);
-  };
+  }
 
-  const handleMouseLeave = () => {
+  function handleMouseLeave() {
     setHoveredIdentifier(null);
-  };
+  }
 
   const className = isFocused
     ? `${style.className} bg-cyan-500/30 rounded`

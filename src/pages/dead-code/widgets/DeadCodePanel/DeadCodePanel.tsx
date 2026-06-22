@@ -26,6 +26,14 @@ export function DeadCodePanel({ className: _className }: { className?: string })
   const [showPromptDialog, setShowPromptDialog] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
+  function handleGeneratePromptClick() {
+    setShowPromptDialog(true);
+  }
+
+  function handlePromptOpenChange(nextOpen: boolean) {
+    setShowPromptDialog(nextOpen);
+  }
+
   return (
     <div className="flex h-full w-full overflow-hidden">
       {/* 좌측: Dead Code Panel */}
@@ -45,7 +53,7 @@ export function DeadCodePanel({ className: _className }: { className?: string })
                 variant="default"
                 size="sm"
                 className="w-full justify-center gap-2"
-                onClick={() => setShowPromptDialog(true)}
+                onClick={handleGeneratePromptClick}
               >
                 <Sparkles size={14} />
                 Generate AI Refactoring Prompt ({selectedItems.size})
@@ -58,7 +66,7 @@ export function DeadCodePanel({ className: _className }: { className?: string })
         {deadCodeResults && (
           <RefactoringPromptDialog
             open={showPromptDialog}
-            onOpenChange={setShowPromptDialog}
+            onOpenChange={handlePromptOpenChange}
             selectedItemKeys={selectedItems}
             deadCodeResults={deadCodeResults}
           />

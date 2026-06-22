@@ -14,10 +14,10 @@ export function DeadCodePanelHeader() {
   const setActiveActivityPageId = useSetAtom(activeActivityPageIdAtom);
   const setViewMode = useSetAtom(viewModeAtom);
 
-  const closeDeadCodePage = () => {
+  function handleCloseDeadCodePage() {
     setActiveActivityPageId('explorer');
     setViewMode('ide');
-  };
+  }
 
   return (
     <div className="flex items-center justify-between px-2 py-1.5 border-b border-border-DEFAULT">
@@ -31,7 +31,7 @@ export function DeadCodePanelHeader() {
       <div className="flex items-center gap-1">
         <AnalyzeButton />
         <CopyAllButton />
-        <Button variant="ghost" size="sm" className="h-5 w-5 p-0" onClick={closeDeadCodePage}>
+        <Button variant="ghost" size="sm" className="h-5 w-5 p-0" onClick={handleCloseDeadCodePage}>
           <X size={12} />
         </Button>
       </div>

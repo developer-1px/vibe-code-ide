@@ -13,6 +13,10 @@ export interface ActivityBarItemProps {
 
 const ActivityBarItem = React.forwardRef<HTMLButtonElement, ActivityBarItemProps>(
   ({ icon: Icon, label, active, hasBadge, onClick }, ref) => {
+    function handleClick() {
+      onClick?.();
+    }
+
     return (
       <button
         ref={ref}
@@ -20,7 +24,7 @@ const ActivityBarItem = React.forwardRef<HTMLButtonElement, ActivityBarItemProps
           'relative flex h-[var(--limn-activity-bar-icon)] w-[var(--limn-activity-bar-icon)] items-center justify-center rounded-md border transition-all duration-normal',
           active ? 'active-glow' : 'border-transparent bg-transparent hover:bg-white/5 hover:border-border-light'
         )}
-        onClick={onClick}
+        onClick={handleClick}
         aria-label={label}
       >
         <Icon

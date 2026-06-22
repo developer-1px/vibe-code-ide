@@ -5,7 +5,7 @@
 
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import type React from 'react';
-import { useCallback, useEffect, useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { filesAtom, focusedPaneAtom, fullNodeMapAtom } from '@/entities/AppView/model/atoms';
 import { useOpenFile } from '@/features/File/OpenFiles/lib/useOpenFile.ts';
 import { CommandPalette } from '@/shared/ui/CommandPalette';
@@ -63,84 +63,91 @@ export const UnifiedSearchModal: React.FC = () => {
   }, [query, allSearchableItems, isOpen, setResults]);
 
   // Handle close (defined first, used by handleSelectResult)
-  const handleClose = useCallback(() => {
+  function handleClose() {
     setIsOpen(false);
     // Keep query - don't clear it
     setResults([]);
-  }, [setIsOpen, setResults]);
+  }
 
   // Handle result selection
-  const handleSelectResult = useCallback(
-    (result: SearchResult) => {
-      if (result.type === 'file') {
-        // Open file
-        openFile(result.filePath);
-      } else if (result.type === 'folder') {
-        // Open folder in FolderView (expand recursively)
-        const folderPath = result.filePath;
+  function handleSelectResult(result: SearchResult) {
+    if (result.type === 'file') {
+      // Open file
+      openFile(result.filePath);
+    } else if (result.type === 'folder') {
+      // Open folder in FolderView (expand recursively)
+      const folderPath = result.filePath;
 
-        // Get all parent folders (recursively)
-        const parts = folderPath.split('/');
-        const foldersToOpen: string[] = [];
-        for (let i = 1; i <= parts.length; i++) {
-          const parentFolder = parts.slice(0, i).join('/');
-          if (parentFolder) {
-            foldersToOpen.push(parentFolder);
-          }
-        }
-
-        // Remove all parent folders from collapsed set
-        setCollapsedFolders((prev) => {
-          const next = new Set(prev);
-          for (const folder of foldersToOpen) {
-            next.delete(folder);
-          }
-          return next;
-        });
-
-        // Focus sidebar
-        setFocusedPane('sidebar');
-      } else if (result.type === 'symbol') {
-        console.log('[SearchResults] CodeSymbol selected:', {
-          name: result.name,
-          nodeId: result.nodeId,
-          filePath: result.filePath,
-          lineNumber: result.lineNumber,
-          nodeType: result.nodeType,
-        });
-
-        // For Usage: just open file and scroll to line
-        if (result.nodeType === 'usage') {
-          openFile(result.filePath, {
-            lineNumber: result.lineNumber,
-          });
-        } else {
-          // For Declaration: open file, scroll to symbol, and activate focus mode
-          openFile(result.filePath, {
-            lineNumber: result.lineNumber || 0,
-            focusSymbol: result.name,
-            focusPane: 'canvas',
-          });
-
-          console.log('[SearchResults] Activated focus mode for:', result.name, 'in file:', result.filePath);
+      // Get all parent folders (recursively)
+      const parts = folderPath.split('/');
+      const foldersToOpen: string[] = [];
+      for (let i = 1; i <= parts.length; i++) {
+        const parentFolder = parts.slice(0, i).join('/');
+        if (parentFolder) {
+          foldersToOpen.push(parentFolder);
         }
       }
 
-      // Close modal
-      handleClose();
-    },
-    [openFile, setCollapsedFolders, setFocusedPane, handleClose]
-  );
+      // Remove all parent folders from collapsed set
+      setCollapsedFolders((prev) => {
+        const next = new Set(prev);
+        for (const folder of foldersToOpen) {
+          next.delete(folder);
+        }
+        return next;
+      });
+
+      // Focus sidebar
+      setFocusedPane('sidebar');
+    } else if (result.type === 'symbol') {
+      console.log('[SearchResults] CodeSymbol selected:', {
+        name: result.name,
+        nodeId: result.nodeId,
+        filePath: result.filePath,
+        lineNumber: result.lineNumber,
+        nodeType: result.nodeType,
+      });
+
+      // For Usage: just open file and scroll to line
+      if (result.nodeType === 'usage') {
+        openFile(result.filePath, {
+          lineNumber: result.lineNumber,
+        });
+      } else {
+        // For Declaration: open file, scroll to symbol, and activate focus mode
+        openFile(result.filePath, {
+          lineNumber: result.lineNumber || 0,
+          focusSymbol: result.name,
+          focusPane: 'canvas',
+        });
+
+        console.log('[SearchResults] Activated focus mode for:', result.name, 'in file:', result.filePath);
+      }
+    }
+
+    // Close modal
+    handleClose();
+  }
+
+  function handleOpenChange(nextOpen: boolean) {
+    setIsOpen(nextOpen);
+  }
+
+  function handleQueryChange(nextQuery: string) {
+    setQuery(nextQuery);
+  }
+
+  function handleSelectedIndexChange() {}
 
   return (
     <CommandPalette
       open={isOpen}
-      onOpenChange={setIsOpen}
+      onOpenChange={handleOpenChange}
       query={query}
-      onQueryChange={setQuery}
+      onQueryChange={handleQueryChange}
       results={results}
       selectedIndex={0}
-      onSelectedIndexChange={() => {}}
+      onSelectedIndexChange={handleSelectedIndexChange}
       onSelectResult={handleSelectResult}
     />
   );

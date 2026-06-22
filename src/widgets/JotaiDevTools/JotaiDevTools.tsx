@@ -113,10 +113,18 @@ const JotaiDevTools = () => {
     return null;
   }
 
+  function handleOpenClick() {
+    setIsOpen(true);
+  }
+
+  function handleCloseClick() {
+    setIsOpen(false);
+  }
+
   if (!isOpen) {
     return (
       <button
-        onClick={() => setIsOpen(true)}
+        onClick={handleOpenClick}
         className="fixed top-4 right-4 bg-purple-600 hover:bg-purple-700 text-white px-3 py-2 rounded-lg shadow-lg text-xs font-semibold transition-colors z-50"
       >
         Jotai DevTools
@@ -132,7 +140,7 @@ const JotaiDevTools = () => {
           <span className="text-xs font-semibold text-purple-400">Jotai DevTools</span>
           <span className="text-2xs text-slate-500">({updateHistory.length} updates)</span>
         </div>
-        <button onClick={() => setIsOpen(false)} className="text-slate-400 hover:text-slate-200 transition-colors">
+        <button onClick={handleCloseClick} className="text-slate-400 hover:text-slate-200 transition-colors">
           <ChevronDown className="w-4 h-4" />
         </button>
       </div>

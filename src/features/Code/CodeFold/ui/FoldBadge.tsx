@@ -26,7 +26,7 @@ const FoldBadge: React.FC<FoldBadgeProps> = ({ line, node, isFolded, foldedCount
     return null;
   }
 
-  const handleUnfold = (e: React.MouseEvent) => {
+  function handleUnfold(e: React.MouseEvent) {
     e.stopPropagation();
 
     setFoldedLinesMap((prev) => {
@@ -36,7 +36,7 @@ const FoldBadge: React.FC<FoldBadgeProps> = ({ line, node, isFolded, foldedCount
       next.set(nodeId, nodeFolds);
       return next;
     });
-  };
+  }
 
   // Fold type에 따라 다른 텍스트 표시
   const isJsx = foldInfo?.foldType === 'jsx-children' || foldInfo?.foldType === 'jsx-fragment';

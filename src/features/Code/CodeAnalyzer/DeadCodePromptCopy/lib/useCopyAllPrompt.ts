@@ -11,7 +11,7 @@ export function useCopyAllPrompt() {
   const deadCodeResults = useAtomValue(deadCodeResultsAtom);
   const [copiedAll, setCopiedAll] = useState(false);
 
-  const handleCopyAllPrompt = async () => {
+  async function handleCopyAllPrompt() {
     if (!deadCodeResults) return;
 
     // Generate prompt from all items
@@ -35,7 +35,7 @@ export function useCopyAllPrompt() {
     } catch (err) {
       console.error('Failed to copy:', err);
     }
-  };
+  }
 
   return {
     copiedAll,

@@ -4,6 +4,7 @@
  */
 
 import { AlertCircle, Check, X } from 'lucide-react';
+import type React from 'react';
 import { useState } from 'react';
 
 interface CustomJsonModalProps {
@@ -18,7 +19,7 @@ export function CustomJsonModal({ isOpen, onClose, onSubmit }: CustomJsonModalPr
 
   if (!isOpen) return null;
 
-  const handleSubmit = () => {
+  function handleSubmit() {
     setError(null);
 
     // JSON 파싱 시도
@@ -62,13 +63,17 @@ export function CustomJsonModal({ isOpen, onClose, onSubmit }: CustomJsonModalPr
         setError('Failed to parse JSON');
       }
     }
-  };
+  }
 
-  const handleCancel = () => {
+  function handleCancel() {
     setJsonText('');
     setError(null);
     onClose();
-  };
+  }
+
+  function handleJsonTextChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
+    setJsonText(e.target.value);
+  }
 
   return (
     <>
@@ -101,7 +106,7 @@ export function CustomJsonModal({ isOpen, onClose, onSubmit }: CustomJsonModalPr
             {/* Textarea */}
             <textarea
               value={jsonText}
-              onChange={(e) => setJsonText(e.target.value)}
+              onChange={handleJsonTextChange}
               placeholder={`[\n  {\n    "id": 1,\n    "name": "Sample Item",\n    "value": 100\n  },\n  {\n    "id": 2,\n    "name": "Another Item",\n    "value": 200\n  }\n]`}
               className="flex-1 w-full p-3 bg-bg-deep border border-border-DEFAULT rounded font-mono text-2xs text-text-primary resize-none focus:outline-none focus:ring-1 focus:ring-warm-400"
               spellCheck={false}

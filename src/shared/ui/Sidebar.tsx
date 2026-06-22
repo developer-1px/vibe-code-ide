@@ -53,17 +53,17 @@ const SidebarRoot = React.forwardRef<HTMLDivElement, SidebarProps>(
     const startXRef = React.useRef(0);
     const startWidthRef = React.useRef(defaultWidth);
 
-    const handleMouseDown = (e: React.MouseEvent) => {
+    function handleMouseDown(e: React.MouseEvent) {
       setIsResizing(true);
       startXRef.current = e.clientX;
       startWidthRef.current = width;
       e.preventDefault();
-    };
+    }
 
     React.useEffect(() => {
       if (!isResizing) return;
 
-      const handleMouseMove = (e: MouseEvent) => {
+      function handleMouseMove(e: MouseEvent) {
         const deltaX = e.clientX - startXRef.current;
         // Right side: drag left to increase width (negative deltaX)
         const adjustedDelta = side === 'right' ? -deltaX : deltaX;
@@ -72,11 +72,11 @@ const SidebarRoot = React.forwardRef<HTMLDivElement, SidebarProps>(
         if (onWidthChange) {
           onWidthChange(newWidth);
         }
-      };
+      }
 
-      const handleMouseUp = () => {
+      function handleMouseUp() {
         setIsResizing(false);
-      };
+      }
 
       document.addEventListener('mousemove', handleMouseMove);
       document.addEventListener('mouseup', handleMouseUp);

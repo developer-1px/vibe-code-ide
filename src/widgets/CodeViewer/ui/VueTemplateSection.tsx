@@ -124,7 +124,7 @@ const VueTemplateSection = ({
     });
   }, [template, node.dependencies, node.filePath, scriptEndLine, files]);
 
-  const handleTokenClick = (nodeId: string, e: React.MouseEvent) => {
+  function handleTokenClick(nodeId: string, e: React.MouseEvent) {
     e.stopPropagation();
 
     if (!fullNodeMap.has(nodeId)) return;
@@ -159,7 +159,32 @@ const VueTemplateSection = ({
     });
 
     setLastExpandedId(nodeId);
-  };
+  }
+
+  function TemplateClickableSegment({
+    segment,
+  }: {
+    segment: {
+      text: string;
+      isClickable?: boolean;
+      nodeId?: string;
+    };
+  }) {
+    function handleClick(e: React.MouseEvent) {
+      if (segment.nodeId) {
+        handleTokenClick(segment.nodeId, e);
+      }
+    }
+
+    return (
+      <span
+        onClick={handleClick}
+        className={`inline-block px-0.5 rounded transition-all duration-200 select-text cursor-pointer border ${theme.colors.template.clickable.bg} ${theme.colors.template.clickable.border} ${theme.colors.template.clickable.text} ${theme.colors.template.clickable.hoverBg} ${theme.colors.template.clickable.hoverBorder}`}
+      >
+        {segment.text}
+      </span>
+    );
+  }
 
   return (
     <div className="flex flex-col">
@@ -178,15 +203,7 @@ const VueTemplateSection = ({
           >
             {line.segments.map((seg, segIdx) => {
               if (seg.isClickable && seg.nodeId) {
-                return (
-                  <span
-                    key={segIdx}
-                    onClick={(e) => handleTokenClick(seg.nodeId!, e)}
-                    className={`inline-block px-0.5 rounded transition-all duration-200 select-text cursor-pointer border ${theme.colors.template.clickable.bg} ${theme.colors.template.clickable.border} ${theme.colors.template.clickable.text} ${theme.colors.template.clickable.hoverBg} ${theme.colors.template.clickable.hoverBorder}`}
-                  >
-                    {seg.text}
-                  </span>
-                );
+                return <TemplateClickableSegment key={segIdx} segment={seg} />;
               }
 
               return (

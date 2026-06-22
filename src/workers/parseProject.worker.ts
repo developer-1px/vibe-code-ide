@@ -638,8 +638,7 @@ async function saveLSIFIndexes(lsifResults: LSIFIndexResult[], refVertices: any[
   }
 }
 
-// Worker 메시지 핸들러
-self.addEventListener('message', (event: MessageEvent<ParseProjectRequest>) => {
+function handleMessage(event: MessageEvent<ParseProjectRequest>) {
   const { type, files } = event.data;
 
   if (type === 'parseProject') {
@@ -669,6 +668,9 @@ self.addEventListener('message', (event: MessageEvent<ParseProjectRequest>) => {
       });
     }
   }
-});
+}
+
+// Worker 메시지 핸들러
+self.addEventListener('message', handleMessage);
 
 console.log('[Worker] parseProject worker initialized');

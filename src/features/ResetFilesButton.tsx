@@ -10,13 +10,13 @@ const ResetFilesButton: React.FC = () => {
   const setOpenedTabs = useSetAtom(openedTabsAtom);
   const setActiveTab = useSetAtom(activeTabAtom);
 
-  const handleReset = () => {
+  function handleReset() {
     if (window.confirm('Reset all files to default?')) {
       setFiles(DEFAULT_FILES);
       setOpenedTabs([DEFAULT_ENTRY_FILE]);
       setActiveTab(DEFAULT_ENTRY_FILE);
     }
-  };
+  }
 
   return (
     <button

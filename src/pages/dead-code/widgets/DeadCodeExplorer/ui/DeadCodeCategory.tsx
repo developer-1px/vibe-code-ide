@@ -5,6 +5,7 @@
 
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import { ChevronDown, ChevronRight } from 'lucide-react';
+import type React from 'react';
 import { useMemo } from 'react';
 import { activeActivityPageIdAtom } from '@/app/model/activityPageAtoms';
 import { filesAtom, viewModeAtom } from '@/entities/AppView/model/atoms';
@@ -25,6 +26,86 @@ import { Checkbox } from '@/shared/ui/Checkbox';
 import { FileTreeItem } from '@/shared/ui/FileTreeItem';
 import { TreeView } from '@/shared/ui/TreeView/TreeView.tsx';
 import { DeadCodeFolderItem } from './DeadCodeFolderItem.tsx';
+
+interface DeadCodeCategoryItemProps {
+  item: DeadCodeItem;
+  depth: number;
+  focused: boolean;
+  itemRef: React.Ref<HTMLDivElement>;
+  fileContent: string;
+  isSelected: boolean;
+  onFocus: () => void;
+  onOpenItem: (item: DeadCodeItem) => void;
+  onToggleItemSelection: (item: DeadCodeItem) => void;
+}
+
+function DeadCodeCategoryItem({
+  item,
+  depth,
+  focused,
+  itemRef,
+  fileContent,
+  isSelected,
+  onFocus,
+  onOpenItem,
+  onToggleItemSelection,
+}: DeadCodeCategoryItemProps) {
+  const fileName = item.filePath.split('/').pop() || item.filePath;
+  const displayLabel = `${fileName}:${item.line}`;
+  const lines = fileContent.split('\n');
+  const fullLine = lines[item.line - 1] || '';
+  let codeSnippet = fullLine.trim();
+
+  if (item.kind === 'import') {
+    const importMatch = fullLine.match(/import\s+(?:type\s+)?(\{[^}]+\}|\w+)/);
+    if (importMatch) {
+      codeSnippet = importMatch[1].trim();
+    }
+  }
+
+  function handleFocus() {
+    onFocus();
+  }
+
+  function handleDoubleClick() {
+    onOpenItem(item);
+  }
+
+  function handleCheckedChange() {
+    onToggleItemSelection(item);
+  }
+
+  function handleCheckboxClick(e: React.MouseEvent) {
+    e.stopPropagation();
+  }
+
+  return (
+    <div
+      ref={itemRef}
+      className={`flex items-center gap-2 cursor-pointer ${focused ? 'bg-white/8 border-l-2 border-warm-300/50' : ''}`}
+      onClick={handleFocus}
+      onDoubleClick={handleDoubleClick}
+    >
+      <div className="flex-1 min-w-0 flex items-center gap-2">
+        <FileTreeItem
+          icon={(() => <FileIcon fileName={item.filePath} />) as React.ComponentType}
+          label={displayLabel}
+          focused={false}
+          indent={depth}
+          onFocus={handleFocus}
+          onDoubleClick={handleDoubleClick}
+        />
+        {codeSnippet && <span className="text-2xs text-text-tertiary truncate flex-1 font-mono">{codeSnippet}</span>}
+      </div>
+      <Checkbox
+        checked={isSelected}
+        onCheckedChange={handleCheckedChange}
+        className="shrink-0 mr-2 border-border-hover"
+        onClick={handleCheckboxClick}
+      />
+    </div>
+  );
+}
 
 export function DeadCodeCategory({
   title,
@@ -50,21 +131,21 @@ export function DeadCodeCategory({
 
   const isExpanded = expandedCategories[categoryKey];
 
-  const handleItemClick = (item: DeadCodeItem) => {
+  function handleItemClick(item: DeadCodeItem) {
     openFile(item.filePath);
     setTargetLine({ nodeId: item.filePath, lineNum: item.line });
     setActiveActivityPageId('explorer');
     setViewMode('ide');
-  };
+  }
 
-  const toggleCategory = () => {
+  function handleToggleCategory() {
     setExpandedCategories((prev) => ({
       ...prev,
       [categoryKey]: !prev[categoryKey],
     }));
-  };
+  }
 
-  const toggleFolder = (folderPath: string) => {
+  function handleToggleFolder(folderPath: string) {
     setCollapsedFolders((prev) => {
       const next = new Set(prev);
       if (next.has(folderPath)) {
@@ -74,7 +155,11 @@ export function DeadCodeCategory({
       }
       return next;
     });
-  };
+  }
+
+  function handleToggleItemSelection(item: DeadCodeItem) {
+    toggleItemSelection(item);
+  }
 
   const tree = useMemo(() => buildDeadCodeTree(items), [items]);
 
@@ -82,7 +167,7 @@ export function DeadCodeCategory({
     <div className="rounded overflow-hidden">
       {/* Category Header */}
       <div className="flex items-center gap-2 px-2 py-1.5 hover:bg-white/5 transition-colors border-b border-border-DEFAULT">
-        <button onClick={toggleCategory} className="flex items-center gap-1.5 flex-1">
+        <button onClick={handleToggleCategory} className="flex items-center gap-1.5 flex-1">
           {isExpanded ? (
             <ChevronDown size={14} className="text-text-muted shrink-0" />
           ) : (
@@ -104,7 +189,7 @@ export function DeadCodeCategory({
             getNodeType={(node) => node.type}
             getNodePath={(node) => node.path}
             collapsedPaths={collapsedFolders}
-            onToggleCollapse={toggleFolder}
+            onToggleCollapse={handleToggleFolder}
           >
             {({ node, depth, isFocused, isCollapsed, itemRef, handleFocus, handleToggle }) => {
               // Folder rendering
@@ -129,54 +214,21 @@ export function DeadCodeCategory({
                 const item = node.deadCodeItem;
                 const isSelected = isItemSelected(item);
 
-                // Extract filename and line number
-                const fileName = item.filePath.split('/').pop() || item.filePath;
-                const displayLabel = `${fileName}:${item.line}`;
-
-                // Get code snippet
                 const fileContent = files[item.filePath] || '';
-                const lines = fileContent.split('\n');
-                const fullLine = lines[item.line - 1] || '';
-
-                // Extract code snippet
-                let codeSnippet = fullLine.trim();
-                if (item.kind === 'import') {
-                  const importMatch = fullLine.match(/import\s+(?:type\s+)?(\{[^}]+\}|\w+)/);
-                  if (importMatch) {
-                    codeSnippet = importMatch[1].trim();
-                  }
-                }
 
                 return (
-                  <div
-                    ref={itemRef}
-                    className={`flex items-center gap-2 cursor-pointer ${
-                      isFocused ? 'bg-white/8 border-l-2 border-warm-300/50' : ''
-                    }`}
-                    onClick={handleFocus}
-                    onDoubleClick={() => handleItemClick(item)}
-                  >
-                    <div className="flex-1 min-w-0 flex items-center gap-2">
-                      <FileTreeItem
-                        icon={(() => <FileIcon fileName={item.filePath} />) as React.ComponentType}
-                        label={displayLabel}
-                        focused={false}
-                        indent={depth}
-                        onFocus={handleFocus}
-                        onDoubleClick={() => handleItemClick(item)}
-                      />
-                      {codeSnippet && (
-                        <span className="text-2xs text-text-tertiary truncate flex-1 font-mono">{codeSnippet}</span>
-                      )}
-                    </div>
-                    <Checkbox
-                      checked={isSelected}
-                      샐
-                      onCheckedChange={() => toggleItemSelection(item)}
-                      className="shrink-0 mr-2 border-border-hover"
-                      onClick={(e) => e.stopPropagation()}
-                    />
-                  </div>
+                  <DeadCodeCategoryItem
+                    key={node.path}
+                    item={item}
+                    depth={depth}
+                    focused={isFocused}
+                    itemRef={itemRef}
+                    fileContent={fileContent}
+                    isSelected={isSelected}
+                    onFocus={handleFocus}
+                    onOpenItem={handleItemClick}
+                    onToggleItemSelection={handleToggleItemSelection}
+                  />
                 );
               }
 

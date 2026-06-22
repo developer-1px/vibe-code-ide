@@ -17,13 +17,25 @@ export const ExplorerSidebar: React.FC = () => {
     return null;
   }
 
+  function handleFileExplorerToggle() {
+    setIsFileExplorerCollapsed(!isFileExplorerCollapsed);
+  }
+
+  function handleAllFilesClick() {
+    setFileTreeMode('all');
+  }
+
+  function handleRelatedFilesClick() {
+    setFileTreeMode('related');
+  }
+
   return (
     <div ref={containerRef} className="relative focus:outline-none">
       <Sidebar resizable defaultWidth={250} minWidth={200} maxWidth={800} className="h-full shadow-2xl">
         <div className={!isFileExplorerCollapsed ? 'flex-1 flex flex-col overflow-hidden' : ''}>
           <button
             type="button"
-            onClick={() => setIsFileExplorerCollapsed(!isFileExplorerCollapsed)}
+            onClick={handleFileExplorerToggle}
             className="flex w-full h-8 items-center justify-between border-b border-border-DEFAULT px-2 flex-shrink-0 hover:bg-bg-deep transition-colors"
           >
             <span className="text-2xs font-medium text-text-tertiary normal-case">Project</span>
@@ -39,7 +51,7 @@ export const ExplorerSidebar: React.FC = () => {
               <div className="flex border-b border-border-DEFAULT">
                 <button
                   type="button"
-                  onClick={() => setFileTreeMode('all')}
+                  onClick={handleAllFilesClick}
                   className={`flex-1 px-2 py-1.5 text-2xs font-medium transition-colors ${
                     fileTreeMode === 'all'
                       ? 'bg-bg-deep text-text-primary border-b-2 border-warm-300'
@@ -50,7 +62,7 @@ export const ExplorerSidebar: React.FC = () => {
                 </button>
                 <button
                   type="button"
-                  onClick={() => setFileTreeMode('related')}
+                  onClick={handleRelatedFilesClick}
                   className={`flex-1 px-2 py-1.5 text-2xs font-medium transition-colors ${
                     fileTreeMode === 'related'
                       ? 'bg-bg-deep text-text-primary border-b-2 border-warm-300'

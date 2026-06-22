@@ -10,9 +10,9 @@ const SlideContext = ({ slide }: { slide: Slide }) => {
   const { context } = slide;
   const setCurrentSlide = useSetAtom(setCurrentSlideWithHistoryAtom);
 
-  const handleNavigate = (targetId: string) => {
+  function handleNavigate(targetId: string) {
     setCurrentSlide(targetId);
-  };
+  }
 
   return (
     <div className="flex flex-col gap-4 p-4 bg-bg-elevated border border-border-DEFAULT rounded-lg">
@@ -24,7 +24,7 @@ const SlideContext = ({ slide }: { slide: Slide }) => {
         ) : (
           <div className="flex flex-wrap gap-2">
             {context.callers.map((callerId) => (
-              <FunctionBadge key={callerId} nodeId={callerId} onClick={() => handleNavigate(callerId)} />
+              <FunctionBadge key={callerId} nodeId={callerId} onNavigate={handleNavigate} />
             ))}
           </div>
         )}
@@ -38,7 +38,7 @@ const SlideContext = ({ slide }: { slide: Slide }) => {
         ) : (
           <div className="flex flex-wrap gap-2">
             {context.callees.map((calleeId) => (
-              <FunctionBadge key={calleeId} nodeId={calleeId} onClick={() => handleNavigate(calleeId)} />
+              <FunctionBadge key={calleeId} nodeId={calleeId} onNavigate={handleNavigate} />
             ))}
           </div>
         )}
@@ -55,7 +55,7 @@ const SlideContext = ({ slide }: { slide: Slide }) => {
               <FunctionBadge
                 key={siblingId}
                 nodeId={siblingId}
-                onClick={() => handleNavigate(siblingId)}
+                onNavigate={handleNavigate}
                 isActive={siblingId === slide.id}
               />
             ))}
@@ -90,21 +90,25 @@ const SlideContext = ({ slide }: { slide: Slide }) => {
  */
 const FunctionBadge = ({
   nodeId,
-  onClick,
+  onNavigate,
   isActive = false,
 }: {
   nodeId: string;
-  onClick: () => void;
+  onNavigate: (targetId: string) => void;
   isActive?: boolean;
 }) => {
   // nodeId에서 함수 이름 추출 (filePath::functionName 형식)
   const functionName = nodeId.includes('::') ? nodeId.split('::').pop() || nodeId : nodeId.split('/').pop() || nodeId;
 
+  function handleClick() {
+    onNavigate(nodeId);
+  }
+
   return (
     <Badge
       variant={isActive ? 'active' : 'default'}
       className="cursor-pointer hover:bg-warm-active-hover transition-colors"
-      onClick={onClick}
+      onClick={handleClick}
     >
       {functionName}
     </Badge>

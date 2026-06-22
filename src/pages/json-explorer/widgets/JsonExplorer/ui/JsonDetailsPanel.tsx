@@ -3,6 +3,7 @@
  */
 
 import { Copy, X } from 'lucide-react';
+import type React from 'react';
 import type { ReactNode } from 'react';
 import { useMemo, useState } from 'react';
 import { ScrollArea } from '@/shared/ui/ScrollArea';
@@ -79,6 +80,44 @@ function renderHighlightedJsonLine(text: string): ReactNode[] {
   return tokens;
 }
 
+interface JsonHighlighterLineProps {
+  line: { text: string; path: string | null; lineNumber: number };
+  copiedPath: string | null;
+  onCopyPath: (path: string, e: React.MouseEvent) => void;
+}
+
+function JsonHighlighterLine({ line, copiedPath, onCopyPath }: JsonHighlighterLineProps) {
+  function handleCopyPathClick(e: React.MouseEvent) {
+    if (line.path) {
+      onCopyPath(line.path, e);
+    }
+  }
+
+  return (
+    <div className="group hover:bg-warm-500/5 relative flex items-center">
+      {/* Line number */}
+      <span className="text-text-tertiary select-none pr-3 pl-2 text-right" style={{ minWidth: '3rem' }}>
+        {line.lineNumber}
+      </span>
+
+      {/* Code */}
+      <div className="flex-1 whitespace-pre">{renderHighlightedJsonLine(line.text)}</div>
+
+      {/* Copy path button */}
+      {line.path && (
+        <button
+          onClick={handleCopyPathClick}
+          className="absolute right-2 opacity-0 group-hover:opacity-100 transition-opacity p-0.5 hover:bg-bg-elevated rounded"
+          title={`Copy path: ${line.path}`}
+          aria-label="Copy path"
+        >
+          <Copy size={10} className={copiedPath === line.path ? 'text-green-400' : 'text-text-tertiary'} />
+        </button>
+      )}
+    </div>
+  );
+}
+
 /**
  * JSON 문자열에 syntax highlighting 적용
  */
@@ -143,7 +182,7 @@ function JsonHighlighter({ json }: { json: string }) {
     return result;
   }, [json]);
 
-  const handleCopyPath = async (path: string, e: React.MouseEvent) => {
+  async function handleCopyPath(path: string, e: React.MouseEvent) {
     e.stopPropagation();
     try {
       await navigator.clipboard.writeText(path);
@@ -152,35 +191,13 @@ function JsonHighlighter({ json }: { json: string }) {
     } catch (error) {
       console.error('Failed to copy path:', error);
     }
-  };
+  }
 
   return (
     <div className="font-mono text-2xs">
-      {lines.map((line, index) => {
-        return (
-          <div key={index} className="group hover:bg-warm-500/5 relative flex items-center">
-            {/* Line number */}
-            <span className="text-text-tertiary select-none pr-3 pl-2 text-right" style={{ minWidth: '3rem' }}>
-              {line.lineNumber}
-            </span>
-
-            {/* Code */}
-            <div className="flex-1 whitespace-pre">{renderHighlightedJsonLine(line.text)}</div>
-
-            {/* Copy path button */}
-            {line.path && (
-              <button
-                onClick={(e) => handleCopyPath(line.path!, e)}
-                className="absolute right-2 opacity-0 group-hover:opacity-100 transition-opacity p-0.5 hover:bg-bg-elevated rounded"
-                title={`Copy path: ${line.path}`}
-                aria-label="Copy path"
-              >
-                <Copy size={10} className={copiedPath === line.path ? 'text-green-400' : 'text-text-tertiary'} />
-              </button>
-            )}
-          </div>
-        );
-      })}
+      {lines.map((line) => (
+        <JsonHighlighterLine key={line.lineNumber} line={line} copiedPath={copiedPath} onCopyPath={handleCopyPath} />
+      ))}
     </div>
   );
 }
@@ -194,7 +211,7 @@ export function JsonDetailsPanel({ data, onClose }: JsonDetailsPanelProps) {
     return JSON.stringify(data, null, 2);
   }, [data]);
 
-  const handleCopy = async () => {
+  async function handleCopy() {
     if (!data) return;
     try {
       await navigator.clipboard.writeText(jsonString);
@@ -203,7 +220,11 @@ export function JsonDetailsPanel({ data, onClose }: JsonDetailsPanelProps) {
     } catch (error) {
       console.error('Failed to copy:', error);
     }
-  };
+  }
+
+  function handleCloseClick() {
+    onClose();
+  }
 
   if (!data) {
     return (
@@ -211,7 +232,7 @@ export function JsonDetailsPanel({ data, onClose }: JsonDetailsPanelProps) {
         <div className="flex items-center justify-between px-3 py-2 border-b border-border-DEFAULT bg-bg-deep">
           <h2 className="text-xs font-semibold text-text-primary">Details</h2>
           <button
-            onClick={onClose}
+            onClick={handleCloseClick}
             className="p-1 hover:bg-bg-elevated rounded transition-colors"
             aria-label="Close panel"
           >
@@ -240,7 +261,7 @@ export function JsonDetailsPanel({ data, onClose }: JsonDetailsPanelProps) {
             <Copy size={14} className={copied ? 'text-green-400' : 'text-text-tertiary'} />
           </button>
           <button
-            onClick={onClose}
+            onClick={handleCloseClick}
             className="p-1 hover:bg-bg-elevated rounded transition-colors"
             aria-label="Close panel"
           >

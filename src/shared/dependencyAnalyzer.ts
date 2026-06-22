@@ -300,7 +300,9 @@ export function analyzeDependencies(currentFilePath: string | null, graphData: G
 
   // Step 2: BFS로 Indirect importers 수집
   const visitedIndirect = new Set<string>([currentFilePath]); // 현재 파일은 이미 방문 처리
-  directImporters.forEach((path) => visitedIndirect.add(path)); // Direct도 방문 처리
+  directImporters.forEach((path) => {
+    visitedIndirect.add(path);
+  }); // Direct도 방문 처리
 
   const bfsQueue: { filePath: string; depth: number }[] = [];
   // Direct importers를 시작점으로 큐에 추가

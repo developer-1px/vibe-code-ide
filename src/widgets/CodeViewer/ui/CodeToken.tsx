@@ -41,7 +41,7 @@ const CodeToken = ({
   // Check if the link target actually exists
   const isLinkable = fullNodeMap.has(tokenId);
 
-  const handleTokenClick = (e: React.MouseEvent) => {
+  function handleTokenClick(e: React.MouseEvent) {
     if (!isLinkable) return;
 
     // Cmd+Click (Mac) 또는 Ctrl+Click (Win): Go to Definition
@@ -104,7 +104,7 @@ const CodeToken = ({
         }
       }
     }
-  };
+  }
 
   return (
     <span

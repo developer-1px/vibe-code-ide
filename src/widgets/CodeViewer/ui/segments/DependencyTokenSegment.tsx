@@ -34,7 +34,7 @@ export const DependencyTokenSegment: React.FC<DependencyTokenSegmentProps> = ({
 
   const isComponent = /^[A-Z]/.test(segment.text);
 
-  const handleClick = (e: React.MouseEvent) => {
+  function handleClick(e: React.MouseEvent) {
     e.stopPropagation();
 
     // definitionLocation이 있으면 해당 파일을 열고 정의 위치로 이동
@@ -50,15 +50,15 @@ export const DependencyTokenSegment: React.FC<DependencyTokenSegmentProps> = ({
 
     // Fallback: nodeId로 이동 (기존 동작)
     // TODO: 여기에 기존 CodeToken의 토글 로직 추가 가능
-  };
+  }
 
-  const handleMouseEnter = () => {
+  function handleMouseEnter() {
     setHoveredIdentifier(segment.text);
-  };
+  }
 
-  const handleMouseLeave = () => {
+  function handleMouseLeave() {
     setHoveredIdentifier(null);
-  };
+  }
 
   const className = isFocused
     ? `${style.className} bg-cyan-500/30 rounded`

@@ -3,6 +3,7 @@
  */
 
 import { Search } from 'lucide-react';
+import type React from 'react';
 import { Input } from '@/shared/ui/Input';
 
 interface SearchBarProps {
@@ -12,6 +13,10 @@ interface SearchBarProps {
 }
 
 export function SearchBar({ value, onChange, placeholder = 'Search products...' }: SearchBarProps) {
+  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+    onChange(e.target.value);
+  }
+
   return (
     <div className="relative flex items-center gap-2 px-3 py-2 border-b border-border-DEFAULT bg-bg-elevated">
       <Search className="absolute left-5 w-3.5 h-3.5 text-text-tertiary" />
@@ -19,7 +24,7 @@ export function SearchBar({ value, onChange, placeholder = 'Search products...' 
         type="text"
         placeholder={placeholder}
         value={value}
-        onChange={(e) => onChange(e.target.value)}
+        onChange={handleChange}
         className="pl-8 h-7 text-2xs bg-bg-deep border-border-DEFAULT text-text-primary placeholder:text-text-tertiary"
       />
     </div>

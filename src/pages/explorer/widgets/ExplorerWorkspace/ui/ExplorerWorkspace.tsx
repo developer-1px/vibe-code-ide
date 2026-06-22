@@ -9,6 +9,10 @@ export function ExplorerWorkspace() {
   const rightPanelType = useAtomValue(rightPanelTypeAtom);
   const setRightPanelOpen = useSetAtom(rightPanelOpenAtom);
 
+  function handleCloseWorkspacePanel() {
+    setRightPanelOpen(false);
+  }
+
   return (
     <div className="flex h-full w-full overflow-hidden">
       <ExplorerSidebar />
@@ -17,7 +21,7 @@ export function ExplorerWorkspace() {
         <TabContainer />
       </div>
 
-      {rightPanelOpen && rightPanelType === 'workspace' && <WorkspacePanel onClose={() => setRightPanelOpen(false)} />}
+      {rightPanelOpen && rightPanelType === 'workspace' && <WorkspacePanel onClose={handleCloseWorkspacePanel} />}
     </div>
   );
 }

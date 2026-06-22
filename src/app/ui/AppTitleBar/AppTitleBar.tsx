@@ -15,6 +15,15 @@ export function AppTitleBar() {
   // Get active file name for TitleBar
   const activeFileName = 'vibe-coding-ide';
 
+  function handleWorkspaceTabClick() {
+    setRightPanelType('workspace');
+    if (!rightPanelOpen) setRightPanelOpen(true);
+  }
+
+  function handleClosePanelClick() {
+    setRightPanelOpen(false);
+  }
+
   return (
     <TitleBar filename={activeFileName} projectName="teo.v">
       {/* Right Panel Tabs */}
@@ -27,10 +36,7 @@ export function AppTitleBar() {
               ? 'bg-warm-300/15 text-warm-300'
               : 'text-text-secondary hover:text-text-primary hover:bg-bg-deep/50'
           }`}
-          onClick={() => {
-            setRightPanelType('workspace');
-            if (!rightPanelOpen) setRightPanelOpen(true);
-          }}
+          onClick={handleWorkspaceTabClick}
           title="Workspace Panel"
         >
           <FolderOpen size={14} />
@@ -42,7 +48,7 @@ export function AppTitleBar() {
           <button
             type="button"
             className="flex items-center justify-center px-1.5 py-1 text-xs border-l border-border-DEFAULT text-text-tertiary hover:text-text-primary hover:bg-bg-deep/50 transition-colors"
-            onClick={() => setRightPanelOpen(false)}
+            onClick={handleClosePanelClick}
             title="Close Panel"
           >
             <X size={14} />

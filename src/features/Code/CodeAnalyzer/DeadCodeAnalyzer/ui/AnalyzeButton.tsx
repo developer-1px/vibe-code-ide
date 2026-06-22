@@ -12,12 +12,16 @@ export function AnalyzeButton() {
   const graphData = useAtomValue(graphDataAtom);
   const { isAnalyzing, reanalyze } = useDeadCodeAnalysis();
 
+  function handleAnalyzeClick() {
+    reanalyze();
+  }
+
   return (
     <Button
       variant="ghost"
       size="sm"
       className="h-5 w-5 p-0"
-      onClick={reanalyze}
+      onClick={handleAnalyzeClick}
       disabled={isAnalyzing || !graphData}
       title={isAnalyzing ? 'Analyzing...' : 'Re-analyze'}
     >

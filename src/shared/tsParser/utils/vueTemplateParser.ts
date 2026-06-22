@@ -57,7 +57,9 @@ export function extractTemplateComponents(vueContent: string, filePath: string):
 
       // 자식 노드 순회
       if ('children' in node && Array.isArray(node.children)) {
-        node.children.forEach((child) => visit(child));
+        node.children.forEach((child) => {
+          visit(child);
+        });
       }
     }
 
@@ -135,7 +137,9 @@ export function extractTemplateVariables(
 
       // 자식 노드 순회
       if ('children' in node && Array.isArray(node.children)) {
-        node.children.forEach((child) => visit(child));
+        node.children.forEach((child) => {
+          visit(child);
+        });
       }
     }
 
