@@ -391,12 +391,6 @@
   .hover-code-identifier:hover {
     background-color: var(--code-identifier-hover-bg);
   }
-
-  /* Inactive Code Card - Grayscale Animation */
-  .grayscale {
-    filter: grayscale(100%);
-    opacity: 0.6;
-  }
 }
 
 /* ===== Custom Scrollbar ===== */

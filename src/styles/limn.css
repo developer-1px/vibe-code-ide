@@ -26,7 +26,8 @@
   --color-text-primary: rgb(255 240 220 / 0.95);
   --color-text-secondary: rgb(255 250 245 / 0.7);
   --color-text-tertiary: rgb(255 250 245 / 0.55);
-  --color-text-muted: #64748b;  /* Tailwind slate-500 (same as line numbers) */
+  --color-text-muted: #64748b;
+  /* Tailwind slate-500 (same as line numbers) */
   --color-text-faint: rgb(255 250 245 / 0.38);
 
   /* Status */
@@ -49,49 +50,69 @@
   /* Terminal Colors - LIMN Warm Spectrum (ANSI 16 Color Palette) */
 
   /* Black & White - Neutral grays with warm undertones */
-  --color-terminal-black: #1a1a20;           /* Warm deep black */
-  --color-terminal-bright-black: #3a3a45;    /* Warm gray (bright black) */
-  --color-terminal-white: #d4cfc4;           /* Warm light gray */
-  --color-terminal-bright-white: #f5f0e8;    /* Warm almost-white */
+  --color-terminal-black: #1a1a20;
+  /* Warm deep black */
+  --color-terminal-bright-black: #3a3a45;
+  /* Warm gray (bright black) */
+  --color-terminal-white: #d4cfc4;
+  /* Warm light gray */
+  --color-terminal-bright-white: #f5f0e8;
+  /* Warm almost-white */
 
   /* Red family - coral/salmon reds with warmth */
-  --color-terminal-red: #e88b7a;             /* Warm coral red */
-  --color-terminal-bright-red: #ffa595;      /* Bright salmon */
+  --color-terminal-red: #e88b7a;
+  /* Warm coral red */
+  --color-terminal-bright-red: #ffa595;
+  /* Bright salmon */
   --color-terminal-red-glow: rgb(232 139 122 / 0.15);
 
   /* Orange family - peachy oranges (LIMN signature) */
-  --color-terminal-orange: #ffb380;          /* Warm peach orange */
-  --color-terminal-bright-orange: #ffcc99;   /* Bright LIMN orange */
+  --color-terminal-orange: #ffb380;
+  /* Warm peach orange */
+  --color-terminal-bright-orange: #ffcc99;
+  /* Bright LIMN orange */
   --color-terminal-orange-glow: rgb(255 179 128 / 0.15);
 
   /* Yellow family - golden yellows */
-  --color-terminal-yellow: #e8c07a;          /* Warm golden yellow */
-  --color-terminal-bright-yellow: #ffd699;   /* Bright champagne */
+  --color-terminal-yellow: #e8c07a;
+  /* Warm golden yellow */
+  --color-terminal-bright-yellow: #ffd699;
+  /* Bright champagne */
   --color-terminal-yellow-glow: rgb(232 192 122 / 0.15);
 
   /* Green family - olive/sage greens with warmth */
-  --color-terminal-green: #a8c088;           /* Warm olive green */
-  --color-terminal-bright-green: #c4d8a4;    /* Bright sage */
+  --color-terminal-green: #a8c088;
+  /* Warm olive green */
+  --color-terminal-bright-green: #c4d8a4;
+  /* Bright sage */
   --color-terminal-green-glow: rgb(168 192 136 / 0.15);
 
   /* Cyan family - teal with peachy undertones */
-  --color-terminal-cyan: #7dc4c4;            /* Warm teal-cyan */
-  --color-terminal-bright-cyan: #9ee0d8;     /* Bright peachy-cyan */
+  --color-terminal-cyan: #7dc4c4;
+  /* Warm teal-cyan */
+  --color-terminal-bright-cyan: #9ee0d8;
+  /* Bright peachy-cyan */
   --color-terminal-cyan-glow: rgb(125 196 196 / 0.15);
 
   /* Blue family - warm blues with violet undertones */
-  --color-terminal-blue: #8ba8d8;            /* Warm periwinkle blue */
-  --color-terminal-bright-blue: #a8c4f0;     /* Bright lavender-blue */
+  --color-terminal-blue: #8ba8d8;
+  /* Warm periwinkle blue */
+  --color-terminal-bright-blue: #a8c4f0;
+  /* Bright lavender-blue */
   --color-terminal-blue-glow: rgb(139 168 216 / 0.15);
 
   /* Magenta family - dusty rose/mauve */
-  --color-terminal-magenta: #d8a8c4;         /* Warm dusty rose */
-  --color-terminal-bright-magenta: #f0c4d8;  /* Bright rose-pink */
+  --color-terminal-magenta: #d8a8c4;
+  /* Warm dusty rose */
+  --color-terminal-bright-magenta: #f0c4d8;
+  /* Bright rose-pink */
   --color-terminal-magenta-glow: rgb(216 168 196 / 0.15);
 
   /* Purple family - warm lavender/plum */
-  --color-terminal-purple: #b8a8d8;          /* Warm lavender */
-  --color-terminal-bright-purple: #d4c4f0;   /* Bright pale lavender */
+  --color-terminal-purple: #b8a8d8;
+  /* Warm lavender */
+  --color-terminal-bright-purple: #d4c4f0;
+  /* Bright pale lavender */
   --color-terminal-purple-glow: rgb(184 168 216 / 0.15);
 
   /* Font Sizes */
@@ -101,6 +122,24 @@
   /* Font Families */
   --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', 'Helvetica Neue', sans-serif;
   --font-mono: 'Geist Mono', 'Fira Code', 'SF Mono', 'JetBrains Mono', 'Consolas', monospace;
+
+  /* Radius Mappings */
+  --radius-sm: var(--limn-radius-sm);
+  --radius-md: var(--limn-radius-md);
+  --radius-lg: var(--limn-radius-lg);
+  --radius-xl: var(--limn-radius-xl);
+  --radius-2xl: var(--limn-radius-2xl);
+  --radius-3xl: var(--limn-radius-3xl);
+  --radius-4xl: var(--limn-radius-4xl);
+
+  /* Animation */
+  --ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --animate-accordion-down: accordion-down 0.2s ease-out;
+  --animate-accordion-up: accordion-up 0.2s ease-out;
+
+  /* Durations - Tailwind v4 usually uses --duration-* but let's define vars for them or use them in utilities */
+  /* Actually, for standard Tailwind utilities like transition-all duration-normal, we need to extend the theme values. */
 }
 
 @layer base {
@@ -127,7 +166,26 @@
     --limn-radius-2xl: 12px;
     --limn-radius-3xl: 14px;
     --limn-radius-4xl: 16px;
+    --limn-radius-4xl: 16px;
     --limn-radius-full: 9999px;
+
+    /* Transition Durations */
+    --duration-fast: 100ms;
+    --duration-normal: 200ms;
+    --duration-slow: 300ms;
+
+    /* Tailwind Mappings */
+    --radius-sm: var(--limn-radius-sm);
+    --radius-md: var(--limn-radius-md);
+    --radius-lg: var(--limn-radius-lg);
+    --radius-xl: var(--limn-radius-xl);
+    --radius-2xl: var(--limn-radius-2xl);
+    --radius-3xl: var(--limn-radius-3xl);
+    --radius-4xl: var(--limn-radius-4xl);
+
+    --tracking-tight: -0.025em;
+    --tracking-normal: 0em;
+    --tracking-wide: 0.025em;
 
     /* Command Palette & UI Sizes */
     --limn-command-input-height: 52px;
@@ -172,23 +230,36 @@
   }
 
   @keyframes blink {
-    0%, 50% { opacity: 1; }
-    51%, 100% { opacity: 0; }
+
+    0%,
+    50% {
+      opacity: 1;
+    }
+
+    51%,
+    100% {
+      opacity: 0;
+    }
   }
 
   @keyframes glow-pulse {
-    0%, 100% { box-shadow: 0 0 20px rgb(255 180 120 / 0.2); }
-    50% { box-shadow: 0 0 30px rgb(255 180 120 / 0.4); }
+
+    0%,
+    100% {
+      box-shadow: 0 0 20px rgb(255 180 120 / 0.2);
+    }
+
+    50% {
+      box-shadow: 0 0 30px rgb(255 180 120 / 0.4);
+    }
   }
 }
 
 /* Custom utility classes */
 .active-glow {
-  background: linear-gradient(
-    145deg,
-    rgb(255 200 150 / 0.12) 0%,
-    rgb(255 180 120 / 0.06) 100%
-  );
+  background: linear-gradient(145deg,
+      rgb(255 200 150 / 0.12) 0%,
+      rgb(255 180 120 / 0.06) 100%);
   border: 1px solid rgb(255 200 150 / 0.3);
   box-shadow: 0 0 40px rgb(255 180 120 / 0.1);
 }
@@ -206,17 +277,49 @@
 }
 
 /* Syntax highlighting utility classes */
-.code-keyword { color: var(--code-keyword); }
-.code-function { color: var(--code-function); }
-.code-class { color: var(--code-class); }
-.code-variable { color: var(--code-variable); }
-.code-string { color: var(--code-string); }
-.code-number { color: var(--code-number); }
-.code-comment { color: var(--code-comment); }
-.code-property { color: var(--code-property); }
-.code-tag { color: var(--code-tag); }
-.code-attribute { color: var(--code-attribute); }
-.code-punctuation { color: var(--code-punctuation); }
+.code-keyword {
+  color: var(--code-keyword);
+}
+
+.code-function {
+  color: var(--code-function);
+}
+
+.code-class {
+  color: var(--code-class);
+}
+
+.code-variable {
+  color: var(--code-variable);
+}
+
+.code-string {
+  color: var(--code-string);
+}
+
+.code-number {
+  color: var(--code-number);
+}
+
+.code-comment {
+  color: var(--code-comment);
+}
+
+.code-property {
+  color: var(--code-property);
+}
+
+.code-tag {
+  color: var(--code-tag);
+}
+
+.code-attribute {
+  color: var(--code-attribute);
+}
+
+.code-punctuation {
+  color: var(--code-punctuation);
+}
 
 /* ===== Document Light Mode (for CodeDocView) ===== */
 [data-doc-mode="light"] {

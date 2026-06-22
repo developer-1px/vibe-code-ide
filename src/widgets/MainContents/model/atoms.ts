@@ -5,7 +5,7 @@
 
 import { atom } from 'jotai';
 
-export type TabType = 'ide' | 'search';
+export type TabType = 'ide' | 'search' | 'slide';
 
 export interface ContentTab {
   id: string;

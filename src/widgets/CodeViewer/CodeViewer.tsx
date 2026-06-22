@@ -21,9 +21,10 @@ interface CodeViewerProps {
   processedLines: CodeLine[];
   node: CanvasNode | SourceFileNode;
   highlightedLines?: Set<number>;
+  mutedLines?: Set<number>;
 }
 
-const CodeViewer = ({ processedLines, node, highlightedLines }: CodeViewerProps) => {
+const CodeViewer = ({ processedLines, node, highlightedLines, mutedLines }: CodeViewerProps) => {
   const currentThemeName = useAtomValue(currentThemeAtom);
   const foldedLinesMap = useAtomValue(foldedLinesAtom);
 
@@ -58,6 +59,7 @@ const CodeViewer = ({ processedLines, node, highlightedLines }: CodeViewerProps)
           }
 
           const isHighlighted = highlightedLines?.has(line.num) || false;
+          const isMuted = mutedLines?.has(line.num) || false;
 
           return (
             <CodeLineView
@@ -66,6 +68,7 @@ const CodeViewer = ({ processedLines, node, highlightedLines }: CodeViewerProps)
               node={node}
               foldRanges={foldRanges}
               isHighlighted={isHighlighted}
+              isMuted={isMuted}
               allLines={processedLines}
             />
           );

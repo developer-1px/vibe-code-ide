@@ -46,6 +46,7 @@ const CodeLineView = ({
   node,
   foldRanges,
   isHighlighted = false,
+  isMuted = false,
   allLines: _allLines,
   options = {
     showFoldButton: true,
@@ -59,6 +60,7 @@ const CodeLineView = ({
   node: CanvasNode | SourceFileNode;
   foldRanges: Array<{ start: number; end: number }>;
   isHighlighted?: boolean;
+  isMuted?: boolean;
   allLines?: CodeLine[]; // 전체 라인 (끝 라인 판별용)
   options?: CodeLineViewOptions;
 }) => {
@@ -129,6 +131,7 @@ const CodeLineView = ({
         ${isHighlighted ? 'bg-warm-500/10' : ''}
         hover:bg-warm-500/5
         ${!options.interactive ? 'pointer-events-none' : ''}
+        ${isMuted ? 'grayscale opacity-20' : ''}
       `}
       data-line-num={line.num}
       data-block-start={isBlockStartLine ? blockStartLineNum : undefined}
