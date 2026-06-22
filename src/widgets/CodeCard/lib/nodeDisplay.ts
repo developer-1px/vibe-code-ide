@@ -75,8 +75,8 @@ export function getNodeTypeLabel(node: CanvasNode): string {
  * @returns 축약된 파일 경로
  *
  * @example
- * getNodeShortPath({ filePath: 'src/components/Button.tsx' })
- * // → 'components/Button.tsx'
+ * getNodeShortPath({ filePath: 'src/shared/ui/Button.tsx' })
+ * // → 'shared/ui/Button.tsx'
  *
  * getNodeShortPath({ filePath: undefined })
  * // → ''

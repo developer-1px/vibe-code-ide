@@ -7,7 +7,7 @@
 /**
  * 파일 경로에서 파일명만 추출
  * @example
- * getFileName('src/components/Button.tsx') // 'Button.tsx'
+ * getFileName('src/shared/ui/Button.tsx') // 'Button.tsx'
  * getFileName('Button.tsx') // 'Button.tsx'
  * getFileName('') // ''
  */
@@ -18,7 +18,7 @@ export function getFileName(path: string): string {
 /**
  * 파일 경로에서 확장자를 제외한 파일명 추출
  * @example
- * getFileNameWithoutExt('src/components/Button.tsx') // 'Button'
+ * getFileNameWithoutExt('src/shared/ui/Button.tsx') // 'Button'
  * getFileNameWithoutExt('README.md') // 'README'
  */
 export function getFileNameWithoutExt(path: string): string {
@@ -43,8 +43,8 @@ export function getFileExtension(path: string): string {
 /**
  * 파일 경로를 부분으로 분리 (빈 문자열 제거)
  * @example
- * splitPath('src/components/Button.tsx') // ['src', 'components', 'Button.tsx']
- * splitPath('/src/components/') // ['src', 'components']
+ * splitPath('src/shared/ui/Button.tsx') // ['src', 'shared', 'ui', 'Button.tsx']
+ * splitPath('/src/shared/ui/') // ['src', 'shared', 'ui']
  */
 export function splitPath(path: string): string[] {
   return path.split('/').filter(Boolean);
@@ -53,8 +53,8 @@ export function splitPath(path: string): string[] {
 /**
  * 경로 부분들을 조합하여 전체 경로 생성
  * @example
- * joinPath(['src', 'components', 'Button.tsx']) // 'src/components/Button.tsx'
- * joinPath(['src', 'components']) // 'src/components'
+ * joinPath(['src', 'shared', 'ui', 'Button.tsx']) // 'src/shared/ui/Button.tsx'
+ * joinPath(['src', 'shared', 'ui']) // 'src/shared/ui'
  */
 export function joinPath(parts: string[]): string {
   return parts.join('/');
@@ -63,7 +63,7 @@ export function joinPath(parts: string[]): string {
 /**
  * 파일 경로에서 디렉토리 경로만 추출
  * @example
- * getDirectory('src/components/Button.tsx') // 'src/components'
+ * getDirectory('src/shared/ui/Button.tsx') // 'src/shared/ui'
  * getDirectory('Button.tsx') // ''
  */
 export function getDirectory(path: string): string {
@@ -74,8 +74,8 @@ export function getDirectory(path: string): string {
 /**
  * 경로의 특정 깊이까지의 부분 경로 생성
  * @example
- * getPartialPath('src/components/ui/Button.tsx', 2) // 'src/components'
- * getPartialPath('src/components/ui/Button.tsx', 0) // ''
+ * getPartialPath('src/shared/ui/Button.tsx', 2) // 'src/shared'
+ * getPartialPath('src/shared/ui/Button.tsx', 0) // ''
  */
 export function getPartialPath(path: string, depth: number): string {
   const parts = splitPath(path);
@@ -85,7 +85,7 @@ export function getPartialPath(path: string, depth: number): string {
 /**
  * 두 경로의 공통 부분 추출
  * @example
- * getCommonPath('src/components/Button.tsx', 'src/components/Input.tsx') // 'src/components'
+ * getCommonPath('src/shared/ui/Button.tsx', 'src/shared/ui/Input.tsx') // 'src/shared/ui'
  * getCommonPath('src/a/b.tsx', 'lib/c/d.tsx') // ''
  */
 export function getCommonPath(path1: string, path2: string): string {
@@ -109,8 +109,8 @@ export function getCommonPath(path1: string, path2: string): string {
 /**
  * 경로가 특정 디렉토리 아래에 있는지 확인
  * @example
- * isUnderDirectory('src/components/Button.tsx', 'src') // true
- * isUnderDirectory('src/components/Button.tsx', 'lib') // false
+ * isUnderDirectory('src/shared/ui/Button.tsx', 'src') // true
+ * isUnderDirectory('src/shared/ui/Button.tsx', 'lib') // false
  */
 export function isUnderDirectory(path: string, directory: string): boolean {
   const normalizedPath = path.startsWith('/') ? path.slice(1) : path;
@@ -124,7 +124,7 @@ export function isUnderDirectory(path: string, directory: string): boolean {
 /**
  * 경로를 정규화 (중복 슬래시 제거, 앞뒤 슬래시 제거)
  * @example
- * normalizePath('/src//components/Button.tsx/') // 'src/components/Button.tsx'
+ * normalizePath('/src//shared/ui/Button.tsx/') // 'src/shared/ui/Button.tsx'
  * normalizePath('//src/') // 'src'
  */
 export function normalizePath(path: string): string {
