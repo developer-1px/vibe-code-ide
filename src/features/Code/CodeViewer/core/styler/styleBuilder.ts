@@ -3,7 +3,7 @@
  * 여러 kind를 조합하여 최종 스타일과 동작을 결정
  */
 
-import type { SegmentKind, SegmentStyle } from '@/pages/shared/features/CodeViewer/model/segment';
+import type { SegmentKind, SegmentStyle } from '@/features/Code/CodeViewer/model/segment';
 
 /**
  * Primary kind에 따른 기본 스타일 결정

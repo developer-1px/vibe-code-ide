@@ -8,9 +8,9 @@ import type React from 'react';
 import { useMemo } from 'react';
 import { filesAtom } from '@/entities/AppView/model/atoms';
 import type { CanvasNode } from '@/entities/CanvasNode/model/types.ts';
+import { renderCodeLinesDirect } from '@/features/Code/CodeViewer/core/renderer/renderCodeLinesDirect.ts';
+import { renderVueFile } from '@/features/Code/CodeViewer/core/renderer/renderVueFile.ts';
 import { activeLocalVariablesAtom } from '@/features/Code/FocusMode/model/atoms.ts';
-import { renderCodeLinesDirect } from '@/pages/shared/features/CodeViewer/core/renderer/renderCodeLinesDirect.ts';
-import { renderVueFile } from '@/pages/shared/features/CodeViewer/core/renderer/renderVueFile.ts';
 import { deadCodeResultsAtom } from '@/pages/shared/features/DeadCode/model/atoms.ts';
 import { FocusedIdentifierItem } from './FocusedIdentifierItem.tsx';
 

@@ -6,8 +6,8 @@
 import { useAtomValue, useSetAtom } from 'jotai';
 import type React from 'react';
 import type { CanvasNode } from '@/entities/CanvasNode/model/types.ts';
+import { foldedLinesAtom } from '@/features/Code/CodeFold/model/atoms.ts';
 import type { CodeLine } from '@/features/Code/CodeViewer/core/types/codeLine.ts';
-import { foldedLinesAtom } from '@/pages/shared/features/CodeFold/model/atoms.ts';
 
 interface FoldButtonProps {
   line: CodeLine;

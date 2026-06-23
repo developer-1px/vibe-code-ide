@@ -10,9 +10,9 @@ import { activeActivityPageIdAtom } from '@/app/model/activityPageAtoms';
 import { fullNodeMapAtom, hoveredIdentifierAtom } from '@/entities/AppView/model/atoms';
 import type { CanvasNode } from '@/entities/CanvasNode/model/types';
 import { cardPositionsAtom, transformAtom, visibleNodeIdsAtom } from '@/features/Canvas/model/atoms';
+import { focusedNodeIdAtom } from '@/features/Code/CodeViewer/model/atoms.ts';
+import type { CodeSegment, SegmentStyle } from '@/features/Code/CodeViewer/model/segment';
 import { useOpenFile } from '@/features/File/OpenFiles/lib/useOpenFile';
-import { focusedNodeIdAtom } from '@/pages/shared/features/CodeViewer/model/atoms.ts';
-import type { CodeSegment, SegmentStyle } from '@/pages/shared/features/CodeViewer/model/segment';
 
 interface ExternalSegmentProps {
   segment: CodeSegment;

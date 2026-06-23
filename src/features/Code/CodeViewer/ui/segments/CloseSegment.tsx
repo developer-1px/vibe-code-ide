@@ -7,8 +7,8 @@ import type React from 'react';
 import { fullNodeMapAtom } from '@/entities/AppView/model/atoms';
 import type { CanvasNode } from '@/entities/CanvasNode/model/types';
 import { visibleNodeIdsAtom } from '@/features/Canvas/model/atoms';
+import type { CodeSegment, SegmentStyle } from '@/features/Code/CodeViewer/model/segment';
 import { pruneDetachedNodes } from '@/pages/shared/features/Canvas/lib/pruneDetachedNodes';
-import type { CodeSegment, SegmentStyle } from '@/pages/shared/features/CodeViewer/model/segment';
 
 interface CloseSegmentProps {
   segment: CodeSegment;

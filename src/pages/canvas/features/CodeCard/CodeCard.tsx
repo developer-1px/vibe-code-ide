@@ -2,16 +2,16 @@ import { useAtomValue, useSetAtom } from 'jotai';
 import { useEffect, useMemo, useRef } from 'react';
 import { filesAtom } from '@/entities/AppView/model/atoms';
 import type { CanvasNode } from '@/entities/CanvasNode/model/types';
-import { activeTabAtom } from '@/features/File/OpenFiles/model/atoms';
-import { getFoldableLinesByMaxDepth } from '@/pages/shared/features/CodeFold/lib/foldUtils';
+import { getFoldableLinesByMaxDepth } from '@/features/Code/CodeFold/lib/foldUtils';
 // Atoms
-import { foldedLinesAtom } from '@/pages/shared/features/CodeFold/model/atoms';
-import CodeViewer from '@/pages/shared/features/CodeViewer/CodeViewer';
+import { foldedLinesAtom } from '@/features/Code/CodeFold/model/atoms';
+import CodeViewer from '@/features/Code/CodeViewer/CodeViewer';
 // Lib - Pure Utilities
-import { renderCodeLinesDirect } from '@/pages/shared/features/CodeViewer/core/renderer/renderCodeLinesDirect';
-import { renderVueFile } from '@/pages/shared/features/CodeViewer/core/renderer/renderVueFile';
-import { hoveredFilePathAtom } from '@/pages/shared/features/CodeViewer/model/atoms';
-import VueTemplateSection from '@/pages/shared/features/CodeViewer/ui/VueTemplateSection';
+import { renderCodeLinesDirect } from '@/features/Code/CodeViewer/core/renderer/renderCodeLinesDirect';
+import { renderVueFile } from '@/features/Code/CodeViewer/core/renderer/renderVueFile';
+import { hoveredFilePathAtom } from '@/features/Code/CodeViewer/model/atoms';
+import VueTemplateSection from '@/features/Code/CodeViewer/ui/VueTemplateSection';
+import { activeTabAtom } from '@/features/File/OpenFiles/model/atoms';
 import { deadCodeResultsAtom } from '@/pages/shared/features/DeadCode/model/atoms';
 import CodeCardCopyButton from './ui/CodeCardCopyButton';
 // UI Components

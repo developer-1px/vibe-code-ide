@@ -10,11 +10,8 @@ import { useAtom } from 'jotai';
 import { useCallback, useMemo } from 'react';
 import type { CanvasNode } from '@/entities/CanvasNode/model/types';
 import type { CodeLine } from '@/entities/CodeLine/model/types';
-import {
-  getFoldableLinesByMaxDepth,
-  getFoldableLinesExcludingDepth,
-} from '@/pages/shared/features/CodeFold/lib/foldUtils';
-import { foldedLinesAtom } from '@/pages/shared/features/CodeFold/model/atoms';
+import { getFoldableLinesByMaxDepth, getFoldableLinesExcludingDepth } from '@/features/Code/CodeFold/lib/foldUtils';
+import { foldedLinesAtom } from '@/features/Code/CodeFold/model/atoms';
 
 export type FoldLevel = 0 | 1 | 2;
 

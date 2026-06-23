@@ -1,63 +1,55 @@
 /**
- * LocalVariableSegment - 통합된 로컬 변수 핸들러
- * - 일반 클릭: Focus mode toggle
- * - Cmd+Click: 정의로 이동
+ * DependencyTokenSegment - 의존성 토큰 렌더링
+ * 외부 파일의 변수/함수를 클릭하면 해당 파일을 열고 정의 위치로 이동
  */
 
 import { useAtomValue, useSetAtom } from 'jotai';
 import type React from 'react';
 import { hoveredIdentifierAtom } from '@/entities/AppView/model/atoms';
-import type { CanvasNode } from '@/entities/CanvasNode/model/types.ts';
-import { activeLocalVariablesAtom } from '@/features/Code/FocusMode/model/atoms.ts';
-import { useGotoDefinition } from '@/pages/shared/features/CodeViewer/lib/useGotoDefinition';
-import type { CodeSegment, SegmentStyle } from '@/pages/shared/features/CodeViewer/model/segment';
+import type { CanvasNode } from '@/entities/CanvasNode/model/types';
+import { getTokenStyle } from '@/features/Code/CodeViewer/core/styler/tokenStyles';
+import type { CodeSegment, SegmentStyle } from '@/features/Code/CodeViewer/model/segment';
+import { useOpenFile } from '@/features/File/OpenFiles/lib/useOpenFile';
 
-interface LocalVariableSegmentProps {
+interface DependencyTokenSegmentProps {
   segment: CodeSegment;
   node: CanvasNode;
   style: SegmentStyle;
+  lineHasFocusedVariable?: boolean;
   isFocused?: boolean;
 }
 
-export const LocalVariableSegment: React.FC<LocalVariableSegmentProps> = ({ segment, node, style, isFocused }) => {
-  const setActiveLocalVariables = useSetAtom(activeLocalVariablesAtom);
-  const { handleGotoDefinitionByLocation } = useGotoDefinition();
+export const DependencyTokenSegment: React.FC<DependencyTokenSegmentProps> = ({
+  segment,
+  node,
+  style,
+  lineHasFocusedVariable,
+  isFocused,
+}) => {
+  const { openFile } = useOpenFile();
   const hoveredIdentifier = useAtomValue(hoveredIdentifierAtom);
   const setHoveredIdentifier = useSetAtom(hoveredIdentifierAtom);
 
   const isHovered = hoveredIdentifier === segment.text;
 
+  const isComponent = /^[A-Z]/.test(segment.text);
+
   function handleClick(e: React.MouseEvent) {
     e.stopPropagation();
 
-    // Cmd+Click: 정의로 이동
+    // definitionLocation이 있으면 해당 파일을 열고 정의 위치로 이동
     if (segment.definitionLocation) {
-      const handled = handleGotoDefinitionByLocation(e, segment.definitionLocation);
-      if (handled) {
-        return; // Cmd+Click으로 처리됨, Focus mode toggle 스킵
-      }
+      // Cmd+Click이 아니어도 작동하도록 하려면
+      // metaKey를 체크하지 않고 바로 실행
+      e.preventDefault();
+
+      const { filePath, line } = segment.definitionLocation;
+      openFile(filePath, { lineNumber: line });
+      return;
     }
 
-    // 일반 클릭: Focus mode toggle
-    setActiveLocalVariables((prev: Map<string, Set<string>>) => {
-      const next = new Map(prev);
-      const nodeVars = new Set(next.get(node.id) || new Set());
-
-      // Toggle
-      if (nodeVars.has(segment.text)) {
-        nodeVars.delete(segment.text);
-      } else {
-        nodeVars.add(segment.text);
-      }
-
-      if (nodeVars.size > 0) {
-        next.set(node.id, nodeVars);
-      } else {
-        next.delete(node.id);
-      }
-
-      return next;
-    });
+    // Fallback: nodeId로 이동 (기존 동작)
+    // TODO: 여기에 기존 CodeToken의 토글 로직 추가 가능
   }
 
   function handleMouseEnter() {
@@ -84,11 +76,10 @@ export const LocalVariableSegment: React.FC<LocalVariableSegmentProps> = ({ segm
       )}
 
       <span
+        className={`${className} inline-block rounded transition-all duration-200 select-text cursor-pointer border ${getTokenStyle(false, isComponent)}`}
         onClick={handleClick}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
-        className={className}
-        title={style.title}
       >
         {segment.text}
       </span>

@@ -9,12 +9,12 @@ import {
   isCodeLineNumberEmphasized,
 } from '@/entities/CodeLine/lib/computed';
 import type { SourceFileNode } from '@/entities/SourceFileNode/model/types';
+import { getFoldedCount, isLineFolded, isLineInsideFold } from '@/features/Code/CodeFold/lib/foldUtils';
+import { foldedLinesAtom } from '@/features/Code/CodeFold/model/atoms';
+import FoldBadge from '@/features/Code/CodeFold/ui/FoldBadge';
+import FoldButton from '@/features/Code/CodeFold/ui/FoldButton';
 import type { CodeLine } from '@/features/Code/CodeViewer/core/types/codeLine';
 import { targetLineAtom } from '@/features/File/Navigation/model/atoms';
-import { getFoldedCount, isLineFolded, isLineInsideFold } from '@/pages/shared/features/CodeFold/lib/foldUtils';
-import { foldedLinesAtom } from '@/pages/shared/features/CodeFold/model/atoms';
-import FoldBadge from '@/pages/shared/features/CodeFold/ui/FoldBadge';
-import FoldButton from '@/pages/shared/features/CodeFold/ui/FoldButton';
 import CodeLineExportSlots from './CodeLineExportSlots';
 import CodeLineSegment from './CodeLineSegment';
 import CodeLineSlots from './CodeLineSlots';

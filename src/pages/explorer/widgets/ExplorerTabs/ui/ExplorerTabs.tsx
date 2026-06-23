@@ -1,7 +1,7 @@
 import { useAtom } from 'jotai';
 import { activeTabIdAtom, openedTabsAtom } from '@/features/File/OpenFiles/model/contentTabs';
+import IDEScrollView from '@/features/File/OpenFiles/ui/IDEScrollView';
 import { ContentSearchView } from '@/pages/explorer/features/ContentSearch/ui/ContentSearchView';
-import IDEScrollView from '@/pages/shared/features/OpenFiles/ui/IDEScrollView';
 import { TabButton } from '../../../features/ExplorerTabs/ui/TabButton';
 
 export function ExplorerTabs() {
