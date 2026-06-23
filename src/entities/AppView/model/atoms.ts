@@ -57,7 +57,7 @@ export const fullNodeMapAtom = atom((get) => {
 export type ViewMode = 'ide' | 'contentSearch';
 export const viewModeAtom = atomWithStorage<ViewMode>('viewMode', 'ide'); // Default to IDE mode
 
-// 문서 모드 - Dark vs Light (for CodeDocView)
+// 문서 모드 - Dark vs Light (for CodeDoc)
 export type DocumentMode = 'dark' | 'light';
 export const documentModeAtom = atom<DocumentMode>('light'); // Default to light mode (GitBook-style)
 
