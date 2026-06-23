@@ -1,6 +1,7 @@
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import { useEffect, useMemo, useRef } from 'react';
 import { filesAtom, fullNodeMapAtom, graphDataAtom } from '@/entities/AppView/model/atoms';
+import { getExpandedVisibleNodeIds, getFilePathsForVisibleNodes } from '@/entities/AppView/model/computed';
 import { openedFilesAtom, visibleNodeIdsAtom } from '@/features/Canvas/model/atoms';
 import { symbolMetadataAtom } from '@/features/Search/UnifiedSearch/model/atoms.ts';
 import { extractSymbolMetadata } from '@/shared/symbolMetadataExtractor.ts';
@@ -28,13 +29,7 @@ export function CanvasBoard() {
   useEffect(() => {
     if (!fullNodeMap || fullNodeMap.size === 0) return;
 
-    const filePaths = new Set<string>();
-    visibleNodeIds.forEach((nodeId) => {
-      const node = fullNodeMap.get(nodeId);
-      if (node) {
-        filePaths.add(node.filePath);
-      }
-    });
+    const filePaths = getFilePathsForVisibleNodes(visibleNodeIds, fullNodeMap);
 
     let needsUpdate = false;
     filePaths.forEach((filePath) => {
@@ -49,15 +44,7 @@ export function CanvasBoard() {
   }, [visibleNodeIds, fullNodeMap, openedFiles, setOpenedFiles]);
 
   const expandedVisibleNodeIds = useMemo(() => {
-    if (openedFiles.size === 0) return visibleNodeIds;
-
-    const expanded = new Set(visibleNodeIds);
-
-    openedFiles.forEach((filePath) => {
-      expanded.add(filePath);
-    });
-
-    return expanded;
+    return getExpandedVisibleNodeIds(visibleNodeIds, openedFiles);
   }, [openedFiles, visibleNodeIds]);
 
   const { layoutNodes } = useCanvasLayout(graphData, expandedVisibleNodeIds);

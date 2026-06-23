@@ -1,5 +1,5 @@
 /**
- * extractKeyPaths - JSON 데이터에서 모든 키 경로 추출
+ * JsonDataset schema extraction
  */
 
 /**
@@ -7,7 +7,7 @@
  * @example
  * { a: 1, b: { c: 2, d: 3 } } → ['a', 'b', 'b.c', 'b.d']
  */
-function extractKeyPathsFromObject(obj: unknown, prefix = '', maxDepth = 3, currentDepth = 0): Set<string> {
+function extractJsonDatasetKeyPathsFromObject(obj: unknown, prefix = '', maxDepth = 3, currentDepth = 0): Set<string> {
   const paths = new Set<string>();
 
   if (currentDepth >= maxDepth) {
@@ -27,7 +27,7 @@ function extractKeyPathsFromObject(obj: unknown, prefix = '', maxDepth = 3, curr
     if (obj.length > 0) {
       const firstItem = obj[0];
       if (typeof firstItem === 'object' && firstItem !== null) {
-        const subPaths = extractKeyPathsFromObject(firstItem, prefix, maxDepth, currentDepth);
+        const subPaths = extractJsonDatasetKeyPathsFromObject(firstItem, prefix, maxDepth, currentDepth);
         subPaths.forEach((path) => {
           paths.add(path);
         });
@@ -45,7 +45,7 @@ function extractKeyPathsFromObject(obj: unknown, prefix = '', maxDepth = 3, curr
 
     // 재귀적으로 중첩 객체 처리
     if (typeof value === 'object' && value !== null) {
-      const subPaths = extractKeyPathsFromObject(value, currentPath, maxDepth, currentDepth + 1);
+      const subPaths = extractJsonDatasetKeyPathsFromObject(value, currentPath, maxDepth, currentDepth + 1);
       subPaths.forEach((path) => {
         paths.add(path);
       });
@@ -58,7 +58,7 @@ function extractKeyPathsFromObject(obj: unknown, prefix = '', maxDepth = 3, curr
 /**
  * JSON 데이터 배열에서 모든 고유 키 경로 추출 (코드 노출 순서 유지)
  */
-export function extractAllKeyPaths(data: Record<string, unknown>[], maxDepth = 3): string[] {
+export function extractJsonDatasetKeyPaths(data: Record<string, unknown>[], maxDepth = 3): string[] {
   const pathsOrder: string[] = [];
   const pathsSet = new Set<string>();
 
@@ -66,7 +66,7 @@ export function extractAllKeyPaths(data: Record<string, unknown>[], maxDepth = 3
   const sampleSize = Math.min(10, data.length);
 
   for (let i = 0; i < sampleSize; i++) {
-    const paths = extractKeyPathsFromObject(data[i], '', maxDepth);
+    const paths = extractJsonDatasetKeyPathsFromObject(data[i], '', maxDepth);
     // Set을 배열로 변환하되 순서 유지
     Array.from(paths).forEach((path) => {
       if (!pathsSet.has(path)) {
@@ -82,15 +82,15 @@ export function extractAllKeyPaths(data: Record<string, unknown>[], maxDepth = 3
 /**
  * Schema Interface Node - TypeScript interface 형식으로 표현
  */
-export interface SchemaInterfaceNode {
+export interface JsonDatasetSchemaInterface {
   interfaceName: string; // interface 이름 (필드명의 PascalCase + 번호)
   path: string; // 전체 경로 (예: "product.specs.cpu")
-  fields: SchemaField[]; // interface 내부 필드들
+  fields: JsonDatasetSchemaField[]; // interface 내부 필드들
   depth: number;
   fieldSignature: string; // 필드 구조 시그니처 (정렬된 필드명 리스트)
 }
 
-export interface SchemaField {
+export interface JsonDatasetSchemaField {
   name: string; // 필드명
   type: string; // 타입 (string, number, boolean, InterfaceName, InterfaceName[])
   isArray: boolean;
@@ -102,11 +102,11 @@ export interface SchemaField {
  * JSON 데이터에서 TypeScript interface 형식 스키마 추출
  * transform.tools 방식: 같은 경로는 하나의 interface로 병합, 선택적 필드는 optional로 표시
  */
-export function extractSchemaInterfaces(data: Record<string, unknown>[]): SchemaInterfaceNode[] {
+export function extractJsonDatasetSchemaInterfaces(data: Record<string, unknown>[]): JsonDatasetSchemaInterface[] {
   if (data.length === 0) return [];
 
-  // path별로 하나의 interface만 저장 (key: path, value: SchemaInterfaceNode)
-  const interfacesByPath = new Map<string, SchemaInterfaceNode>();
+  // path별로 하나의 interface만 저장
+  const interfacesByPath = new Map<string, JsonDatasetSchemaInterface>();
   // path별 샘플 카운트 (필드가 몇 개 샘플에 나타나는지 추적)
   const fieldCountsByPath = new Map<string, Map<string, number>>();
 

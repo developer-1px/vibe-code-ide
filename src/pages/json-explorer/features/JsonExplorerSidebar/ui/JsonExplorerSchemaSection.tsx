@@ -1,11 +1,11 @@
 import { ChevronDown, ChevronRight, GitBranch } from 'lucide-react';
 import { useState } from 'react';
 import { ScrollArea } from '@/shared/ui/ScrollArea';
-import type { SchemaInterfaceNode } from '../../../lib/extractKeyPaths';
+import type { JsonDatasetSchemaInterface } from '../../../entities/JsonDataset/lib/schema';
 import { SchemaInterfaceItem } from './SchemaInterfaceItem';
 
 interface JsonExplorerSchemaSectionProps {
-  schemaInterfaces: SchemaInterfaceNode[];
+  schemaInterfaces: JsonDatasetSchemaInterface[];
   selectedSchema: string | null;
   selectSchema: (schemaPath: string | null) => void;
 }

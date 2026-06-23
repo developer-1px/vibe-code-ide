@@ -17,49 +17,14 @@ import { useVirtualizer } from '@tanstack/react-virtual';
 import type { FuseResultMatch } from 'fuse.js';
 import type React from 'react';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import {
+  formatJsonDatasetHeader,
+  getJsonDatasetColumns,
+  getJsonDatasetColumnWidths,
+  getJsonDatasetSearchMatchCount,
+} from '../../../entities/JsonDataset/lib/computed';
 import { DataTableResizeHandle } from './DataTableResizeHandle';
 import { DataTableRow } from './DataTableRow';
-
-/**
- * JSON 데이터에서 모든 키를 추출 (코드 노출 순서 유지)
- */
-function extractAllKeys(data: Record<string, unknown>[]): string[] {
-  if (data.length === 0) return [];
-
-  const keysOrder: string[] = [];
-  const keysSet = new Set<string>();
-
-  // 첫 번째 객체의 키 순서를 기준으로 설정
-  if (data.length > 0) {
-    Object.keys(data[0]).forEach((key) => {
-      keysOrder.push(key);
-      keysSet.add(key);
-    });
-  }
-
-  // 나머지 객체에서 누락된 키 추가
-  data.forEach((item) => {
-    Object.keys(item).forEach((key) => {
-      if (!keysSet.has(key)) {
-        keysOrder.push(key);
-        keysSet.add(key);
-      }
-    });
-  });
-
-  return keysOrder; // 코드 노출 순서 유지
-}
-
-/**
- * 키 이름을 Header 텍스트로 변환
- * camelCase -> Title Case
- */
-function formatHeader(key: string): string {
-  // camelCase를 공백으로 구분
-  const withSpaces = key.replace(/([A-Z])/g, ' $1');
-  // 첫 글자 대문자
-  return withSpaces.charAt(0).toUpperCase() + withSpaces.slice(1);
-}
 
 /**
  * 텍스트에 하이라이트 적용 (더 강한 스타일)
@@ -171,48 +136,18 @@ export function DataTable({
 
   // 컬럼 너비 자동 계산 (하이브리드: 데이터 기반 + 제약)
   const columnWidths = useMemo(() => {
-    const allKeys = extractAllKeys(data);
-    const keys = visibleColumns || allKeys;
-    const widths = new Map<string, number>();
-
-    // 샘플링 (최대 1000개)
-    const sampleSize = Math.min(1000, data.length);
-
-    keys.forEach((key) => {
-      let maxLength = key.length; // 헤더 길이로 시작
-
-      // 샘플 데이터에서 최대 길이 찾기
-      for (let i = 0; i < sampleSize; i++) {
-        const value = data[i]?.[key];
-        if (value !== null && value !== undefined) {
-          const strValue = String(value);
-          maxLength = Math.max(maxLength, strValue.length);
-        }
-      }
-
-      // 문자 길이를 픽셀로 변환 (평균 7px per char) + 패딩(24px)
-      let pixelWidth = maxLength * 7 + 24;
-
-      // 최소/최대 제약 적용
-      const MIN_WIDTH = 80;
-      const MAX_WIDTH = 600;
-      pixelWidth = Math.max(MIN_WIDTH, Math.min(MAX_WIDTH, pixelWidth));
-
-      widths.set(key, pixelWidth);
-    });
-
-    return widths;
+    return getJsonDatasetColumnWidths(data, visibleColumns);
   }, [data, visibleColumns]);
 
   // 동적으로 컬럼 생성 (visibleColumns로 필터링 + 너비 설정)
   const columns = useMemo<ColumnDef<Record<string, unknown>>[]>(() => {
-    const allKeys = extractAllKeys(data);
+    const allKeys = getJsonDatasetColumns(data, { includeParentKey: true });
     // visibleColumns가 제공되면 해당 컬럼만, 아니면 모든 컬럼
     const keys = visibleColumns || allKeys;
 
     return keys.map((key, _index) => ({
       accessorKey: key,
-      header: formatHeaders ? formatHeader(key) : key, // 포맷팅 옵션 적용
+      header: formatHeaders ? formatJsonDatasetHeader(key) : key, // 포맷팅 옵션 적용
       size: columnWidths.get(key) || 150, // 계산된 너비 적용
       minSize: 80, // 최소 너비
       maxSize: 800, // 최대 너비
@@ -263,16 +198,7 @@ export function DataTable({
 
   // 검색 매칭 개수 계산
   const totalMatches = useMemo(() => {
-    if (!searchMatches || searchMatches.size === 0) return 0;
-    let count = 0;
-    searchMatches.forEach((matches) => {
-      matches.forEach((match) => {
-        if (match.indices) {
-          count += match.indices.length;
-        }
-      });
-    });
-    return count;
+    return getJsonDatasetSearchMatchCount(searchMatches);
   }, [searchMatches]);
 
   // 컬럼 스크롤 함수

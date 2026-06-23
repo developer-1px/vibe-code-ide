@@ -1,11 +1,11 @@
 import { ChevronDown, ChevronRight, Database, FileJson, Pencil } from 'lucide-react';
 import { useState } from 'react';
-import type { DataSource } from '../../../lib/loadTestData';
+import type { JsonDatasetSource } from '../../../entities/JsonDataset/lib/dataSource';
 import { JsonExplorerDataSourceOption } from './JsonExplorerDataSourceOption';
 
 interface JsonExplorerDataSourceSectionProps {
-  dataSource: DataSource;
-  changeDataSource: (source: DataSource) => void;
+  dataSource: JsonDatasetSource;
+  changeDataSource: (source: JsonDatasetSource) => void;
   openCustomJson: () => void;
 }
 

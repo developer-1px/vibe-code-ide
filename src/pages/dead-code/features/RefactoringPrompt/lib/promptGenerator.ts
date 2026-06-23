@@ -3,7 +3,7 @@
  * 선택된 dead code items를 기반으로 AI에게 보낼 프롬프트를 자동 생성합니다
  */
 
-import type { DeadCodeItem, DeadCodeResults } from '@/pages/shared/features/DeadCode/lib/deadCodeAnalyzer.ts';
+import type { DeadCodeItem, DeadCodeResults } from '@/entities/DeadCode/model/types';
 
 export interface RefactoringPrompt {
   prompt: string;

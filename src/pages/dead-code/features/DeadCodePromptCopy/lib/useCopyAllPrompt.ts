@@ -4,7 +4,7 @@
 
 import { useAtomValue } from 'jotai';
 import { useState } from 'react';
-import { getItemKey } from '@/pages/shared/features/DeadCode/lib/categoryUtils.tsx';
+import { getDeadCodeItemKey } from '@/entities/DeadCode/lib/computed';
 import { deadCodeResultsAtom } from '@/pages/shared/features/DeadCode/model/atoms.ts';
 
 export function useCopyAllPrompt() {
@@ -26,7 +26,7 @@ export function useCopyAllPrompt() {
       ...deadCodeResults.deadFunctions,
       ...deadCodeResults.unusedVariables,
     ];
-    const allKeys = new Set(allItems.map(getItemKey));
+    const allKeys = new Set(allItems.map(getDeadCodeItemKey));
 
     const prompt = generateRefactoringPrompt(allKeys, deadCodeResults);
 

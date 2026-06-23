@@ -1,13 +1,13 @@
 /**
- * loadTestData - 여러 JSON 데이터 소스 로더
+ * JsonDataset data source loaders
  */
 
 import testData from '@/test.json';
 import test2Data from '@/test2.json';
 
-export type DataSource = 'test.json' | 'test2.json' | 'custom';
+export type JsonDatasetSource = 'test.json' | 'test2.json' | 'custom';
 
-export interface TestDataRoot {
+export interface JsonDatasetTestDataRoot {
   serverAndSelectableSoftwareProductPriceList: Record<string, unknown>[];
 }
 
@@ -17,8 +17,8 @@ const PARENT_KEY_PATH_TEST2 = 'serviceList';
 /**
  * Get all data from specified source
  */
-export function getDataFromSource(
-  source: DataSource,
+export function getJsonDatasetFromSource(
+  source: JsonDatasetSource,
   customData?: Record<string, unknown>[]
 ): {
   data: Record<string, unknown>[];
@@ -26,7 +26,7 @@ export function getDataFromSource(
 } {
   switch (source) {
     case 'test.json': {
-      const data = testData as TestDataRoot;
+      const data = testData as JsonDatasetTestDataRoot;
       return {
         data: data.serverAndSelectableSoftwareProductPriceList,
         parentKeyPath: PARENT_KEY_PATH_TEST1,
@@ -60,12 +60,12 @@ export function getDataFromSource(
  * @param limit - Number of items to return (default: 100)
  * @param customData - Custom data when source is 'custom'
  */
-export function getLimitedData(
-  source: DataSource,
+export function getLimitedJsonDatasetRows(
+  source: JsonDatasetSource,
   limit = 100,
   customData?: Record<string, unknown>[]
 ): Record<string, unknown>[] {
-  const { data, parentKeyPath } = getDataFromSource(source, customData);
+  const { data, parentKeyPath } = getJsonDatasetFromSource(source, customData);
 
   // 맨 앞에 parent key path 추가
   return data.slice(0, limit).map((item, index) => ({
@@ -77,21 +77,7 @@ export function getLimitedData(
 /**
  * Get total count from specified source
  */
-export function getTotalCount(source: DataSource, customData?: Record<string, unknown>[]): number {
-  const { data } = getDataFromSource(source, customData);
+export function getJsonDatasetTotalCount(source: JsonDatasetSource, customData?: Record<string, unknown>[]): number {
+  const { data } = getJsonDatasetFromSource(source, customData);
   return data.length;
-}
-
-// 하위 호환성을 위한 레거시 함수들
-export function getServerProducts(): Record<string, unknown>[] {
-  const { data } = getDataFromSource('test.json');
-  return data;
-}
-
-export function getLimitedServerProducts(limit = 100): Record<string, unknown>[] {
-  return getLimitedData('test.json', limit);
-}
-
-export function getTotalProductCount(): number {
-  return getTotalCount('test.json');
 }

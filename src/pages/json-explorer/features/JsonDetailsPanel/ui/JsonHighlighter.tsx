@@ -1,6 +1,7 @@
 import { Copy } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { useMemo, useState } from 'react';
+import { getJsonDatasetLines, type JsonDatasetLine } from '../../../entities/JsonDataset/lib/computed';
 
 function renderHighlightedJsonLine(text: string): ReactNode[] {
   const tokens: ReactNode[] = [];
@@ -70,7 +71,7 @@ function renderHighlightedJsonLine(text: string): ReactNode[] {
 }
 
 interface JsonHighlighterLineProps {
-  line: { text: string; path: string | null; lineNumber: number };
+  line: JsonDatasetLine;
   copiedPath: string | null;
   copyPath: (path: string) => void;
 }
@@ -109,54 +110,7 @@ export function JsonHighlighter({ json }: { json: string }) {
   const [copiedPath, setCopiedPath] = useState<string | null>(null);
 
   const lines = useMemo(() => {
-    const jsonLines = json.split('\n');
-    const result: Array<{ text: string; path: string | null; lineNumber: number }> = [];
-    const pathStack: string[] = [];
-    let inString = false;
-    let currentKey = '';
-
-    jsonLines.forEach((line, index) => {
-      const trimmed = line.trim();
-
-      for (let i = 0; i < trimmed.length; i++) {
-        if (trimmed[i] === '"' && (i === 0 || trimmed[i - 1] !== '\\')) {
-          inString = !inString;
-        }
-      }
-
-      const keyMatch = trimmed.match(/^"([^"]+)":/);
-      if (keyMatch && !inString) {
-        currentKey = keyMatch[1];
-      }
-
-      let currentPath: string | null = null;
-      if (currentKey && pathStack.length > 0) {
-        currentPath = [...pathStack, currentKey].join('.');
-      } else if (currentKey) {
-        currentPath = currentKey;
-      }
-
-      if ((trimmed.includes('{') || trimmed.includes('[')) && currentKey && !inString) {
-        pathStack.push(currentKey);
-        currentKey = '';
-      }
-
-      if ((trimmed === '}' || trimmed === '},' || trimmed === ']' || trimmed === '],') && !inString) {
-        pathStack.pop();
-      }
-
-      result.push({
-        text: line,
-        path: currentPath,
-        lineNumber: index + 1,
-      });
-
-      if (trimmed.endsWith(',') && !trimmed.endsWith('},') && !trimmed.endsWith('],')) {
-        currentKey = '';
-      }
-    });
-
-    return result;
+    return getJsonDatasetLines(json);
   }, [json]);
 
   async function copyPath(path: string) {

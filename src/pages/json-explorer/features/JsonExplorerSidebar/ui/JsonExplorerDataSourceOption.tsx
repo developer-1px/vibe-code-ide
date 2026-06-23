@@ -1,13 +1,13 @@
 import type { LucideIcon } from 'lucide-react';
-import type { DataSource } from '../../../lib/loadTestData';
+import type { JsonDatasetSource } from '../../../entities/JsonDataset/lib/dataSource';
 
 interface JsonExplorerDataSourceOptionProps {
   active: boolean;
   icon: LucideIcon;
   label: string;
   mono?: boolean;
-  source?: DataSource;
-  changeDataSource: (source: DataSource) => void;
+  source?: JsonDatasetSource;
+  changeDataSource: (source: JsonDatasetSource) => void;
   openCustomJson: () => void;
 }
 

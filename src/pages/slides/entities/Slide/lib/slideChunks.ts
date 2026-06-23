@@ -8,17 +8,7 @@
  */
 
 import type { CodeLine } from '@/entities/CodeLine/model/types';
-
-export interface ChunkInfo {
-  lineNum: number; // chunk 시작 라인 (주석 블록 시작 또는 fold 시작)
-  chunkStart: number; // chunk 시작 라인
-  chunkEnd: number; // chunk 끝 라인
-  depth: number; // fold depth (fold가 있을 경우, 없으면 0)
-  hasComment: boolean; // 주석 포함 여부
-  commentStart?: number; // 주석 블록 시작 (있을 경우)
-  foldStart?: number; // fold 시작 (있을 경우)
-  foldEnd?: number; // fold 끝 (있을 경우)
-}
+import type { SlideChunk } from '../model/types';
 
 /**
  * 연속된 주석 블록 찾기 (빈 줄이 나올 때까지)
@@ -49,10 +39,8 @@ function findCommentBlock(
 /**
  * 주석 + Fold 기반 Chunk 추출
  */
-export function extractChunks(processedLines: CodeLine[]): ChunkInfo[] {
-  console.log('[extractChunks] Starting extraction, total lines:', processedLines.length);
-
-  const chunks: ChunkInfo[] = [];
+export function extractSlideChunks(processedLines: CodeLine[]): SlideChunk[] {
+  const chunks: SlideChunk[] = [];
   let i = 0;
 
   while (i < processedLines.length) {
@@ -71,8 +59,6 @@ export function extractChunks(processedLines: CodeLine[]): ChunkInfo[] {
         i++;
         continue;
       }
-
-      console.log('[extractChunks] Found comment block:', commentBlock);
 
       // 주석 블록 다음 라인 찾기 (빈 줄 스킵)
       let nextIdx = commentBlock.endIdx + 1;
@@ -94,13 +80,11 @@ export function extractChunks(processedLines: CodeLine[]): ChunkInfo[] {
           foldStart: nextLine.num,
           foldEnd: nextLine.foldInfo.foldEnd,
         };
-        console.log('[extractChunks] Created comment+fold chunk:', chunk);
         chunks.push(chunk);
 
         // 다음 fold 끝 이후 라인으로 이동
         i = processedLines.findIndex((l) => l.num > nextLine.foldInfo!.foldEnd);
         if (i === -1) {
-          console.log('[extractChunks] Reached end after comment+fold');
           break;
         }
       } else {
@@ -113,7 +97,6 @@ export function extractChunks(processedLines: CodeLine[]): ChunkInfo[] {
           hasComment: true,
           commentStart: commentBlock.startLine,
         };
-        console.log('[extractChunks] Created comment-only chunk:', chunk);
         chunks.push(chunk);
 
         i = nextIdx;
@@ -132,13 +115,11 @@ export function extractChunks(processedLines: CodeLine[]): ChunkInfo[] {
         foldStart: line.num,
         foldEnd: line.foldInfo.foldEnd,
       };
-      console.log('[extractChunks] Created fold-only chunk:', chunk);
       chunks.push(chunk);
 
       // 다음 fold 끝 이후 라인으로 이동
       i = processedLines.findIndex((l) => l.num > line.foldInfo!.foldEnd);
       if (i === -1) {
-        console.log('[extractChunks] Reached end after fold');
         break;
       }
       continue;
@@ -173,15 +154,38 @@ export function extractChunks(processedLines: CodeLine[]): ChunkInfo[] {
         depth: 0,
         hasComment: false,
       };
-      console.log('[extractChunks] Created between-folds chunk:', chunk);
       chunks.push(chunk);
     }
 
     i = j;
   }
 
-  console.log('[extractChunks] Total chunks created:', chunks.length, chunks);
-
   // line 번호순 정렬
   return chunks.sort((a, b) => a.lineNum - b.lineNum);
+}
+
+export function getCurrentSlideChunk(chunks: SlideChunk[], currentChunkIndex: number): SlideChunk | null {
+  if (currentChunkIndex < 0 || currentChunkIndex >= chunks.length) {
+    return null;
+  }
+
+  return chunks[currentChunkIndex];
+}
+
+export function getSlideMutedLines(processedLines: CodeLine[], currentChunk: SlideChunk | null): Set<number> {
+  if (!currentChunk) return new Set<number>();
+
+  const muted = new Set<number>();
+  processedLines.forEach((line) => {
+    if (line.num < currentChunk.chunkStart || line.num > currentChunk.chunkEnd) {
+      muted.add(line.num);
+    }
+  });
+
+  return muted;
+}
+
+export function getSlideHighlightedLines(currentChunk: SlideChunk | null): Set<number> {
+  if (!currentChunk) return new Set<number>();
+  return new Set<number>([currentChunk.lineNum]);
 }

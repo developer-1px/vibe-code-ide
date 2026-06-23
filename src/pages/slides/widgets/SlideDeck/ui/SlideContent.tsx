@@ -1,11 +1,16 @@
 import { useAtomValue, useSetAtom } from 'jotai';
 import { useEffect, useMemo } from 'react';
 import { filesAtom, graphDataAtom } from '@/entities/AppView/model/atoms';
-import type { SourceFileNode } from '@/entities/SourceFileNode/model/types';
 import CodeViewer from '@/pages/shared/features/CodeViewer/CodeViewer';
 import { renderCodeLinesDirect } from '@/pages/shared/features/CodeViewer/core/renderer/renderCodeLinesDirect';
+import {
+  extractSlideChunks,
+  getCurrentSlideChunk,
+  getSlideHighlightedLines,
+  getSlideMutedLines,
+} from '../../../entities/Slide/lib/slideChunks';
+import { getSlideContextCodeLines, getSlideFileNode } from '../../../entities/Slide/lib/slideCode';
 import type { Slide } from '../../../entities/Slide/model/types';
-import { extractChunks } from '../../../features/SlideNavigation/lib/extractChunks';
 import {
   chunkCountAtom,
   chunksAtom,
@@ -27,11 +32,7 @@ const SlideContent = ({ slide }: { slide: Slide }) => {
 
   // 함수가 속한 파일 노드 찾기
   const fileNode = useMemo(() => {
-    if (!graphData?.nodes) return null;
-
-    return graphData.nodes.find((node) => node.filePath === context.filePath && node.type === 'file') as
-      | SourceFileNode
-      | undefined;
+    return getSlideFileNode(graphData, context.filePath);
   }, [graphData, context.filePath]);
 
   // 전체 파일을 렌더링하고 함수 범위만 필터링
@@ -42,26 +43,12 @@ const SlideContent = ({ slide }: { slide: Slide }) => {
     const allLines = renderCodeLinesDirect(fileNode, files);
 
     // 함수의 startLine ~ endLine만 필터링
-    return allLines.filter((line) => line.num >= context.startLine && line.num <= context.endLine);
-  }, [fileNode, files, context.startLine, context.endLine]);
+    return getSlideContextCodeLines(allLines, context);
+  }, [fileNode, files, context]);
 
   // chunk 정보 추출 (주석 + fold 기반)
   const chunks = useMemo(() => {
-    console.log(
-      '[SlideContent] processedLines sample (first 20):',
-      processedLines.slice(0, 20).map((line) => ({
-        num: line.num,
-        isComment: line.isComment,
-        isBlankLine: line.isBlankLine,
-        hasFold: !!line.foldInfo?.isFoldable,
-        foldDepth: line.foldInfo?.depth,
-        text: line.segments
-          .map((s) => s.text)
-          .join('')
-          .slice(0, 50),
-      }))
-    );
-    return extractChunks(processedLines);
+    return extractSlideChunks(processedLines);
   }, [processedLines]);
 
   // chunk 개수와 정보를 atom에 설정
@@ -76,10 +63,7 @@ const SlideContent = ({ slide }: { slide: Slide }) => {
 
   // 현재 chunk 정보
   const currentChunk = useMemo(() => {
-    if (currentChunkIndex < 0 || currentChunkIndex >= chunks.length) {
-      return null;
-    }
-    return chunks[currentChunkIndex];
+    return getCurrentSlideChunk(chunks, currentChunkIndex);
   }, [currentChunkIndex, chunks]);
 
   // 전체 함수 코드를 표시 (fold 범위로 자르지 않음)
@@ -87,22 +71,12 @@ const SlideContent = ({ slide }: { slide: Slide }) => {
 
   // 현재 chunk 외의 라인들을 mute 처리
   const mutedLines = useMemo(() => {
-    if (!currentChunk) return new Set<number>();
-
-    const muted = new Set<number>();
-    processedLines.forEach((line) => {
-      // 현재 chunk 범위 외의 라인만 mute
-      if (line.num < currentChunk.chunkStart || line.num > currentChunk.chunkEnd) {
-        muted.add(line.num);
-      }
-    });
-    return muted;
+    return getSlideMutedLines(processedLines, currentChunk);
   }, [currentChunk, processedLines]);
 
   // 현재 chunk의 시작 라인을 highlight
   const highlightedLines = useMemo(() => {
-    if (!currentChunk) return new Set<number>();
-    return new Set<number>([currentChunk.lineNum]);
+    return getSlideHighlightedLines(currentChunk);
   }, [currentChunk]);
 
   // 현재 chunk로 자동 스크롤

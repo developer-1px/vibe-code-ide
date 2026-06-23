@@ -5,7 +5,7 @@
 
 import { Check, Copy, Sparkles, X } from 'lucide-react';
 import * as React from 'react';
-import type { DeadCodeResults } from '@/pages/shared/features/DeadCode/lib/deadCodeAnalyzer.ts';
+import type { DeadCodeResults } from '@/entities/DeadCode/model/types';
 import { Button } from '@/shared/ui/Button';
 import { Dialog } from '@/shared/ui/Dialog';
 import { ScrollArea } from '@/shared/ui/ScrollArea';

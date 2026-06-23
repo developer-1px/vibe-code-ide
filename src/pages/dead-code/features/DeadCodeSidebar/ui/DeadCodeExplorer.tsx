@@ -5,41 +5,15 @@
 
 import { useAtomValue } from 'jotai';
 import { useMemo } from 'react';
+import { type DeadCodeExplorerNode, getDeadCodeExplorerTree } from '@/entities/DeadCode/lib/computed';
 import { isAnalyzingAtom } from '@/pages/dead-code/features/DeadCodeAnalysis/model/atoms.ts';
-import {
-  type CategoryKey,
-  expandedCategoriesAtom,
-} from '@/pages/dead-code/features/DeadCodeSidebar/model/categoryState';
-import type { DeadCodeItem } from '@/pages/shared/features/DeadCode/lib/deadCodeAnalyzer.ts';
+import { expandedCategoriesAtom } from '@/pages/dead-code/features/DeadCodeSidebar/model/categoryState';
 import { deadCodeResultsAtom } from '@/pages/shared/features/DeadCode/model/atoms.ts';
 import { useTreeKeyboardNavigation } from '@/shared/hooks/useTreeKeyboardNavigation.ts';
 import { TreeView } from '@/shared/ui/TreeView/TreeView.tsx';
 import { useDeadCodeCategories } from '../lib/useDeadCodeCategories.ts';
 import { DeadCodeCategoryHeader } from './DeadCodeCategoryHeader.tsx';
 import { DeadCodeResultItem } from './DeadCodeResultItem.tsx';
-
-interface DeadCodeExplorerBaseNode {
-  id: string;
-  parentId: string | null;
-  name: string;
-  path: string;
-  children?: DeadCodeExplorerNode[];
-}
-
-interface DeadCodeExplorerCategoryNode extends DeadCodeExplorerBaseNode {
-  type: 'category';
-  categoryKey: CategoryKey;
-  title: string;
-  items: DeadCodeItem[];
-}
-
-interface DeadCodeExplorerItemNode extends DeadCodeExplorerBaseNode {
-  type: 'dead-code-item';
-  filePath?: string;
-  deadCodeItem: DeadCodeItem;
-}
-
-type DeadCodeExplorerNode = DeadCodeExplorerCategoryNode | DeadCodeExplorerItemNode;
 
 export function DeadCodeExplorer() {
   const deadCodeResults = useAtomValue(deadCodeResultsAtom);
@@ -51,37 +25,14 @@ export function DeadCodeExplorer() {
 
   // Build unified tree with all categories
   const unifiedTree = useMemo(() => {
-    const tree: DeadCodeExplorerNode[] = [];
-
-    categories.forEach((category) => {
-      // Add category header node with children
-      const categoryNode: DeadCodeExplorerNode = {
-        id: `category-${category.key}`,
-        parentId: null,
-        type: 'category',
-        name: category.title,
-        path: `category-${category.key}`,
-        categoryKey: category.key,
-        title: category.title,
-        items: category.items,
-      };
-
-      // If category is expanded, add children
-      if (expandedCategories[category.key]) {
-        categoryNode.children = buildDeadCodeTreeWithCategory(category.items, category.key);
-      }
-
-      tree.push(categoryNode);
-    });
-
-    return tree;
+    return getDeadCodeExplorerTree(categories, expandedCategories);
   }, [categories, expandedCategories]);
 
   // Flat list for keyboard navigation (all visible items)
   const flatItemList = useMemo(() => unifiedTree, [unifiedTree]);
 
   // Keyboard navigation
-  const { focusedIndex, setFocusedIndex, itemRefs } = useTreeKeyboardNavigation({
+  const { focusedIndex, setFocusedIndex, itemRefs } = useTreeKeyboardNavigation<DeadCodeExplorerNode>({
     flatItemList,
     collapsedFolders: new Set(), // No folders
     onToggleFolder: toggleFolder, // No folders
@@ -105,7 +56,7 @@ export function DeadCodeExplorer() {
   }
 
   return (
-    <TreeView
+    <TreeView<DeadCodeExplorerNode>
       className="flex-1 min-h-0 overflow-y-auto"
       data={unifiedTree}
       getNodeType={(node) => node.type}
@@ -149,20 +100,4 @@ export function DeadCodeExplorer() {
       }}
     </TreeView>
   );
-}
-
-// Helper to build tree with category prefix
-function buildDeadCodeTreeWithCategory(items: DeadCodeItem[], categoryKey: string): DeadCodeExplorerNode[] {
-  // Simplified - just create dead-code-item nodes
-  // You can enhance this with folder grouping if needed
-  return items.map((item, idx) => ({
-    id: `${categoryKey}-item-${idx}`,
-    parentId: `category-${categoryKey}`,
-    type: 'dead-code-item',
-    name: item.symbolName,
-    // Include symbolName in path to ensure uniqueness (same file/line can have multiple items)
-    path: `${categoryKey}/${item.filePath}:${item.line}:${item.symbolName}`,
-    filePath: item.filePath,
-    deadCodeItem: item,
-  }));
 }

@@ -10,10 +10,10 @@ import { useOpenFile } from '@/features/File/OpenFiles/lib/useOpenFile';
 import { activeTabAtom, openedTabsAtom } from '@/features/File/OpenFiles/model/atoms';
 import { useTreeKeyboardNavigation } from '@/shared/hooks/useTreeKeyboardNavigation';
 import { TreeView } from '@/shared/ui/TreeView/TreeView';
-import { buildFileTree } from '../lib/buildFileTree';
-import { getFlatItemList } from '../lib/getFlatItemList';
-import { getInitialCollapsedFolders } from '../lib/getInitialCollapsedFolders';
-import type { FolderNode } from '../model/types';
+import { buildFileTree } from '../../../entities/FileTree/lib/buildFileTree';
+import { getFlatItemList } from '../../../entities/FileTree/lib/getFlatItemList';
+import { getInitialCollapsedFolders } from '../../../entities/FileTree/lib/getInitialCollapsedFolders';
+import type { FlatItem, FolderNode } from '../../../entities/FileTree/model/types';
 import { FileExplorerTreeItem } from './FileExplorerTreeItem';
 import { FolderBreadcrumb } from './FolderBreadcrumb';
 
@@ -65,7 +65,7 @@ export function FileExplorer({ filteredFiles }: FileExplorerProps) {
     setFocusedFolder(null);
   }
 
-  function activateItem(item: FolderNode) {
+  function activateItem(item: FlatItem) {
     if (item.filePath) {
       openFilePath(item.filePath);
     }
@@ -76,7 +76,7 @@ export function FileExplorer({ filteredFiles }: FileExplorerProps) {
   }
 
   // Keyboard navigation with custom hook
-  const { focusedIndex, setFocusedIndex, itemRefs } = useTreeKeyboardNavigation({
+  const { focusedIndex, setFocusedIndex, itemRefs } = useTreeKeyboardNavigation<FlatItem>({
     flatItemList,
     collapsedFolders,
     onToggleFolder: toggleFolder,
@@ -102,7 +102,7 @@ export function FileExplorer({ filteredFiles }: FileExplorerProps) {
       {/* Folder Focus Mode Breadcrumb */}
       {focusedFolder && <FolderBreadcrumb focusedFolder={focusedFolder} />}
 
-      <TreeView
+      <TreeView<FolderNode>
         className="flex-1 min-h-0 overflow-y-auto py-1"
         data={fileTree}
         getNodeType={(node) => node.type}

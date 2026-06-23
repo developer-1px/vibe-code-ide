@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import { ScrollArea } from '@/shared/ui/ScrollArea';
+import { stringifyJsonDatasetRow } from '../../../entities/JsonDataset/lib/computed';
 import { JsonDetailsPanelActions } from '../../../features/JsonDetailsPanel/ui/JsonDetailsPanelActions';
 import { JsonHighlighter } from '../../../features/JsonDetailsPanel/ui/JsonHighlighter';
 
@@ -10,8 +11,7 @@ interface JsonDetailsPanelProps {
 
 export function JsonDetailsPanel({ data, closePanel }: JsonDetailsPanelProps) {
   const jsonString = useMemo(() => {
-    if (!data) return '';
-    return JSON.stringify(data, null, 2);
+    return stringifyJsonDatasetRow(data);
   }, [data]);
 
   if (!data) {

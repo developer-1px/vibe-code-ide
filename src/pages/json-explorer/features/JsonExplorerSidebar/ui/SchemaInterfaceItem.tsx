@@ -1,6 +1,7 @@
 import { ChevronDown, ChevronRight, Copy } from 'lucide-react';
 import { useState } from 'react';
-import type { SchemaInterfaceNode } from '../../../lib/extractKeyPaths';
+import { getJsonDatasetInterfaceCode } from '../../../entities/JsonDataset/lib/computed';
+import type { JsonDatasetSchemaInterface } from '../../../entities/JsonDataset/lib/schema';
 import { SchemaFieldRow } from './SchemaFieldRow';
 
 export function SchemaInterfaceItem({
@@ -8,7 +9,7 @@ export function SchemaInterfaceItem({
   isSelected,
   selectSchema,
 }: {
-  node: SchemaInterfaceNode;
+  node: JsonDatasetSchemaInterface;
   isSelected: boolean;
   selectSchema: (path: string | null) => void;
 }) {
@@ -28,13 +29,7 @@ export function SchemaInterfaceItem({
   async function handleCopyInterface(e: React.MouseEvent) {
     e.stopPropagation();
     try {
-      const interfaceCode = `interface ${node.interfaceName} {\n${node.fields
-        .map((field) => {
-          const displayType = field.isArray ? `${field.type}[]` : field.type;
-          const optional = field.isOptional ? '?' : '';
-          return `  ${field.name}${optional}: ${displayType};`;
-        })
-        .join('\n')}\n}`;
+      const interfaceCode = getJsonDatasetInterfaceCode(node);
       await navigator.clipboard.writeText(interfaceCode);
       setCopiedPath('interface');
       setTimeout(() => setCopiedPath(null), 2000);

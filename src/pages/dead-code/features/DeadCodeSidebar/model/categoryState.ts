@@ -1,15 +1,9 @@
 import { atom } from 'jotai';
+import type { DeadCodeCategoryKey } from '@/entities/DeadCode/model/types';
 
-export interface CategoryState {
-  unusedExports: boolean;
-  unusedImports: boolean;
-  deadFunctions: boolean;
-  unusedVariables: boolean;
-  unusedProps: boolean;
-  unusedArguments: boolean;
-}
+export type CategoryKey = DeadCodeCategoryKey;
 
-export type CategoryKey = keyof CategoryState;
+export type CategoryState = Record<CategoryKey, boolean>;
 
 export const expandedCategoriesAtom = atom<CategoryState>({
   unusedExports: false,

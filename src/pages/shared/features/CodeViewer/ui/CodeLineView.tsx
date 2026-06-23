@@ -2,7 +2,12 @@ import { useAtomValue } from 'jotai';
 import { useEffect, useMemo, useRef } from 'react';
 import { useEditorTheme } from '@/entities/AppTheme/EditorThemeProvider';
 import type { CanvasNode } from '@/entities/CanvasNode/model/types';
-import { getSymbolUsages } from '@/entities/SourceFileNode/lib/metadata';
+import {
+  getCodeLineBlockInfo,
+  getCodeLineExportedSymbolName,
+  getCodeLineUsageCount,
+  isCodeLineNumberEmphasized,
+} from '@/entities/CodeLine/lib/computed';
 import type { SourceFileNode } from '@/entities/SourceFileNode/model/types';
 import type { CodeLine } from '@/features/Code/CodeViewer/core/types/codeLine';
 import { targetLineAtom } from '@/features/File/Navigation/model/atoms';
@@ -13,24 +18,6 @@ import FoldButton from '@/pages/shared/features/CodeFold/ui/FoldButton';
 import CodeLineExportSlots from './CodeLineExportSlots';
 import CodeLineSegment from './CodeLineSegment';
 import CodeLineSlots from './CodeLineSlots';
-
-// ============================================
-// Block Line Detection (for data attributes)
-// ============================================
-
-/**
- * 블록 시작 라인 판별 (DOM 쿼리용 data 속성)
- * StickyLens는 블록 시작점만 추적하면 충분 (닫는 괄호는 불필요)
- */
-const getBlockLineInfo = (line: CodeLine) => {
-  const isImportBlock = line.foldInfo?.foldType === 'import-block';
-  const isBlockStartLine = line.foldInfo?.isFoldable === true && !isImportBlock;
-
-  return {
-    isBlockStartLine,
-    blockStartLineNum: line.num,
-  };
-};
 
 export interface CodeLineViewOptions {
   showFoldButton?: boolean;
@@ -74,19 +61,13 @@ const CodeLineView = ({
 
   // Output Port에 심볼 이름을 표시하여 어떤 identifier가 export되는지 명확히 하기 위함
   const exportedSymbolName = useMemo(() => {
-    if (!hasDeclarationKeyword) return undefined;
-    const declSegment = line.segments.find((seg) => seg.isDeclarationName);
-    return declSegment?.text;
-  }, [hasDeclarationKeyword, line.segments]);
+    return getCodeLineExportedSymbolName(line);
+  }, [line]);
 
   // 사용자가 dependency 연결 강도를 직관적으로 파악할 수 있도록 badge 숫자로 표시
   // 🔥 View 기반 조회 (AST 순회 없음!)
   const usageCount = useMemo(() => {
-    if (!hasDeclarationKeyword || !exportedSymbolName) return 0;
-
-    // Worker가 미리 계산한 Usage View 조회
-    const importers = getSymbolUsages(node, exportedSymbolName);
-    return importers.length;
+    return hasDeclarationKeyword ? getCodeLineUsageCount(node, exportedSymbolName) : 0;
   }, [hasDeclarationKeyword, exportedSymbolName, node]);
 
   // Go to Definition으로 이동한 라인을 자동으로 highlight하여 사용자가 목표 위치를 놓치지 않도록 함
@@ -105,13 +86,13 @@ const CodeLineView = ({
   }, [isTargetLine]);
 
   // 블록 라인 정보 (data 속성용)
-  const { isBlockStartLine, blockStartLineNum } = getBlockLineInfo(line);
+  const { isBlockStartLine, blockStartLineNum } = getCodeLineBlockInfo(line);
 
   // 중요한 라인(export, fold 등)을 시각적으로 강조하여 코드 구조를 빠르게 파악할 수 있도록 함
   const lineNumberClassName = useMemo(() => {
-    const isHighlighted = hasDeclarationKeyword || isDefinitionLine || isFolded || isBlockStartLine;
-
-    return isHighlighted ? 'text-vibe-accent font-bold' : '';
+    return isCodeLineNumberEmphasized({ hasDeclarationKeyword, isDefinitionLine, isFolded, isBlockStartLine })
+      ? 'text-vibe-accent font-bold'
+      : '';
   }, [hasDeclarationKeyword, isDefinitionLine, isFolded, isBlockStartLine]);
 
   // 접힌 범위 내부 라인은 숨김 처리 (모든 Hook 호출 이후에 체크)

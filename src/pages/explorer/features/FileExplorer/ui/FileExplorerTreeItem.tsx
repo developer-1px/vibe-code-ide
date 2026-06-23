@@ -2,7 +2,7 @@ import { Folder, FolderOpen } from 'lucide-react';
 import type React from 'react';
 import { FileIcon } from '@/shared/ui/FileIcon';
 import { FileTreeItem } from '@/shared/ui/FileTreeItem';
-import type { FolderNode } from '../model/types';
+import type { FolderNode } from '../../../entities/FileTree/model/types';
 
 interface FileExplorerTreeItemProps {
   node: FolderNode;

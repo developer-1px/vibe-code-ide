@@ -2,7 +2,7 @@
  * Category Header Checkbox Component
  */
 
-import type { DeadCodeItem } from '@/pages/shared/features/DeadCode/lib/deadCodeAnalyzer.ts';
+import type { DeadCodeItem } from '@/entities/DeadCode/model/types';
 import { cn } from '@/shared/lib/utils';
 import { Checkbox } from '@/shared/ui/Checkbox';
 import { useDeadCodeSelection } from '../lib/useDeadCodeSelection.ts';
