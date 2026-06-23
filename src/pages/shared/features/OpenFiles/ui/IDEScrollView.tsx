@@ -12,8 +12,8 @@ import { filesAtom, fullNodeMapAtom } from '@/entities/AppView/model/atoms';
 import { getSelectedDeadCodeFilePaths, getSelectedDeadCodeLinesByFile } from '@/entities/DeadCode/lib/computed';
 import { activeTabAtom, openedTabsAtom } from '@/features/File/OpenFiles/model/atoms.ts';
 import { deadCodeResultsAtom, selectedDeadCodeItemsAtom } from '@/pages/shared/features/DeadCode/model/atoms.ts';
-import { useScrollNavigation } from './lib/useScrollNavigation.ts';
-import FileSection from './ui/FileSection.tsx';
+import { useScrollNavigation } from '../lib/useScrollNavigation.ts';
+import FileSection from './FileSection.tsx';
 
 const IDEScrollView = () => {
   const selectedItems = useAtomValue(selectedDeadCodeItemsAtom);
