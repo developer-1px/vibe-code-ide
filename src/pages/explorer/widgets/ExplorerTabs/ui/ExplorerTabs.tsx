@@ -28,7 +28,7 @@ export function ExplorerTabs() {
   }
 
   return (
-    <div className="flex-1 min-h-0 flex flex-col overflow-hidden">
+    <div className="flex h-full min-h-0 w-full flex-1 flex-col overflow-hidden">
       <div className="flex items-center border-b border-border-DEFAULT bg-bg-elevated flex-shrink-0 overflow-x-auto">
         {openedTabs.map((tab) => {
           const isActive = tab.id === activeTabId;
