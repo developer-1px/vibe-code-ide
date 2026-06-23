@@ -16,10 +16,10 @@ import { useMemo } from 'react';
 import { activeActivityPageIdAtom } from '@/app/model/activityPageAtoms';
 import { filesAtom, viewModeAtom } from '@/entities/AppView/model/atoms';
 import type { CanvasNode } from '@/entities/CanvasNode/model/types';
+import { deadCodeResultsAtom } from '@/entities/DeadCode/model/atoms';
 import { renderCodeLinesDirect } from '@/features/Code/CodeViewer/core/renderer/renderCodeLinesDirect';
 import { renderVueFile } from '@/features/Code/CodeViewer/core/renderer/renderVueFile';
 import { focusedNodeIdAtom } from '@/features/Code/CodeViewer/model/atoms.ts';
-import { deadCodeResultsAtom } from '@/pages/shared/features/DeadCode/model/atoms';
 import { useFocusedIdentifiers } from '../hooks/useFocusedIdentifiers';
 // Custom Hooks
 import { useFoldLevel } from '../hooks/useFoldLevel';

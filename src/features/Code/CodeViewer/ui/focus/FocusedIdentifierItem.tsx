@@ -7,9 +7,9 @@ import type React from 'react';
 import { useRef } from 'react';
 import { useHotkeys } from 'react-hotkeys-hook';
 import { fullNodeMapAtom } from '@/entities/AppView/model/atoms';
+import { pruneDetachedNodes } from '@/features/Canvas/lib/pruneDetachedNodes';
 import { visibleNodeIdsAtom } from '@/features/Canvas/model/atoms.ts';
 import { activeLocalVariablesAtom } from '@/features/Code/FocusMode/model/atoms.ts';
-import { pruneDetachedNodes } from '@/pages/shared/features/Canvas/lib/pruneDetachedNodes.ts';
 import type { IdentifierMetadata } from './FocusedIdentifiers.tsx';
 
 interface FocusedIdentifierItemProps {

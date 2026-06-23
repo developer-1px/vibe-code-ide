@@ -1,7 +1,7 @@
 import { useAtomValue } from 'jotai';
 import { useState } from 'react';
+import { deadCodeResultsAtom, selectedDeadCodeItemsAtom } from '@/entities/DeadCode/model/atoms';
 import IDEScrollView from '@/features/File/OpenFiles/ui/IDEScrollView';
-import { deadCodeResultsAtom, selectedDeadCodeItemsAtom } from '@/pages/shared/features/DeadCode/model/atoms.ts';
 import { useDeadCodeAnalysis } from './features/DeadCodeAnalysis/lib/useDeadCodeAnalysis.ts';
 import { RefactoringPromptDialog } from './features/RefactoringPrompt/RefactoringPromptDialog.tsx';
 import { DeadCodeSidebar } from './widgets/DeadCodeSidebar/ui/DeadCodeSidebar.tsx';

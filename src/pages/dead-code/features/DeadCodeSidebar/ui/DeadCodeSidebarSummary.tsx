@@ -2,8 +2,8 @@
  * DeadCodeSidebar Summary Component
  */
 import { useAtomValue } from 'jotai';
+import { deadCodeResultsAtom, selectedDeadCodeItemsAtom } from '@/entities/DeadCode/model/atoms';
 import { isAnalyzingAtom } from '@/pages/dead-code/features/DeadCodeAnalysis/model/atoms.ts';
-import { deadCodeResultsAtom, selectedDeadCodeItemsAtom } from '@/pages/shared/features/DeadCode/model/atoms.ts';
 
 export function DeadCodeSidebarSummary() {
   const isAnalyzing = useAtomValue(isAnalyzingAtom);

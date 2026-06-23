@@ -7,6 +7,7 @@ import { useEffect, useState } from 'react';
 import * as themeAtoms from '@/entities/AppTheme/atoms';
 import * as appAtoms from '@/entities/AppView/model/atoms';
 import { store } from '@/entities/AppView/model/store';
+import * as deadCodeAtoms from '@/entities/DeadCode/model/atoms';
 import * as canvasAtoms from '@/features/Canvas/model/atoms';
 import * as codeFoldAtoms from '@/features/Code/CodeFold/model/atoms';
 import * as focusModeAtoms from '@/features/Code/FocusMode/model/atoms';
@@ -14,7 +15,6 @@ import * as explorerAtoms from '@/features/Explorer/model/atoms';
 import * as navigationAtoms from '@/features/File/Navigation/model/atoms';
 import * as filesAtoms from '@/features/File/OpenFiles/model/atoms';
 import * as searchAtoms from '@/features/Search/UnifiedSearch/model/atoms';
-import * as deadCodeAtoms from '@/pages/shared/features/DeadCode/model/atoms';
 import { JotaiDevToolsOpenButton } from './JotaiDevToolsOpenButton';
 import { type AtomUpdate, JotaiDevToolsPanel } from './JotaiDevToolsPanel';
 

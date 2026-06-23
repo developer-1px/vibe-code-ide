@@ -5,8 +5,8 @@
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import { useEffect } from 'react';
 import { graphDataAtom } from '@/entities/AppView/model/atoms';
-import { analyzeDeadCode } from '@/pages/shared/features/DeadCode/lib/deadCodeAnalyzer.ts';
-import { deadCodeResultsAtom, selectedDeadCodeItemsAtom } from '@/pages/shared/features/DeadCode/model/atoms.ts';
+import { analyzeDeadCode } from '@/entities/DeadCode/lib/deadCodeAnalyzer';
+import { deadCodeResultsAtom, selectedDeadCodeItemsAtom } from '@/entities/DeadCode/model/atoms';
 import { isAnalyzingAtom } from '../model/atoms.ts';
 
 export function useDeadCodeAnalysis() {

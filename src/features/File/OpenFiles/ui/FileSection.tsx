@@ -5,6 +5,7 @@
 
 import { useAtomValue, useSetAtom } from 'jotai';
 import { forwardRef, useEffect, useRef, useState, useTransition } from 'react';
+import { deadCodeResultsAtom } from '@/entities/DeadCode/model/atoms';
 import type { SourceFileNode } from '@/entities/SourceFileNode/model/types.ts';
 import CodeViewer from '@/features/Code/CodeViewer/CodeViewer.tsx';
 import { renderCodeLinesDirect } from '@/features/Code/CodeViewer/core/renderer/renderCodeLinesDirect.ts';
@@ -13,7 +14,6 @@ import { renderVueFile } from '@/features/Code/CodeViewer/core/renderer/renderVu
 import type { CodeLine } from '@/features/Code/CodeViewer/core/types/codeLine.ts';
 import { hoveredFilePathAtom } from '@/features/Code/CodeViewer/model/atoms.ts';
 import { activeTabAtom } from '@/features/File/OpenFiles/model/atoms.ts';
-import { deadCodeResultsAtom } from '@/pages/shared/features/DeadCode/model/atoms.ts';
 import { getFileName } from '@/shared/pathUtils.ts';
 import { FileIcon } from '@/shared/ui/FileIcon';
 import { getWorkerPool } from '@/shared/workerPool.ts';
