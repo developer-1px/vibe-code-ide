@@ -1,6 +1,6 @@
 import { ChevronDown, ChevronRight } from 'lucide-react';
 import { useState } from 'react';
-import { FileExplorer } from './FileExplorer';
+import { FileExplorer } from '@/pages/explorer/widgets/FileExplorer/ui/FileExplorer';
 
 interface RelatedFilesSectionProps {
   title: string;

@@ -1,15 +1,10 @@
-/**
- * TabContainer - Main content tab container
- * Dynamic horizontal tabs for IDE and Search views
- */
-
 import { useAtom } from 'jotai';
 import { activeTabIdAtom, openedTabsAtom } from '@/features/File/OpenFiles/model/contentTabs';
 import { ContentSearchView } from '@/pages/explorer/features/ContentSearch/ui/ContentSearchView';
 import IDEScrollView from '@/pages/shared/features/OpenFiles/ui/IDEScrollView/IDEScrollView';
 import { TabButton } from './TabButton';
 
-export function TabContainer() {
+export function ExplorerTabs() {
   const [openedTabs, setOpenedTabs] = useAtom(openedTabsAtom);
   const [activeTabId, setActiveTabId] = useAtom(activeTabIdAtom);
 

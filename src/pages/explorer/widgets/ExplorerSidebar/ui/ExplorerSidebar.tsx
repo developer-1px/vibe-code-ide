@@ -2,11 +2,11 @@ import { useAtom, useAtomValue } from 'jotai';
 import type React from 'react';
 import { useState } from 'react';
 import { fileTreeModeAtom, isSidebarOpenAtom } from '@/features/Explorer/model/atoms';
+import { FileExplorer } from '@/pages/explorer/widgets/FileExplorer/ui/FileExplorer';
+import { RelatedFilesView } from '@/pages/explorer/widgets/RelatedFiles/ui/RelatedFilesView';
 import { Sidebar } from '@/shared/ui/Sidebar';
 import { ExplorerSectionHeader } from './ExplorerSectionHeader';
-import { FileExplorer } from './FileExplorer';
 import { FileTreeModeTabs } from './FileTreeModeTabs';
-import { RelatedFilesView } from './RelatedFilesView';
 
 export const ExplorerSidebar: React.FC = () => {
   const isSidebarOpen = useAtomValue(isSidebarOpenAtom);
