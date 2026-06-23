@@ -1,9 +1,9 @@
-import PipelineCanvas from '@/features/Canvas/PipelineCanvas/ui/PipelineCanvas';
+import { CanvasWorkspace } from './widgets/CanvasWorkspace/ui/CanvasWorkspace';
 
 export function PageCanvas() {
   return (
-    <div className="h-full w-full relative overflow-hidden">
-      <PipelineCanvas />
+    <div className="h-full min-h-0 w-full min-w-0 relative overflow-hidden">
+      <CanvasWorkspace />
     </div>
   );
 }

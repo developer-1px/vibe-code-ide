@@ -138,7 +138,7 @@ const AppContent: React.FC = () => {
       {/* Title Bar */}
       <AppTitleBar />
 
-      <div className="flex flex-1 overflow-hidden">
+      <div className="flex min-h-0 flex-1 overflow-hidden">
         {/* Activity Bar */}
         <AppActivityBar />
 
