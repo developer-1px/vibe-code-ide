@@ -6,13 +6,13 @@
 import { useAtomValue, useSetAtom } from 'jotai';
 import { forwardRef, useEffect, useRef, useState, useTransition } from 'react';
 import type { SourceFileNode } from '@/entities/SourceFileNode/model/types.ts';
+import CodeViewer from '@/features/Code/CodeViewer/CodeViewer.tsx';
+import { renderCodeLinesDirect } from '@/features/Code/CodeViewer/core/renderer/renderCodeLinesDirect.ts';
+import { renderPlaintext } from '@/features/Code/CodeViewer/core/renderer/renderPlaintext.ts';
+import { renderVueFile } from '@/features/Code/CodeViewer/core/renderer/renderVueFile.ts';
 import type { CodeLine } from '@/features/Code/CodeViewer/core/types/codeLine.ts';
+import { hoveredFilePathAtom } from '@/features/Code/CodeViewer/model/atoms.ts';
 import { activeTabAtom } from '@/features/File/OpenFiles/model/atoms.ts';
-import CodeViewer from '@/pages/shared/features/CodeViewer/CodeViewer.tsx';
-import { renderCodeLinesDirect } from '@/pages/shared/features/CodeViewer/core/renderer/renderCodeLinesDirect.ts';
-import { renderPlaintext } from '@/pages/shared/features/CodeViewer/core/renderer/renderPlaintext.ts';
-import { renderVueFile } from '@/pages/shared/features/CodeViewer/core/renderer/renderVueFile.ts';
-import { hoveredFilePathAtom } from '@/pages/shared/features/CodeViewer/model/atoms.ts';
 import { deadCodeResultsAtom } from '@/pages/shared/features/DeadCode/model/atoms.ts';
 import { getFileName } from '@/shared/pathUtils.ts';
 import { FileIcon } from '@/shared/ui/FileIcon';

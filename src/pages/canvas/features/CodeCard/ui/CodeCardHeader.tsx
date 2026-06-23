@@ -16,9 +16,9 @@ import { useMemo } from 'react';
 import { activeActivityPageIdAtom } from '@/app/model/activityPageAtoms';
 import { filesAtom, viewModeAtom } from '@/entities/AppView/model/atoms';
 import type { CanvasNode } from '@/entities/CanvasNode/model/types';
-import { renderCodeLinesDirect } from '@/pages/shared/features/CodeViewer/core/renderer/renderCodeLinesDirect';
-import { renderVueFile } from '@/pages/shared/features/CodeViewer/core/renderer/renderVueFile';
-import { focusedNodeIdAtom } from '@/pages/shared/features/CodeViewer/model/atoms.ts';
+import { renderCodeLinesDirect } from '@/features/Code/CodeViewer/core/renderer/renderCodeLinesDirect';
+import { renderVueFile } from '@/features/Code/CodeViewer/core/renderer/renderVueFile';
+import { focusedNodeIdAtom } from '@/features/Code/CodeViewer/model/atoms.ts';
 import { deadCodeResultsAtom } from '@/pages/shared/features/DeadCode/model/atoms';
 import { useFocusedIdentifiers } from '../hooks/useFocusedIdentifiers';
 // Custom Hooks

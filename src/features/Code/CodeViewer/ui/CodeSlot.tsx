@@ -4,8 +4,8 @@ import { useMemo } from 'react';
 import { useEditorTheme } from '@/entities/AppTheme/EditorThemeProvider';
 import type { SourceFileNode } from '@/entities/SourceFileNode/model/types';
 import { lastExpandedIdAtom, layoutLinksAtom, visibleNodeIdsAtom } from '@/features/Canvas/model/atoms';
+import { getSlotColor } from '@/features/Code/CodeViewer/core/styler/tokenStyles';
 import { targetLineAtom } from '@/features/File/Navigation/model/atoms';
-import { getSlotColor } from '@/pages/shared/features/CodeViewer/core/styler/tokenStyles';
 
 const CodeSlot = ({
   tokenId,

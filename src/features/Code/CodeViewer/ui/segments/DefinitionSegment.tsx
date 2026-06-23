@@ -5,8 +5,8 @@
 import type React from 'react';
 import { useState } from 'react';
 import type { CanvasNode } from '@/entities/CanvasNode/model/types';
-import { useGotoDefinition } from '@/pages/shared/features/CodeViewer/lib/useGotoDefinition';
-import type { CodeSegment, SegmentStyle } from '@/pages/shared/features/CodeViewer/model/segment';
+import { useGotoDefinition } from '@/features/Code/CodeViewer/lib/useGotoDefinition';
+import type { CodeSegment, SegmentStyle } from '@/features/Code/CodeViewer/model/segment';
 
 interface DefinitionSegmentProps {
   segment: CodeSegment;

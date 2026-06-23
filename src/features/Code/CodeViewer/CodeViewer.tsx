@@ -12,9 +12,9 @@ import { jetbrainsEditorTheme } from '@/entities/AppTheme/jetbrains/editor';
 import { vscodeEditorTheme } from '@/entities/AppTheme/vscode/editor';
 import type { CanvasNode } from '@/entities/CanvasNode/model/types';
 import type { SourceFileNode } from '@/entities/SourceFileNode/model/types';
+import { calculateFoldRanges } from '@/features/Code/CodeFold/lib/foldUtils';
+import { foldedLinesAtom } from '@/features/Code/CodeFold/model/atoms';
 import type { CodeLine } from '@/features/Code/CodeViewer/core/types/codeLine';
-import { calculateFoldRanges } from '@/pages/shared/features/CodeFold/lib/foldUtils';
-import { foldedLinesAtom } from '@/pages/shared/features/CodeFold/model/atoms';
 import CodeLineView from './ui/CodeLineView.tsx';
 
 interface CodeViewerProps {

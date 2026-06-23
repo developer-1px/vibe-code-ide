@@ -6,7 +6,7 @@
 import { useAtomValue, useSetAtom } from 'jotai';
 import type React from 'react';
 import { hoveredIdentifierAtom } from '@/entities/AppView/model/atoms';
-import type { CodeSegment, SegmentStyle } from '@/pages/shared/features/CodeViewer/model/segment';
+import type { CodeSegment, SegmentStyle } from '@/features/Code/CodeViewer/model/segment';
 
 interface StaticSegmentProps {
   segment: CodeSegment;

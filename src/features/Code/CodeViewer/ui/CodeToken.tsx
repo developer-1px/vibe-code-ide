@@ -2,10 +2,10 @@ import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import type React from 'react';
 import { fullNodeMapAtom } from '@/entities/AppView/model/atoms';
 import { cardPositionsAtom, transformAtom, visibleNodeIdsAtom } from '@/features/Canvas/model/atoms';
+import { getTokenStyle } from '@/features/Code/CodeViewer/core/styler/tokenStyles';
+import { useGotoDefinition } from '@/features/Code/CodeViewer/lib/useGotoDefinition';
 import { activeLocalVariablesAtom } from '@/features/Code/FocusMode/model/atoms';
 import { pruneDetachedNodes } from '@/pages/shared/features/Canvas/lib/pruneDetachedNodes';
-import { getTokenStyle } from '@/pages/shared/features/CodeViewer/core/styler/tokenStyles';
-import { useGotoDefinition } from '@/pages/shared/features/CodeViewer/lib/useGotoDefinition';
 
 const CodeToken = ({
   text,

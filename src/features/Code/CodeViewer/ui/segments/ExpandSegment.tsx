@@ -7,7 +7,7 @@ import type React from 'react';
 import { hoveredIdentifierAtom } from '@/entities/AppView/model/atoms';
 import type { CanvasNode } from '@/entities/CanvasNode/model/types';
 import { visibleNodeIdsAtom } from '@/features/Canvas/model/atoms';
-import type { CodeSegment, SegmentStyle } from '@/pages/shared/features/CodeViewer/model/segment';
+import type { CodeSegment, SegmentStyle } from '@/features/Code/CodeViewer/model/segment';
 
 interface ExpandSegmentProps {
   segment: CodeSegment;

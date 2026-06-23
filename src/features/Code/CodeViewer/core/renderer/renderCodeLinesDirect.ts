@@ -6,8 +6,8 @@
 import * as ts from 'typescript';
 import { getImportSource } from '@/entities/SourceFileNode/lib/getters';
 import type { SourceFileNode } from '@/entities/SourceFileNode/model/types';
+import { collectFoldMetadata } from '@/features/Code/CodeFold/lib/collectFoldMetadata';
 import type { CodeLine, SegmentKind } from '@/features/Code/CodeViewer/core/types/codeLine';
-import { collectFoldMetadata } from '@/pages/shared/features/CodeFold/lib/collectFoldMetadata';
 import { resolvePath } from '@/shared/tsParser/utils/pathResolver';
 import {
   processDeclarationNode,
