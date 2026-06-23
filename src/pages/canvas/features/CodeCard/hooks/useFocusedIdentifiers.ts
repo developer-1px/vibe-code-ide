@@ -10,9 +10,9 @@ import { useCallback, useMemo } from 'react';
 import { fullNodeMapAtom } from '@/entities/AppView/model/atoms';
 import type { CanvasNode } from '@/entities/CanvasNode/model/types';
 import type { CodeLine } from '@/entities/CodeLine/model/types';
+import { pruneDetachedNodes } from '@/features/Canvas/lib/pruneDetachedNodes';
 import { visibleNodeIdsAtom } from '@/features/Canvas/model/atoms';
 import { activeLocalVariablesAtom } from '@/features/Code/FocusMode/model/atoms';
-import { pruneDetachedNodes } from '@/pages/shared/features/Canvas/lib/pruneDetachedNodes';
 
 export interface IdentifierMetadata {
   name: string;

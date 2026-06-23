@@ -5,7 +5,7 @@
 import { useAtomValue } from 'jotai';
 import { useState } from 'react';
 import { getDeadCodeItemKey } from '@/entities/DeadCode/lib/computed';
-import { deadCodeResultsAtom } from '@/pages/shared/features/DeadCode/model/atoms.ts';
+import { deadCodeResultsAtom } from '@/entities/DeadCode/model/atoms';
 
 export function useCopyAllPrompt() {
   const deadCodeResults = useAtomValue(deadCodeResultsAtom);

@@ -6,9 +6,9 @@ import { useAtomValue, useSetAtom } from 'jotai';
 import type React from 'react';
 import { fullNodeMapAtom } from '@/entities/AppView/model/atoms';
 import type { CanvasNode } from '@/entities/CanvasNode/model/types';
+import { pruneDetachedNodes } from '@/features/Canvas/lib/pruneDetachedNodes';
 import { visibleNodeIdsAtom } from '@/features/Canvas/model/atoms';
 import type { CodeSegment, SegmentStyle } from '@/features/Code/CodeViewer/model/segment';
-import { pruneDetachedNodes } from '@/pages/shared/features/Canvas/lib/pruneDetachedNodes';
 
 interface CloseSegmentProps {
   segment: CodeSegment;

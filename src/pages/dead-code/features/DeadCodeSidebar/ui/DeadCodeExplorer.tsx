@@ -6,9 +6,9 @@
 import { useAtomValue } from 'jotai';
 import { useMemo } from 'react';
 import { type DeadCodeExplorerNode, getDeadCodeExplorerTree } from '@/entities/DeadCode/lib/computed';
+import { deadCodeResultsAtom } from '@/entities/DeadCode/model/atoms';
 import { isAnalyzingAtom } from '@/pages/dead-code/features/DeadCodeAnalysis/model/atoms.ts';
 import { expandedCategoriesAtom } from '@/pages/dead-code/features/DeadCodeSidebar/model/categoryState';
-import { deadCodeResultsAtom } from '@/pages/shared/features/DeadCode/model/atoms.ts';
 import { useTreeKeyboardNavigation } from '@/shared/hooks/useTreeKeyboardNavigation.ts';
 import { TreeView } from '@/shared/ui/TreeView/TreeView.tsx';
 import { useDeadCodeCategories } from '../lib/useDeadCodeCategories.ts';

@@ -3,8 +3,8 @@
  */
 import { useAtom } from 'jotai';
 import { getDeadCodeItemKey } from '@/entities/DeadCode/lib/computed';
+import { selectedDeadCodeItemsAtom } from '@/entities/DeadCode/model/atoms';
 import type { DeadCodeItem } from '@/entities/DeadCode/model/types';
-import { selectedDeadCodeItemsAtom } from '@/pages/shared/features/DeadCode/model/atoms.ts';
 
 export function useDeadCodeSelection() {
   const [selectedItems, setSelectedItems] = useAtom(selectedDeadCodeItemsAtom);
