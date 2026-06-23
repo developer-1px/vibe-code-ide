@@ -2,8 +2,8 @@ import { useAtomValue, useSetAtom } from 'jotai';
 import { useEffect, useMemo } from 'react';
 import { filesAtom, graphDataAtom } from '@/entities/AppView/model/atoms';
 import type { SourceFileNode } from '@/entities/SourceFileNode/model/types';
-import CodeViewer from '@/features/Code/CodeViewer/CodeViewer';
-import { renderCodeLinesDirect } from '@/features/Code/CodeViewer/core/renderer/renderCodeLinesDirect';
+import CodeViewer from '@/pages/shared/features/CodeViewer/CodeViewer';
+import { renderCodeLinesDirect } from '@/pages/shared/features/CodeViewer/core/renderer/renderCodeLinesDirect';
 import type { Slide } from '../../../entities/Slide/model/types';
 import { extractChunks } from '../../../features/SlideNavigation/lib/extractChunks';
 import {

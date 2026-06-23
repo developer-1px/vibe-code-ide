@@ -4,10 +4,9 @@
 
 import { useAtom } from 'jotai';
 import React from 'react';
-import type { DeadCodeItem } from '@/features/Code/CodeAnalyzer/DeadCodeAnalyzer/lib/deadCodeAnalyzer.ts';
-import { expandedCategoriesAtom } from '@/features/Code/CodeAnalyzer/DeadCodeAnalyzer/model/atoms.ts';
-import type { CategoryKey } from '@/features/Code/CodeAnalyzer/DeadCodeAnalyzer/model/types.ts';
-import { CategoryCheckbox } from '@/features/Code/CodeAnalyzer/DeadCodeSelection/ui/CategoryCheckbox.tsx';
+import { CategoryCheckbox } from '@/pages/dead-code/features/DeadCodeSelection/ui/CategoryCheckbox.tsx';
+import { type CategoryKey, expandedCategoriesAtom } from '@/pages/dead-code/widgets/DeadCodePanel/model/categoryState';
+import type { DeadCodeItem } from '@/pages/shared/features/DeadCode/lib/deadCodeAnalyzer.ts';
 import { DeadCodeCategoryToggleButton } from './DeadCodeCategoryToggleButton.tsx';
 
 export const DeadCodeCategoryHeader = React.forwardRef<

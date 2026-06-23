@@ -2,11 +2,8 @@
  * DeadCodePanel Summary Component
  */
 import { useAtomValue } from 'jotai';
-import {
-  deadCodeResultsAtom,
-  isAnalyzingAtom,
-  selectedDeadCodeItemsAtom,
-} from '@/features/Code/CodeAnalyzer/DeadCodeAnalyzer/model/atoms.ts';
+import { isAnalyzingAtom } from '@/pages/dead-code/features/DeadCodeAnalysis/model/atoms.ts';
+import { deadCodeResultsAtom, selectedDeadCodeItemsAtom } from '@/pages/shared/features/DeadCode/model/atoms.ts';
 
 export function DeadCodePanelSummary() {
   const isAnalyzing = useAtomValue(isAnalyzingAtom);

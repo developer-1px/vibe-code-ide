@@ -6,13 +6,10 @@
 import { useAtomValue } from 'jotai';
 import { Sparkles } from 'lucide-react';
 import { useState } from 'react';
-import { useDeadCodeAnalysis } from '@/features/Code/CodeAnalyzer/DeadCodeAnalyzer/lib/useDeadCodeAnalysis.ts';
-import {
-  deadCodeResultsAtom,
-  selectedDeadCodeItemsAtom,
-} from '@/features/Code/CodeAnalyzer/DeadCodeAnalyzer/model/atoms.ts';
-import IDEScrollView from '@/features/File/OpenFiles/ui/IDEScrollView/IDEScrollView.tsx';
-import { RefactoringPromptDialog } from '@/features/RefactoringPrompt/RefactoringPromptDialog.tsx';
+import { useDeadCodeAnalysis } from '@/pages/dead-code/features/DeadCodeAnalysis/lib/useDeadCodeAnalysis.ts';
+import { RefactoringPromptDialog } from '@/pages/dead-code/features/RefactoringPrompt/RefactoringPromptDialog.tsx';
+import { deadCodeResultsAtom, selectedDeadCodeItemsAtom } from '@/pages/shared/features/DeadCode/model/atoms.ts';
+import IDEScrollView from '@/pages/shared/features/OpenFiles/ui/IDEScrollView/IDEScrollView.tsx';
 import { Button } from '@/shared/ui/Button';
 import { Sidebar } from '@/shared/ui/Sidebar';
 import { DeadCodeExplorer } from './DeadCodeExplorer.tsx';

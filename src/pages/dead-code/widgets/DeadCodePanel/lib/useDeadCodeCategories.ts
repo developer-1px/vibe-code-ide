@@ -1,8 +1,8 @@
 import { useAtomValue } from 'jotai';
 import { useMemo } from 'react';
-import type { DeadCodeItem } from '@/features/Code/CodeAnalyzer/DeadCodeAnalyzer/lib/deadCodeAnalyzer.ts';
-import { deadCodeResultsAtom } from '@/features/Code/CodeAnalyzer/DeadCodeAnalyzer/model/atoms.ts';
-import type { CategoryKey } from '@/features/Code/CodeAnalyzer/DeadCodeAnalyzer/model/types.ts';
+import type { CategoryKey } from '@/pages/dead-code/widgets/DeadCodePanel/model/categoryState';
+import type { DeadCodeItem } from '@/pages/shared/features/DeadCode/lib/deadCodeAnalyzer.ts';
+import { deadCodeResultsAtom } from '@/pages/shared/features/DeadCode/model/atoms.ts';
 
 interface DeadCodeCategoryInfo {
   title: string;

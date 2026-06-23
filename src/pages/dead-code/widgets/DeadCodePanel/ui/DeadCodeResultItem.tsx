@@ -8,9 +8,9 @@ import { Code2, Component, FileBox, FunctionSquare, Import, Variable } from 'luc
 import React from 'react';
 import { activeActivityPageIdAtom } from '@/app/model/activityPageAtoms';
 import { viewModeAtom } from '@/entities/AppView/model/atoms';
-import type { DeadCodeItem } from '@/features/Code/CodeAnalyzer/DeadCodeAnalyzer/lib/deadCodeAnalyzer.ts';
 import { targetLineAtom } from '@/features/File/Navigation/model/atoms.ts';
 import { useOpenFile } from '@/features/File/OpenFiles/lib/useOpenFile.ts';
+import type { DeadCodeItem } from '@/pages/shared/features/DeadCode/lib/deadCodeAnalyzer.ts';
 import { DeadCodeResultCheckbox } from './DeadCodeResultCheckbox.tsx';
 
 // Get icon for dead code kind

@@ -1,7 +1,7 @@
 import { ChevronDown, ChevronRight } from 'lucide-react';
 import type React from 'react';
-import { renderCategoryIcon } from '@/features/Code/CodeAnalyzer/DeadCodeAnalyzer/lib/categoryUtils.tsx';
-import type { CategoryKey } from '@/features/Code/CodeAnalyzer/DeadCodeAnalyzer/model/types.ts';
+import type { CategoryKey } from '@/pages/dead-code/widgets/DeadCodePanel/model/categoryState';
+import { renderCategoryIcon } from '@/pages/shared/features/DeadCode/lib/categoryUtils.tsx';
 
 interface DeadCodeCategoryToggleButtonProps {
   title: string;

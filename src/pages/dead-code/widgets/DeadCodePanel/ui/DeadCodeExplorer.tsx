@@ -5,13 +5,10 @@
 
 import { useAtomValue } from 'jotai';
 import { useMemo } from 'react';
-import type { DeadCodeItem } from '@/features/Code/CodeAnalyzer/DeadCodeAnalyzer/lib/deadCodeAnalyzer.ts';
-import {
-  deadCodeResultsAtom,
-  expandedCategoriesAtom,
-  isAnalyzingAtom,
-} from '@/features/Code/CodeAnalyzer/DeadCodeAnalyzer/model/atoms.ts';
-import type { CategoryKey } from '@/features/Code/CodeAnalyzer/DeadCodeAnalyzer/model/types.ts';
+import { isAnalyzingAtom } from '@/pages/dead-code/features/DeadCodeAnalysis/model/atoms.ts';
+import { type CategoryKey, expandedCategoriesAtom } from '@/pages/dead-code/widgets/DeadCodePanel/model/categoryState';
+import type { DeadCodeItem } from '@/pages/shared/features/DeadCode/lib/deadCodeAnalyzer.ts';
+import { deadCodeResultsAtom } from '@/pages/shared/features/DeadCode/model/atoms.ts';
 import { useTreeKeyboardNavigation } from '@/shared/hooks/useTreeKeyboardNavigation.ts';
 import { TreeView } from '@/shared/ui/TreeView/TreeView.tsx';
 import { useDeadCodeCategories } from '../lib/useDeadCodeCategories.ts';
