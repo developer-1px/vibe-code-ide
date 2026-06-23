@@ -1,14 +1,13 @@
 import { useAtom, useAtomValue } from 'jotai';
-import type React from 'react';
 import { useState } from 'react';
 import { fileTreeModeAtom, isSidebarOpenAtom } from '@/features/Explorer/model/atoms';
-import { FileExplorer } from '@/pages/explorer/widgets/FileExplorer/ui/FileExplorer';
-import { RelatedFilesView } from '@/pages/explorer/widgets/RelatedFiles/ui/RelatedFilesView';
 import { Sidebar } from '@/shared/ui/Sidebar';
-import { ExplorerSectionHeader } from './ExplorerSectionHeader';
-import { FileTreeModeTabs } from './FileTreeModeTabs';
+import { ExplorerSectionHeader } from '../../../features/ExplorerSidebar/ui/ExplorerSectionHeader';
+import { FileTreeModeTabs } from '../../../features/ExplorerSidebar/ui/FileTreeModeTabs';
+import { FileExplorer } from '../../../features/FileExplorer/ui/FileExplorer';
+import { RelatedFilesView } from '../../../features/RelatedFiles/ui/RelatedFilesView';
 
-export const ExplorerSidebar: React.FC = () => {
+export function ExplorerSidebar() {
   const isSidebarOpen = useAtomValue(isSidebarOpenAtom);
   const [fileTreeMode, setFileTreeMode] = useAtom(fileTreeModeAtom);
   const [isFileExplorerCollapsed, setIsFileExplorerCollapsed] = useState(false);
@@ -17,7 +16,7 @@ export const ExplorerSidebar: React.FC = () => {
     return null;
   }
 
-  function toggleFileExplorerCollapsed() {
+  function handleFileExplorerCollapsedToggle() {
     setIsFileExplorerCollapsed(!isFileExplorerCollapsed);
   }
 
@@ -25,7 +24,10 @@ export const ExplorerSidebar: React.FC = () => {
     <div className="relative focus:outline-none">
       <Sidebar resizable defaultWidth={250} minWidth={200} maxWidth={800} className="h-full shadow-2xl">
         <div className={!isFileExplorerCollapsed ? 'flex-1 min-h-0 flex flex-col overflow-hidden' : ''}>
-          <ExplorerSectionHeader isCollapsed={isFileExplorerCollapsed} toggleCollapsed={toggleFileExplorerCollapsed} />
+          <ExplorerSectionHeader
+            isCollapsed={isFileExplorerCollapsed}
+            toggleCollapsed={handleFileExplorerCollapsedToggle}
+          />
 
           {!isFileExplorerCollapsed && (
             <>
@@ -38,4 +40,4 @@ export const ExplorerSidebar: React.FC = () => {
       </Sidebar>
     </div>
   );
-};
+}

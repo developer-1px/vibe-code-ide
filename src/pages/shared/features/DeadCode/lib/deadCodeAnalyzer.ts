@@ -5,6 +5,7 @@
  * 아키텍처: Getter Layer 패턴 (AST 파싱 로직 분리), 로컬 캐싱 (파일당 1회 순회), 순수 함수 설계
  */
 
+import type { DeadCodeResults } from '@/entities/DeadCode/model/types';
 import { getExports, getImports } from '@/entities/SourceFileNode/lib/metadata.ts';
 import type { GraphData } from '@/entities/SourceFileNode/model/types.ts';
 import {
@@ -14,29 +15,6 @@ import {
   getLocalVariables,
   getUsedIdentifiers,
 } from './deadCodeMetadata';
-
-// Dead Code 항목 (kind/category 2단계 분류, optional 필드로 상세 정보 제공)
-export interface DeadCodeItem {
-  filePath: string;
-  symbolName: string;
-  line: number;
-  kind: 'export' | 'import' | 'function' | 'variable' | 'prop' | 'argument';
-  category: 'unusedExport' | 'unusedImport' | 'deadFunction' | 'unusedVariable' | 'unusedProp' | 'unusedArgument';
-  from?: string;
-  componentName?: string;
-  functionName?: string;
-}
-
-// 분석 결과 (카테고리별 분리 배열 - 필터 성능 최적화, totalCount 캐싱)
-export interface DeadCodeResults {
-  unusedExports: DeadCodeItem[];
-  unusedImports: DeadCodeItem[];
-  deadFunctions: DeadCodeItem[];
-  unusedVariables: DeadCodeItem[];
-  unusedProps: DeadCodeItem[];
-  unusedArguments: DeadCodeItem[];
-  totalCount: number;
-}
 
 /**
  * 프로젝트 전체 dead code 분석

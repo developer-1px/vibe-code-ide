@@ -3,7 +3,7 @@
  * Each DeadCodeItem becomes an independent node for keyboard navigation
  */
 
-import type { DeadCodeItem } from './deadCodeAnalyzer.ts';
+import type { DeadCodeItem } from '@/entities/DeadCode/model/types';
 
 export interface DeadCodeTreeNode {
   id: string;

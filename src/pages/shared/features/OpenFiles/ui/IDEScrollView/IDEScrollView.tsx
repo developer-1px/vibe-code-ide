@@ -9,9 +9,8 @@
 import { useAtomValue } from 'jotai';
 import { useEffect, useMemo } from 'react';
 import { filesAtom, fullNodeMapAtom } from '@/entities/AppView/model/atoms';
+import { getSelectedDeadCodeFilePaths, getSelectedDeadCodeLinesByFile } from '@/entities/DeadCode/lib/computed';
 import { activeTabAtom, openedTabsAtom } from '@/features/File/OpenFiles/model/atoms.ts';
-import { getItemKey } from '@/pages/shared/features/DeadCode/lib/categoryUtils.tsx';
-import type { DeadCodeItem } from '@/pages/shared/features/DeadCode/lib/deadCodeAnalyzer.ts';
 import { deadCodeResultsAtom, selectedDeadCodeItemsAtom } from '@/pages/shared/features/DeadCode/model/atoms.ts';
 import { useScrollNavigation } from './lib/useScrollNavigation.ts';
 import FileSection from './ui/FileSection.tsx';
@@ -25,33 +24,16 @@ const IDEScrollView = () => {
   const activeTab = useAtomValue(activeTabAtom);
 
   // 모드 결정: Dead Code 선택이 있으면 Dead Code 모드, 없으면 Tabs 모드
-  const isDeadCodeMode = selectedItems.size > 0 && deadCodeResults;
+  const isDeadCodeMode = selectedItems.size > 0 && Boolean(deadCodeResults);
 
   // 표시할 파일 경로 결정 (Dead Code 모드 또는 Tabs 모드)
   const displayFilePaths = useMemo(() => {
     if (isDeadCodeMode) {
-      // Dead Code 모드: 선택된 항목들에서 파일 경로 추출
-      const allItems: DeadCodeItem[] = [
-        ...(deadCodeResults?.unusedExports || []),
-        ...(deadCodeResults?.unusedImports || []),
-        ...(deadCodeResults?.deadFunctions || []),
-        ...(deadCodeResults?.unusedVariables || []),
-        ...(deadCodeResults?.unusedProps || []),
-        ...(deadCodeResults?.unusedArguments || []),
-      ];
-
-      const selectedDeadCodeItems = allItems.filter((item) => selectedItems.has(getItemKey(item)));
-
-      const filePathsSet = new Set<string>();
-      selectedDeadCodeItems.forEach((item) => {
-        filePathsSet.add(item.filePath);
-      });
-
-      return Array.from(filePathsSet).sort();
-    } else {
-      // Tabs 모드: 열린 탭들의 파일 경로 (IDEView 대체)
-      return openedTabs;
+      return getSelectedDeadCodeFilePaths(deadCodeResults, selectedItems);
     }
+
+    // Tabs 모드: 열린 탭들의 파일 경로 (IDEView 대체)
+    return openedTabs;
   }, [isDeadCodeMode, selectedItems, deadCodeResults, openedTabs]);
 
   // 각 파일에 대한 하이라이트할 라인 번호 추출 (Dead Code 모드에서만)
@@ -61,28 +43,7 @@ const IDEScrollView = () => {
       return new Map<string, Set<number>>();
     }
 
-    // Dead Code 모드: 선택된 항목의 라인 번호
-    const allItems: DeadCodeItem[] = [
-      ...(deadCodeResults?.unusedExports || []),
-      ...(deadCodeResults?.unusedImports || []),
-      ...(deadCodeResults?.deadFunctions || []),
-      ...(deadCodeResults?.unusedVariables || []),
-      ...(deadCodeResults?.unusedProps || []),
-      ...(deadCodeResults?.unusedArguments || []),
-    ];
-
-    const linesByFile = new Map<string, Set<number>>();
-
-    allItems
-      .filter((item) => selectedItems.has(getItemKey(item)))
-      .forEach((item) => {
-        if (!linesByFile.has(item.filePath)) {
-          linesByFile.set(item.filePath, new Set<number>());
-        }
-        linesByFile.get(item.filePath)?.add(item.line);
-      });
-
-    return linesByFile;
+    return getSelectedDeadCodeLinesByFile(deadCodeResults, selectedItems);
   }, [isDeadCodeMode, selectedItems, deadCodeResults]);
 
   // ==========================================

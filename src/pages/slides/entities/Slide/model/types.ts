@@ -68,3 +68,29 @@ export interface SlideNavigationResult {
   /** 네비게이션 실패 이유 */
   reason?: 'no-caller' | 'no-callee' | 'no-sibling' | 'boundary';
 }
+
+export interface SlideChunk {
+  /** chunk 시작 라인 (주석 블록 시작 또는 fold 시작) */
+  lineNum: number;
+
+  /** chunk 시작 라인 */
+  chunkStart: number;
+
+  /** chunk 끝 라인 */
+  chunkEnd: number;
+
+  /** fold depth (fold가 있을 경우, 없으면 0) */
+  depth: number;
+
+  /** 주석 포함 여부 */
+  hasComment: boolean;
+
+  /** 주석 블록 시작 (있을 경우) */
+  commentStart?: number;
+
+  /** fold 시작 (있을 경우) */
+  foldStart?: number;
+
+  /** fold 끝 (있을 경우) */
+  foldEnd?: number;
+}

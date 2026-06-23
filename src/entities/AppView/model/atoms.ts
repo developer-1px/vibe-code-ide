@@ -3,7 +3,7 @@
  * 앱 전체에서 사용되는 글로벌 상태 atoms
  */
 import { atom } from 'jotai';
-import { atomWithStorage } from 'jotai/utils';
+import { atomWithDefault, atomWithStorage } from 'jotai/utils';
 import { DEFAULT_FILES } from '@/constants';
 import type { GraphData, SourceFileNode } from '@/entities/SourceFileNode/model/types';
 
@@ -17,7 +17,7 @@ export const filesAtom = atom<Record<string, string>>(DEFAULT_FILES);
 // Folder Focus Mode - 특정 폴더를 Root로 하는 격리 뷰
 // null: 전체 파일 트리 표시
 // "src/features": 해당 폴더만 Root로 표시
-export const focusedFolderAtom = atom<string | null>(null);
+export const focusedFolderAtom = atomWithDefault<string | null>(() => null);
 
 // ============================================================================
 // Graph Data Atoms (Parsed Project Data)
@@ -57,7 +57,7 @@ export const fullNodeMapAtom = atom((get) => {
 export type ViewMode = 'ide' | 'contentSearch';
 export const viewModeAtom = atomWithStorage<ViewMode>('viewMode', 'ide'); // Default to IDE mode
 
-// 문서 모드 - Dark vs Light (for CodeDocView)
+// 문서 모드 - Dark vs Light (for CodeDoc)
 export type DocumentMode = 'dark' | 'light';
 export const documentModeAtom = atom<DocumentMode>('light'); // Default to light mode (GitBook-style)
 

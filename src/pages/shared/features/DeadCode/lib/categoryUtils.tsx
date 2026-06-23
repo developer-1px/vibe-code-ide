@@ -17,7 +17,3 @@ export function renderCategoryIcon(category: string) {
       return <AlertTriangle size={14} className="text-text-muted" />;
   }
 }
-
-export function getItemKey(item: { filePath: string; line: number; symbolName: string }): string {
-  return `${item.filePath}:${item.line}:${item.symbolName}`;
-}

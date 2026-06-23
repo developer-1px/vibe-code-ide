@@ -1,6 +1,6 @@
 import { atom } from 'jotai';
 import { atomWithStorage } from 'jotai/utils';
-import type { Slide } from '../../../entities/Slide/model/types';
+import type { Slide, SlideChunk } from '../../../entities/Slide/model/types';
 
 /**
  * 전체 슬라이드 목록
@@ -113,23 +113,9 @@ export const foldableLinesAtom = atom<FoldableLineInfo[]>([]);
 export const targetDepthAtom = atom<number>(0);
 
 /**
- * Chunk 정보 (주석 + fold 기반)
- */
-export interface ChunkInfo {
-  lineNum: number; // chunk 시작 라인 (주석 블록 시작 또는 fold 시작)
-  chunkStart: number; // chunk 시작 라인
-  chunkEnd: number; // chunk 끝 라인
-  depth: number; // fold depth (fold가 있을 경우, 없으면 0)
-  hasComment: boolean; // 주석 포함 여부
-  commentStart?: number; // 주석 블록 시작 (있을 경우)
-  foldStart?: number; // fold 시작 (있을 경우)
-  foldEnd?: number; // fold 끝 (있을 경우)
-}
-
-/**
  * 현재 슬라이드의 chunk 목록
  */
-export const chunksAtom = atom<ChunkInfo[]>([]);
+export const chunksAtom = atom<SlideChunk[]>([]);
 
 /**
  * 현재 포커스할 chunk의 인덱스
