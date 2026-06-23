@@ -5,7 +5,7 @@
 
 import { useAtomValue, useSetAtom } from 'jotai';
 import { forwardRef, useEffect, useRef, useState, useTransition } from 'react';
-import { deadCodeResultsAtom } from '@/entities/DeadCode/model/atoms';
+import type { DeadCodeResults } from '@/entities/DeadCode/model/types';
 import type { SourceFileNode } from '@/entities/SourceFileNode/model/types.ts';
 import CodeViewer from '@/features/Code/CodeViewer/CodeViewer.tsx';
 import { renderCodeLinesDirect } from '@/features/Code/CodeViewer/core/renderer/renderCodeLinesDirect.ts';
@@ -18,15 +18,10 @@ import { getFileName } from '@/shared/pathUtils.ts';
 import { FileIcon } from '@/shared/ui/FileIcon';
 import { getWorkerPool } from '@/shared/workerPool.ts';
 
-// Module-level cache for processedLines (Phase 1 performance optimization)
-// Key: `${filePath}|${deadCodeResultsVersion}`
 const processedLinesCache = new Map<string, CodeLine[]>();
-let deadCodeResultsVersion = 0;
 
-// Cache invalidation helper
 export const invalidateProcessedLinesCache = () => {
   processedLinesCache.clear();
-  deadCodeResultsVersion++;
 };
 
 const FileSection = forwardRef<
@@ -35,9 +30,9 @@ const FileSection = forwardRef<
     node: SourceFileNode;
     files: Record<string, string>;
     highlightedLines: Set<number>;
+    deadCodeResults?: DeadCodeResults | null;
   }
->(({ node, files, highlightedLines }, ref) => {
-  const deadCodeResults = useAtomValue(deadCodeResultsAtom);
+>(({ node, files, highlightedLines, deadCodeResults = null }, ref) => {
   const activeTab = useAtomValue(activeTabAtom);
   const hoveredFilePath = useAtomValue(hoveredFilePathAtom);
   const setHoveredFilePath = useSetAtom(hoveredFilePathAtom);
@@ -47,15 +42,10 @@ const FileSection = forwardRef<
   // Check if this file section is active (via activeTab or hover)
   const isActive = activeTab === node.filePath || hoveredFilePath === node.filePath;
 
-  // Invalidate cache when deadCodeResults changes
-  useEffect(() => {
-    deadCodeResultsVersion++;
-  }, []);
-
   // Phase A + B: Progressive Rendering with Stale-While-Revalidate
   // 1단계: Plaintext 즉시 표시 (파싱 없음, 초고속)
   // 2단계: 백그라운드에서 Rich 파싱 → 캐시 저장 → 교체
-  const cacheKey = `${node.filePath}|${deadCodeResultsVersion}`;
+  const cacheKey = `${node.filePath}|${deadCodeResults?.totalCount ?? 'none'}`;
   const [processedLines, setProcessedLines] = useState<CodeLine[]>(() => {
     // 캐시에 rich 버전 있으면 즉시 사용
     const cached = processedLinesCache.get(cacheKey);

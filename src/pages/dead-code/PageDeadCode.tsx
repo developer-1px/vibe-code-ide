@@ -1,9 +1,9 @@
 import { useAtomValue } from 'jotai';
 import { useState } from 'react';
 import { deadCodeResultsAtom, selectedDeadCodeItemsAtom } from '@/entities/DeadCode/model/atoms';
-import IDEScrollView from '@/features/File/OpenFiles/ui/IDEScrollView';
 import { useDeadCodeAnalysis } from './features/DeadCodeAnalysis/lib/useDeadCodeAnalysis.ts';
 import { RefactoringPromptDialog } from './features/RefactoringPrompt/RefactoringPromptDialog.tsx';
+import { DeadCodeFileReview } from './widgets/DeadCodeFileReview/ui/DeadCodeFileReview.tsx';
 import { DeadCodeSidebar } from './widgets/DeadCodeSidebar/ui/DeadCodeSidebar.tsx';
 
 export function PageDeadCode() {
@@ -27,7 +27,7 @@ export function PageDeadCode() {
         />
       </div>
 
-      <IDEScrollView />
+      <DeadCodeFileReview />
 
       {deadCodeResults && (
         <RefactoringPromptDialog

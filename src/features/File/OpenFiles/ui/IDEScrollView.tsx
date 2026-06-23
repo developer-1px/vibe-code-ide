@@ -1,50 +1,20 @@
 /**
- * IDEScrollView - 파일들을 세로 스크롤로 한번에 볼 수 있는 통합 뷰
- *
- * 두 가지 모드 지원:
- * 1. Dead Code 모드: Dead Code Panel에서 선택한 파일들 표시
- * 2. Tabs 모드: 열린 탭들의 파일 표시 (IDEView 대체)
+ * IDEScrollView - 열린 파일들을 세로 스크롤로 한번에 볼 수 있는 통합 뷰
  */
 
 import { useAtomValue } from 'jotai';
-import { useEffect, useMemo } from 'react';
+import { useEffect } from 'react';
 import { filesAtom, fullNodeMapAtom } from '@/entities/AppView/model/atoms';
-import { getSelectedDeadCodeFilePaths, getSelectedDeadCodeLinesByFile } from '@/entities/DeadCode/lib/computed';
-import { deadCodeResultsAtom, selectedDeadCodeItemsAtom } from '@/entities/DeadCode/model/atoms';
 import { activeTabAtom, openedTabsAtom } from '@/features/File/OpenFiles/model/atoms.ts';
-import { useScrollNavigation } from '../lib/useScrollNavigation.ts';
+import { useScrollNavigation } from '@/shared/hooks/useScrollNavigation.ts';
 import FileSection from './FileSection.tsx';
 
 const IDEScrollView = () => {
-  const selectedItems = useAtomValue(selectedDeadCodeItemsAtom);
-  const deadCodeResults = useAtomValue(deadCodeResultsAtom);
   const openedTabs = useAtomValue(openedTabsAtom);
   const fullNodeMap = useAtomValue(fullNodeMapAtom);
   const files = useAtomValue(filesAtom);
   const activeTab = useAtomValue(activeTabAtom);
-
-  // 모드 결정: Dead Code 선택이 있으면 Dead Code 모드, 없으면 Tabs 모드
-  const isDeadCodeMode = selectedItems.size > 0 && Boolean(deadCodeResults);
-
-  // 표시할 파일 경로 결정 (Dead Code 모드 또는 Tabs 모드)
-  const displayFilePaths = useMemo(() => {
-    if (isDeadCodeMode) {
-      return getSelectedDeadCodeFilePaths(deadCodeResults, selectedItems);
-    }
-
-    // Tabs 모드: 열린 탭들의 파일 경로 (IDEView 대체)
-    return openedTabs;
-  }, [isDeadCodeMode, selectedItems, deadCodeResults, openedTabs]);
-
-  // 각 파일에 대한 하이라이트할 라인 번호 추출 (Dead Code 모드에서만)
-  const highlightedLinesByFile = useMemo(() => {
-    if (!isDeadCodeMode) {
-      // Tabs 모드: 하이라이트 없음
-      return new Map<string, Set<number>>();
-    }
-
-    return getSelectedDeadCodeLinesByFile(deadCodeResults, selectedItems);
-  }, [isDeadCodeMode, selectedItems, deadCodeResults]);
+  const displayFilePaths = openedTabs;
 
   // ==========================================
   // UI 반응 로직: activeTab 변경에 따른 스크롤
@@ -63,11 +33,7 @@ const IDEScrollView = () => {
   if (displayFilePaths.length === 0) {
     return (
       <div className="flex-1 h-full flex items-center justify-center bg-bg-elevated text-text-tertiary">
-        <p className="text-sm">
-          {isDeadCodeMode
-            ? 'Select dead code items to view files here'
-            : 'No files open. Use search (Shift+Shift) or click a file in the sidebar to open.'}
-        </p>
+        <p className="text-sm">No files open. Use search (Shift+Shift) or click a file in the sidebar to open.</p>
       </div>
     );
   }
@@ -78,15 +44,13 @@ const IDEScrollView = () => {
         const node = fullNodeMap.get(filePath);
         if (!node) return null;
 
-        const highlightedLines = highlightedLinesByFile.get(filePath) || new Set<number>();
-
         return (
           <FileSection
             key={filePath}
             ref={(el) => registerSection(filePath, el)}
             node={node}
             files={files}
-            highlightedLines={highlightedLines}
+            highlightedLines={new Set<number>()}
           />
         );
       })}
