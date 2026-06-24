@@ -5,7 +5,8 @@ import { fullNodeMapAtom } from '@/entities/AppView/model/atoms';
 import { activeTabAtom, openedTabsAtom } from '@/features/File/OpenFiles/model/atoms';
 import { convertToDocData } from './features/CodeDocReader/lib/tsAdapter';
 import type { CodeDocLayoutMode, DocData } from './features/CodeDocReader/model/types';
-import { CodeDocReaderPanel } from './widgets/CodeDocReader/ui/CodeDocReaderPanel';
+import { CodeDocLayoutControls } from './widgets/CodeDocLayoutControls/ui/CodeDocLayoutControls';
+import { CodeDocReader } from './widgets/CodeDocReader/ui/CodeDocReader';
 
 export function PageCodeDoc() {
   const openedTabs = useAtomValue(openedTabsAtom);
@@ -52,12 +53,10 @@ export function PageCodeDoc() {
 
   return (
     <div className="h-full min-h-0 w-full min-w-0 relative overflow-hidden">
-      <CodeDocReaderPanel
-        docs={allDocData}
-        layoutMode={layoutMode}
-        changeLayoutMode={setLayoutMode}
-        scrollContainerRef={scrollContainerRef}
-      />
+      <div className="absolute inset-0 min-h-0 bg-gray-50 overflow-hidden">
+        <CodeDocLayoutControls layoutMode={layoutMode} changeLayoutMode={setLayoutMode} />
+        <CodeDocReader docs={allDocData} layoutMode={layoutMode} scrollContainerRef={scrollContainerRef} />
+      </div>
     </div>
   );
 }

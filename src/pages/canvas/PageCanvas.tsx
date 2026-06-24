@@ -5,10 +5,9 @@ import { getExpandedVisibleNodeIds, getFilePathsForVisibleNodes } from '@/entiti
 import { openedFilesAtom, visibleNodeIdsAtom } from '@/features/Canvas/model/atoms';
 import { symbolMetadataAtom } from '@/features/Search/UnifiedSearch/model/atoms.ts';
 import { extractSymbolMetadata } from '@/shared/symbolMetadataExtractor.ts';
-import { CanvasControls } from './features/CanvasControls/ui/CanvasControls.tsx';
 import { useCanvasLayout } from './features/CanvasStage/hooks/useCanvasLayout.ts';
-import { CanvasStage } from './features/CanvasStage/ui/CanvasStage.tsx';
-import { CanvasInteractionLayer } from './features/CanvasSurface/ui/CanvasInteractionLayer.tsx';
+import { CanvasControls } from './widgets/CanvasControls/ui/CanvasControls.tsx';
+import { CanvasStage } from './widgets/CanvasStage/ui/CanvasStage.tsx';
 
 export function PageCanvas() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -50,10 +49,9 @@ export function PageCanvas() {
 
   return (
     <div className="h-full min-h-0 w-full min-w-0 relative overflow-hidden">
-      <CanvasInteractionLayer containerRef={containerRef}>
+      <CanvasStage containerRef={containerRef} layoutNodes={layoutNodes}>
         <CanvasControls />
-        <CanvasStage containerRef={containerRef} layoutNodes={layoutNodes} />
-      </CanvasInteractionLayer>
+      </CanvasStage>
     </div>
   );
 }

@@ -1,8 +1,8 @@
 import { ChevronDown, ChevronRight } from 'lucide-react';
 import { useState } from 'react';
+import { GitChangeAllButton } from '../../../features/GitChanges/ui/GitChangeAllButton';
+import { GitFileChangeButton } from '../../../features/GitChanges/ui/GitFileChangeButton';
 import type { FileChange } from '../../../model/types';
-import { GitChangeAllButton } from './GitChangeAllButton';
-import { GitFileChangeButton } from './GitFileChangeButton';
 
 export function GitChangeSection({
   title,
