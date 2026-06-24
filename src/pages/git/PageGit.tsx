@@ -1,6 +1,11 @@
 import { useState } from 'react';
+import { ScrollArea } from '@/shared/ui/ScrollArea';
+import { Separator } from '@/shared/ui/Separator';
 import type { Commit, FileChange } from './model/types';
-import { GitPanel } from './widgets/GitPanel/ui/GitPanel';
+import { GitChangeSection } from './widgets/GitChanges/ui/GitChangeSection';
+import { GitCommitBox } from './widgets/GitCommit/ui/GitCommitBox';
+import { GitHeader } from './widgets/GitHeader/ui/GitHeader';
+import { GitHistorySection } from './widgets/GitHistory/ui/GitHistorySection';
 
 export function PageGit() {
   const [commitMessage, setCommitMessage] = useState('');
@@ -54,18 +59,42 @@ export function PageGit() {
 
   return (
     <div className="h-full min-h-0 w-full min-w-0 overflow-hidden bg-bg-surface border-r border-border-DEFAULT">
-      <GitPanel
-        currentBranch={currentBranch}
-        changeBranch={setCurrentBranch}
-        commitMessage={commitMessage}
-        changeCommitMessage={setCommitMessage}
-        stagedChanges={stagedChanges}
-        unstagedChanges={unstagedChanges}
-        commits={commits}
-        stageAll={handleStageAll}
-        unstageAll={handleUnstageAll}
-        toggleFileStage={handleFileStageToggle}
-      />
+      <div className="flex h-full min-h-0 w-full flex-col">
+        <GitHeader currentBranch={currentBranch} changeBranch={setCurrentBranch} />
+
+        <ScrollArea className="flex-1 min-h-0">
+          <div className="p-3 space-y-3">
+            <GitCommitBox
+              commitMessage={commitMessage}
+              stagedChangeCount={stagedChanges.length}
+              changeCommitMessage={setCommitMessage}
+            />
+
+            <Separator />
+
+            <GitChangeSection
+              title="Staged Changes"
+              emptyMessage="No staged changes"
+              files={stagedChanges}
+              allAction="unstage"
+              toggleAll={handleUnstageAll}
+              toggleFileStage={handleFileStageToggle}
+            />
+            <GitChangeSection
+              title="Changes"
+              emptyMessage="No changes"
+              files={unstagedChanges}
+              allAction="stage"
+              toggleAll={handleStageAll}
+              toggleFileStage={handleFileStageToggle}
+            />
+
+            <Separator />
+
+            <GitHistorySection commits={commits} />
+          </div>
+        </ScrollArea>
+      </div>
     </div>
   );
 }

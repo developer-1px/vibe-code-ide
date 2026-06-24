@@ -15,6 +15,11 @@ import { useAtomValue, useSetAtom } from 'jotai';
 import { useMemo } from 'react';
 import { activeActivityPageIdAtom } from '@/app/model/activityPageAtoms';
 import { filesAtom, viewModeAtom } from '@/entities/AppView/model/atoms';
+import {
+  getCanvasNodeDisplayLabel,
+  getCanvasNodeShortPath,
+  getCanvasNodeTypeLabel,
+} from '@/entities/CanvasNode/lib/display';
 import type { CanvasNode } from '@/entities/CanvasNode/model/types';
 import { deadCodeResultsAtom } from '@/entities/DeadCode/model/atoms';
 import { renderCodeLinesDirect } from '@/features/Code/CodeViewer/core/renderer/renderCodeLinesDirect';
@@ -23,7 +28,6 @@ import { focusedNodeIdAtom } from '@/features/Code/CodeViewer/model/atoms.ts';
 import { useFocusedIdentifiers } from '../hooks/useFocusedIdentifiers';
 // Custom Hooks
 import { useFoldLevel } from '../hooks/useFoldLevel';
-import { getNodeDisplayLabel, getNodeShortPath, getNodeTypeLabel } from '../lib/nodeDisplay';
 // Utilities
 import { getNodeIcon } from '../lib/nodeIcons';
 // Components
@@ -56,9 +60,9 @@ const CodeCardHeader = ({ node }: { node: CanvasNode }) => {
   const iconConfig = getNodeIcon(node.type);
 
   // Display labels
-  const displayLabel = getNodeDisplayLabel(node);
-  const typeLabel = getNodeTypeLabel(node);
-  const shortPath = getNodeShortPath(node);
+  const displayLabel = getCanvasNodeDisplayLabel(node);
+  const typeLabel = getCanvasNodeTypeLabel(node);
+  const shortPath = getCanvasNodeShortPath(node);
 
   // Handle double-click to enter IDE view mode
   function handleDoubleClick() {
